@@ -1,0 +1,226 @@
+/* Category Banner Styles */
+.category-banner {
+  min-height: 340px;
+  position: relative;
+  overflow: hidden;
+}
+.category-banner-bg {
+  object-fit: cover;
+  width: 100vw;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: 1;
+}
+.category-banner-overlay {
+  background: rgba(24, 49, 63, 0.65);
+  z-index: 2;
+}
+.category-banner .container {
+  z-index: 3;
+  position: relative;
+}
+.category-label {
+  font-size: 1.2rem;
+  font-weight: 600;
+  background: #fff;
+  color: #222;
+  border-radius: 32px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+  display: inline-block;
+}
+/* Subcategory Buttons */
+.subcat-btn {
+  font-size: 1.1rem;
+  font-weight: 500;
+  background: #f8fbff;
+  color: #222;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.subcat-btn:hover,
+.subcat-btn:focus {
+  background: #ff7043;
+  color: #fff;
+  box-shadow: 0 4px 24px rgba(255, 112, 67, 0.12);
+}
+@media (max-width: 768px) {
+  .category-banner {
+    min-height: 220px;
+  }
+  .category-label {
+    font-size: 1rem;
+    padding: 0.5rem 1.2rem;
+  }
+  .subcat-btn {
+    font-size: 1rem;
+    padding: 0.9rem 1rem;
+  }
+}
+
+/* --- Filter Sidebar --- */
+.filter-section {
+  background: #f8fbff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+  margin-bottom: 1.5rem;
+}
+.filter-link {
+  color: #222;
+  text-decoration: none;
+  display: block;
+  padding: 6px 0;
+  border-radius: 6px;
+  transition: background 0.2s, color 0.2s;
+}
+.filter-link:hover,
+.filter-link.active {
+  background: #ff7043;
+  color: #fff;
+}
+.filter-section h5 {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+/* --- View Toggle Buttons --- */
+.btn-view-toggle {
+  background: #fff;
+  color: #ff7043;
+  border: 1.5px solid #ff7043;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  padding: 6px 16px;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+.btn-view-toggle.active,
+.btn-view-toggle:hover {
+  background: #ff7043;
+  color: #fff;
+}
+
+/* --- Course Cards (List & Grid) --- */
+.course-card-list,
+.course-card-grid {
+  background: #f8fbff;
+  border-radius: 18px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+  transition: box-shadow 0.2s, transform 0.2s;
+  position: relative;
+  overflow: hidden;
+  min-height: 180px;
+}
+.course-card-list:hover,
+.course-card-grid:hover {
+  box-shadow: 0 8px 32px rgba(255, 112, 67, 0.12);
+  transform: translateY(-4px) scale(1.01);
+}
+.course-img-list,
+.course-img-grid {
+  width: 180px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 14px;
+  margin: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+.course-card-list .course-img-list {
+  width: 180px;
+  height: 120px;
+}
+.course-card-grid .course-img-grid {
+  width: 100%;
+  height: 180px;
+  margin: 0;
+}
+
+/* --- Hover Icons --- */
+.course-img-wrap {
+  position: relative;
+}
+.course-hover-icons {
+  display: none;
+  z-index: 3;
+}
+.course-card-list:hover .course-hover-icons,
+.course-card-grid:hover .course-hover-icons {
+  display: flex !important;
+  animation: fadeInIcons 0.2s;
+}
+@keyframes fadeInIcons {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.icon-btn {
+  background: #fff;
+  color: #ff7043;
+  border: none;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  margin-left: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: background 0.2s, color 0.2s;
+}
+.icon-btn:hover {
+  background: #ff7043;
+  color: #fff;
+}
+
+/* --- Price Badge --- */
+.price-badge-list {
+  background: #ff7043;
+  color: #fff;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 8px 18px;
+  display: inline-block;
+  min-width: 110px;
+  text-align: center;
+}
+.price-badge-list .text-decoration-line-through {
+  font-size: 0.95rem;
+  color: #fff;
+  opacity: 0.7;
+}
+
+/* --- Responsive --- */
+@media (max-width: 992px) {
+  .course-img-list,
+  .course-img-grid {
+    width: 100%;
+    height: 160px;
+    margin: 0 0 16px 0;
+  }
+  .course-card-list,
+  .course-card-grid {
+    flex-direction: column !important;
+    min-height: 0;
+  }
+}
+@media (max-width: 576px) {
+  .filter-section {
+    padding: 1rem 0.7rem;
+  }
+  .course-img-list,
+  .course-img-grid {
+    height: 120px;
+  }
+  .price-badge-list {
+    font-size: 1rem;
+    padding: 7px 10px;
+  }
+}
