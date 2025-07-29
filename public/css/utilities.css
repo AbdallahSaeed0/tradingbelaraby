@@ -1,0 +1,85 @@
+/* Utility classes migrated from inline styles */
+
+.fs-11 {
+    font-size: 1.1rem !important;
+}
+
+.fs-25 {
+    font-size: 2.5rem !important;
+}
+
+.fs-095 {
+    font-size: 0.95rem !important;
+}
+
+.text-blue-247 {
+    color: #247ba0 !important;
+}
+
+.bg-light-f3 {
+    background: #f3f8fe !important;
+}
+
+.bg-light-eaf {
+    background: #eaf6ff !important;
+}
+
+.min-h-520 {
+    min-height: 520px !important;
+}
+
+.min-h-320 {
+    min-height: 320px !important;
+}
+
+.min-h-340 {
+    min-height: 340px !important;
+}
+
+.z-2 {
+    z-index: 2 !important;
+}
+
+.max-w-520 {
+    max-width: 520px !important;
+}
+
+.max-w-560 {
+    max-width: 560px !important;
+}
+
+.max-w-480 {
+    max-width: 480px !important;
+}
+
+.btn-orange {
+    background: #f15a29 !important;
+    border: none !important;
+}
+
+/* width/height utilities */
+.wh-56 {
+    width: 56px !important;
+    height: 56px !important;
+}
+
+/* max height */
+.max-h-300 {
+    max-height: 300px !important;
+}
+
+/* min height */
+.min-h-400 {
+    min-height: 400px !important;
+}
+
+/* background images */
+.bg-cta-video {
+    background: url("https://eclass.mediacity.co.in/demo2/public/images/videosetting/1695117191cta_bg.png")
+        center center/cover no-repeat !important;
+}
+
+.bg-blog-news {
+    background: url("https://eclass.mediacity.co.in/demo2/public/frontcss/img/bg/blog_bg.png")
+        center center/cover no-repeat !important;
+}

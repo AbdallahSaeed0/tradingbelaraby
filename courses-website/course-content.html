@@ -1,0 +1,1572 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Content - E-Class Online Learning Platform</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Slick CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/pages/course-content.css">
+    <link rel="stylesheet" href="js/script.js">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+</head>
+
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="top-bar-colored">
+            <div class="top-bar-bg">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4 top-bar-left-colored">
+                            <div class="top-bar-left">
+                                <span>Follow us:-</span>
+                                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                                <a href="#"><i class="fab fa-youtube"></i></a>
+                            </div>
+                        </div>
+                        <div class="col-md-8 top-bar-right">
+                            <div class="contact-block">
+                                <img src="https://eclass.mediacity.co.in/demo2/public/frontcss/img/icon/phone-call.png"
+                                    alt="Phone" class="contact-icon">
+                                <div class="contact-info">
+                                    <span class="contact-label">Call Now !</span>
+                                    <span class="contact-value"><b>9123456789</b></span>
+                                </div>
+                            </div>
+                            <div class="contact-block">
+                                <img src="https://eclass.mediacity.co.in/demo2/public/frontcss/img/icon/mailing.png"
+                                    alt="Email" class="contact-icon">
+                                <div class="contact-info">
+                                    <span class="contact-label">Email Now</span>
+                                    <span class="contact-value"><b>info@example.com</b></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <nav class="main-nav main-nav-white">
+            <div class="container nav-flex">
+                <div class="logo">
+                    <img src="https://eclass.mediacity.co.in/demo2/public/images/logo/logo.png" alt="E-Class Logo"
+                        style="height:40px;vertical-align:middle;">
+                </div>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li class="dropdown">
+                        <a href="categories.html">Categories</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="categories.html">Business</a></li>
+                            <li><a href="categories.html">Development</a></li>
+                            <li><a href="categories.html">Programming</a></li>
+                            <li><a href="categories.html">Marketing</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+                <div class="auth-buttons">
+                    <a href="#" class="btn btn-login-colored">LOGIN</a>
+                    <a href="#" class="btn btn-register-colored">REGISTER</a>
+                </div>
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Top Bar -->
+    <div class="course-content-topbar d-flex justify-content-between align-items-center px-4 py-3">
+        <div class="course-content-title fw-bold">Multimedia Marketing Servies</div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-orange"><i class="fa fa-certificate me-2"></i>Get Certificate</button>
+            <a href="course-detail.html" class="btn btn-outline-light course-details-btn"><i
+                    class="fa fa-arrow-right me-2"></i>Course details</a>
+        </div>
+    </div>
+    <!-- Main Section -->
+    <section class="course-content-hero py-5">
+        <div class="container">
+            <div class="row align-items-center g-4">
+                <div class="col-md-5 text-center">
+                    <div class="course-content-media-wrap position-relative">
+                        <img src="https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg?auto=compress&w=600&q=80"
+                            alt="Course Media" class="img-fluid rounded-3 course-content-media-img"
+                            style="cursor:pointer;">
+                        <button
+                            class="btn btn-orange course-content-play-btn position-absolute top-50 start-50 translate-middle"
+                            style="border-radius:50%;width:56px;height:56px;"><i class="fa fa-play fa-lg"></i></button>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <h2 class="fw-bold mb-2">Multimedia Marketing Servies</h2>
+                    <div class="text-muted mb-2">Admin</div>
+                    <div class="mb-3">Learn how to use the R programming language for data science and machine learning
+                        and data visualization!</div>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="flex-grow-1">
+                            <div class="progress" style="height:8px;">
+                                <div class="progress-bar bg-orange" role="progressbar" style="width: 60%;"
+                                    aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        <i class="fa fa-award ms-3 text-warning" style="font-size:1.5rem;"></i>
+                    </div>
+                    <button class="btn btn-orange px-4 py-2 fw-bold">Continue To Lecture</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Tabs Section -->
+    <section class="course-content-tabs-section py-4">
+        <div class="container">
+            <ul class="nav nav-tabs course-content-tabs mb-4" id="courseTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview"
+                        type="button" role="tab" aria-controls="overview" aria-selected="true">Overview</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="content-tab" data-bs-toggle="tab" data-bs-target="#content"
+                        type="button" role="tab" aria-controls="content" aria-selected="false">Course Content</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="live-tab" data-bs-toggle="tab" data-bs-target="#live" type="button"
+                        role="tab" aria-controls="live" aria-selected="false">Live Class</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="qa-tab" data-bs-toggle="tab" data-bs-target="#qa" type="button"
+                        role="tab" aria-controls="qa" aria-selected="false">Q &amp; A</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="quiz-tab" data-bs-toggle="tab" data-bs-target="#quiz" type="button"
+                        role="tab" aria-controls="quiz" aria-selected="false">Quiz</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="homework-tab" data-bs-toggle="tab" data-bs-target="#homework"
+                        type="button" role="tab" aria-controls="homework" aria-selected="false">Homework</button>
+                </li>
+            </ul>
+            <div class="tab-content" id="courseTabContent">
+                <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+                    <div class="recent-activity-section" style="background-color: #EFF7FF; padding: 2rem 0;">
+                        <div class="container">
+                            <h3 class="fw-bold mb-4">Recent Activity</h3>
+                            <div class="row g-4">
+                                <!-- Recent Questions Box -->
+                                <div class="col-md-6">
+                                    <div class="bg-white p-4 rounded-4 shadow-sm h-100">
+                                        <h4 class="fw-bold mb-4">Recent Questions</h4>
+                                        <div class="recent-questions mb-4">
+                                            <!-- Question Item -->
+                                            <div class="question-item d-flex align-items-start mb-4">
+                                                <div
+                                                    class="avatar-circle bg-secondary text-white me-3 d-flex align-items-center justify-content-center">
+                                                    AM
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-1">What are Multimedia Marketing Services?</h6>
+                                                </div>
+                                            </div>
+                                            <!-- Question Item -->
+                                            <div class="question-item d-flex align-items-start">
+                                                <div
+                                                    class="avatar-circle bg-secondary text-white me-3 d-flex align-items-center justify-content-center">
+                                                    AM
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-1">How can multimedia marketing benefit businesses?
+                                                    </h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <a href="#" class="btn btn-outline-primary">Browse questions</a>
+                                    </div>
+                                </div>
+                                <!-- Recent Announcements Box -->
+                                <div class="col-md-6">
+                                    <div class="bg-white p-4 rounded-4 shadow-sm h-100">
+                                        <h4 class="fw-bold mb-4">Recent Announcements</h4>
+                                        <div class="recent-announcements mb-4">
+                                            <!-- Announcement Item -->
+                                            <div class="accordion" id="announcementsAccordion">
+                                                <div class="accordion-item border-0 mb-3">
+                                                    <h2 class="accordion-header">
+                                                        <button class="accordion-button collapsed bg-transparent p-0"
+                                                            type="button" data-bs-toggle="collapse"
+                                                            data-bs-target="#announcement1">
+                                                            <div class="d-flex align-items-start w-100">
+                                                                <div
+                                                                    class="avatar-circle bg-secondary text-white me-3 d-flex align-items-center justify-content-center">
+                                                                    AM
+                                                                </div>
+                                                                <div>
+                                                                    <h6 class="mb-1">Admin Mediacity 4th October 2023
+                                                                    </h6>
+                                                                    <small class="text-muted">Announcements</small>
+                                                                </div>
+                                                            </div>
+                                                        </button>
+                                                    </h2>
+                                                    <div id="announcement1" class="accordion-collapse collapse"
+                                                        data-bs-parent="#announcementsAccordion">
+                                                        <div class="accordion-body ps-5 pt-2">
+                                                            This is the announcement content. It can contain important
+                                                            updates and information about the course.
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="accordion-item border-0">
+                                                    <h2 class="accordion-header">
+                                                        <button class="accordion-button collapsed bg-transparent p-0"
+                                                            type="button" data-bs-toggle="collapse"
+                                                            data-bs-target="#announcement2">
+                                                            <div class="d-flex align-items-start w-100">
+                                                                <div
+                                                                    class="avatar-circle bg-secondary text-white me-3 d-flex align-items-center justify-content-center">
+                                                                    AM
+                                                                </div>
+                                                                <div>
+                                                                    <h6 class="mb-1">Admin Mediacity 4th October 2023
+                                                                    </h6>
+                                                                    <small class="text-muted">Announcements</small>
+                                                                </div>
+                                                            </div>
+                                                        </button>
+                                                    </h2>
+                                                    <div id="announcement2" class="accordion-collapse collapse"
+                                                        data-bs-parent="#announcementsAccordion">
+                                                        <div class="accordion-body ps-5 pt-2">
+                                                            This is the announcement content. It can contain important
+                                                            updates and information about the course.
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <a href="#" class="btn btn-outline-primary">Browse announcements</a>
+                                    </div>
+                                </div>
+                                <!-- Course Info Section -->
+                                <div class="container py-5">
+                                    <h2 class="fw-bold">About this course</h2>
+                                    <p class="text-muted">Learn how to use the R programming language for data science
+                                        and machine
+                                        learning and data visualization!</p>
+
+                                    <hr class="my-4">
+
+                                    <!-- Course Stats -->
+                                    <div class="course-stats mb-4">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="d-flex align-items-center">
+                                                    <span class="stats-label">By the numbers</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="d-flex align-items-center">
+                                                    <span class="stats-label">students enrolled:</span>
+                                                    <span class="stats-value ms-2">1</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="d-flex align-items-center">
+                                                    <span class="stats-label">Classes:</span>
+                                                    <span class="stats-value ms-2">4</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-3">
+                                            <div class="col-md-4"></div>
+                                            <div class="col-md-4">
+                                                <div class="d-flex align-items-center">
+                                                    <span class="stats-label">Languages:</span>
+                                                    <span class="stats-value ms-2">English</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr class="my-4">
+
+                                    <!-- Course Description -->
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <h5 class="fw-bold">Description</h5>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <h3 class="fw-bold mb-3">About this course</h3>
+                                            <p class="text-muted mb-4">Learn how to use the R programming language for
+                                                data science
+                                                and machine learning and data visualization!</p>
+
+                                            <h4 class="fw-bold mb-3">Description</h4>
+                                            <div class="course-description">
+                                                <p>This course is designed for both complete beginners with no
+                                                    programming
+                                                    experience or experienced developers looking to make the jump to
+                                                    Data Science!
+                                                </p>
+
+                                                <p>This comprehensive course is comparable to other Data Science
+                                                    bootcamps that
+                                                    usually cost thousands of dollars, but now you can learn all that
+                                                    information at
+                                                    a fraction of the cost! <b>With over 100 HD video lectures and
+                                                        detailed code
+                                                        notebooks for every lecture</b> this is one of the most
+                                                    comprehensive course
+                                                    for data science and machine learning on Udemy!</p>
+
+                                                <p>We'll teach you how to program with R, how to create amazing data
+                                                    visualizations,
+                                                    and how to use Machine Learning with R! Here are just a few of the
+                                                    topics we
+                                                    will be learning:</p>
+
+                                                <ul class="course-topics">
+                                                    <li>Programming with R</li>
+                                                    <li>Advanced R Features</li>
+                                                    <li>Using R Data Frames to solve complex tasks</li>
+                                                    <li>Use R to handle Excel Files</li>
+                                                    <li>Web scraping with R</li>
+                                                    <li>Connect R to SQL</li>
+                                                    <li>Use ggplot2 for data visualizations</li>
+                                                    <li>Use plotly for interactive visualizations</li>
+                                                    <li>Machine Learning with R, including:</li>
+                                                    <li>Linear Regression</li>
+                                                    <li>K Nearest Neighbors</li>
+                                                    <li>K Means Clustering</li>
+                                                    <li>Decision Trees</li>
+                                                    <li>Random Forests</li>
+                                                    <li>Data Mining Twitter</li>
+                                                    <li>Neural Nets and Deep Learning</li>
+                                                    <li>Support Vector Machines</li>
+                                                </ul>
+
+                                                <p>Enroll in the course and become a data scientist today!</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr class="my-4">
+                                <!-- Instructor Section -->
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <h5 class="fw-bold">Instructor</h5>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <div class="d-flex align-items-start mb-3">
+                                                <img src="https://eclass.mediacity.co.in/demo2/public/images/user_img/159116543729.jpg"
+                                                    alt="Admin Mediacity" class="instructor-avatar rounded-circle me-3">
+                                                <div>
+                                                    <h4 class="fw-bold mb-1">Admin Mediacity</h4>
+                                                    <p class="text-muted mb-0">admin@mediacity.co.in</p>
+                                                </div>
+                                            </div>
+                                            <p class="instructor-description">
+                                                An LMS (Learning Management System) instructor is a person who is
+                                                responsible for creating and delivering educational content to students
+                                                through an LMS platform. They use the platform to create courses,
+                                                assignments, quizzes, and other educational materials that are used to
+                                                teach students. The instructor may also interact with students, grade
+                                                assignments, and provide feedback on their progress. The goal of an LMS
+                                                instructor is to provide an effective and efficient learning experience
+                                                for students using the LMS platform.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+                <div class="tab-pane fade" id="content" role="tabpanel" aria-labelledby="content-tab">
+                    <!-- Course Content Section -->
+                    <div class="course-content-section" style="background-color: #EFF7FF; padding: 2rem 0;">
+                        <div class="container">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h3 class="fw-bold">Course Content</h3>
+                                <button class="btn btn-orange" id="markCompleteBtn" disabled>
+                                    <i class="fa fa-check me-2"></i>Mark as Complete
+                                </button>
+                            </div>
+
+                            <!-- Course Sections Accordion -->
+                            <div class="accordion" id="courseSectionsAccordion">
+
+                                <!-- Section 1 -->
+                                <div class="accordion-item border-0 mb-3 bg-white rounded-4 shadow-sm">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#section1" aria-expanded="false"
+                                            aria-controls="section1">
+                                            <div class="d-flex align-items-center w-100">
+                                                <input type="checkbox" class="form-check-input me-3 section-checkbox"
+                                                    data-section="1" onclick="event.stopPropagation();">
+                                                <div class="flex-grow-1">
+                                                    <div
+                                                        class="d-flex justify-content-between align-items-center w-100">
+                                                        <div>
+                                                            <h5 class="mb-1 fw-bold">Section 1: Introduction</h5>
+                                                            <small class="text-muted">Getting started with the
+                                                                basics</small>
+                                                        </div>
+                                                        <div class="text-end">
+                                                            <span class="fw-bold text-primary">4 Classes</span><br>
+                                                            <small class="text-muted">138 Min</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </button>
+                                    </h2>
+                                    <div id="section1" class="accordion-collapse collapse"
+                                        data-bs-parent="#courseSectionsAccordion">
+                                        <div class="accordion-body">
+                                            <!-- Class Cards -->
+                                            <div class="class-cards">
+                                                <!-- Class 1 -->
+                                                <div
+                                                    class="class-card d-flex align-items-center p-3 mb-3 bg-light rounded">
+                                                    <button class="btn btn-outline-primary btn-sm me-3 play-video-btn"
+                                                        data-video="intro-video-1.mp4">
+                                                        <i class="fa fa-play"></i>
+                                                    </button>
+                                                    <div class="flex-grow-1">
+                                                        <div class="d-flex justify-content-between align-items-start">
+                                                            <div>
+                                                                <h6 class="mb-1 fw-bold class-title"
+                                                                    style="cursor: pointer;" data-bs-toggle="collapse"
+                                                                    data-bs-target="#class1-desc">
+                                                                    Oracle Database tutorials 1
+                                                                </h6>
+                                                                <div class="collapse class-description"
+                                                                    id="class1-desc">
+                                                                    <p class="text-muted small mb-0">
+                                                                        Oracle Database is a powerful relational
+                                                                        database management system (RDBMS) used for
+                                                                        storing and
+                                                                        managing large amounts of data. Here are some
+                                                                        common topics covered in Oracle Database
+                                                                        tutorials:
+                                                                        Introduction to Oracle Database.
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                            <span class="text-muted small">25 min</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Class 2 -->
+                                                <div
+                                                    class="class-card d-flex align-items-center p-3 mb-3 bg-light rounded">
+                                                    <button class="btn btn-outline-primary btn-sm me-3 play-video-btn"
+                                                        data-video="intro-video-2.mp4">
+                                                        <i class="fa fa-play"></i>
+                                                    </button>
+                                                    <div class="flex-grow-1">
+                                                        <div class="d-flex justify-content-between align-items-start">
+                                                            <div>
+                                                                <h6 class="mb-1 fw-bold class-title"
+                                                                    style="cursor: pointer;" data-bs-toggle="collapse"
+                                                                    data-bs-target="#class2-desc">
+                                                                    Oracle Database tutorials 2
+                                                                </h6>
+                                                                <div class="collapse class-description"
+                                                                    id="class2-desc">
+                                                                    <p class="text-muted small mb-0">
+                                                                        Databases organize data in a structured format.
+                                                                        The data is typically organized into tables,
+                                                                        where each table
+                                                                        consists of rows and columns. Each row
+                                                                        represents a single record or entry, and each
+                                                                        column represents a
+                                                                        specific attribute or field of that record.
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                            <span class="text-muted small">30 min</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Class 3 -->
+                                                <div
+                                                    class="class-card d-flex align-items-center p-3 mb-3 bg-light rounded">
+                                                    <button class="btn btn-outline-primary btn-sm me-3 play-video-btn"
+                                                        data-video="intro-video-3.mp4">
+                                                        <i class="fa fa-play"></i>
+                                                    </button>
+                                                    <div class="flex-grow-1">
+                                                        <div class="d-flex justify-content-between align-items-start">
+                                                            <div>
+                                                                <h6 class="mb-1 fw-bold class-title"
+                                                                    style="cursor: pointer;" data-bs-toggle="collapse"
+                                                                    data-bs-target="#class3-desc">
+                                                                    Oracle Database tutorials 3
+                                                                </h6>
+                                                                <div class="collapse class-description"
+                                                                    id="class3-desc">
+                                                                    <p class="text-muted small mb-0">
+                                                                        Databases organize data in a structured format.
+                                                                        The data is typically organized into tables,
+                                                                        where each table
+                                                                        consists of rows and columns. Each row
+                                                                        represents a single record or entry, and each
+                                                                        column represents a
+                                                                        specific attribute or field of that record.
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                            <span class="text-muted small">35 min</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Class 4 -->
+                                                <div
+                                                    class="class-card d-flex align-items-center p-3 mb-3 bg-light rounded">
+                                                    <button class="btn btn-outline-primary btn-sm me-3 play-video-btn"
+                                                        data-video="intro-video-4.mp4">
+                                                        <i class="fa fa-play"></i>
+                                                    </button>
+                                                    <div class="flex-grow-1">
+                                                        <div class="d-flex justify-content-between align-items-start">
+                                                            <div>
+                                                                <h6 class="mb-1 fw-bold class-title"
+                                                                    style="cursor: pointer;" data-bs-toggle="collapse"
+                                                                    data-bs-target="#class4-desc">
+                                                                    Oracle Database tutorials 4
+                                                                </h6>
+                                                                <div class="collapse class-description"
+                                                                    id="class4-desc">
+                                                                    <p class="text-muted small mb-0">
+                                                                        Database tutorials are educational resources
+                                                                        that teach individuals how to work with
+                                                                        databases, including
+                                                                        topics like database design, querying,
+                                                                        administration, and more. These tutorials are
+                                                                        valuable for beginners
+                                                                        looking to learn the basics of databases.
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                            <span class="text-muted small">40 min</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Section 2 -->
+                                <div class="accordion-item border-0 mb-3 bg-white rounded-4 shadow-sm">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#section2" aria-expanded="false"
+                                            aria-controls="section2">
+                                            <div class="d-flex align-items-center w-100">
+                                                <input type="checkbox" class="form-check-input me-3 section-checkbox"
+                                                    data-section="2" onclick="event.stopPropagation();">
+                                                <div class="flex-grow-1">
+                                                    <div
+                                                        class="d-flex justify-content-between align-items-center w-100">
+                                                        <div>
+                                                            <h5 class="mb-1 fw-bold">Section 2: Retrieving Data</h5>
+                                                            <small class="text-muted">Learn how to query and retrieve
+                                                                data</small>
+                                                        </div>
+                                                        <div class="text-end">
+                                                            <span class="fw-bold text-primary">0 Classes</span><br>
+                                                            <small class="text-muted">0 Min</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </button>
+                                    </h2>
+                                    <div id="section2" class="accordion-collapse collapse"
+                                        data-bs-parent="#courseSectionsAccordion">
+                                        <div class="accordion-body">
+                                            <p class="text-muted">No classes available in this section yet.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Section 3 -->
+                                <div class="accordion-item border-0 mb-3 bg-white rounded-4 shadow-sm">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#section3" aria-expanded="false"
+                                            aria-controls="section3">
+                                            <div class="d-flex align-items-center w-100">
+                                                <input type="checkbox" class="form-check-input me-3 section-checkbox"
+                                                    data-section="3" onclick="event.stopPropagation();">
+                                                <div class="flex-grow-1">
+                                                    <div
+                                                        class="d-flex justify-content-between align-items-center w-100">
+                                                        <div>
+                                                            <h5 class="mb-1 fw-bold">Section 3: Single Row Functions
+                                                            </h5>
+                                                            <small class="text-muted">Working with built-in
+                                                                functions</small>
+                                                        </div>
+                                                        <div class="text-end">
+                                                            <span class="fw-bold text-primary">0 Classes</span><br>
+                                                            <small class="text-muted">0 Min</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </button>
+                                    </h2>
+                                    <div id="section3" class="accordion-collapse collapse"
+                                        data-bs-parent="#courseSectionsAccordion">
+                                        <div class="accordion-body">
+                                            <p class="text-muted">No classes available in this section yet.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Section 4 -->
+                                <div class="accordion-item border-0 mb-3 bg-white rounded-4 shadow-sm">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#section4" aria-expanded="false"
+                                            aria-controls="section4">
+                                            <div class="d-flex align-items-center w-100">
+                                                <input type="checkbox" class="form-check-input me-3 section-checkbox"
+                                                    data-section="4" onclick="event.stopPropagation();">
+                                                <div class="flex-grow-1">
+                                                    <div
+                                                        class="d-flex justify-content-between align-items-center w-100">
+                                                        <div>
+                                                            <h5 class="mb-1 fw-bold">Section 4: Grouping Functions</h5>
+                                                            <small class="text-muted">Advanced data aggregation
+                                                                techniques</small>
+                                                        </div>
+                                                        <div class="text-end">
+                                                            <span class="fw-bold text-primary">0 Classes</span><br>
+                                                            <small class="text-muted">0 Min</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </button>
+                                    </h2>
+                                    <div id="section4" class="accordion-collapse collapse"
+                                        data-bs-parent="#courseSectionsAccordion">
+                                        <div class="accordion-body">
+                                            <p class="text-muted">No classes available in this section yet.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Video Modal -->
+                    <div class="modal fade" id="videoModal" tabindex="-1" aria-labelledby="videoModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="videoModalLabel">Course Video</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="ratio ratio-16x9">
+                                        <video controls id="courseVideo">
+                                            <source src="" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="live" role="tabpanel" aria-labelledby="live-tab">Live class content goes
+                    here.</div>
+                <div class="tab-pane fade" id="qa" role="tabpanel" aria-labelledby="qa-tab">
+                    <!-- Q & A Section -->
+                    <div class="qa-section" style="background-color: #EFF7FF; padding: 2rem 0;">
+                        <div class="container">
+                            <!-- Header with title and add question button -->
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h3 class="fw-bold">Questions & Answers <span class="text-muted">(2)</span></h3>
+                                <button class="btn btn-orange" data-bs-toggle="modal"
+                                    data-bs-target="#addQuestionModal">
+                                    <i class="fa fa-plus me-2"></i>Add New Question
+                                </button>
+                            </div>
+
+                            <!-- Q&A Accordion -->
+                            <div class="accordion" id="qaAccordion">
+                                <!-- Question 1 -->
+                                <div class="accordion-item border-0 mb-3 bg-white rounded-4 shadow-sm">
+                                    <div class="d-flex align-items-start p-3">
+                                        <button class="btn p-0 me-3 qa-toggle-btn" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#qa1" aria-expanded="false"
+                                            aria-controls="qa1">
+                                            <div class="qa-toggle-icon">
+                                                <i class="fa"></i>
+                                            </div>
+                                        </button>
+                                        <div
+                                            class="qa-avatar-circle bg-secondary text-white me-3 d-flex align-items-center justify-content-center">
+                                            AM
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between align-items-start w-100">
+                                                <div>
+                                                    <div class="qa-user-info text-muted mb-1">Admin Mediacity •
+                                                        4th October 2023</div>
+                                                    <h6 class="qa-question-title mb-0">What are Multimedia
+                                                        Marketing Services?</h6>
+                                                </div>
+                                                <div class="qa-actions d-flex flex-column align-items-end">
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <span class="me-3">2 answers</span>
+                                                        <button class="btn btn-outline-danger btn-sm"
+                                                            data-bs-toggle="modal" data-bs-target="#reportModal">
+                                                            <i class="fa fa-flag"></i>
+                                                        </button>
+                                                    </div>
+                                                    <button class="btn btn-outline-primary btn-sm"
+                                                        data-bs-toggle="modal" data-bs-target="#addAnswerModal"
+                                                        data-question="What are Multimedia Marketing Services?">
+                                                        Add Answer
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="qa1" class="accordion-collapse collapse" data-bs-parent="#qaAccordion">
+                                        <div class="accordion-body">
+                                            <!-- Answer 1 -->
+                                            <div class="qa-answer p-3 mb-3">
+                                                <div class="d-flex align-items-start">
+                                                    <div
+                                                        class="qa-avatar-circle bg-primary text-white me-3 d-flex align-items-center justify-content-center">
+                                                        AM
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <div class="qa-user-info text-muted mb-2">Admin Mediacity • 4th
+                                                            October 2023</div>
+                                                        <div class="qa-answer-content">
+                                                            <p>Multimedia Marketing Services encompass a comprehensive
+                                                                range of digital marketing solutions that leverage
+                                                                various forms of media content to promote brands,
+                                                                products, and services. These services combine visual,
+                                                                audio, and interactive elements to create engaging
+                                                                marketing campaigns.</p>
+                                                            <p>Key components include video marketing, graphic design,
+                                                                social media content creation, interactive
+                                                                presentations, and digital advertising campaigns across
+                                                                multiple platforms.</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Answer 2 -->
+                                            <div class="qa-answer p-3 mb-3">
+                                                <div class="d-flex align-items-start">
+                                                    <div
+                                                        class="qa-avatar-circle bg-success text-white me-3 d-flex align-items-center justify-content-center">
+                                                        JD
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <div class="qa-user-info text-muted mb-2">John Doe • 5th October
+                                                            2023</div>
+                                                        <div class="qa-answer-content">
+                                                            <p>To add to the previous answer, multimedia marketing
+                                                                services also include content strategy development,
+                                                                brand storytelling through various media formats, and
+                                                                analytics to measure campaign effectiveness.</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Question 2 -->
+                                <div class="accordion-item border-0 mb-3 bg-white rounded-4 shadow-sm">
+                                    <div class="d-flex align-items-start p-3">
+                                        <button class="btn p-0 me-3 qa-toggle-btn" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#qa2" aria-expanded="false"
+                                            aria-controls="qa2">
+                                            <div class="qa-toggle-icon">
+                                                <i class="fa"></i>
+                                            </div>
+                                        </button>
+                                        <div
+                                            class="qa-avatar-circle bg-secondary text-white me-3 d-flex align-items-center justify-content-center">
+                                            AM
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between align-items-start w-100">
+                                                <div>
+                                                    <div class="qa-user-info text-muted mb-1">Admin Mediacity •
+                                                        4th October 2023</div>
+                                                    <h6 class="qa-question-title mb-0">How can multimedia
+                                                        marketing benefit businesses?</h6>
+                                                </div>
+                                                <div class="qa-actions d-flex flex-column align-items-end">
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <span class="me-3">1 answer</span>
+                                                        <button class="btn btn-outline-danger btn-sm"
+                                                            data-bs-toggle="modal" data-bs-target="#reportModal">
+                                                            <i class="fa fa-flag"></i>
+                                                        </button>
+                                                    </div>
+                                                    <button class="btn btn-outline-primary btn-sm"
+                                                        data-bs-toggle="modal" data-bs-target="#addAnswerModal"
+                                                        data-question="How can multimedia marketing benefit businesses?">
+                                                        Add Answer
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="qa2" class="accordion-collapse collapse" data-bs-parent="#qaAccordion">
+                                        <div class="accordion-body">
+                                            <!-- Answer 1 -->
+                                            <div class="qa-answer p-3 mb-3">
+                                                <div class="d-flex align-items-start">
+                                                    <div
+                                                        class="qa-avatar-circle bg-info text-white me-3 d-flex align-items-center justify-content-center">
+                                                        SM
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <div class="qa-user-info text-muted mb-2">Sarah Miller • 6th
+                                                            October 2023</div>
+                                                        <div class="qa-answer-content">
+                                                            <p>Multimedia marketing offers several key benefits for
+                                                                businesses:</p>
+                                                            <ul>
+                                                                <li>Enhanced engagement through visual and interactive
+                                                                    content</li>
+                                                                <li>Better brand recall and recognition</li>
+                                                                <li>Improved conversion rates across digital platforms
+                                                                </li>
+                                                                <li>Ability to reach diverse audiences through multiple
+                                                                    channels</li>
+                                                                <li>Cost-effective scalability for marketing campaigns
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Add Question Modal -->
+                    <div class="modal fade" id="addQuestionModal" tabindex="-1" aria-labelledby="addQuestionModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="addQuestionModalLabel">Add New Question</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="addQuestionForm">
+                                        <div class="mb-3">
+                                            <label for="questionTitle" class="form-label">Question Title</label>
+                                            <input type="text" class="form-control" id="questionTitle"
+                                                placeholder="Enter your question title" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="questionContent" class="form-label">Question Details</label>
+                                            <div id="questionEditor"></div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn btn-orange" id="submitQuestion">Submit
+                                        Question</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Add Answer Modal -->
+                    <div class="modal fade" id="addAnswerModal" tabindex="-1" aria-labelledby="addAnswerModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="addAnswerModalLabel">Add Answer</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <h6 class="text-muted">Question:</h6>
+                                        <p id="answerQuestionTitle" class="fw-bold"></p>
+                                    </div>
+                                    <form id="addAnswerForm">
+                                        <div class="mb-3">
+                                            <label for="answerContent" class="form-label">Your Answer</label>
+                                            <div id="answerEditor"></div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn btn-orange" id="submitAnswer">Submit
+                                        Answer</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Report Modal -->
+                    <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="reportModalLabel">Report Content</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="reportForm">
+                                        <div class="mb-3">
+                                            <label for="reportTitle" class="form-label">Report Title</label>
+                                            <input type="text" class="form-control" id="reportTitle"
+                                                placeholder="Brief description of the issue" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="reportEmail" class="form-label">Your Email</label>
+                                            <input type="email" class="form-control" id="reportEmail"
+                                                placeholder="your.email@example.com" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="reportDetails" class="form-label">Details</label>
+                                            <div id="reportEditor"></div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn btn-danger" id="submitReport">Submit
+                                        Report</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="quiz" role="tabpanel" aria-labelledby="quiz-tab">
+                    <!-- Quiz Section -->
+                    <div class="quiz-section" style="background-color: #EFF7FF; padding: 2rem 0;">
+                        <div class="container">
+                            <h3 class="fw-bold mb-4">Objective</h3>
+
+                            <!-- Quiz Cards -->
+                            <div class="row g-4">
+                                <!-- Quiz Card 1 -->
+                                <div class="col-lg-6">
+                                    <div class="quiz-card bg-white p-4 rounded-4 shadow-sm h-100">
+                                        <h4 class="quiz-title fw-bold mb-3">Multimedia Marketing Services</h4>
+                                        <p class="quiz-description text-muted mb-4">
+                                            Multimedia Marketing Services refer to a range of marketing strategies that
+                                            incorporate various multimedia elements such as images, videos, audio,
+                                            animations, and interactive content to promote products, services, or
+                                            brands.
+                                        </p>
+
+                                        <!-- Quiz Features -->
+                                        <div class="quiz-features mb-4">
+                                            <div class="row g-3">
+                                                <div class="col-6">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span class="feature-label text-muted">Per Question Mark</span>
+                                                        <span class="feature-value fw-bold text-primary">5</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span class="feature-label text-muted">Total Marks</span>
+                                                        <span class="feature-value fw-bold text-primary">10</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span class="feature-label text-muted">Total Questions</span>
+                                                        <span class="feature-value fw-bold text-primary">2</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span class="feature-label text-muted">Quiz Price</span>
+                                                        <span class="feature-value fw-bold text-success">Free</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Start Quiz Button -->
+                                        <a href="quiz.html" class="btn btn-orange w-100 fw-bold">
+                                            <i class="fa fa-play me-2"></i>Start Quiz
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- Quiz Card 2 -->
+                                <div class="col-lg-6">
+                                    <div class="quiz-card bg-white p-4 rounded-4 shadow-sm h-100">
+                                        <h4 class="quiz-title fw-bold mb-3">Digital Marketing Fundamentals</h4>
+                                        <p class="quiz-description text-muted mb-4">
+                                            Test your knowledge of digital marketing fundamentals including SEO, social
+                                            media marketing, content marketing, and online advertising strategies.
+                                        </p>
+
+                                        <!-- Quiz Features -->
+                                        <div class="quiz-features mb-4">
+                                            <div class="row g-3">
+                                                <div class="col-6">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span class="feature-label text-muted">Per Question Mark</span>
+                                                        <span class="feature-value fw-bold text-primary">3</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span class="feature-label text-muted">Total Marks</span>
+                                                        <span class="feature-value fw-bold text-primary">15</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span class="feature-label text-muted">Total Questions</span>
+                                                        <span class="feature-value fw-bold text-primary">5</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span class="feature-label text-muted">Quiz Price</span>
+                                                        <span class="feature-value fw-bold text-success">Free</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Start Quiz Button -->
+                                        <a href="quiz.html" class="btn btn-orange w-100 fw-bold">
+                                            <i class="fa fa-play me-2"></i>Start Quiz
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- Quiz Card 3 -->
+                                <div class="col-lg-6">
+                                    <div class="quiz-card bg-white p-4 rounded-4 shadow-sm h-100">
+                                        <h4 class="quiz-title fw-bold mb-3">Content Marketing Strategy</h4>
+                                        <p class="quiz-description text-muted mb-4">
+                                            Evaluate your understanding of content marketing strategies, content
+                                            creation, distribution channels, and measuring content performance.
+                                        </p>
+
+                                        <!-- Quiz Features -->
+                                        <div class="quiz-features mb-4">
+                                            <div class="row g-3">
+                                                <div class="col-6">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span class="feature-label text-muted">Per Question Mark</span>
+                                                        <span class="feature-value fw-bold text-primary">4</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span class="feature-label text-muted">Total Marks</span>
+                                                        <span class="feature-value fw-bold text-primary">20</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span class="feature-label text-muted">Total Questions</span>
+                                                        <span class="feature-value fw-bold text-primary">5</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span class="feature-label text-muted">Quiz Price</span>
+                                                        <span class="feature-value fw-bold text-warning">$5.99</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Start Quiz Button -->
+                                        <a href="quiz.html" class="btn btn-orange w-100 fw-bold">
+                                            <i class="fa fa-play me-2"></i>Start Quiz
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- Quiz Card 4 -->
+                                <div class="col-lg-6">
+                                    <div class="quiz-card bg-white p-4 rounded-4 shadow-sm h-100">
+                                        <h4 class="quiz-title fw-bold mb-3">Social Media Marketing</h4>
+                                        <p class="quiz-description text-muted mb-4">
+                                            Test your knowledge of social media platforms, engagement strategies,
+                                            influencer marketing, and social media analytics.
+                                        </p>
+
+                                        <!-- Quiz Features -->
+                                        <div class="quiz-features mb-4">
+                                            <div class="row g-3">
+                                                <div class="col-6">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span class="feature-label text-muted">Per Question Mark</span>
+                                                        <span class="feature-value fw-bold text-primary">2</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span class="feature-label text-muted">Total Marks</span>
+                                                        <span class="feature-value fw-bold text-primary">20</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span class="feature-label text-muted">Total Questions</span>
+                                                        <span class="feature-value fw-bold text-primary">10</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span class="feature-label text-muted">Quiz Price</span>
+                                                        <span class="feature-value fw-bold text-success">Free</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Start Quiz Button -->
+                                        <a href="quiz.html" class="btn btn-orange w-100 fw-bold">
+                                            <i class="fa fa-play me-2"></i>Start Quiz
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="homework" role="tabpanel" aria-labelledby="homework-tab">Homework content
+                    goes here.</div>
+            </div>
+        </div>
+    </section>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Course Content Functionality
+        document.addEventListener('DOMContentLoaded', function () {
+            const sectionCheckboxes = document.querySelectorAll('.section-checkbox');
+            const markCompleteBtn = document.getElementById('markCompleteBtn');
+            const playVideoBtns = document.querySelectorAll('.play-video-btn');
+            const videoModal = new bootstrap.Modal(document.getElementById('videoModal'));
+            const courseVideo = document.getElementById('courseVideo');
+
+            // Handle section checkbox changes
+            function updateMarkCompleteButton() {
+                const checkedBoxes = document.querySelectorAll('.section-checkbox:checked');
+                if (checkedBoxes.length > 0) {
+                    markCompleteBtn.disabled = false;
+                    markCompleteBtn.innerHTML = '<i class="fa fa-check me-2"></i>Mark Selected as Complete (' + checkedBoxes.length + ')';
+                } else {
+                    markCompleteBtn.disabled = true;
+                    markCompleteBtn.innerHTML = '<i class="fa fa-check me-2"></i>Mark as Complete';
+                }
+            }
+
+            // Add event listeners to checkboxes
+            sectionCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateMarkCompleteButton);
+            });
+
+            // Handle mark complete button click
+            markCompleteBtn.addEventListener('click', function () {
+                const checkedBoxes = document.querySelectorAll('.section-checkbox:checked');
+
+                if (checkedBoxes.length > 0) {
+                    // Show success message
+                    const toast = document.createElement('div');
+                    toast.className = 'toast align-items-center text-white bg-success border-0 position-fixed top-0 end-0 m-3';
+                    toast.style.zIndex = '9999';
+                    toast.innerHTML = `
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                <i class="fa fa-check-circle me-2"></i>
+                                ${checkedBoxes.length} section(s) marked as complete!
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                        </div>
+                    `;
+                    document.body.appendChild(toast);
+
+                    const bsToast = new bootstrap.Toast(toast);
+                    bsToast.show();
+
+                    // Remove toast after it's hidden
+                    toast.addEventListener('hidden.bs.toast', () => {
+                        document.body.removeChild(toast);
+                    });
+
+                    // Uncheck all checkboxes and update button
+                    checkedBoxes.forEach(checkbox => {
+                        checkbox.checked = false;
+                    });
+                    updateMarkCompleteButton();
+                }
+            });
+
+            // Handle video play buttons
+            playVideoBtns.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const videoSrc = this.getAttribute('data-video');
+                    // In a real application, you would set the actual video source
+                    // For demo purposes, we'll show a placeholder
+                    courseVideo.querySelector('source').src = 'https://www.w3schools.com/html/mov_bbb.mp4';
+                    courseVideo.load();
+
+                    // Update modal title
+                    document.getElementById('videoModalLabel').textContent = 'Playing: ' + this.closest('.class-card').querySelector('.class-title').textContent;
+
+                    videoModal.show();
+                });
+            });
+
+            // Pause video when modal is closed
+            document.getElementById('videoModal').addEventListener('hidden.bs.modal', function () {
+                courseVideo.pause();
+            });
+
+            // Initialize button state
+            updateMarkCompleteButton();
+        });
+
+        // Q&A Functionality
+        let questionEditor, answerEditor, reportEditor;
+
+        // Initialize CKEditor instances when modals are shown
+        document.getElementById('addQuestionModal').addEventListener('shown.bs.modal', function () {
+            if (!questionEditor) {
+                ClassicEditor
+                    .create(document.querySelector('#questionEditor'))
+                    .then(editor => {
+                        questionEditor = editor;
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            }
+        });
+
+        document.getElementById('addAnswerModal').addEventListener('shown.bs.modal', function () {
+            if (!answerEditor) {
+                ClassicEditor
+                    .create(document.querySelector('#answerEditor'))
+                    .then(editor => {
+                        answerEditor = editor;
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            }
+        });
+
+        document.getElementById('reportModal').addEventListener('shown.bs.modal', function () {
+            if (!reportEditor) {
+                ClassicEditor
+                    .create(document.querySelector('#reportEditor'))
+                    .then(editor => {
+                        reportEditor = editor;
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            }
+        });
+
+        // Handle Add Answer button clicks
+        document.querySelectorAll('[data-bs-target="#addAnswerModal"]').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const questionText = this.getAttribute('data-question');
+                document.getElementById('answerQuestionTitle').textContent = questionText;
+            });
+        });
+
+        // Handle form submissions
+        document.getElementById('submitQuestion').addEventListener('click', function () {
+            const title = document.getElementById('questionTitle').value;
+            const content = questionEditor ? questionEditor.getData() : '';
+
+            if (title.trim() === '') {
+                alert('Please enter a question title.');
+                return;
+            }
+
+            // Show success message
+            showToast('Question submitted successfully!', 'success');
+
+            // Reset form
+            document.getElementById('questionTitle').value = '';
+            if (questionEditor) questionEditor.setData('');
+
+            // Close modal
+            bootstrap.Modal.getInstance(document.getElementById('addQuestionModal')).hide();
+        });
+
+        document.getElementById('submitAnswer').addEventListener('click', function () {
+            const content = answerEditor ? answerEditor.getData() : '';
+
+            if (content.trim() === '') {
+                alert('Please enter your answer.');
+                return;
+            }
+
+            // Show success message
+            showToast('Answer submitted successfully!', 'success');
+
+            // Reset form
+            if (answerEditor) answerEditor.setData('');
+
+            // Close modal
+            bootstrap.Modal.getInstance(document.getElementById('addAnswerModal')).hide();
+        });
+
+        document.getElementById('submitReport').addEventListener('click', function () {
+            const title = document.getElementById('reportTitle').value;
+            const email = document.getElementById('reportEmail').value;
+            const details = reportEditor ? reportEditor.getData() : '';
+
+            if (title.trim() === '' || email.trim() === '') {
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            // Show success message
+            showToast('Report submitted successfully!', 'success');
+
+            // Reset form
+            document.getElementById('reportTitle').value = '';
+            document.getElementById('reportEmail').value = '';
+            if (reportEditor) reportEditor.setData('');
+
+            // Close modal
+            bootstrap.Modal.getInstance(document.getElementById('reportModal')).hide();
+        });
+
+        // Toast notification function
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast align-items-center text-white bg-${type} border-0 position-fixed top-0 end-0 m-3`;
+            toast.style.zIndex = '9999';
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <i class="fa fa-check-circle me-2"></i>
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            `;
+            document.body.appendChild(toast);
+
+            const bsToast = new bootstrap.Toast(toast);
+            bsToast.show();
+
+            // Remove toast after it's hidden
+            toast.addEventListener('hidden.bs.toast', () => {
+                document.body.removeChild(toast);
+            });
+        }
+    </script>
+
+    <!-- Newsletter Subscribe Section -->
+    <section class="newsletter-section py-5"
+        style="background: #156481; color: #fff; width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;">
+        <div class="container-fluid px-0">
+            <div class="row justify-content-center align-items-center g-0">
+                <div
+                    class="col-lg-6 d-flex flex-column flex-md-row align-items-center justify-content-center text-center text-md-start mb-4 mb-lg-0 ps-lg-5">
+                    <div class="me-md-4 mb-3 mb-md-0">
+                        <i class="fa-solid fa-paper-plane fa-3x" style="color: #fff;"></i>
+                    </div>
+                    <div>
+                        <h2 class="fw-bold mb-1" style="font-size:2.5rem;">Subscribe for Newsletter</h2>
+                        <p class="mb-0" style="font-size:1.1rem; color: #e0f7fa;">Manage Your Business With Our Software
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-5 d-flex justify-content-center align-items-center">
+                    <form class="w-100" style="max-width: 520px;">
+                        <div class="input-group input-group-lg">
+                            <input type="email" class="form-control border-0 rounded-0 rounded-start"
+                                placeholder="Email Address..." aria-label="Email Address" required>
+                            <button class="btn btn-outline-light rounded-0 rounded-end px-4 fw-bold" type="submit"
+                                style="background: #156481; border: 2px solid #fff; color: #fff;">Subscribe Now</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-main position-relative pt-5"
+        style="background: url('https://eclass.mediacity.co.in/demo2/public/images/footer-bg.png') center center/cover no-repeat;">
+        <div class="container">
+            <div class="row text-white pb-4">
+                <!-- About Us + Social -->
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <h4 class="footer-title mb-2">About Us</h4>
+                    <div class="footer-title-underline mb-3"></div>
+                    <div class="footer-social mb-3">
+                        <a href="#" class="footer-social-icon"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="footer-social-icon"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="footer-social-icon"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <!-- Links -->
+                <div class="col-md-2 mb-4 mb-md-0">
+                    <h4 class="footer-title mb-2">Our Links</h4>
+                    <div class="footer-title-underline mb-3"></div>
+                    <ul class="footer-links list-unstyled">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="categories.html">Courses</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                    </ul>
+                </div>
+                <!-- Latest Post -->
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h4 class="footer-title mb-2">Latest Post</h4>
+                    <div class="footer-title-underline mb-3"></div>
+                    <div class="footer-post d-flex align-items-center mb-3">
+                        <img src="https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg?auto=compress&w=600&q=80"
+                            class="footer-post-img me-3" alt="Post 1">
+                        <div>
+                            <div class="footer-post-title">Blogging Courses, Training, Classes & Tutorials Online</div>
+                            <div class="footer-post-date">04-02-2023</div>
+                        </div>
+                    </div>
+                    <div class="footer-post d-flex align-items-center">
+                        <img src="https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg?auto=compress&w=600&q=80"
+                            class="footer-post-img me-3" alt="Post 2">
+                        <div>
+                            <div class="footer-post-title">Seas accumsan nulla nec lacus ultricies placerat.</div>
+                            <div class="footer-post-date">04-02-2023</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Contact + Language -->
+                <div class="col-md-3">
+                    <h4 class="footer-title mb-2">Contact Us</h4>
+                    <div class="footer-title-underline mb-3"></div>
+                    <div class="footer-contact mb-3">
+                        <div class="footer-contact-item"><span class="footer-contact-icon"><i
+                                    class="fas fa-phone"></i></span> 9123456789</div>
+                        <div class="footer-contact-item"><span class="footer-contact-icon"><i
+                                    class="fas fa-envelope"></i></span> info@example.com</div>
+                        <div class="footer-contact-item"><span class="footer-contact-icon"><i
+                                    class="fas fa-map-marker-alt"></i></span> Company 12345 South Main Street Anywhere
+                        </div>
+                    </div>
+                    <div class="footer-lang-dropdown mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark text-white border-0"><i
+                                    class="fas fa-globe"></i></span>
+                            <select class="form-select bg-dark text-white border-0" id="footerLangSelect">
+                                <option value="en">En</option>
+                                <option value="ar">Ar</option>
+                                <option value="fr">Fr</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Copyright & Back to Top -->
+        <div class="footer-bottom-bar d-flex justify-content-between align-items-center px-3 px-md-5 py-3"
+            style="background: #ff7043; color: #fff;">
+            <div class="footer-logo d-flex align-items-center">
+                <img src="https://eclass.mediacity.co.in/demo2/public/images/logo/logo.png" alt="E-Class Logo"
+                    style="height:32px; margin-right:10px;">
+            </div>
+            <div class="footer-copyright text-center flex-grow-1">Copyright © 2024 eClass.</div>
+            <button id="backToTopBtn" class="btn btn-light btn-lg rounded-circle shadow-sm"
+                style="color: #ff7043; position: fixed; bottom: 32px; right: 32px; z-index: 999; display: none;"><i
+                    class="fa fa-arrow-up"></i></button>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <!-- jQuery (required for Slick) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Slick JS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-bar">
+        <a href="index.html" class="mobile-nav-item">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="categories.html" class="mobile-nav-item active">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Cart</span>
+            <div class="cart-badge">2</div>
+        </a>
+        <a href="blog.html" class="mobile-nav-item">
+            <i class="fas fa-bell"></i>
+            <span>Notifications</span>
+            <div class="notification-badge">5</div>
+        </a>
+        <a href="contact.html" class="mobile-nav-item">
+            <i class="fas fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </div>
+</body>
+
+</html>
