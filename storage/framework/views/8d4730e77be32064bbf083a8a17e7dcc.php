@@ -1,0 +1,473 @@
+<?php $__env->startSection('title', 'Question Details'); ?>
+
+<?php $__env->startSection('content'); ?>
+    <div class="container-fluid">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h3 class="page-title">Question Details</h3>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="<?php echo e(route('admin.dashboard')); ?>">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="<?php echo e(route('admin.questions-answers.index')); ?>">Q&A Management</a>
+                        </li>
+                        <li class="breadcrumb-item active">Question Details</li>
+                    </ul>
+                </div>
+                <div class="col-auto">
+                    <a href="<?php echo e(route('admin.questions-answers.index')); ?>" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to List
+                    </a>
+                    <?php if($questionsAnswer->status === 'pending'): ?>
+                        <a href="<?php echo e(route('admin.questions-answers.reply', $questionsAnswer)); ?>" class="btn btn-primary">
+                            <i class="fas fa-reply"></i> Reply
+                        </a>
+                    <?php elseif($questionsAnswer->status === 'answered'): ?>
+                        <a href="<?php echo e(route('admin.questions-answers.reply', $questionsAnswer)); ?>" class="btn btn-warning">
+                            <i class="fas fa-edit"></i> Edit Reply
+                        </a>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Question Details -->
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h5 class="card-title mb-0"><?php echo e($questionsAnswer->question_title); ?></h5>
+                            </div>
+                            <div class="col-auto">
+                                <?php switch($questionsAnswer->status):
+                                    case ('pending'): ?>
+                                        <span class="badge badge-warning">Pending</span>
+                                    <?php break; ?>
+
+                                    <?php case ('answered'): ?>
+                                        <span class="badge badge-success">Answered</span>
+                                    <?php break; ?>
+
+                                    <?php case ('closed'): ?>
+                                        <span class="badge badge-secondary">Closed</span>
+                                    <?php break; ?>
+
+                                    <?php case ('flagged'): ?>
+                                        <span class="badge badge-danger">Flagged</span>
+                                    <?php break; ?>
+                                <?php endswitch; ?>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Question Meta -->
+                        <div class="question-meta mb-4">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="meta-item">
+                                        <strong>Asked by:</strong>
+                                        <?php if($questionsAnswer->is_anonymous): ?>
+                                            <span class="text-muted">Anonymous Student</span>
+                                        <?php else: ?>
+                                            <span><?php echo e($questionsAnswer->user->name ?? 'Unknown User'); ?></span>
+                                            <small
+                                                class="text-muted d-block"><?php echo e($questionsAnswer->user->email ?? ''); ?></small>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="meta-item">
+                                        <strong>Course:</strong>
+                                        <span><?php echo e($questionsAnswer->course->name ?? 'N/A'); ?></span>
+                                        <?php if($questionsAnswer->lecture): ?>
+                                            <small class="text-muted d-block">Lecture:
+                                                <?php echo e($questionsAnswer->lecture->title); ?></small>
+                                        <?php endif; ?>
+                                        <?php if($questionsAnswer->section): ?>
+                                            <small class="text-muted d-block">Section:
+                                                <?php echo e($questionsAnswer->section->title); ?></small>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <div class="meta-item">
+                                        <strong>Question Type:</strong>
+                                        <span
+                                            class="badge badge-light"><?php echo e(ucfirst(str_replace('_', ' ', $questionsAnswer->question_type))); ?></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="meta-item">
+                                        <strong>Priority:</strong>
+                                        <?php switch($questionsAnswer->priority):
+                                            case ('urgent'): ?>
+                                                <span class="badge badge-danger">Urgent</span>
+                                            <?php break; ?>
+
+                                            <?php case ('high'): ?>
+                                                <span class="badge badge-warning">High</span>
+                                            <?php break; ?>
+
+                                            <?php case ('normal'): ?>
+                                                <span class="badge badge-info">Normal</span>
+                                            <?php break; ?>
+
+                                            <?php case ('low'): ?>
+                                                <span class="badge badge-secondary">Low</span>
+                                            <?php break; ?>
+                                        <?php endswitch; ?>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <div class="meta-item">
+                                        <strong>Asked on:</strong>
+                                        <span><?php echo e($questionsAnswer->formatted_question_date); ?></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="meta-item">
+                                        <strong>Views:</strong>
+                                        <span><?php echo e($questionsAnswer->views_count); ?></span>
+                                        <strong class="ml-3">Votes:</strong>
+                                        <span><?php echo e($questionsAnswer->helpful_votes); ?>/<?php echo e($questionsAnswer->total_votes); ?></span>
+                                        <?php if($questionsAnswer->total_votes > 0): ?>
+                                            <small class="text-muted">(<?php echo e($questionsAnswer->helpful_percentage); ?>%
+                                                helpful)</small>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Question Content -->
+                        <div class="question-content mb-4">
+                            <h6>Question:</h6>
+                            <div class="content-box">
+                                <?php echo nl2br(e($questionsAnswer->question_content)); ?>
+
+                            </div>
+                        </div>
+
+                        <!-- Answer Content -->
+                        <?php if($questionsAnswer->answer_content): ?>
+                            <div class="answer-content">
+                                <h6>Answer:</h6>
+                                <div class="content-box answer-box">
+                                    <?php echo nl2br(e($questionsAnswer->answer_content)); ?>
+
+                                    <div class="answer-meta mt-3">
+                                        <small class="text-muted">
+                                            Answered by <?php echo e($questionsAnswer->instructor->name ?? 'Unknown Instructor'); ?>
+
+                                            on <?php echo e($questionsAnswer->formatted_answer_date); ?>
+
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php else: ?>
+                            <div class="no-answer">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle"></i>
+                                    This question hasn't been answered yet.
+                                    <?php if($questionsAnswer->status === 'pending'): ?>
+                                        <a href="<?php echo e(route('admin.questions-answers.reply', $questionsAnswer)); ?>"
+                                            class="btn btn-sm btn-primary ml-2">
+                                            Reply Now
+                                        </a>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+
+                        <!-- Moderation Notes -->
+                        <?php if($questionsAnswer->moderation_notes): ?>
+                            <div class="moderation-notes mt-4">
+                                <h6>Moderation Notes:</h6>
+                                <div class="content-box moderation-box">
+                                    <?php echo nl2br(e($questionsAnswer->moderation_notes)); ?>
+
+                                    <?php if($questionsAnswer->moderator): ?>
+                                        <div class="moderation-meta mt-2">
+                                            <small class="text-muted">
+                                                Moderated by <?php echo e($questionsAnswer->moderator->name); ?>
+
+                                                <?php if($questionsAnswer->moderated_at): ?>
+                                                    on <?php echo e($questionsAnswer->moderated_at->format('M d, Y \a\t g:i A')); ?>
+
+                                                <?php endif; ?>
+                                            </small>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <!-- Related Questions -->
+                <?php if($relatedQuestions->count() > 0): ?>
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Related Questions</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="related-questions">
+                                <?php $__currentLoopData = $relatedQuestions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $related): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <div class="related-question mb-3">
+                                        <h6>
+                                            <a href="<?php echo e(route('admin.questions-answers.show', $related)); ?>"
+                                                class="text-dark">
+                                                <?php echo e($related->question_title); ?>
+
+                                            </a>
+                                        </h6>
+                                        <small class="text-muted">
+                                            <?php echo e(Str::limit(strip_tags($related->question_content), 100)); ?>
+
+                                        </small>
+                                        <div class="mt-1">
+                                            <span class="badge badge-sm badge-success"><?php echo e($related->status); ?></span>
+                                            <?php if($related->created_at): ?>
+                                                <small
+                                                    class="text-muted ml-2"><?php echo e($related->created_at->format('M d, Y')); ?></small>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <!-- Sidebar Actions -->
+            <div class="col-lg-4">
+                <!-- Quick Actions -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Quick Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="action-buttons">
+                            <?php if($questionsAnswer->status === 'pending'): ?>
+                                <form action="<?php echo e(route('admin.questions-answers.approve', $questionsAnswer)); ?>"
+                                    method="POST" class="mb-2">
+                                    <?php echo csrf_field(); ?>
+                                    <button type="submit" class="btn btn-success btn-block">
+                                        <i class="fas fa-check"></i> Approve Question
+                                    </button>
+                                </form>
+                            <?php endif; ?>
+
+                            <?php if($questionsAnswer->status !== 'closed'): ?>
+                                <form action="<?php echo e(route('admin.questions-answers.close', $questionsAnswer)); ?>"
+                                    method="POST" class="mb-2">
+                                    <?php echo csrf_field(); ?>
+                                    <button type="submit" class="btn btn-secondary btn-block">
+                                        <i class="fas fa-lock"></i> Close Question
+                                    </button>
+                                </form>
+                            <?php else: ?>
+                                <form action="<?php echo e(route('admin.questions-answers.reopen', $questionsAnswer)); ?>"
+                                    method="POST" class="mb-2">
+                                    <?php echo csrf_field(); ?>
+                                    <button type="submit" class="btn btn-warning btn-block">
+                                        <i class="fas fa-unlock"></i> Reopen Question
+                                    </button>
+                                </form>
+                            <?php endif; ?>
+
+                            <button type="button" class="btn btn-danger btn-block mb-2" data-toggle="modal"
+                                data-target="#rejectModal">
+                                <i class="fas fa-flag"></i> Flag/Reject
+                            </button>
+
+                            <?php if($questionsAnswer->status === 'answered'): ?>
+                                <form action="<?php echo e(route('admin.questions-answers.delete_reply', $questionsAnswer)); ?>"
+                                    method="POST" class="mb-2">
+                                    <?php echo csrf_field(); ?>
+                                    <?php echo method_field('DELETE'); ?>
+                                    <button type="submit" class="btn btn-outline-danger btn-block"
+                                        onclick="return confirm('Are you sure you want to delete this reply?')">
+                                        <i class="fas fa-trash"></i> Delete Reply
+                                    </button>
+                                </form>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Priority Management -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Priority Management</h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="<?php echo e(route('admin.questions-answers.update_priority', $questionsAnswer)); ?>"
+                            method="POST">
+                            <?php echo csrf_field(); ?>
+                            <?php echo method_field('PUT'); ?>
+                            <div class="form-group">
+                                <label>Current Priority:</label>
+                                <select name="priority" class="form-control" onchange="this.form.submit()">
+                                    <option value="low" <?php echo e($questionsAnswer->priority === 'low' ? 'selected' : ''); ?>>
+                                        Low
+                                    </option>
+                                    <option value="normal"
+                                        <?php echo e($questionsAnswer->priority === 'normal' ? 'selected' : ''); ?>>Normal
+                                    </option>
+                                    <option value="high" <?php echo e($questionsAnswer->priority === 'high' ? 'selected' : ''); ?>>
+                                        High
+                                    </option>
+                                    <option value="urgent"
+                                        <?php echo e($questionsAnswer->priority === 'urgent' ? 'selected' : ''); ?>>Urgent
+                                    </option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Question Statistics -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Statistics</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="stat-item">
+                            <strong>Views:</strong> <?php echo e($questionsAnswer->views_count); ?>
+
+                        </div>
+                        <div class="stat-item">
+                            <strong>Helpful Votes:</strong> <?php echo e($questionsAnswer->helpful_votes); ?>
+
+                        </div>
+                        <div class="stat-item">
+                            <strong>Total Votes:</strong> <?php echo e($questionsAnswer->total_votes); ?>
+
+                        </div>
+                        <?php if($questionsAnswer->total_votes > 0): ?>
+                            <div class="stat-item">
+                                <strong>Helpful Percentage:</strong> <?php echo e($questionsAnswer->helpful_percentage); ?>%
+                            </div>
+                        <?php endif; ?>
+                        <?php if($questionsAnswer->answered_at): ?>
+                            <div class="stat-item">
+                                <strong>Response Time:</strong>
+                                <?php echo e($questionsAnswer->created_at->diffForHumans($questionsAnswer->answered_at, true)); ?>
+
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reject Modal -->
+    <div class="modal fade" id="rejectModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Flag/Reject Question</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <form action="<?php echo e(route('admin.questions-answers.reject', $questionsAnswer)); ?>" method="POST">
+                    <?php echo csrf_field(); ?>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Rejection Reason:</label>
+                            <textarea name="moderation_notes" class="form-control" rows="4" required
+                                placeholder="Please provide a reason for flagging/rejecting this question..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger">Flag/Reject</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startPush('styles'); ?>
+    <style>
+        .question-meta .meta-item {
+            margin-bottom: 10px;
+        }
+
+        .content-box {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .answer-box {
+            background-color: #e8f5e8;
+            border-color: #28a745;
+        }
+
+        .moderation-box {
+            background-color: #fff3cd;
+            border-color: #ffc107;
+        }
+
+        .action-buttons .btn {
+            margin-bottom: 10px;
+        }
+
+        .stat-item {
+            margin-bottom: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .related-question {
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+        .related-question:last-child {
+            border-bottom: none;
+        }
+
+        .related-question h6 {
+            margin-bottom: 5px;
+        }
+
+        .badge-sm {
+            font-size: 10px;
+            padding: 3px 6px;
+        }
+
+        .answer-meta,
+        .moderation-meta {
+            border-top: 1px solid #dee2e6;
+            padding-top: 10px;
+        }
+
+        .no-answer .alert {
+            margin-bottom: 0;
+        }
+    </style>
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('admin.layout', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\courses-laravel\resources\views/admin/questions-answers/show.blade.php ENDPATH**/ ?>
