@@ -21,7 +21,7 @@ use App\Http\Controllers\QuizController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\BlogController;
 
-// Public routes
+// Public routes test
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
@@ -246,7 +246,7 @@ Route::resource('quizzes.questions', App\Http\Controllers\Admin\QuizQuestionMana
     Route::get('/quizzes/{quiz}/duplicate', [App\Http\Controllers\Admin\QuizManagementController::class, 'duplicate'])->name('quizzes.duplicate');
     Route::get('/questions-answers/{question}/analytics', [App\Http\Controllers\Admin\QuestionsAnswersManagementController::class, 'analytics'])->name('questions-answers.analytics')->middleware('admin.permission:view_analytics,view_own_analytics');
 
-    
+
     // Admin action routes
     Route::post('/questions-answers/{questions_answer}/approve', [App\Http\Controllers\Admin\QuestionsAnswersManagementController::class, 'approve'])->name('questions-answers.approve');
     Route::post('/questions-answers/{questions_answer}/reject', [App\Http\Controllers\Admin\QuestionsAnswersManagementController::class, 'reject'])->name('questions-answers.reject');
