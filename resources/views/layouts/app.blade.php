@@ -358,6 +358,27 @@
         .notification-dropdown .dropdown-item.text-center i {
             opacity: 0.5;
         }
+
+        /* Logo Link Styling */
+        .logo-link {
+            text-decoration: none;
+            display: block;
+            transition: opacity 0.3s ease;
+        }
+
+        .logo-link:hover {
+            opacity: 0.8;
+        }
+
+        .footer-logo-link {
+            text-decoration: none;
+            display: block;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-logo-link:hover {
+            opacity: 0.8;
+        }
     </style>
     @stack('styles')
 </head>
@@ -422,9 +443,15 @@
         </div>
         <nav class="main-nav main-nav-white">
             <div class="container nav-flex">
+                @php
+                    $mainContentSettings = \App\Models\MainContentSettings::getActive();
+                @endphp
                 <div class="logo">
-                    <img src="https://eclass.mediacity.co.in/demo2/public/images/logo/logo.png" alt="E-Class Logo"
-                        class="logo-img">
+                    <a href="{{ route('home') }}" class="logo-link">
+                        <img src="{{ $mainContentSettings ? $mainContentSettings->logo_url : asset('images/default-logo.png') }}"
+                            alt="{{ $mainContentSettings ? $mainContentSettings->logo_alt_text : 'Site Logo' }}"
+                            class="logo-img">
+                    </a>
                 </div>
                 <ul class="nav-links">
                     <li><a href="{{ route('home') }}">{{ custom_trans('home') }}</a></li>
@@ -861,8 +888,11 @@
         <!-- Copyright & Back to Top -->
         <div class="footer-bottom-bar d-flex justify-content-between align-items-center px-3 px-md-5 py-3">
             <div class="footer-logo d-flex align-items-center">
-                <img src="https://eclass.mediacity.co.in/demo2/public/images/logo/logo.png" alt="E-Class Logo"
-                    style="height:32px; margin-right:10px;">
+                <a href="{{ route('home') }}" class="footer-logo-link">
+                    <img src="{{ $mainContentSettings ? $mainContentSettings->logo_url : asset('images/default-logo.png') }}"
+                        alt="{{ $mainContentSettings ? $mainContentSettings->logo_alt_text : 'Site Logo' }}"
+                        style="height:32px; margin-right:10px;">
+                </a>
             </div>
             <div class="footer-copyright text-center flex-grow-1">Copyright © {{ date('Y') }} eClass.</div>
             <button id="backToTopBtn" class="btn btn-light btn-lg rounded-circle shadow-sm"><i

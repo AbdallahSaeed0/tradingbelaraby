@@ -462,6 +462,50 @@
                 </div>
             </div>
 
+            <!-- Main Content Management -->
+            <div class="col-xl-4 col-lg-6 col-md-10">
+                <div class="card settings-card">
+                    <div class="card-body text-center p-5">
+                        <div class="settings-icon mb-4">
+                            <div class="icon-wrapper">
+                                <i class="fas fa-cog fa-4x text-primary"></i>
+                            </div>
+                        </div>
+                        <h3 class="card-title mb-3">{{ __('Main Content') }}</h3>
+                        <p class="card-text text-muted mb-4">
+                            {{ __('Manage your website\'s main content including logo, site information, and social media links. Control the display of key branding elements.') }}
+                        </p>
+                        <div class="features-list mb-4">
+                            <div class="row text-start">
+                                <div class="col-md-6">
+                                    <div class="feature-item">
+                                        <i class="fas fa-image text-primary me-2"></i>
+                                        <span>{{ __('Logo Management') }}</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-info-circle text-info me-2"></i>
+                                        <span>{{ __('Site Information') }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="feature-item">
+                                        <i class="fas fa-share-alt text-warning me-2"></i>
+                                        <span>{{ __('Social Media') }}</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-address-book text-success me-2"></i>
+                                        <span>{{ __('Contact Info') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="{{ route('admin.settings.main-content.index') }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-cog me-2"></i>{{ __('Manage Main Content') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+
             <!-- Contact Management -->
             <div class="col-xl-4 col-lg-6 col-md-10">
                 <div class="card settings-card">

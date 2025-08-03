@@ -366,6 +366,11 @@ Route::resource('quizzes.questions', App\Http\Controllers\Admin\QuizQuestionMana
     Route::post('/settings/contact-management/contact-forms/bulk-action', [App\Http\Controllers\Admin\ContactManagementController::class, 'bulkAction'])->name('settings.contact-management.bulk-action');
     Route::get('/settings/contact-management/contact-forms/export', [App\Http\Controllers\Admin\ContactManagementController::class, 'exportContactForms'])->name('settings.contact-management.export');
 
+    // Main Content Settings Management
+    Route::get('/settings/main-content', [App\Http\Controllers\Admin\MainContentSettingsController::class, 'index'])->name('settings.main-content.index');
+    Route::put('/settings/main-content', [App\Http\Controllers\Admin\MainContentSettingsController::class, 'update'])->name('settings.main-content.update');
+    Route::post('/settings/main-content/remove-logo', [App\Http\Controllers\Admin\MainContentSettingsController::class, 'removeLogo'])->name('settings.main-content.remove-logo');
+
     Route::get('/enrollments/export', [App\Http\Controllers\Admin\EnrollmentsController::class, 'export'])->name('enrollments.export');
     Route::get('/homework/export/{format?}', [App\Http\Controllers\Admin\HomeworkManagementController::class, 'export'])->name('homework.export');
     Route::post('/homework/import', [App\Http\Controllers\Admin\HomeworkManagementController::class, 'import'])->name('homework.import');
