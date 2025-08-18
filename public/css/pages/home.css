@@ -845,7 +845,7 @@ footer {
   box-shadow: none;
   border-bottom: 1px solid #eee;
   padding: 0;
-  padding-bottom: 10px;
+  padding-block: 10px;
 }
 .nav-flex {
   display: flex;
