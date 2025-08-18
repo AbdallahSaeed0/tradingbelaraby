@@ -44,16 +44,23 @@
 
                         <!-- MCQ Options -->
                         <div class="mcq-options mb-5" id="mcqOptions">
-                            @foreach ($questions->first()->options as $index => $option)
-                                <div class="form-check mcq-option mb-3">
-                                    <input class="form-check-input mcq-radio" type="radio" name="answer"
-                                        id="option{{ $index }}" value="{{ $index }}"
-                                        data-question="{{ $questions->first()->id }}">
-                                    <label class="form-check-label mcq-label" for="option{{ $index }}">
-                                        {{ $option }}
-                                    </label>
+                            @if ($questions->first()->options && is_array($questions->first()->options))
+                                @foreach ($questions->first()->options as $index => $option)
+                                    <div class="form-check mcq-option mb-3">
+                                        <input class="form-check-input mcq-radio" type="radio" name="answer"
+                                            id="option{{ $index }}" value="{{ $index }}"
+                                            data-question="{{ $questions->first()->id }}">
+                                        <label class="form-check-label mcq-label" for="option{{ $index }}">
+                                            {{ $option }}
+                                        </label>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div class="alert alert-info">
+                                    <i class="fa fa-info-circle me-2"></i>
+                                    {{ __('This question type does not have multiple choice options.') }}
                                 </div>
-                            @endforeach
+                            @endif
                         </div>
 
                         <!-- Navigation Buttons -->
@@ -100,7 +107,7 @@
                             <div class="col-md-4">
                                 <div class="result-card bg-light p-3 rounded">
                                     <div class="fw-bold text-primary">{{ __('Percentage') }}</div>
-                                    <div class="fs-4 fw-bold" id="finalPercentage">-%</div>
+                                    <div class="fs-4 fw-bold" id="finalPercentage">-</div>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -113,33 +120,38 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="{{ route('courses.learn', $course->id) }}"
-                        class="btn btn-secondary">{{ __('Back to Course') }}</a>
-                    <button type="button" class="btn btn-orange"
-                        onclick="location.reload();">{{ __('Retake Quiz') }}</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('Close') }}</button>
+                    <a href="{{ route('quizzes.results', ['quiz' => $quiz, 'attempt' => $attempt]) }}"
+                        class="btn btn-success">
+                        <i class="fa fa-chart-bar me-2"></i>{{ __('View Detailed Results') }}
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Hidden form for quiz data -->
-    <form id="quizForm" style="display: none;">
-        @csrf
-        <input type="hidden" name="attempt_id" value="{{ $attempt->id }}">
-        <input type="hidden" name="quiz_id" value="{{ $quiz->id }}">
-    </form>
+    <!-- Hidden data for JavaScript -->
+    <script type="application/json" id="quizData">
+        {!! json_encode($questions->map(function ($question) {
+            return [
+                'id' => $question->id,
+                'question' => $question->question_text,
+                'options' => $question->options ?? [],
+                'question_type' => $question->question_type,
+            ];
+        })) !!}
+    </script>
+
+    <script type="application/json" id="savedAnswersData">
+        {!! json_encode($savedAnswers ?? []) !!}
+    </script>
 @endsection
 
 @push('scripts')
     <script>
         // Quiz Data
-        const quizData = @json($questions->map(function ($question) {
-            return [
-                'id' => $question->id,
-                'question' => $question->question_text,
-                'options' => $question->options,
-            ];
-        }));
+        const quizData = JSON.parse(document.getElementById('quizData').textContent);
+        const savedAnswers = JSON.parse(document.getElementById('savedAnswersData').textContent);
 
         // Quiz State
         let currentQuestion = 0;
@@ -147,7 +159,6 @@
         let startTime = Date.now();
         let timerInterval;
         let timeLimit = {{ $quiz->time_limit_minutes ?? 60 }}; // seconds per question
-        let savedAnswers = @json($savedAnswers);
 
         // DOM Elements
         const questionCounter = document.getElementById('questionCounter');
@@ -175,25 +186,86 @@
             // Update question title
             questionTitle.textContent = `Q${currentQuestion + 1}. ${question.question}`;
 
-            // Clear and load options
+            // Clear and load options based on question type
             mcqOptions.innerHTML = '';
-            question.options.forEach((option, index) => {
-                const optionDiv = document.createElement('div');
-                optionDiv.className = 'form-check mcq-option mb-3';
-                optionDiv.innerHTML = `
-                     <input class="form-check-input mcq-radio" type="radio" name="answer" id="option${index}"
-                         value="${index}" data-question="${question.id}">
-                     <label class="form-check-label mcq-label" for="option${index}">
-                         ${option}
-                     </label>
-                 `;
-                mcqOptions.appendChild(optionDiv);
-            });
+
+            if (question.question_type === 'multiple_choice' && question.options && question.options.length > 0) {
+                question.options.forEach((option, index) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'form-check mcq-option mb-3';
+                    optionDiv.innerHTML = `
+                         <input class="form-check-input mcq-radio" type="radio" name="answer" id="option${index}"
+                             value="${index}" data-question="${question.id}">
+                         <label class="form-check-label mcq-label" for="option${index}">
+                             ${option}
+                         </label>
+                     `;
+                    mcqOptions.appendChild(optionDiv);
+                });
+            } else if (question.question_type === 'true_false') {
+                // True/False options
+                const trueOption = document.createElement('div');
+                trueOption.className = 'form-check mcq-option mb-3';
+                trueOption.innerHTML = `
+                    <input class="form-check-input mcq-radio" type="radio" name="answer" id="optionTrue"
+                        value="true" data-question="${question.id}">
+                    <label class="form-check-label mcq-label" for="optionTrue">
+                        True
+                    </label>
+                `;
+                mcqOptions.appendChild(trueOption);
+
+                const falseOption = document.createElement('div');
+                falseOption.className = 'form-check mcq-option mb-3';
+                falseOption.innerHTML = `
+                    <input class="form-check-input mcq-radio" type="radio" name="answer" id="optionFalse"
+                        value="false" data-question="${question.id}">
+                    <label class="form-check-label mcq-label" for="optionFalse">
+                        False
+                    </label>
+                `;
+                mcqOptions.appendChild(falseOption);
+            } else if (question.question_type === 'essay') {
+                // Essay question - show text area
+                const textArea = document.createElement('div');
+                textArea.className = 'mb-3';
+                textArea.innerHTML = `
+                    <textarea class="form-control" id="essayAnswer" rows="5"
+                        placeholder="Enter your answer here..." data-question="${question.id}"></textarea>
+                `;
+                mcqOptions.appendChild(textArea);
+            } else if (question.question_type === 'fill_blank') {
+                // Fill in the blank question
+                const inputDiv = document.createElement('div');
+                inputDiv.className = 'mb-3';
+                inputDiv.innerHTML = `
+                    <input type="text" class="form-control" id="fillBlankAnswer"
+                        placeholder="Enter your answer..." data-question="${question.id}">
+                `;
+                mcqOptions.appendChild(inputDiv);
+            } else {
+                // Default message for other question types
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'alert alert-info';
+                messageDiv.innerHTML = `
+                    <i class="fa fa-info-circle me-2"></i>
+                    This question type (${question.question_type}) is not yet supported in this interface.
+                `;
+                mcqOptions.appendChild(messageDiv);
+            }
 
             // Restore previous answer if exists
             if (userAnswers[question.id]) {
-                const savedAnswer = document.querySelector(`input[value="${userAnswers[question.id]}"]`);
-                if (savedAnswer) savedAnswer.checked = true;
+                if (question.question_type === 'essay') {
+                    const textArea = document.querySelector('#essayAnswer');
+                    if (textArea) textArea.value = userAnswers[question.id];
+                } else if (question.question_type === 'fill_blank') {
+                    const input = document.querySelector('#fillBlankAnswer');
+                    if (input) input.value = userAnswers[question.id];
+                } else {
+                    const savedAnswer = document.querySelector(`input[value="${userAnswers[question.id]}"]`);
+                    if (savedAnswer) savedAnswer.checked = true;
+                }
             }
 
             // Update navigation buttons
@@ -219,36 +291,57 @@
 
         // Save Current Answer
         function saveCurrentAnswer() {
-            const selectedOption = document.querySelector('input[name="answer"]:checked');
-            if (selectedOption) {
-                const questionId = selectedOption.getAttribute('data-question');
-                const optionId = parseInt(selectedOption.value);
-                userAnswers[questionId] = optionId;
+            const question = quizData[currentQuestion];
 
-                // Save to server
-                saveAnswerToServer(questionId, optionId);
+            if (question.question_type === 'essay') {
+                const textArea = document.querySelector('#essayAnswer');
+                if (textArea && textArea.value.trim()) {
+                    userAnswers[question.id] = textArea.value.trim();
+                    // Don't save essay answers to server during quiz - they'll be saved at submission
+                }
+            } else if (question.question_type === 'fill_blank') {
+                const input = document.querySelector('#fillBlankAnswer');
+                if (input && input.value.trim()) {
+                    userAnswers[question.id] = input.value.trim();
+                    // Don't save fill blank answers to server during quiz - they'll be saved at submission
+                }
+            } else {
+                const selectedOption = document.querySelector('input[name="answer"]:checked');
+                if (selectedOption) {
+                    const questionId = selectedOption.getAttribute('data-question');
+                    const optionId = selectedOption.value;
+                    userAnswers[questionId] = optionId;
+                    saveAnswerToServer(questionId, optionId);
+                }
             }
         }
 
-        // Save Answer to Server
-        function saveAnswerToServer(questionId, optionId) {
+        // Save Answer to Server (only for multiple choice and true/false)
+        function saveAnswerToServer(questionId, answer) {
             const formData = new FormData();
             formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
             formData.append('attempt_id', {{ $attempt->id }});
             formData.append('question_id', questionId);
-            formData.append('option_id', optionId);
+            formData.append('option_id', answer);
 
             fetch('{{ route('quizzes.save-answer', $quiz) }}', {
                     method: 'POST',
                     body: formData
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     if (!data.success) {
                         console.error('Error saving answer:', data.error);
                     }
                 })
-                .catch(error => console.error('Error:', error));
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         }
 
         // Next Question
@@ -323,7 +416,12 @@
                     method: 'POST',
                     body: formData
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     if (data.success) {
                         // Calculate results for display

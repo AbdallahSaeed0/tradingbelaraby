@@ -121,6 +121,20 @@ class StudentController extends Controller
 
         $course = $enrollment->course;
 
+        // Load homework with user submissions
+        $course->load(['homework' => function($query) use ($user) {
+            $query->with(['submissions' => function($subQuery) use ($user) {
+                $subQuery->where('user_id', $user->id);
+            }]);
+        }]);
+
+        // Load live classes with user registration status
+        $course->load(['liveClasses' => function($query) use ($user) {
+            $query->with(['registrations' => function($regQuery) use ($user) {
+                $regQuery->where('user_id', $user->id);
+            }]);
+        }]);
+
         return view('student.learn-course', compact('enrollment', 'course'));
     }
 

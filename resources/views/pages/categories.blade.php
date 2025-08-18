@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Categories - E-Class')
+@section('title', 'Categories - ' . (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site Name'))
 
 @section('content')
     <!-- Breadcrumb -->

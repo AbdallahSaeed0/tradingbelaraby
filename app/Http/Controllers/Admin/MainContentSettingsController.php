@@ -25,6 +25,7 @@ class MainContentSettingsController extends Controller
     {
         $request->validate([
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'favicon' => 'nullable|mimes:ico,png|max:512',
             'logo_alt_text' => 'nullable|string|max:255',
             'site_name' => 'nullable|string|max:255',
             'site_description' => 'nullable|string|max:500',
@@ -40,7 +41,7 @@ class MainContentSettingsController extends Controller
                 $settings->is_active = true;
             }
 
-            $data = $request->except(['logo']);
+            $data = $request->except(['logo', 'favicon']);
 
             // Handle logo upload
             if ($request->hasFile('logo')) {
@@ -51,6 +52,15 @@ class MainContentSettingsController extends Controller
 
                 $logoPath = $request->file('logo')->store('logos', 'public');
                 $data['logo'] = $logoPath;
+            }
+            // Handle favicon upload
+            if ($request->hasFile('favicon')) {
+                // Delete old favicon if exists
+                if ($settings->favicon && !filter_var($settings->favicon, FILTER_VALIDATE_URL)) {
+                    Storage::disk('public')->delete($settings->favicon);
+                }
+                $faviconPath = $request->file('favicon')->store('favicons', 'public');
+                $data['favicon'] = $faviconPath;
             }
 
             $settings->fill($data);
@@ -91,6 +101,32 @@ class MainContentSettingsController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Error removing logo: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Remove the favicon.
+     */
+    public function removeFavicon()
+    {
+        try {
+            $settings = MainContentSettings::getActive();
+            if ($settings && $settings->favicon) {
+                // Delete favicon file
+                if (!filter_var($settings->favicon, FILTER_VALIDATE_URL)) {
+                    Storage::disk('public')->delete($settings->favicon);
+                }
+                $settings->update(['favicon' => null]);
+            }
+            return response()->json([
+                'success' => true,
+                'message' => 'Favicon removed successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error removing favicon: ' . $e->getMessage()
             ], 500);
         }
     }

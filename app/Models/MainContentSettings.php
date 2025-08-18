@@ -17,6 +17,7 @@ class MainContentSettings extends Model
         'site_description',
         'site_keywords',
         'site_author',
+        'favicon',
         'is_active'
     ];
 
@@ -54,6 +55,20 @@ class MainContentSettings extends Model
     public function getLogoAltTextAttribute($value)
     {
         return $value ?: 'Site Logo';
+    }
+
+    /**
+     * Get the favicon URL
+     */
+    public function getFaviconUrlAttribute()
+    {
+        if (!$this->favicon) {
+            return asset('favicon.ico');
+        }
+        if (filter_var($this->favicon, FILTER_VALIDATE_URL)) {
+            return $this->favicon;
+        }
+        return asset('storage/' . $this->favicon);
     }
 
     /**

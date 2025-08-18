@@ -105,7 +105,7 @@
         <!-- Filters -->
         <div class="card mb-4">
             <div class="card-body">
-                <form method="GET" class="row g-3">
+                <form method="GET" action="{{ route('admin.homework.submissions', $homework) }}" class="row g-3">
                     <div class="col-md-3">
                         <label for="status" class="form-label">Status</label>
                         <select class="form-select" id="status" name="status">
@@ -349,14 +349,9 @@
                 fetch(`/admin/homework/submissions/${submissionId}/grade`, {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json',
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                         },
-                        body: JSON.stringify({
-                            score_earned: formData.get('score_earned'),
-                            feedback: formData.get('feedback'),
-                            instructor_notes: formData.get('instructor_notes')
-                        })
+                        body: formData
                     })
                     .then(response => response.json())
                     .then(data => {

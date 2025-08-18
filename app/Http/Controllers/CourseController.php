@@ -71,7 +71,7 @@ class CourseController extends Controller
 
     public function show(Course $course)
     {
-        $course->load(['instructor', 'category', 'sections.lectures', 'ratings.user']);
+        $course->load(['instructor', 'category', 'sections.lectures', 'ratings.user', 'publishedHomework']);
         $relatedCourses = Course::where('category_id', $course->category_id)
             ->where('id', '!=', $course->id)
             ->take(4)->get();

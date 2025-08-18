@@ -581,11 +581,11 @@
                                                             pts</span>
                                                     </div>
                                                     <div class="d-flex gap-2">
-                                                        <button class="btn btn-outline-primary btn-sm"
+                                                        <button type="button" class="btn btn-outline-primary btn-sm"
                                                             onclick="editQuestion({{ $question->id }})">
                                                             <i class="fa fa-edit"></i>
                                                         </button>
-                                                        <button class="btn btn-outline-danger btn-sm"
+                                                        <button type="button" class="btn btn-outline-danger btn-sm"
                                                             onclick="deleteQuestion({{ $question->id }})">
                                                             <i class="fa fa-trash"></i>
                                                         </button>
@@ -750,14 +750,14 @@
                     <label class="form-label">Options *</label>
                     <div id="optionsContainer">
                         <div class="option-item d-flex align-items-center">
-                            <input type="radio" name="correct_answer" value="0" class="me-2">
+                            <input type="radio" name="correct_answers[]" value="0" class="me-2">
                             <input type="text" class="form-control me-2" name="options[]" placeholder="Option 1">
                             <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeOption(this)">
                                 <i class="fa fa-times"></i>
                             </button>
                         </div>
                         <div class="option-item d-flex align-items-center">
-                            <input type="radio" name="correct_answer" value="1" class="me-2">
+                            <input type="radio" name="correct_answers[]" value="1" class="me-2">
                             <input type="text" class="form-control me-2" name="options[]" placeholder="Option 2">
                             <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeOption(this)">
                                 <i class="fa fa-times"></i>
@@ -1011,14 +1011,22 @@
                 return;
             }
 
-            // Create a clone of the form to avoid moving the original
-            const formClone = form.cloneNode(true);
-            formClone.id = 'addQuestionFormClone';
-            formClone.style.display = 'block';
+            // Show the original form instead of cloning
+            form.style.display = 'block';
+            form.id = 'addQuestionFormClone'; // Temporarily change ID for consistency
 
-            // Clear the content area and add the cloned form
+            // Clear the content area and add the form
             content.innerHTML = '';
-            content.appendChild(formClone);
+            content.appendChild(form);
+
+            // Verify the form has the required elements
+            console.log('Form elements:', {
+                questionText: !!form.querySelector('#questionText'),
+                questionPoints: !!form.querySelector('#questionPoints'),
+                questionOrder: !!form.querySelector('#questionOrder'),
+                explanation: !!form.querySelector('#explanation'),
+                questionType: !!form.querySelector('#questionType')
+            });
 
             container.style.display = 'block';
             container.scrollIntoView({
@@ -1031,11 +1039,12 @@
         function hideQuestionForm() {
             const container = document.getElementById('questionFormContainer');
             const content = document.getElementById('questionFormContent');
-            const clonedForm = document.getElementById('addQuestionFormClone');
+            const form = document.getElementById('addQuestionFormClone');
 
-            // Remove the cloned form if it exists
-            if (clonedForm) {
-                clonedForm.remove();
+            // Hide the form and restore original ID
+            if (form) {
+                form.style.display = 'none';
+                form.id = 'addQuestionForm';
             }
 
             content.innerHTML = '';
@@ -1109,7 +1118,7 @@
             const newOption = document.createElement('div');
             newOption.className = 'option-item d-flex align-items-center';
             newOption.innerHTML = `
-                <input type="radio" name="correct_answer" value="${optionCount}" class="me-2">
+                <input type="radio" name="correct_answers[]" value="${optionCount}" class="me-2">
                 <input type="text" class="form-control me-2" name="options[]" placeholder="Option ${optionCount + 1}" required>
                 <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeOption(this)">
                     <i class="fa fa-times"></i>
@@ -1182,7 +1191,18 @@
             const formData = new FormData(form);
             formData.append('quiz_id', {{ $quiz->id }});
 
+            // Debug: Log form data
             console.log('Form data prepared');
+            console.log('Form elements before submission:');
+            console.log('Question text:', form.querySelector('#questionText')?.value);
+            console.log('Question type:', form.querySelector('#questionType')?.value);
+            console.log('Points:', form.querySelector('#questionPoints')?.value);
+            console.log('Order:', form.querySelector('#questionOrder')?.value);
+            console.log('Explanation:', form.querySelector('#explanation')?.value);
+
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`);
+            }
 
             // Check if this is an edit or new question
             const editQuestionId = form.getAttribute('data-edit-question-id');
@@ -1219,7 +1239,7 @@
             // Validate question type specific fields
             if (questionType === 'multiple_choice') {
                 const options = formData.getAll('options[]');
-                const correctAnswer = formData.get('correct_answer');
+                const correctAnswers = formData.getAll('correct_answers[]');
 
                 if (options.length < 2) {
                     alert('Please add at least 2 options');
@@ -1231,7 +1251,7 @@
                     return;
                 }
 
-                if (correctAnswer === null) {
+                if (correctAnswers.length === 0) {
                     alert('Please select a correct answer');
                     return;
                 }
@@ -1247,6 +1267,9 @@
                     alert('Please add at least one correct answer');
                     return;
                 }
+            } else if (questionType === 'essay') {
+                // Essay questions don't need additional validation for correct answers
+                // They are manually graded
             }
 
             // Show loading state - find the submit button in the form we're using
@@ -1346,93 +1369,167 @@
         }
 
         function editQuestion(questionId) {
+            console.log('editQuestion called with ID:', questionId);
+
+            // Test if form exists before making the request
+            const testForm = document.getElementById('addQuestionForm');
+            console.log('Test form exists:', !!testForm);
+
             // Get the question data and populate the form for editing
             fetch(`{{ route('admin.quizzes.questions.show', [$quiz, ':id']) }}`.replace(':id', questionId), {
                     method: 'GET',
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Accept': 'application/json'
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
                     }
                 })
-                .then(response => response.json())
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    console.log('Response headers:', response.headers);
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok: ' + response.status);
+                    }
+                    return response.json();
+                })
                 .then(data => {
+                    console.log('Question data received:', data);
                     if (data.success) {
-                        populateQuestionForm(data.question, questionId);
                         showQuestionForm();
+                        // Add a small delay to ensure the form is fully rendered
+                        setTimeout(() => {
+                            populateQuestionForm(data.question, questionId);
+                        }, 100);
                     } else {
-                        alert('Error loading question: ' + data.message);
+                        alert('Error loading question: ' + (data.message || 'Unknown error'));
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Error loading question');
+                    alert('Error loading question. Please try again.');
                 });
         }
 
         function populateQuestionForm(question, questionId) {
+            console.log('populateQuestionForm called with:', {
+                question,
+                questionId
+            });
+
             // Try to get the cloned form first, fallback to original
             let form = document.getElementById('addQuestionFormClone');
             if (!form) {
                 form = document.getElementById('addQuestionForm');
             }
 
-            // Set form values
-            form.querySelector('#questionText').value = question.question_text;
-            form.querySelector('#questionPoints').value = question.points;
-            form.querySelector('#questionOrder').value = question.order;
-            form.querySelector('#explanation').value = question.explanation || '';
+            console.log('Form found:', !!form);
 
-            // Set question type and show relevant options
-            selectQuestionType(question.question_type);
-
-            // Populate options based on question type
-            if (question.question_type === 'multiple_choice' && question.options) {
-                const container = form.querySelector('#optionsContainer');
-                container.innerHTML = '';
-
-                question.options.forEach((option, index) => {
-                    const isCorrect = question.correct_answers && question.correct_answers.includes(index);
-                    const optionDiv = document.createElement('div');
-                    optionDiv.className = 'option-item d-flex align-items-center';
-                    optionDiv.innerHTML = `
-                        <input type="radio" name="correct_answer" value="${index}" class="me-2" ${isCorrect ? 'checked' : ''}>
-                        <input type="text" class="form-control me-2" name="options[]" placeholder="Option ${index + 1}" value="${option}" required>
-                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeOption(this)">
-                            <i class="fa fa-times"></i>
-                        </button>
-                    `;
-                    container.appendChild(optionDiv);
-                });
-                optionCount = question.options.length;
-            } else if (question.question_type === 'true_false') {
-                form.querySelector(
-                        `input[name="correct_answer_boolean"][value="${question.correct_answer_boolean ? '1' : '0'}"]`)
-                    .checked = true;
-            } else if (question.question_type === 'fill_blank' && question.correct_answers_text) {
-                const container = form.querySelector('#fillBlankContainer');
-                container.innerHTML = '';
-
-                question.correct_answers_text.forEach((answer, index) => {
-                    const answerDiv = document.createElement('div');
-                    answerDiv.className = 'input-group mb-2';
-                    answerDiv.innerHTML = `
-                        <input type="text" class="form-control" name="correct_answers_text[]" placeholder="Correct answer ${index + 1}" value="${answer}" required>
-                        <button type="button" class="btn btn-outline-danger" onclick="removeFillBlank(this)">
-                            <i class="fa fa-times"></i>
-                        </button>
-                    `;
-                    container.appendChild(answerDiv);
-                });
-                fillBlankCount = question.correct_answers_text.length;
+            if (!form) {
+                console.error('No form found!');
+                return;
             }
 
-            // Store the question ID for updating
-            form.setAttribute('data-edit-question-id', questionId);
+            try {
+                // Set form values
+                const questionTextEl = form.querySelector('#questionText');
+                const questionPointsEl = form.querySelector('#questionPoints');
+                const questionOrderEl = form.querySelector('#questionOrder');
+                const explanationEl = form.querySelector('#explanation');
 
-            // Change the submit button text
-            const submitBtn = form.querySelector('button[onclick="submitQuestion()"]');
-            if (submitBtn) {
-                submitBtn.innerHTML = '<i class="fa fa-save me-2"></i>Update Question';
+                console.log('Form elements found:', {
+                    questionText: !!questionTextEl,
+                    questionPoints: !!questionPointsEl,
+                    questionOrder: !!questionOrderEl,
+                    explanation: !!explanationEl
+                });
+
+                if (questionTextEl) {
+                    questionTextEl.value = question.question_text;
+                    console.log('Set question text:', question.question_text);
+                } else {
+                    console.error('Question text element not found!');
+                }
+                if (questionPointsEl) {
+                    questionPointsEl.value = question.points;
+                    console.log('Set points:', question.points);
+                } else {
+                    console.error('Question points element not found!');
+                }
+                if (questionOrderEl) {
+                    questionOrderEl.value = question.order;
+                    console.log('Set order:', question.order);
+                } else {
+                    console.error('Question order element not found!');
+                }
+                if (explanationEl) {
+                    explanationEl.value = question.explanation || '';
+                    console.log('Set explanation:', question.explanation || '');
+                } else {
+                    console.error('Explanation element not found!');
+                }
+
+                // Set question type and show relevant options
+                const questionTypeEl = form.querySelector('#questionType');
+                if (questionTypeEl) questionTypeEl.value = question.question_type;
+                selectQuestionType(question.question_type);
+
+                // Populate options based on question type
+                if (question.question_type === 'multiple_choice' && question.options) {
+                    const container = form.querySelector('#optionsContainer');
+                    if (container) {
+                        container.innerHTML = '';
+
+                        question.options.forEach((option, index) => {
+                            const isCorrect = question.correct_answers && question.correct_answers.includes(index);
+                            const optionDiv = document.createElement('div');
+                            optionDiv.className = 'option-item d-flex align-items-center';
+                            optionDiv.innerHTML = `
+                                <input type="radio" name="correct_answers[]" value="${index}" class="me-2" ${isCorrect ? 'checked' : ''}>
+                                <input type="text" class="form-control me-2" name="options[]" placeholder="Option ${index + 1}" value="${option}" required>
+                                <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeOption(this)">
+                                    <i class="fa fa-times"></i>
+                                </button>
+                            `;
+                            container.appendChild(optionDiv);
+                        });
+                        optionCount = question.options.length;
+                    }
+                } else if (question.question_type === 'true_false') {
+                    const correctAnswerEl = form.querySelector(
+                        `input[name="correct_answer_boolean"][value="${question.correct_answer_boolean ? '1' : '0'}"]`);
+                    if (correctAnswerEl) correctAnswerEl.checked = true;
+                } else if (question.question_type === 'fill_blank' && question.correct_answers_text) {
+                    const container = form.querySelector('#fillBlankContainer');
+                    if (container) {
+                        container.innerHTML = '';
+
+                        question.correct_answers_text.forEach((answer, index) => {
+                            const answerDiv = document.createElement('div');
+                            answerDiv.className = 'input-group mb-2';
+                            answerDiv.innerHTML = `
+                                <input type="text" class="form-control" name="correct_answers_text[]" placeholder="Correct answer ${index + 1}" value="${answer}" required>
+                                <button type="button" class="btn btn-outline-danger" onclick="removeFillBlank(this)">
+                                    <i class="fa fa-times"></i>
+                                </button>
+                            `;
+                            container.appendChild(answerDiv);
+                        });
+                        fillBlankCount = question.correct_answers_text.length;
+                    }
+                }
+
+                // Store the question ID for updating
+                form.setAttribute('data-edit-question-id', questionId);
+
+                // Change the submit button text
+                const submitBtn = form.querySelector('button[onclick="submitQuestion()"]');
+                if (submitBtn) {
+                    submitBtn.innerHTML = '<i class="fa fa-save me-2"></i>Update Question';
+                }
+
+                console.log('Form populated successfully');
+            } catch (error) {
+                console.error('Error populating form:', error);
             }
         }
 
@@ -1500,10 +1597,10 @@
                     <h6>${question.question_text}</h6>
                     ${optionsHtml ? `<div class="mt-3">${optionsHtml}</div>` : ''}
                     ${question.explanation ? `
-                                                                                        <div class="mt-3">
-                                                                                            <small class="text-muted"><strong>Explanation:</strong> ${question.explanation}</small>
-                                                                                        </div>
-                                                                                    ` : ''}
+                                                                                                                    <div class="mt-3">
+                                                                                                                        <small class="text-muted"><strong>Explanation:</strong> ${question.explanation}</small>
+                                                                                                                    </div>
+                                                                                                                ` : ''}
                 </div>
             `;
 

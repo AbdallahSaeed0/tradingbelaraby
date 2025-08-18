@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Order Successful - E-Class')
+@section('title', 'Order Successful - ' . (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site Name'))
 
 @push('styles')
     <style>

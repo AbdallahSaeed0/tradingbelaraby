@@ -1,13 +1,14 @@
 @extends('layouts.app')
 
-@section('title', $course->name . ' - E-Class')
+@section('title', ($course->name ?? 'Course') . ' - ' . (\App\Models\MainContentSettings::getActive()?->site_name ??
+    'Site Name'))
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/pages/course-detail.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-@endpush
+    @push('styles')
+        <link rel="stylesheet" href="{{ asset('css/pages/course-detail.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    @endpush
 
 @section('content')
     <!-- Banner Section -->

@@ -1,7 +1,5 @@
 @extends('layouts.app')
 
-@section('title', 'E-Class - Online Learning Platform')
-
 @section('content')
     <!-- Hero Section -->
     @include('partials.home.hero')

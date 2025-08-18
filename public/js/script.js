@@ -275,7 +275,7 @@ window.addEventListener('DOMContentLoaded', function () {
                 if (col.querySelector('.course-card-list')) {
                     col.classList.remove('d-none');
                 } else {
-                    col.classList.add('d-none');
+                    col.classList.add('d-block');
                 }
             });
         });
@@ -287,7 +287,7 @@ window.addEventListener('DOMContentLoaded', function () {
                 if (col.querySelector('.course-card-grid')) {
                     col.classList.remove('d-none');
                 } else {
-                    col.classList.add('d-none');
+                    col.classList.add('d-block');
                 }
             });
         });

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Register - E-Class')
+@section('title', 'Register - ' . (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site Name'))
 
 @section('content')
     <div class="container py-5" style="max-width: 560px;">

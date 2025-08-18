@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Contact Us - E-Class')
+@section('title', 'Contact Us - ' . (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site Name'))
 
 @section('content')
     @php
@@ -49,7 +49,8 @@
                     <div class="contact-box text-center p-4 rounded-4 shadow-sm bg-light-blue h-100">
                         <div class="contact-icon-box mb-3 mx-auto bg-white text-orange"><i
                                 class="fa fa-map-marker-alt fa-2x"></i></div>
-                        <div class="fw-bold mb-1">{{ $contactSettings->address ?? 'Company 12345 South Main Street Anywhere' }}</div>
+                        <div class="fw-bold mb-1">
+                            {{ $contactSettings->address ?? 'Company 12345 South Main Street Anywhere' }}</div>
                         <div class="text-muted small">Office Address</div>
                     </div>
                 </div>
@@ -60,9 +61,9 @@
     <!-- Map Section -->
     <section class="contact-map-section">
         <div class="container-fluid px-0">
-            @if($contactSettings && $contactSettings->map_embed_url)
-                <iframe src="{{ $contactSettings->map_embed_url }}"
-                    allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            @if ($contactSettings && $contactSettings->map_embed_url)
+                <iframe src="{{ $contactSettings->map_embed_url }}" allowfullscreen="" loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"></iframe>
             @else
                 <iframe
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.835434509374!2d144.9537363159047!3d-37.8162797420217!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad65d43f1f6e0b1%3A0x5045675218ce6e0!2sMelbourne%20VIC%2C%20Australia!5e0!3m2!1sen!2sus!4v1611816611234!5m2!1sen!2sus"
@@ -82,13 +83,15 @@
                         <div class="row g-3 mb-3">
                             <div class="col-md-4">
                                 <div class="input-group">
-                                    <input type="text" name="name" class="form-control rounded-3" placeholder="Name" required>
+                                    <input type="text" name="name" class="form-control rounded-3" placeholder="Name"
+                                        required>
                                     <span class="input-group-text bg-white"><i class="fa fa-user"></i></span>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="input-group">
-                                    <input type="email" name="email" class="form-control rounded-3" placeholder="Email" required>
+                                    <input type="email" name="email" class="form-control rounded-3" placeholder="Email"
+                                        required>
                                     <span class="input-group-text bg-white"><i class="fa fa-envelope"></i></span>
                                 </div>
                             </div>
@@ -101,7 +104,8 @@
                         </div>
                         <div class="mb-3">
                             <div class="input-group">
-                                <input type="text" name="subject" class="form-control rounded-3" placeholder="Subject" required>
+                                <input type="text" name="subject" class="form-control rounded-3" placeholder="Subject"
+                                    required>
                                 <span class="input-group-text bg-white"><i class="fa fa-tag"></i></span>
                             </div>
                         </div>
@@ -152,10 +156,12 @@
                     contentType: false,
                     success: function(response) {
                         if (response.success) {
-                            toastr.success(response.message || 'Your message has been sent successfully!');
+                            toastr.success(response.message ||
+                                'Your message has been sent successfully!');
                             $('#contactForm')[0].reset();
                         } else {
-                            toastr.error(response.message || 'An error occurred while sending your message.');
+                            toastr.error(response.message ||
+                                'An error occurred while sending your message.');
                         }
                     },
                     error: function(xhr) {

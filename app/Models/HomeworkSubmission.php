@@ -125,7 +125,7 @@ class HomeworkSubmission extends Model
      */
     public function getIsLateAttribute(): bool
     {
-        return $this->is_late;
+        return (bool) $this->attributes['is_late'] ?? false;
     }
 
     /**
@@ -133,7 +133,7 @@ class HomeworkSubmission extends Model
      */
     public function getIsGradedAttribute(): bool
     {
-        return $this->is_graded;
+        return (bool) $this->attributes['is_graded'] ?? false;
     }
 
     /**
@@ -152,7 +152,7 @@ class HomeworkSubmission extends Model
         if (!$this->is_graded) {
             return false;
         }
-        return $this->percentage_score >= 60; // 60% passing threshold
+        return ($this->percentage_score ?? 0) >= 60; // 60% passing threshold
     }
 
     /**
@@ -163,7 +163,7 @@ class HomeworkSubmission extends Model
         if (!$this->is_graded) {
             return false;
         }
-        return $this->percentage_score < 60;
+        return ($this->percentage_score ?? 0) < 60;
     }
 
     /**
@@ -171,10 +171,10 @@ class HomeworkSubmission extends Model
      */
     public function getPercentageScoreAttribute(): float
     {
-        if (!$this->is_graded || $this->max_score === 0) {
+        if (!$this->is_graded || ($this->max_score ?? 0) === 0) {
             return 0;
         }
-        return round(($this->score_earned / $this->max_score) * 100, 2);
+        return round((($this->score_earned ?? 0) / $this->max_score) * 100, 2);
     }
 
     /**
@@ -198,7 +198,7 @@ class HomeworkSubmission extends Model
      */
     public function getDaysLateAttribute(): int
     {
-        return $this->days_late;
+        return (int) ($this->attributes['days_late'] ?? 0);
     }
 
     /**

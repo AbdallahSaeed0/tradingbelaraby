@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Shopping Cart - E-Class')
+@section('title', 'Shopping Cart - ' . (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site Name'))
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/pages/categories.css') }}">

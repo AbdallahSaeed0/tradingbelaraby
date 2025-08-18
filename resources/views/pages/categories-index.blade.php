@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'All Categories - E-Class')
+@section('title', 'All Categories - ' . (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site Name'))
 
 @section('content')
     <!-- Banner Section -->
@@ -39,7 +39,7 @@
                                     </div>
                                 @endif
                                 <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-dark bg-opacity-75 opacity-0 transition-opacity"
-                                     style="transition: opacity 0.3s ease;">
+                                    style="transition: opacity 0.3s ease;">
                                     <div class="text-center text-white">
                                         <h4 class="fw-bold mb-2">{{ $category->name }}</h4>
                                     </div>
@@ -105,7 +105,8 @@
                                         </div>
                                     </div>
                                     <h5 class="card-title fw-bold mb-2">{{ $category->name }}</h5>
-                                    <p class="card-text text-muted small mb-3 flex-grow-1">{{ Str::limit($category->description, 80) }}</p>
+                                    <p class="card-text text-muted small mb-3 flex-grow-1">
+                                        {{ Str::limit($category->description, 80) }}</p>
                                     <div class="d-flex justify-content-end">
                                         <a href="{{ route('categories.show', $category->slug) }}"
                                             class="btn btn-outline-primary btn-sm">

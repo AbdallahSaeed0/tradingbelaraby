@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Payment - E-Class')
+@section('title', 'Payment - ' . (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site Name'))
 
 @push('styles')
     <style>

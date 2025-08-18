@@ -254,7 +254,7 @@ class HomeworkController extends Controller
     }
 
     /**
-     * Get homework statistics for student dashboard
+     * Get homework statistics
      */
     public function statistics()
     {
@@ -264,24 +264,219 @@ class HomeworkController extends Controller
         }
 
         $stats = [
-            'total_assignments' => Homework::published()->count(),
+            'total_homework' => Homework::where('course_id', $user->enrolledCourses()->pluck('course_id'))->count(),
             'submitted' => HomeworkSubmission::where('user_id', $user->id)->count(),
-            'graded' => HomeworkSubmission::where('user_id', $user->id)
-                ->where('status', 'graded')->count(),
-            'pending' => HomeworkSubmission::where('user_id', $user->id)
-                ->where('status', 'submitted')->count(),
-            'overdue' => Homework::published()
+            'pending' => Homework::where('course_id', $user->enrolledCourses()->pluck('course_id'))
+                ->whereDoesntHave('submissions', function($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                })->count(),
+            'overdue' => Homework::where('course_id', $user->enrolledCourses()->pluck('course_id'))
                 ->where('due_date', '<', now())
                 ->whereDoesntHave('submissions', function($query) use ($user) {
                     $query->where('user_id', $user->id);
-                })
-                ->count(),
+                })->count(),
         ];
 
-        $stats['completion_rate'] = $stats['total_assignments'] > 0
-            ? ($stats['submitted'] / $stats['total_assignments']) * 100
-            : 0;
-
         return response()->json($stats);
+    }
+
+    /**
+     * Submit homework for a specific course
+     */
+    public function submitCourseHomework(Request $request, Course $course)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['success' => false, 'message' => 'Please login to submit homework'], 401);
+        }
+
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'content' => 'nullable|string',
+            'file' => 'nullable|file|max:10240', // 10MB max
+        ]);
+
+        try {
+            $homework = Homework::create([
+                'course_id' => $course->id,
+                'title' => $request->title,
+                'description' => $request->description,
+                'type' => 'assignment',
+                'status' => 'active',
+                'points' => 0,
+                'due_date' => now()->addDays(7), // Default due date
+            ]);
+
+            // Create submission if content or file is provided
+            if ($request->content || $request->hasFile('file')) {
+                $submission = HomeworkSubmission::create([
+                    'homework_id' => $homework->id,
+                    'user_id' => $user->id,
+                    'content' => $request->content,
+                    'status' => 'submitted',
+                ]);
+
+                // Handle file upload
+                if ($request->hasFile('file')) {
+                    $file = $request->file('file');
+                    $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+                    $path = $file->storeAs('homework-attachments', $filename, 'public');
+
+                    $submission->attachments = json_encode([$path]);
+                    $submission->save();
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Homework submitted successfully',
+                'homework' => $homework
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to submit homework: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get homework details for a specific course
+     */
+    public function getCourseHomework(Course $course, $assignment_id)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['success' => false, 'message' => 'Please login to view homework'], 401);
+        }
+
+        try {
+            $homework = Homework::where('id', $assignment_id)
+                ->where('course_id', $course->id)
+                ->first();
+
+            if (!$homework) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Homework assignment not found'
+                ], 404);
+            }
+
+            $homework->load(['course', 'submissions' => function($query) use ($user) {
+                $query->where('user_id', $user->id);
+            }]);
+
+            // Get user's submission and grade info
+            $userSubmission = $homework->submissions->first();
+            $gradeInfo = null;
+
+            if ($userSubmission && $userSubmission->is_graded) {
+                $gradeInfo = [
+                    'score_earned' => $userSubmission->score_earned,
+                    'max_score' => $userSubmission->max_score,
+                    'percentage_score' => number_format($userSubmission->percentage_score, 1),
+                    'feedback' => $userSubmission->feedback,
+                    'graded_at' => $userSubmission->graded_at->format('M d, Y h:i A'),
+                ];
+            }
+
+            return response()->json([
+                'success' => true,
+                'assignment' => [
+                    'id' => $homework->id,
+                    'title' => $homework->name,
+                    'description' => $homework->description,
+                    'due_date' => $homework->due_date,
+                    'max_score' => $homework->max_score,
+                    'type' => $homework->type,
+                    'status' => $userSubmission ? ($userSubmission->is_graded ? 'graded' : 'submitted') : 'not_started',
+                    'grade' => $gradeInfo,
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to load homework details: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Submit assignment for a specific homework
+     */
+    public function submitAssignment(Request $request, Course $course)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['success' => false, 'message' => 'Please login to submit assignment'], 401);
+        }
+
+        $request->validate([
+            'assignment_id' => 'required|exists:homework,id',
+            'content' => 'nullable|string',
+            'file' => 'required|file|max:10240', // 10MB max
+            'notes' => 'nullable|string|max:1000',
+        ]);
+
+        try {
+            $homework = Homework::findOrFail($request->assignment_id);
+
+            // Check if homework belongs to the course
+            if ($homework->course_id !== $course->id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Homework does not belong to this course'
+                ], 400);
+            }
+
+            // Check if user already submitted - allow resubmission
+            $existingSubmission = HomeworkSubmission::where('user_id', $user->id)
+                ->where('homework_id', $homework->id)
+                ->first();
+
+            // Handle file upload
+            $file = $request->file('file');
+            $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('homework-attachments', $filename, 'public');
+
+            if ($existingSubmission) {
+                // Update existing submission
+                $existingSubmission->update([
+                    'submission_text' => $request->content,
+                    'submission_file' => $path,
+                    'student_notes' => $request->notes,
+                    'status' => 'submitted',
+                    'submitted_at' => now(),
+                ]);
+
+                $submission = $existingSubmission;
+                $message = 'Assignment resubmitted successfully';
+            } else {
+                // Create new submission
+                $submission = HomeworkSubmission::create([
+                    'homework_id' => $homework->id,
+                    'user_id' => $user->id,
+                    'submission_text' => $request->content,
+                    'submission_file' => $path,
+                    'student_notes' => $request->notes,
+                    'status' => 'submitted',
+                    'submitted_at' => now(),
+                ]);
+
+                $message = 'Assignment submitted successfully';
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'submission' => $submission
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to submit assignment: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

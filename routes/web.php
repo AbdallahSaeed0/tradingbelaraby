@@ -168,6 +168,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/live-classes/{liveClass}/unregister', [LiveClassController::class, 'unregister'])->name('live-classes.unregister');
     Route::get('/live-classes/{liveClass}/join', [LiveClassController::class, 'join'])->name('live-classes.join');
 
+    // Course-specific Live Class routes
+Route::post('/courses/{course}/schedule-live-class', [LiveClassController::class, 'schedule'])->name('courses.schedule-live-class');
+Route::post('/courses/{course}/join-live-class', [LiveClassController::class, 'joinCourseLiveClass'])->name('courses.join-live-class');
+Route::post('/courses/{course}/live-classes/{liveClass}/download-materials', [LiveClassController::class, 'downloadMaterials'])->name('courses.live-classes.download-materials');
+
     // Homework routes
     Route::get('/homework', [HomeworkController::class, 'index'])->name('homework.index');
     Route::get('/homework/{homework}', [HomeworkController::class, 'show'])->name('homework.show');
@@ -177,6 +182,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/homework/submission/{submission}/download/{filename}', [HomeworkController::class, 'downloadAttachment'])->name('homework.download-attachment');
     Route::get('/homework/upcoming', [HomeworkController::class, 'upcoming'])->name('homework.upcoming');
     Route::post('/homework/{homework}/view', [HomeworkController::class, 'markAsViewed'])->name('homework.mark-viewed');
+
+    // Course-specific Homework routes
+    Route::post('/courses/{course}/submit-homework', [HomeworkController::class, 'submitCourseHomework'])->name('courses.submit-homework');
+    Route::get('/courses/{course}/homework/{assignment_id}', [HomeworkController::class, 'getCourseHomework'])->name('courses.homework.details');
+    Route::post('/courses/{course}/submit-homework-assignment', [HomeworkController::class, 'submitAssignment'])->name('courses.submit-homework-assignment');
 });
 
 // Admin authentication routes
@@ -207,6 +217,12 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
     Route::resource('quizzes', App\Http\Controllers\Admin\QuizManagementController::class)->middleware('admin.permission:manage_quizzes,manage_own_quizzes');
 Route::resource('quizzes.questions', App\Http\Controllers\Admin\QuizQuestionManagementController::class)->middleware('admin.permission:manage_quizzes,manage_own_quizzes');
     Route::resource('live-classes', App\Http\Controllers\Admin\LiveClassManagementController::class)->middleware('admin.permission:manage_live_classes,manage_own_live_classes');
+    Route::get('/live-classes/{liveClass}/registrations', [App\Http\Controllers\Admin\LiveClassManagementController::class, 'registrations'])->name('live-classes.registrations')->middleware('admin.permission:manage_live_classes,manage_own_live_classes');
+    Route::get('/live-classes/{liveClass}/analytics', [App\Http\Controllers\Admin\LiveClassManagementController::class, 'analytics'])->name('live-classes.analytics')->middleware('admin.permission:manage_live_classes,manage_own_live_classes');
+    Route::post('/live-classes/{liveClass}/toggle-status', [App\Http\Controllers\Admin\LiveClassManagementController::class, 'toggleStatus'])->name('live-classes.toggle_status')->middleware('admin.permission:manage_live_classes,manage_own_live_classes');
+    Route::get('/live-classes/{liveClass}/duplicate', [App\Http\Controllers\Admin\LiveClassManagementController::class, 'duplicate'])->name('live-classes.duplicate')->middleware('admin.permission:manage_live_classes,manage_own_live_classes');
+    Route::post('/live-classes/bulk-delete', [App\Http\Controllers\Admin\LiveClassManagementController::class, 'bulkDelete'])->name('live-classes.bulk_delete')->middleware('admin.permission:manage_live_classes,manage_own_live_classes');
+    Route::post('/live-classes/bulk-update-status', [App\Http\Controllers\Admin\LiveClassManagementController::class, 'bulkUpdateStatus'])->name('live-classes.bulk_update_status')->middleware('admin.permission:manage_live_classes,manage_own_live_classes');
     Route::resource('questions-answers', App\Http\Controllers\Admin\QuestionsAnswersManagementController::class)->middleware('admin.permission:manage_questions_answers,manage_own_questions_answers');
     Route::resource('languages', App\Http\Controllers\Admin\LanguageController::class)->middleware('admin.permission:manage_languages');
     Route::resource('translations', App\Http\Controllers\Admin\TranslationController::class)->middleware('admin.permission:manage_translations');
@@ -234,6 +250,7 @@ Route::resource('quizzes.questions', App\Http\Controllers\Admin\QuizQuestionMana
     Route::post('/courses/bulk-update-status', [App\Http\Controllers\Admin\CoursesController::class, 'bulkUpdateStatus'])->name('courses.bulk_update_status');
     Route::get('/homework/{homework}/analytics', [App\Http\Controllers\Admin\HomeworkManagementController::class, 'analytics'])->name('homework.analytics')->middleware('admin.permission:view_analytics,view_own_analytics');
     Route::get('/homework/{homework}/submissions', [App\Http\Controllers\Admin\HomeworkManagementController::class, 'submissions'])->name('homework.submissions');
+    Route::post('/homework/submissions/{submission}/grade', [App\Http\Controllers\Admin\HomeworkManagementController::class, 'gradeSubmission'])->name('homework.submissions.grade');
     Route::get('/quizzes/{quiz}/analytics', [App\Http\Controllers\Admin\QuizManagementController::class, 'analytics'])->name('quizzes.analytics')->middleware('admin.permission:view_analytics,view_own_analytics');
     Route::get('/quizzes/{quiz}/attempts', [App\Http\Controllers\Admin\QuizManagementController::class, 'attempts'])->name('quizzes.attempts');
     Route::get('/quizzes/export-list/{format?}', [App\Http\Controllers\Admin\QuizManagementController::class, 'exportList'])->name('quizzes.export_list');
@@ -370,6 +387,7 @@ Route::resource('quizzes.questions', App\Http\Controllers\Admin\QuizQuestionMana
     Route::get('/settings/main-content', [App\Http\Controllers\Admin\MainContentSettingsController::class, 'index'])->name('settings.main-content.index');
     Route::put('/settings/main-content', [App\Http\Controllers\Admin\MainContentSettingsController::class, 'update'])->name('settings.main-content.update');
     Route::post('/settings/main-content/remove-logo', [App\Http\Controllers\Admin\MainContentSettingsController::class, 'removeLogo'])->name('settings.main-content.remove-logo');
+    Route::post('/settings/main-content/remove-favicon', [App\Http\Controllers\Admin\MainContentSettingsController::class, 'removeFavicon'])->name('settings.main-content.remove-favicon');
 
     Route::get('/enrollments/export', [App\Http\Controllers\Admin\EnrollmentsController::class, 'export'])->name('enrollments.export');
     Route::get('/homework/export/{format?}', [App\Http\Controllers\Admin\HomeworkManagementController::class, 'export'])->name('homework.export');

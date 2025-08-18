@@ -80,78 +80,8 @@
                 <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
                     @include('courses.partials.course-overview', ['course' => $course])
 
-                    <!-- Course Info Section -->
-                    <div class="container py-5">
-                        <h2 class="fw-bold">{{ __('About this course') }}</h2>
-                        <p class="text-muted">{{ $course->description }}</p>
 
-                        <hr class="my-4">
 
-                        <!-- Course Stats -->
-                        <div class="course-stats mb-4">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="d-flex align-items-center">
-                                        <span class="stats-label">{{ __('By the numbers') }}</span>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="d-flex align-items-center">
-                                        <span class="stats-label">{{ __('students enrolled') }}:</span>
-                                        <span class="stats-value ms-2">{{ $course->enrolled_students ?? 0 }}</span>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="d-flex align-items-center">
-                                        <span class="stats-label">{{ __('Classes') }}:</span>
-                                        <span
-                                            class="stats-value ms-2">{{ $course->sections->sum(function ($section) {return $section->lectures->count();}) }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row mt-3">
-                                <div class="col-md-4"></div>
-                                <div class="col-md-4">
-                                    <div class="d-flex align-items-center">
-                                        <span class="stats-label">{{ __('Languages') }}:</span>
-                                        <span class="stats-value ms-2">{{ $course->language ?? __('English') }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <hr class="my-4">
-
-                        <!-- Course Description -->
-                        <div class="row">
-                            <div class="col-md-3">
-                                <h5 class="fw-bold">{{ __('Description') }}</h5>
-                            </div>
-                            <div class="col-md-9">
-                                <h3 class="fw-bold mb-3">{{ __('About this course') }}</h3>
-                                <p class="text-muted mb-4">{{ $course->description }}</p>
-
-                                <h4 class="fw-bold mb-3">{{ __('Description') }}</h4>
-                                <div class="course-description">
-                                    {!! nl2br(e($course->description)) !!}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <hr class="my-4">
-
-                    <!-- Instructor Section -->
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-md-3">
-                                <h5 class="fw-bold">{{ __('Instructor') }}</h5>
-                            </div>
-                            <div class="col-md-9">
-                                @include('courses.partials.course-instructor', ['course' => $course])
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- Course Content Tab -->
@@ -165,14 +95,15 @@
                         <div class="container">
                             <div class="d-flex justify-content-between align-items-center mb-4">
                                 <h3 class="fw-bold">{{ __('Live Classes') }}</h3>
-                                <button class="btn btn-orange">
-                                    <i class="fa fa-calendar me-2"></i>{{ __('Schedule Live Class') }}
-                                </button>
                             </div>
 
                             @if ($course->liveClasses && $course->liveClasses->count() > 0)
                                 <div class="row g-4">
                                     @foreach ($course->liveClasses as $liveClass)
+                                        @php
+                                            $userRegistration = $liveClass->registrations->first();
+                                            $isRegistered = $userRegistration !== null;
+                                        @endphp
                                         <div class="col-lg-6">
                                             <div class="live-class-card bg-white p-4 rounded-4 shadow-sm h-100">
                                                 <div class="d-flex justify-content-between align-items-start mb-3">
@@ -183,6 +114,25 @@
                                                     </span>
                                                 </div>
                                                 <p class="text-muted mb-3">{{ $liveClass->description }}</p>
+
+                                                @if ($isRegistered)
+                                                    <div class="alert alert-success mb-3">
+                                                        <div class="d-flex align-items-center">
+                                                            <i class="fa fa-check-circle me-2"></i>
+                                                            <strong>{{ __('You are registered for this class!') }}</strong>
+                                                        </div>
+                                                        @if ($liveClass->link)
+                                                            <div class="mt-2">
+                                                                <a href="{{ $liveClass->link }}" target="_blank"
+                                                                    class="btn btn-success btn-sm">
+                                                                    <i
+                                                                        class="fa fa-external-link-alt me-1"></i>{{ __('Join Meeting') }}
+                                                                </a>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                @endif
+
                                                 <div class="live-class-details mb-3">
                                                     <div class="row g-2">
                                                         <div class="col-6">
@@ -209,9 +159,29 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <button class="btn btn-outline-primary w-100">
-                                                    <i class="fa fa-video me-2"></i>{{ __('Join Live Class') }}
-                                                </button>
+
+                                                <div class="d-flex gap-2">
+                                                    @if (!$isRegistered)
+                                                        <button class="btn btn-outline-primary flex-fill"
+                                                            onclick="joinLiveClass({{ $liveClass->id }})">
+                                                            <i class="fa fa-video me-2"></i>{{ __('Join Live Class') }}
+                                                        </button>
+                                                    @else
+                                                        <div class="text-center flex-fill">
+                                                            <span class="badge bg-success">
+                                                                <i class="fa fa-check me-1"></i>{{ __('Registered') }}
+                                                            </span>
+                                                        </div>
+                                                    @endif
+
+                                                    @if ($liveClass->materials && count($liveClass->materials) > 0)
+                                                        <button class="btn btn-outline-secondary"
+                                                            onclick="downloadMaterials({{ $liveClass->id }})"
+                                                            title="{{ __('Download Materials') }}">
+                                                            <i class="fa fa-download"></i>
+                                                        </button>
+                                                    @endif
+                                                </div>
                                             </div>
                                         </div>
                                     @endforeach
@@ -222,7 +192,7 @@
                                     <h4 class="fw-bold mb-2">{{ __('No Live Classes Scheduled') }}</h4>
                                     <p class="text-muted mb-4">{{ __('Live classes will be scheduled and appear here.') }}
                                     </p>
-                                    <button class="btn btn-orange">
+                                    <button class="btn btn-orange" onclick="getNotified()">
                                         <i class="fa fa-bell me-2"></i>{{ __('Get Notified') }}
                                     </button>
                                 </div>
@@ -247,21 +217,23 @@
                         <div class="container">
                             <div class="d-flex justify-content-between align-items-center mb-4">
                                 <h3 class="fw-bold">{{ __('Homework Assignments') }}</h3>
-                                <button class="btn btn-orange">
-                                    <i class="fa fa-plus me-2"></i>{{ __('Submit Homework') }}
-                                </button>
                             </div>
 
                             @if ($course->homework && $course->homework->count() > 0)
                                 <div class="row g-4">
                                     @foreach ($course->homework as $assignment)
+                                        @php
+                                            $userSubmission = $assignment->submissions->first();
+                                            $hasSubmitted = $userSubmission !== null;
+                                            $isGraded = $hasSubmitted && $userSubmission->is_graded;
+                                        @endphp
                                         <div class="col-lg-6">
                                             <div class="homework-card bg-white p-4 rounded-4 shadow-sm h-100">
                                                 <div class="d-flex justify-content-between align-items-start mb-3">
-                                                    <h5 class="fw-bold mb-0">{{ $assignment->title }}</h5>
+                                                    <h5 class="fw-bold mb-0">{{ $assignment->name }}</h5>
                                                     <span
-                                                        class="badge bg-{{ $assignment->status === 'active' ? 'success' : ($assignment->status === 'submitted' ? 'primary' : 'secondary') }}">
-                                                        {{ ucfirst($assignment->status) }}
+                                                        class="badge bg-{{ $hasSubmitted ? ($isGraded ? 'success' : 'warning') : 'secondary' }}">
+                                                        {{ $hasSubmitted ? ($isGraded ? __('Graded') : __('Submitted')) : __('Not Started') }}
                                                     </span>
                                                 </div>
                                                 <p class="text-muted mb-3">{{ $assignment->description }}</p>
@@ -275,7 +247,7 @@
                                                         </div>
                                                         <div class="col-6">
                                                             <small class="text-muted">{{ __('Points') }}:</small>
-                                                            <div class="fw-bold">{{ $assignment->points ?? '0' }}
+                                                            <div class="fw-bold">{{ $assignment->max_score ?? '0' }}
                                                                 {{ __('points') }}</div>
                                                         </div>
                                                         <div class="col-6">
@@ -286,17 +258,38 @@
                                                         <div class="col-6">
                                                             <small class="text-muted">{{ __('Status') }}:</small>
                                                             <div class="fw-bold">
-                                                                {{ ucfirst($assignment->status ?? 'Not Started') }}</div>
+                                                                {{ $hasSubmitted ? ($isGraded ? __('Graded') : __('Submitted')) : __('Not Started') }}
+                                                            </div>
                                                         </div>
+                                                        @if ($isGraded)
+                                                            <div class="col-12">
+                                                                <div class="alert alert-success mb-0">
+                                                                    <strong>{{ __('Your Grade:') }}</strong>
+                                                                    {{ $userSubmission->score_earned }}/{{ $userSubmission->max_score }}
+                                                                    ({{ number_format($userSubmission->percentage_score, 1) }}%)
+                                                                    @if ($userSubmission->feedback)
+                                                                        <br><small
+                                                                            class="text-muted">{{ __('Feedback:') }}
+                                                                            {{ $userSubmission->feedback }}</small>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                        @endif
                                                     </div>
                                                 </div>
                                                 <div class="d-flex gap-2">
-                                                    <button class="btn btn-outline-primary flex-fill">
+                                                    <button class="btn btn-outline-primary flex-fill"
+                                                        onclick="viewHomeworkDetails({{ $assignment->id }})">
                                                         <i class="fa fa-eye me-2"></i>{{ __('View Details') }}
                                                     </button>
-                                                    @if ($assignment->status !== 'submitted')
-                                                        <button class="btn btn-orange flex-fill">
+                                                    @if (!$hasSubmitted)
+                                                        <button class="btn btn-orange flex-fill"
+                                                            onclick="submitHomeworkAssignment({{ $assignment->id }})">
                                                             <i class="fa fa-upload me-2"></i>{{ __('Submit') }}
+                                                        </button>
+                                                    @else
+                                                        <button class="btn btn-secondary flex-fill" disabled>
+                                                            <i class="fa fa-check me-2"></i>{{ __('Already Submitted') }}
                                                         </button>
                                                     @endif
                                                 </div>
@@ -310,7 +303,7 @@
                                     <h4 class="fw-bold mb-2">{{ __('No Homework Assignments') }}</h4>
                                     <p class="text-muted mb-4">
                                         {{ __('Homework assignments will be posted here by your instructor.') }}</p>
-                                    <button class="btn btn-orange">
+                                    <button class="btn btn-orange" onclick="getHomeworkNotified()">
                                         <i class="fa fa-bell me-2"></i>{{ __('Get Notified') }}
                                     </button>
                                 </div>
@@ -458,6 +451,238 @@
                     <button type="button" class="btn btn-secondary"
                         data-bs-dismiss="modal">{{ __('Cancel') }}</button>
                     <button type="button" class="btn btn-danger" id="submitReport">{{ __('Submit Report') }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Schedule Live Class Modal -->
+    <div class="modal fade" id="scheduleLiveClassModal" tabindex="-1" aria-labelledby="scheduleLiveClassModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="scheduleLiveClassModalLabel">{{ __('Schedule Live Class') }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="scheduleLiveClassForm">
+                        <div class="mb-3">
+                            <label for="liveClassTitle" class="form-label">{{ __('Class Title') }}</label>
+                            <input type="text" class="form-control" id="liveClassTitle" name="title"
+                                placeholder="{{ __('Enter class title') }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="liveClassDescription" class="form-label">{{ __('Description') }}</label>
+                            <textarea class="form-control" id="liveClassDescription" name="description" rows="3"
+                                placeholder="{{ __('Enter class description') }}"></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="liveClassDate" class="form-label">{{ __('Date') }}</label>
+                                    <input type="date" class="form-control" id="liveClassDate" name="scheduled_date"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="liveClassTime" class="form-label">{{ __('Time') }}</label>
+                                    <input type="time" class="form-control" id="liveClassTime" name="scheduled_time"
+                                        required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="liveClassDuration"
+                                        class="form-label">{{ __('Duration (minutes)') }}</label>
+                                    <input type="number" class="form-control" id="liveClassDuration" name="duration"
+                                        value="60" min="15" max="180">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="liveClassCapacity"
+                                        class="form-label">{{ __('Max Participants') }}</label>
+                                    <input type="number" class="form-control" id="liveClassCapacity"
+                                        name="max_participants" value="50" min="1">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">{{ __('Cancel') }}</button>
+                    <button type="submit" form="scheduleLiveClassForm"
+                        class="btn btn-orange">{{ __('Schedule Class') }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Join Live Class Modal -->
+    <div class="modal fade" id="joinLiveClassModal" tabindex="-1" aria-labelledby="joinLiveClassModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="joinLiveClassModalLabel">{{ __('Join Live Class') }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="joinLiveClassForm">
+                        <div class="mb-3">
+                            <label for="joinReason" class="form-label">{{ __('Reason for joining') }}</label>
+                            <textarea class="form-control" id="joinReason" name="reason" rows="3"
+                                placeholder="{{ __('Why do you want to join this live class?') }}"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">{{ __('Cancel') }}</button>
+                    <button type="submit" form="joinLiveClassForm"
+                        class="btn btn-primary">{{ __('Join Class') }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submit Homework Modal -->
+    <div class="modal fade" id="submitHomeworkModal" tabindex="-1" aria-labelledby="submitHomeworkModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="submitHomeworkModalLabel">{{ __('Submit Homework') }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="submitHomeworkForm">
+                        <div class="mb-3">
+                            <label for="homeworkTitle" class="form-label">{{ __('Homework Title') }}</label>
+                            <input type="text" class="form-control" id="homeworkTitle" name="title"
+                                placeholder="{{ __('Enter homework title') }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="homeworkDescription" class="form-label">{{ __('Description') }}</label>
+                            <textarea class="form-control" id="homeworkDescription" name="description" rows="3"
+                                placeholder="{{ __('Enter homework description') }}"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="homeworkFile" class="form-label">{{ __('Upload File') }}</label>
+                            <input type="file" class="form-control" id="homeworkFile" name="file"
+                                accept=".pdf,.doc,.docx,.txt,.zip,.rar">
+                            <div class="form-text">{{ __('Accepted formats: PDF, DOC, DOCX, TXT, ZIP, RAR') }}</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="homeworkContent" class="form-label">{{ __('Content') }}</label>
+                            <textarea class="form-control" id="homeworkContent" name="content" rows="5"
+                                placeholder="{{ __('Enter your homework content here...') }}"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">{{ __('Cancel') }}</button>
+                    <button type="submit" form="submitHomeworkForm"
+                        class="btn btn-orange">{{ __('Submit Homework') }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Homework Details Modal -->
+    <div class="modal fade" id="viewHomeworkDetailsModal" tabindex="-1" aria-labelledby="viewHomeworkDetailsModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewHomeworkDetailsModalLabel">{{ __('Homework Details') }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="homeworkDetailsId">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="fw-bold">{{ __('Title') }}</h6>
+                            <p id="homeworkDetailsTitle"></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="fw-bold">{{ __('Status') }}</h6>
+                            <p id="homeworkDetailsStatus"></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="fw-bold">{{ __('Due Date') }}</h6>
+                            <p id="homeworkDetailsDueDate"></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="fw-bold">{{ __('Points') }}</h6>
+                            <p id="homeworkDetailsPoints"></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="fw-bold">{{ __('Type') }}</h6>
+                            <p id="homeworkDetailsType"></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <h6 class="fw-bold">{{ __('Description') }}</h6>
+                            <div id="homeworkDetailsDescription"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">{{ __('Close') }}</button>
+                    <button type="button" class="btn btn-orange"
+                        onclick="submitHomeworkAssignment(document.getElementById('homeworkDetailsId').value)">{{ __('Submit Assignment') }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submit Homework Assignment Modal -->
+    <div class="modal fade" id="submitHomeworkAssignmentModal" tabindex="-1"
+        aria-labelledby="submitHomeworkAssignmentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="submitHomeworkAssignmentModalLabel">{{ __('Submit Assignment') }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="submitHomeworkAssignmentForm">
+                        <div class="mb-3">
+                            <label for="assignmentFile" class="form-label">{{ __('Upload Assignment File') }}</label>
+                            <input type="file" class="form-control" id="assignmentFile" name="file"
+                                accept=".pdf,.doc,.docx,.txt,.zip,.rar" required>
+                            <div class="form-text">{{ __('Accepted formats: PDF, DOC, DOCX, TXT, ZIP, RAR') }}</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="assignmentContent" class="form-label">{{ __('Assignment Content') }}</label>
+                            <textarea class="form-control" id="assignmentContent" name="content" rows="5"
+                                placeholder="{{ __('Enter your assignment content here...') }}"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="assignmentNotes" class="form-label">{{ __('Notes (Optional)') }}</label>
+                            <textarea class="form-control" id="assignmentNotes" name="notes" rows="3"
+                                placeholder="{{ __('Any additional notes for your instructor...') }}"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">{{ __('Cancel') }}</button>
+                    <button type="submit" form="submitHomeworkAssignmentForm"
+                        class="btn btn-orange">{{ __('Submit Assignment') }}</button>
                 </div>
             </div>
         </div>
@@ -1059,6 +1284,195 @@
             toast.addEventListener('hidden.bs.toast', () => {
                 document.body.removeChild(toast);
             });
+        }
+
+        // New functions for Live Class functionality
+
+        function joinLiveClass(liveClassId) {
+            const courseId = {{ $course->id }};
+            const modal = new bootstrap.Modal(document.getElementById('joinLiveClassModal'));
+            modal.show();
+
+            document.getElementById('joinLiveClassForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                formData.append('live_class_id', liveClassId);
+                fetch(`/courses/${courseId}/join-live-class`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                .getAttribute('content')
+                        },
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showToast('{{ __('You have joined the live class!') }}', 'success');
+                            modal.hide();
+                            // Optionally, update the live class status or UI
+                            location.reload(); // Simple refresh to show updated live class
+                        } else {
+                            showToast('{{ __('Failed to join live class.') }}', 'danger');
+                            console.error(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        showToast('{{ __('Error joining live class.') }}', 'danger');
+                        console.error(error);
+                    });
+            });
+        }
+
+        function getNotified() {
+            showToast('{{ __('You will be notified when a live class is scheduled.') }}', 'info');
+        }
+
+        function downloadMaterials(liveClassId) {
+            const courseId = {{ $course->id }};
+
+            // Show loading state
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Downloading...';
+            button.disabled = true;
+
+            // Create a temporary form to download the materials
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/courses/${courseId}/live-classes/${liveClassId}/download-materials`;
+            form.style.display = 'none';
+
+            // Add CSRF token
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = '_token';
+            csrfToken.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            form.appendChild(csrfToken);
+
+            // Append form to body and submit
+            document.body.appendChild(form);
+
+            // Add error handling
+            try {
+                form.submit();
+            } catch (error) {
+                console.error('Download error:', error);
+                showToast('{{ __('Error downloading materials.') }}', 'danger');
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }
+
+            // Reset button after a short delay
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.disabled = false;
+                if (document.body.contains(form)) {
+                    document.body.removeChild(form);
+                }
+            }, 2000);
+        }
+
+        // New functions for Homework functionality
+
+        function viewHomeworkDetails(assignmentId) {
+            const courseId = {{ $course->id }};
+            const modal = new bootstrap.Modal(document.getElementById('viewHomeworkDetailsModal'));
+            modal.show();
+
+            fetch(`/courses/${courseId}/homework/${assignmentId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('homeworkDetailsTitle').textContent = data.assignment.title;
+                        document.getElementById('homeworkDetailsDescription').innerHTML = data.assignment.description;
+                        document.getElementById('homeworkDetailsDueDate').textContent = data.assignment.due_date ? data
+                            .assignment.due_date.format('M d, Y') : '{{ __('No due date') }}';
+                        document.getElementById('homeworkDetailsPoints').textContent = data.assignment.max_score ?? '0';
+                        document.getElementById('homeworkDetailsType').textContent = data.assignment.type ??
+                            '{{ __('Assignment') }}';
+                        document.getElementById('homeworkDetailsStatus').textContent = data.assignment.status ??
+                            '{{ __('Not Started') }}';
+                        document.getElementById('homeworkDetailsId').value = data.assignment.id;
+
+                        // Show grade information if available
+                        if (data.assignment.grade) {
+                            const gradeInfo = `
+                                <div class="alert alert-success mt-3">
+                                    <strong>{{ __('Your Grade:') }}</strong>
+                                    ${data.assignment.grade.score_earned}/${data.assignment.grade.max_score}
+                                    (${data.assignment.grade.percentage_score}%)
+                                    ${data.assignment.grade.feedback ? `<br><small class="text-muted">{{ __('Feedback:') }} ${data.assignment.grade.feedback}</small>` : ''}
+                                </div>
+                            `;
+                            document.getElementById('homeworkDetailsDescription').innerHTML += gradeInfo;
+                        }
+                    } else {
+                        showToast('{{ __('Failed to load homework details.') }}', 'danger');
+                        console.error(data.message);
+                    }
+                })
+                .catch(error => {
+                    showToast('{{ __('Error loading homework details.') }}', 'danger');
+                    console.error(error);
+                });
+        }
+
+        function submitHomeworkAssignment(assignmentId) {
+            const courseId = {{ $course->id }};
+
+            // Check if user has already submitted this assignment
+            const assignmentCard = document.querySelector(`[onclick="submitHomeworkAssignment(${assignmentId})"]`).closest(
+                '.homework-card');
+            const submitButton = assignmentCard.querySelector(`[onclick="submitHomeworkAssignment(${assignmentId})"]`);
+            const alreadySubmittedButton = assignmentCard.querySelector('.btn-secondary[disabled]');
+
+            if (alreadySubmittedButton) {
+                showToast('{{ __('You have already submitted this assignment.') }}', 'warning');
+                return;
+            }
+
+            const modal = new bootstrap.Modal(document.getElementById('submitHomeworkAssignmentModal'));
+            modal.show();
+
+            document.getElementById('submitHomeworkAssignmentForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                formData.append('assignment_id', assignmentId);
+                fetch(`/courses/${courseId}/submit-homework-assignment`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                .getAttribute('content')
+                        },
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showToast('{{ __('Homework submitted successfully!') }}', 'success');
+                            modal.hide();
+                            // Update the UI to show as submitted
+                            submitButton.disabled = true;
+                            submitButton.innerHTML =
+                                '<i class="fa fa-check me-2"></i>{{ __('Already Submitted') }}';
+                            submitButton.className = 'btn btn-secondary flex-fill';
+                            // Optionally, refresh the page to show updated status
+                            location.reload();
+                        } else {
+                            showToast('{{ __('Failed to submit homework.') }}', 'danger');
+                            console.error(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        showToast('{{ __('Error submitting homework.') }}', 'danger');
+                        console.error(error);
+                    });
+            });
+        }
+
+        function getHomeworkNotified() {
+            showToast('{{ __('You will be notified when a homework assignment is posted.') }}', 'info');
         }
     </script>
 @endpush

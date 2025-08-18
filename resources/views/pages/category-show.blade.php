@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
-@section('title', $category->name . ' - E-Class')
+@section('title', (isset($category) ? $category->name : 'Category') . ' - ' .
+    (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site Name'))
 
 @section('content')
     <!-- Category Banner -->

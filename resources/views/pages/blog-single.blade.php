@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
-@section('title', $blog->title . ' - E-Class')
+@section('title', ($blog->title ?? 'Blog') . ' - ' . (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site
+    Name'))
 
 @section('content')
     <!-- Blog Single Banner -->

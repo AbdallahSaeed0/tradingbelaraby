@@ -158,7 +158,7 @@
                             <div class="col-lg-6 mb-4 px-4 mb-lg-0">
                                 @if ($infoSplit && $infoSplit->image)
                                     <img src="{{ $infoSplit->image_url }}" alt="Info Split"
-                                        class="img-fluid rounded-4 shadow-sm w-100">
+                                        class="img-fluid rounded-4 w-100">
                                 @else
                                     <div class="bg-light rounded-4 shadow-sm w-100"
                                         style="height: 300px; display: flex; align-items: center; justify-content: center;">

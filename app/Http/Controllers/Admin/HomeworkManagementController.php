@@ -464,7 +464,7 @@ class HomeworkManagementController extends Controller
                 'feedback' => $request->feedback,
                 'instructor_notes' => $request->instructor_notes,
                 'graded_at' => now(),
-                'graded_by' => auth()->id(),
+                'graded_by' => auth('admin')->id(),
                 'status' => 'graded',
                 'is_graded' => true
             ]);

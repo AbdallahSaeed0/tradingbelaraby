@@ -101,6 +101,44 @@
                                 @endif
                             </div>
 
+                            <!-- Favicon Section -->
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h6 class="text-primary mb-3">
+                                        <i class="fas fa-star me-2"></i>
+                                        Favicon
+                                    </h6>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="favicon" class="form-label">Upload Favicon</label>
+                                        <input type="file" class="form-control @error('favicon') is-invalid @enderror"
+                                            id="favicon" name="favicon" accept="image/x-icon,image/png">
+                                        <div class="form-text">Recommended size: 32x32px or 48x48px. Format: .ico or .png.
+                                            Max file size: 512KB.</div>
+                                        @error('favicon')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    @if ($settings->favicon)
+                                        <div class="mb-3">
+                                            <label class="form-label">Current Favicon</label>
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ $settings->favicon_url }}" alt="Current Favicon"
+                                                    style="height:32px;width:32px;" class="me-3">
+                                                <button type="button" class="btn btn-danger btn-sm"
+                                                    onclick="removeFavicon()">
+                                                    <i class="fas fa-trash me-1"></i>
+                                                    Remove Favicon
+                                                </button>
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+
                             <!-- Site Information Section -->
                             <div class="row mb-4">
                                 <div class="col-12">
@@ -108,13 +146,18 @@
                                         <i class="fas fa-info-circle me-2"></i>
                                         Site Information
                                     </h6>
+                                    <div class="alert alert-info small mt-2">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        The <strong>Site Name</strong> you set here will be used as the default
+                                        &lt;title&gt; in the browser tab and in the &lt;head&gt; of your site.
+                                    </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="site_name" class="form-label">Site Name</label>
-                                        <input type="text" class="form-control @error('site_name') is-invalid @enderror"
-                                            id="site_name" name="site_name"
-                                            value="{{ old('site_name', $settings->site_name) }}"
+                                        <input type="text"
+                                            class="form-control @error('site_name') is-invalid @enderror" id="site_name"
+                                            name="site_name" value="{{ old('site_name', $settings->site_name) }}"
                                             placeholder="Enter your site name">
                                         @error('site_name')
                                             <div class="invalid-feedback">{{ $message }}</div>
@@ -125,8 +168,9 @@
                                     <div class="mb-3">
                                         <label for="site_author" class="form-label">Site Author</label>
                                         <input type="text"
-                                            class="form-control @error('site_author') is-invalid @enderror" id="site_author"
-                                            name="site_author" value="{{ old('site_author', $settings->site_author) }}"
+                                            class="form-control @error('site_author') is-invalid @enderror"
+                                            id="site_author" name="site_author"
+                                            value="{{ old('site_author', $settings->site_author) }}"
                                             placeholder="Enter site author name">
                                         @error('site_author')
                                             <div class="invalid-feedback">{{ $message }}</div>
@@ -218,6 +262,44 @@
                     .catch(error => {
                         console.error('Error:', error);
                         alert('An error occurred while removing the logo.');
+                    });
+            }
+        }
+
+        function removeFavicon() {
+            if (confirm('Are you sure you want to remove the current favicon?')) {
+                fetch('{{ route('admin.settings.main-content.remove-favicon') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Remove the favicon display
+                            const currentFavicon = document.querySelector('.current-favicon');
+                            if (currentFavicon) {
+                                currentFavicon.remove();
+                            }
+                            // Show success message
+                            const alert = document.createElement('div');
+                            alert.className = 'alert alert-success alert-dismissible fade show';
+                            alert.innerHTML = `
+                            <i class="fas fa-check-circle me-2"></i>
+                            ${data.message}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        `;
+                            document.querySelector('.container-fluid').insertBefore(alert, document.querySelector(
+                                '.row'));
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while removing the favicon.');
                     });
             }
         }

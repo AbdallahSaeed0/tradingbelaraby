@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Quiz;
 use App\Models\QuizQuestion;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class QuizQuestionManagementController extends Controller
 {
@@ -22,21 +23,72 @@ class QuizQuestionManagementController extends Controller
 
     public function store(Request $request, Quiz $quiz)
     {
-        $request->validate([
-            'question_text' => 'required|string|max:1000',
-            'options' => 'required|array|min:2',
-            'options.*' => 'required|string|max:500',
-            'correct_answers' => 'required|array|min:1',
-            'correct_answers.*' => 'integer|min:0'
-        ]);
+        $questionType = $request->question_type ?? 'multiple_choice';
 
-        $question = $quiz->questions()->create([
+        // Base validation
+        $validationRules = [
+            'question_text' => 'required|string|max:1000',
+            'question_type' => 'required|string|in:multiple_choice,true_false,fill_blank,essay',
+            'points' => 'required|integer|min:1',
+        ];
+
+        // Type-specific validation
+        switch ($questionType) {
+            case 'multiple_choice':
+                $validationRules['options'] = 'required|array|min:2';
+                $validationRules['options.*'] = 'required|string|max:500';
+                $validationRules['correct_answers'] = 'required|array|min:1';
+                $validationRules['correct_answers.*'] = 'integer|min:0';
+                break;
+
+            case 'true_false':
+                $validationRules['correct_answer_boolean'] = 'required|boolean';
+                break;
+
+            case 'fill_blank':
+                $validationRules['correct_answers_text'] = 'required|array|min:1';
+                $validationRules['correct_answers_text.*'] = 'required|string|max:500';
+                break;
+
+            case 'essay':
+                $validationRules['sample_answer'] = 'nullable|string|max:1000';
+                $validationRules['word_limit'] = 'nullable|integer|min:1';
+                break;
+        }
+
+        $request->validate($validationRules);
+
+        // Prepare question data
+        $questionData = [
             'question_text' => $request->question_text,
-            'question_type' => 'multiple_choice',
-            'points' => $request->points ?? 1,
-            'options' => $request->options,
-            'correct_answers' => $request->correct_answers
-        ]);
+            'question_type' => $questionType,
+            'points' => $request->points,
+            'order' => $request->order ?? ($quiz->questions()->max('order') + 1),
+            'explanation' => $request->explanation,
+        ];
+
+        // Add type-specific data
+        switch ($questionType) {
+            case 'multiple_choice':
+                $questionData['options'] = $request->options;
+                $questionData['correct_answers'] = $request->correct_answers;
+                break;
+
+            case 'true_false':
+                $questionData['correct_answer_boolean'] = $request->correct_answer_boolean;
+                break;
+
+            case 'fill_blank':
+                $questionData['correct_answers_text'] = $request->correct_answers_text;
+                break;
+
+            case 'essay':
+                $questionData['sample_answer'] = $request->sample_answer;
+                $questionData['word_limit'] = $request->word_limit;
+                break;
+        }
+
+        $question = $quiz->questions()->create($questionData);
 
         if ($request->expectsJson()) {
             return response()->json([
@@ -52,7 +104,16 @@ class QuizQuestionManagementController extends Controller
 
     public function show(Quiz $quiz, QuizQuestion $question)
     {
-        if (request()->expectsJson()) {
+        // Debug logging
+        Log::info('QuizQuestion show method called', [
+            'quiz_id' => $quiz->id,
+            'question_id' => $question->id,
+            'expects_json' => request()->expectsJson(),
+            'ajax' => request()->ajax(),
+            'x_requested_with' => request()->header('X-Requested-With')
+        ]);
+
+        if (request()->expectsJson() || request()->ajax() || request()->header('X-Requested-With') === 'XMLHttpRequest') {
             return response()->json([
                 'success' => true,
                 'question' => $question
@@ -69,20 +130,72 @@ class QuizQuestionManagementController extends Controller
 
     public function update(Request $request, Quiz $quiz, QuizQuestion $question)
     {
-        $request->validate([
-            'question_text' => 'required|string|max:1000',
-            'options' => 'required|array|min:2',
-            'options.*' => 'required|string|max:500',
-            'correct_answers' => 'required|array|min:1',
-            'correct_answers.*' => 'integer|min:0'
-        ]);
+        $questionType = $request->question_type ?? $question->question_type;
 
-        $question->update([
+        // Base validation
+        $validationRules = [
+            'question_text' => 'required|string|max:1000',
+            'question_type' => 'required|string|in:multiple_choice,true_false,fill_blank,essay',
+            'points' => 'required|integer|min:1',
+        ];
+
+        // Type-specific validation
+        switch ($questionType) {
+            case 'multiple_choice':
+                $validationRules['options'] = 'required|array|min:2';
+                $validationRules['options.*'] = 'required|string|max:500';
+                $validationRules['correct_answers'] = 'required|array|min:1';
+                $validationRules['correct_answers.*'] = 'integer|min:0';
+                break;
+
+            case 'true_false':
+                $validationRules['correct_answer_boolean'] = 'required|boolean';
+                break;
+
+            case 'fill_blank':
+                $validationRules['correct_answers_text'] = 'required|array|min:1';
+                $validationRules['correct_answers_text.*'] = 'required|string|max:500';
+                break;
+
+            case 'essay':
+                $validationRules['sample_answer'] = 'nullable|string|max:1000';
+                $validationRules['word_limit'] = 'nullable|integer|min:1';
+                break;
+        }
+
+        $request->validate($validationRules);
+
+        // Prepare question data
+        $questionData = [
             'question_text' => $request->question_text,
-            'points' => $request->points ?? 1,
-            'options' => $request->options,
-            'correct_answers' => $request->correct_answers
-        ]);
+            'question_type' => $questionType,
+            'points' => $request->points,
+            'order' => $request->order ?? $question->order,
+            'explanation' => $request->explanation,
+        ];
+
+        // Add type-specific data
+        switch ($questionType) {
+            case 'multiple_choice':
+                $questionData['options'] = $request->options;
+                $questionData['correct_answers'] = $request->correct_answers;
+                break;
+
+            case 'true_false':
+                $questionData['correct_answer_boolean'] = $request->correct_answer_boolean;
+                break;
+
+            case 'fill_blank':
+                $questionData['correct_answers_text'] = $request->correct_answers_text;
+                break;
+
+            case 'essay':
+                $questionData['sample_answer'] = $request->sample_answer;
+                $questionData['word_limit'] = $request->word_limit;
+                break;
+        }
+
+        $question->update($questionData);
 
         if ($request->expectsJson()) {
             return response()->json([

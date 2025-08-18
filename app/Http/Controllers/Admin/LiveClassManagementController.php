@@ -188,15 +188,32 @@ class LiveClassManagementController extends Controller
         try {
             // Process materials (links and files)
             $materials = [];
+
+            // Get existing materials to preserve them
+            $existingMaterials = $liveClass->materials ?? [];
+
+            // Process materials from form (both existing and new)
             if ($request->has('materials')) {
                 foreach ($request->materials as $index => $material) {
                     if (!empty($material)) {
+                        // Check if this is a string (link) or should be preserved as existing file
+                        if (is_string($material)) {
+                            $materials[] = $material;
+                        }
+                    }
+                }
+            }
+
+            // Preserve existing file materials
+            if (!empty($existingMaterials)) {
+                foreach ($existingMaterials as $material) {
+                    if (is_array($material) && isset($material['type']) && $material['type'] === 'file') {
                         $materials[] = $material;
                     }
                 }
             }
 
-            // Handle file uploads
+            // Handle new file uploads
             if ($request->hasFile('material_files')) {
                 foreach ($request->file('material_files') as $file) {
                     if ($file && $file->isValid()) {
@@ -363,14 +380,102 @@ class LiveClassManagementController extends Controller
     /**
      * View live class registrations
      */
-    public function registrations(LiveClass $liveClass)
+    public function registrations(LiveClass $liveClass, Request $request)
     {
+        $registrations = $liveClass->registrations()
+            ->with('user')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Handle export requests
+        if ($request->has('export')) {
+            return $this->exportRegistrations($liveClass, $registrations, $request->export);
+        }
+
+        // Paginate for normal view
         $registrations = $liveClass->registrations()
             ->with('user')
             ->orderBy('created_at', 'desc')
             ->paginate(20);
 
         return view('admin.live-classes.registrations', compact('liveClass', 'registrations'));
+    }
+
+    /**
+     * Export registrations
+     */
+    private function exportRegistrations(LiveClass $liveClass, $registrations, $format)
+    {
+        $filename = "live-class-{$liveClass->id}-registrations-" . now()->format('Y-m-d') . ".{$format}";
+
+        switch ($format) {
+            case 'csv':
+                return $this->exportToCsv($registrations, $filename);
+            case 'excel':
+                return $this->exportToExcel($registrations, $filename);
+            case 'pdf':
+                return $this->exportToPdf($registrations, $filename, $liveClass);
+            default:
+                return back()->with('error', 'Invalid export format');
+        }
+    }
+
+    /**
+     * Export to CSV
+     */
+    private function exportToCsv($registrations, $filename)
+    {
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+        ];
+
+        $callback = function() use ($registrations) {
+            $file = fopen('php://output', 'w');
+
+            // CSV headers
+            fputcsv($file, ['#', 'Student Name', 'Email', 'Registration Date', 'Status', 'Attended']);
+
+            foreach ($registrations as $index => $registration) {
+                $studentName = $registration->user ? $registration->user->name : 'Student Deleted';
+                $email = $registration->user ? $registration->user->email : 'N/A';
+
+                fputcsv($file, [
+                    $index + 1,
+                    $studentName,
+                    $email,
+                    $registration->created_at->format('M j, Y g:i A'),
+                    ucfirst($registration->status ?? 'pending'),
+                    $registration->attended ? 'Yes' : 'No'
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Export to Excel
+     */
+    private function exportToExcel($registrations, $filename)
+    {
+        // For now, return CSV as Excel (you can implement proper Excel export later)
+        return $this->exportToCsv($registrations, str_replace('.excel', '.csv', $filename));
+    }
+
+    /**
+     * Export to PDF
+     */
+    private function exportToPdf($registrations, $filename, $liveClass)
+    {
+        // For now, return a simple HTML response (you can implement proper PDF export later)
+        $html = view('admin.live-classes.export-pdf', compact('registrations', 'liveClass'))->render();
+
+        return response($html)
+            ->header('Content-Type', 'text/html')
+            ->header('Content-Disposition', "attachment; filename=\"{$filename}\"");
     }
 
     /**

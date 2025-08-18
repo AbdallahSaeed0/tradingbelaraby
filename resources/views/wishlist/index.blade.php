@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'My Wishlist - E-Class')
+@section('title', 'My Wishlist - ' . (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site Name'))
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/pages/categories.css') }}">

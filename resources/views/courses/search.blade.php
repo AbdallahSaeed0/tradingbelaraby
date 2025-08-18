@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Search Results - E-Class')
+@section('title', 'Search Results - ' . (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site Name'))
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/pages/categories.css') }}">
