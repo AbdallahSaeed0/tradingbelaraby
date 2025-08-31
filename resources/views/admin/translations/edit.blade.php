@@ -25,6 +25,10 @@
                             @csrf
                             @method('PUT')
 
+                            <!-- Hidden fields for required validation -->
+                            <input type="hidden" name="language_id" value="{{ $translation->language_id }}">
+                            <input type="hidden" name="translation_key" value="{{ $translation->translation_key }}">
+
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">

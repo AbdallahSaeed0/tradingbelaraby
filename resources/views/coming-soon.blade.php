@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ custom_trans('title', 'coming_soon') }}</title>
+    <title>{{ custom_trans('title') }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     @if ($language === 'ar')
@@ -425,6 +425,18 @@
             }
         }
 
+        /* Number input improvements */
+        input[type="tel"] {
+            -webkit-appearance: none;
+            -moz-appearance: textfield;
+        }
+
+        input[type="tel"]::-webkit-outer-spin-button,
+        input[type="tel"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
         /* Reduced motion support */
         @media (prefers-reduced-motion: reduce) {
             * {
@@ -443,77 +455,79 @@
 <body>
     <div class="coming-soon-container">
         <!-- Left Section - Brand Panel -->
-        <div class="left-section" role="banner" aria-label="{{ custom_trans('title', 'coming_soon') }}">
+        <div class="left-section" role="banner" aria-label="{{ custom_trans('title') }}">
             <div class="logo" aria-hidden="true">
                 <i class="fas fa-graduation-cap"></i>
             </div>
-            <h1 class="coming-soon-title">{{ custom_trans('title', 'coming_soon') }}</h1>
-            <p class="coming-soon-subtitle">{{ custom_trans('subtitle', 'coming_soon') }}</p>
+            <h1 class="coming-soon-title">{{ custom_trans('title') }}</h1>
+            <p class="coming-soon-subtitle">{{ custom_trans('subtitle') }}</p>
         </div>
 
         <!-- Right Section - Form -->
         <div class="right-section">
-            <h2 class="form-title">{{ custom_trans('sign_with_us', 'coming_soon') }}</h2>
+            <h2 class="form-title">{{ custom_trans('sign_with_us') }}</h2>
 
             <div id="alert-container" role="alert" aria-live="polite"></div>
 
-            <form id="subscriptionForm" role="form" aria-label="{{ custom_trans('sign_with_us', 'coming_soon') }}">
+            <form id="subscriptionForm" role="form" aria-label="{{ custom_trans('sign_with_us') }}">
                 @csrf
                 <input type="hidden" name="language" value="{{ $language }}">
 
                 <div class="form-group">
-                    <label for="name" class="form-label">{{ custom_trans('name', 'coming_soon') }} *</label>
+                    <label for="name" class="form-label">{{ custom_trans('name') }} *</label>
                     <input type="text" class="form-control" id="name" name="name" required
-                        aria-describedby="name-help" placeholder="{{ custom_trans('name', 'coming_soon') }}">
+                        aria-describedby="name-help" placeholder="{{ custom_trans('name') }}">
                 </div>
 
                 <div class="form-group">
-                    <label for="phone" class="form-label">{{ custom_trans('phone', 'coming_soon') }} *</label>
+                    <label for="phone" class="form-label">{{ custom_trans('phone') }} *</label>
                     <input type="tel" class="form-control" id="phone" name="phone" required
-                        aria-describedby="phone-help" placeholder="{{ custom_trans('phone', 'coming_soon') }}">
+                        aria-describedby="phone-help" placeholder="{{ custom_trans('phone') }}"
+                        pattern="[0-9+\-\s\(\)]+" inputmode="numeric"
+                        oninput="this.value = this.value.replace(/[^0-9+\-\s\(\)]/g, '')">
                 </div>
 
                 <div class="form-group">
-                    <label for="email" class="form-label">{{ custom_trans('email', 'coming_soon') }} *</label>
+                    <label for="email" class="form-label">{{ custom_trans('email') }} *</label>
                     <input type="email" class="form-control" id="email" name="email" required
-                        aria-describedby="email-help" placeholder="{{ custom_trans('email', 'coming_soon') }}">
+                        aria-describedby="email-help" placeholder="{{ custom_trans('email') }}">
                 </div>
 
                 <div class="form-group">
-                    <label for="whatsapp_number"
-                        class="form-label">{{ custom_trans('whatsapp_number', 'coming_soon') }}</label>
+                    <label for="whatsapp_number" class="form-label">{{ custom_trans('whatsapp_number') }}</label>
                     <input type="tel" class="form-control" id="whatsapp_number" name="whatsapp_number"
-                        placeholder="{{ custom_trans('whatsapp_number', 'coming_soon') }}">
+                        placeholder="{{ custom_trans('whatsapp_number') }}" pattern="[0-9+\-\s\(\)]+"
+                        inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9+\-\s\(\)]/g, '')">
                 </div>
 
                 <div class="form-group">
-                    <label for="country" class="form-label">{{ custom_trans('country', 'coming_soon') }} *</label>
+                    <label for="country" class="form-label">{{ custom_trans('country') }} *</label>
                     <input type="text" class="form-control" id="country" name="country" required
-                        aria-describedby="country-help" placeholder="{{ custom_trans('country', 'coming_soon') }}">
+                        aria-describedby="country-help" placeholder="{{ custom_trans('country') }}">
                 </div>
 
                 <div class="form-group">
-                    <label for="years_of_experience"
-                        class="form-label">{{ custom_trans('years_of_experience', 'coming_soon') }} *</label>
+                    <label for="years_of_experience" class="form-label">{{ custom_trans('years_of_experience') }}
+                        *</label>
                     <select class="form-select" id="years_of_experience" name="years_of_experience" required
                         aria-describedby="experience-help">
-                        <option value="">{{ custom_trans('select_experience', 'coming_soon') }}</option>
-                        <option value="10">10 {{ custom_trans('years', 'coming_soon') }}</option>
-                        <option value="20">20 {{ custom_trans('years', 'coming_soon') }}</option>
-                        <option value="30">30 {{ custom_trans('years', 'coming_soon') }}</option>
-                        <option value="40">40 {{ custom_trans('years', 'coming_soon') }}</option>
-                        <option value="50">50 {{ custom_trans('years', 'coming_soon') }}</option>
+                        <option value="">{{ custom_trans('select_experience') }}</option>
+                        <option value="10">10 {{ custom_trans('years') }}</option>
+                        <option value="20">20 {{ custom_trans('years') }}</option>
+                        <option value="30">30 {{ custom_trans('years') }}</option>
+                        <option value="40">40 {{ custom_trans('years') }}</option>
+                        <option value="50">50 {{ custom_trans('years') }}</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label for="notes" class="form-label">{{ custom_trans('notes', 'coming_soon') }}</label>
+                    <label for="notes" class="form-label">{{ custom_trans('notes') }}</label>
                     <textarea class="form-control" id="notes" name="notes" rows="4"
-                        placeholder="{{ custom_trans('notes_placeholder', 'coming_soon') }}" aria-describedby="notes-help"></textarea>
+                        placeholder="{{ custom_trans('notes_placeholder') }}" aria-describedby="notes-help"></textarea>
                 </div>
 
                 <button type="submit" class="btn-submit" id="submitBtn" aria-describedby="submit-help">
-                    {{ custom_trans('submit', 'coming_soon') }}
+                    {{ custom_trans('submit') }}
                     <i class="fas fa-spinner fa-spin loading-spinner" id="loadingSpinner" aria-hidden="true"></i>
                 </button>
             </form>
@@ -574,11 +588,11 @@
                 }
             } catch (error) {
                 alertContainer.innerHTML = `
-                    <div class="alert alert-danger" role="alert">
-                        <i class="fas fa-exclamation-circle me-2" aria-hidden="true"></i>
-                        {{ custom_trans('subscription_error', 'coming_soon') }}
-                    </div>
-                `;
+                        <div class="alert alert-danger" role="alert">
+                            <i class="fas fa-exclamation-circle me-2" aria-hidden="true"></i>
+                            {{ custom_trans('subscription_error') }}
+                        </div>
+                    `;
             } finally {
                 // Hide loading state
                 submitBtn.disabled = false;
