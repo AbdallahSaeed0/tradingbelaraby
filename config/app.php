@@ -46,6 +46,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Coming Soon Mode
+    |--------------------------------------------------------------------------
+    |
+    | When this is enabled, all requests (except admin routes) will be
+    | redirected to the coming soon page. Set COMING_SOON_ENABLED=true
+    | in your .env file to enable this feature.
+    |
+    */
+
+    'coming_soon_enabled' => filter_var(env('COMING_SOON_ENABLED', 'false'), FILTER_VALIDATE_BOOLEAN),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application URL
     |--------------------------------------------------------------------------
     |

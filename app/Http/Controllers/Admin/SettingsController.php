@@ -7,6 +7,9 @@ use App\Models\Slider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 
 class SettingsController extends Controller
 {
@@ -316,5 +319,34 @@ class SettingsController extends Controller
                 'message' => __('Error updating slider order: ') . $e->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * Update coming soon mode.
+     */
+    public function updateComingSoon(Request $request)
+    {
+        $request->validate([
+            'coming_soon_enabled' => 'required|in:0,1'
+        ]);
+
+        $enabled = $request->input('coming_soon_enabled') == '1';
+
+        // Get or create the main content settings
+        $settings = \App\Models\MainContentSettings::getActive();
+        if (!$settings) {
+            $settings = new \App\Models\MainContentSettings();
+            $settings->is_active = true;
+        }
+
+        // Update the coming soon setting
+        $settings->coming_soon_enabled = $enabled;
+        $settings->save();
+
+        $status = $enabled ? 'enabled' : 'disabled';
+
+        // Redirect back to the main content settings page with success message
+        return redirect()->route('admin.settings.main-content.index')
+            ->with('success', "Coming soon mode has been {$status} successfully.");
     }
 }

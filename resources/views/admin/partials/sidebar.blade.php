@@ -84,6 +84,12 @@
                     <i class="fa fa-users me-2"></i> Users
                 </a>
             @endif
+            @if (auth('admin')->user()->hasPermission('manage_users'))
+                <a href="{{ route('admin.subscribers.index') }}"
+                    class="list-group-item list-group-item-action {{ request()->routeIs('admin.subscribers.*') ? 'active' : '' }}">
+                    <i class="fa fa-user-plus me-2"></i> Subscribers
+                </a>
+            @endif
 
             <!-- Content Management Section -->
             <div class="list-group-item bg-light text-muted small fw-bold text-uppercase">

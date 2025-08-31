@@ -202,6 +202,61 @@
                                 </div>
                             </div>
 
+                            <!-- Coming Soon Control -->
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <div class="card border-warning">
+                                        <div class="card-header bg-warning text-white">
+                                            <h6 class="mb-0">
+                                                <i class="fas fa-clock me-2"></i>
+                                                Coming Soon Mode Control
+                                            </h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-8">
+                                                    <h6 class="text-warning mb-2">Website Access Control</h6>
+                                                    <p class="text-muted mb-0">
+                                                        When enabled, all visitors will see the coming soon page except
+                                                        admin users.
+                                                        This is useful when you're preparing your website for launch.
+                                                    </p>
+                                                </div>
+                                                <div class="col-md-4 text-end">
+                                                    <div class="coming-soon-status mb-3">
+                                                        @php
+                                                            $settings = \App\Models\MainContentSettings::getActive();
+                                                            $comingSoonEnabled = $settings
+                                                                ? $settings->coming_soon_enabled
+                                                                : false;
+                                                        @endphp
+                                                        <div
+                                                            class="alert {{ $comingSoonEnabled ? 'alert-warning' : 'alert-success' }} mb-0">
+                                                            <i
+                                                                class="fas {{ $comingSoonEnabled ? 'fa-exclamation-triangle' : 'fa-check-circle' }} me-2"></i>
+                                                            <strong>{{ $comingSoonEnabled ? 'ACTIVE' : 'DISABLED' }}</strong>
+                                                        </div>
+                                                    </div>
+                                                    <form action="{{ route('admin.settings.coming-soon.update') }}"
+                                                        method="POST" class="d-inline">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <input type="hidden" name="coming_soon_enabled"
+                                                            value="{{ $comingSoonEnabled ? '0' : '1' }}">
+                                                        <button type="submit"
+                                                            class="btn {{ $comingSoonEnabled ? 'btn-success' : 'btn-warning' }} btn-lg">
+                                                            <i
+                                                                class="fas {{ $comingSoonEnabled ? 'fa-toggle-off' : 'fa-toggle-on' }} me-2"></i>
+                                                            {{ $comingSoonEnabled ? 'Disable Coming Soon' : 'Enable Coming Soon' }}
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- Submit Button -->
                             <div class="row">
                                 <div class="col-12">

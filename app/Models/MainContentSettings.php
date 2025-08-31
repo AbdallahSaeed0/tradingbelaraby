@@ -18,11 +18,13 @@ class MainContentSettings extends Model
         'site_keywords',
         'site_author',
         'favicon',
-        'is_active'
+        'is_active',
+        'coming_soon_enabled'
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'coming_soon_enabled' => 'boolean',
     ];
 
     /**

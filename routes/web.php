@@ -20,6 +20,11 @@ use App\Http\Controllers\HomeworkController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\ComingSoonController;
+
+// Coming Soon routes
+Route::get('/coming-soon', [ComingSoonController::class, 'index'])->name('coming-soon');
+Route::post('/coming-soon/subscribe', [ComingSoonController::class, 'subscribe'])->name('coming-soon.subscribe');
 
 // Public routes test
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -228,6 +233,11 @@ Route::resource('quizzes.questions', App\Http\Controllers\Admin\QuizQuestionMana
     Route::resource('translations', App\Http\Controllers\Admin\TranslationController::class)->middleware('admin.permission:manage_translations');
     Route::resource('blogs', App\Http\Controllers\Admin\BlogsController::class)->middleware('admin.permission:manage_blogs');
     Route::resource('blog-categories', App\Http\Controllers\Admin\BlogCategoryController::class)->parameters(['blog-categories' => 'category'])->middleware('admin.permission:manage_blogs');
+    Route::resource('subscribers', App\Http\Controllers\Admin\SubscriberController::class)->only(['index', 'show', 'destroy'])->middleware('admin.permission:manage_users');
+    Route::get('/subscribers/export', [App\Http\Controllers\Admin\SubscriberController::class, 'export'])->name('subscribers.export')->middleware('admin.permission:manage_users');
+
+    // Settings routes
+    Route::put('/settings/coming-soon', [App\Http\Controllers\Admin\SettingsController::class, 'updateComingSoon'])->name('settings.coming-soon.update');
 
     // Admin analytics routes
     Route::get('/courses/{course}/analytics', [App\Http\Controllers\Admin\CoursesController::class, 'analytics'])->name('courses.analytics')->middleware('admin.permission:view_analytics,view_own_analytics');
