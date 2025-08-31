@@ -223,7 +223,7 @@
                                                     </p>
                                                 </div>
                                                 <div class="col-md-4 text-end">
-                                                    <div class="coming-soon-status mb-3">
+                                                    <div class="coming-soon-status mb-3" style="justify-items: center;">
                                                         @php
                                                             $settings = \App\Models\MainContentSettings::getActive();
                                                             $comingSoonEnabled = $settings
@@ -231,7 +231,7 @@
                                                                 : false;
                                                         @endphp
                                                         <div
-                                                            class="alert {{ $comingSoonEnabled ? 'alert-warning' : 'alert-success' }} mb-0">
+                                                            class="alert {{ $comingSoonEnabled ? 'alert-warning' : 'alert-success' }} mb-0" style="width:fit-content">
                                                             <i
                                                                 class="fas {{ $comingSoonEnabled ? 'fa-exclamation-triangle' : 'fa-check-circle' }} me-2"></i>
                                                             <strong>{{ $comingSoonEnabled ? 'ACTIVE' : 'DISABLED' }}</strong>
