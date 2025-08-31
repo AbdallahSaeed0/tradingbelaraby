@@ -36,6 +36,15 @@ class SubscriberController extends Controller
             $query->where('language', $request->language);
         }
 
+        // Filter by date range
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
         $subscribers = $query->orderBy('created_at', 'desc')->paginate(15);
 
         return view('admin.subscribers.index', compact('subscribers'));
@@ -65,7 +74,8 @@ class SubscriberController extends Controller
      */
     public function export(Request $request)
     {
-        $query = Subscriber::query();
+        try {
+            $query = Subscriber::query();
 
         // Apply same filters as index
         if ($request->filled('search')) {
@@ -84,6 +94,15 @@ class SubscriberController extends Controller
 
         if ($request->filled('language')) {
             $query->where('language', $request->language);
+        }
+
+        // Filter by date range
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->date_to);
         }
 
         $subscribers = $query->orderBy('created_at', 'desc')->get();
@@ -132,5 +151,9 @@ class SubscriberController extends Controller
         };
 
         return response()->stream($callback, 200, $headers);
+        } catch (\Exception $e) {
+            return redirect()->route('admin.subscribers.index')
+                ->with('error', 'Export failed: ' . $e->getMessage());
+        }
     }
 }

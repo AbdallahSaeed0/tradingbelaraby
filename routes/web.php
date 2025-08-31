@@ -233,8 +233,8 @@ Route::resource('quizzes.questions', App\Http\Controllers\Admin\QuizQuestionMana
     Route::resource('translations', App\Http\Controllers\Admin\TranslationController::class)->middleware('admin.permission:manage_translations');
     Route::resource('blogs', App\Http\Controllers\Admin\BlogsController::class)->middleware('admin.permission:manage_blogs');
     Route::resource('blog-categories', App\Http\Controllers\Admin\BlogCategoryController::class)->parameters(['blog-categories' => 'category'])->middleware('admin.permission:manage_blogs');
-    Route::resource('subscribers', App\Http\Controllers\Admin\SubscriberController::class)->only(['index', 'show', 'destroy'])->middleware('admin.permission:manage_users');
     Route::get('/subscribers/export', [App\Http\Controllers\Admin\SubscriberController::class, 'export'])->name('subscribers.export')->middleware('admin.permission:manage_users');
+    Route::resource('subscribers', App\Http\Controllers\Admin\SubscriberController::class)->only(['index', 'show', 'destroy'])->middleware('admin.permission:manage_users');
 
     // Settings routes
     Route::put('/settings/coming-soon', [App\Http\Controllers\Admin\SettingsController::class, 'updateComingSoon'])->name('settings.coming-soon.update');

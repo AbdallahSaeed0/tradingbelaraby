@@ -30,27 +30,51 @@
             </div>
         @endif
 
+        <!-- Statistics Card -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h4 class="mb-0">{{ $subscribers->total() }}</h4>
+                                <p class="mb-0">Total Subscribers</p>
+                            </div>
+                            <div class="ms-3">
+                                <i class="fa fa-users fa-2x opacity-75"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Filters -->
         <div class="card shadow-sm mb-4">
             <div class="card-body">
-                <form method="GET" action="{{ route('admin.subscribers.index') }}" class="row g-3">
-                    <div class="col-md-4">
+                <form method="GET" action="{{ route('admin.subscribers.index') }}" class="row g-3" id="filterForm">
+                    <div class="col-md-3">
                         <label for="search" class="form-label">Search</label>
                         <input type="text" class="form-control" id="search" name="search"
                             value="{{ request('search') }}" placeholder="Search by name, email, phone, or country...">
                     </div>
-                    <div class="col-md-3">
-                        <label for="years_of_experience" class="form-label">Years of Experience</label>
+                    <div class="col-md-2">
+                        <label for="years_of_experience" class="form-label">Experience</label>
                         <select class="form-select" id="years_of_experience" name="years_of_experience">
-                            <option value="">All Experience Levels</option>
-                            <option value="10" {{ request('years_of_experience') == '10' ? 'selected' : '' }}>10 Years</option>
-                            <option value="20" {{ request('years_of_experience') == '20' ? 'selected' : '' }}>20 Years</option>
-                            <option value="30" {{ request('years_of_experience') == '30' ? 'selected' : '' }}>30 Years</option>
-                            <option value="40" {{ request('years_of_experience') == '40' ? 'selected' : '' }}>40 Years</option>
-                            <option value="50" {{ request('years_of_experience') == '50' ? 'selected' : '' }}>50 Years</option>
+                            <option value="">All Levels</option>
+                            <option value="10" {{ request('years_of_experience') == '10' ? 'selected' : '' }}>10 Years
+                            </option>
+                            <option value="20" {{ request('years_of_experience') == '20' ? 'selected' : '' }}>20 Years
+                            </option>
+                            <option value="30" {{ request('years_of_experience') == '30' ? 'selected' : '' }}>30 Years
+                            </option>
+                            <option value="40" {{ request('years_of_experience') == '40' ? 'selected' : '' }}>40 Years
+                            </option>
+                            <option value="50" {{ request('years_of_experience') == '50' ? 'selected' : '' }}>50 Years
+                            </option>
                         </select>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label for="language" class="form-label">Language</label>
                         <select class="form-select" id="language" name="language">
                             <option value="">All Languages</option>
@@ -58,15 +82,21 @@
                             <option value="ar" {{ request('language') == 'ar' ? 'selected' : '' }}>Arabic</option>
                         </select>
                     </div>
-                    <div class="col-md-2 d-flex align-items-end">
-                        <div class="d-flex gap-2 w-100">
-                            <button type="submit" class="btn btn-primary flex-fill">
-                                <i class="fa fa-search me-2"></i>Filter
-                            </button>
-                            <a href="{{ route('admin.subscribers.index') }}" class="btn btn-outline-secondary">
-                                <i class="fa fa-times"></i>
-                            </a>
-                        </div>
+                    <div class="col-md-2">
+                        <label for="date_from" class="form-label">Date From</label>
+                        <input type="date" class="form-control" id="date_from" name="date_from"
+                            value="{{ request('date_from') }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="date_to" class="form-label">Date To</label>
+                        <input type="date" class="form-control" id="date_to" name="date_to"
+                            value="{{ request('date_to') }}">
+                    </div>
+                    <div class="col-md-1 d-flex align-items-end">
+                        <a href="{{ route('admin.subscribers.index') }}" class="btn btn-outline-secondary w-100"
+                            title="Clear Filters">
+                            <i class="fa fa-times"></i>
+                        </a>
                     </div>
                 </form>
             </div>
@@ -94,12 +124,13 @@
                                 <tr>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2">
+                                            <div
+                                                class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2">
                                                 {{ strtoupper(substr($subscriber->name, 0, 1)) }}
                                             </div>
                                             <div>
                                                 <div class="fw-bold">{{ $subscriber->name }}</div>
-                                                @if($subscriber->whatsapp_number)
+                                                @if ($subscriber->whatsapp_number)
                                                     <small class="text-muted">
                                                         <i class="fab fa-whatsapp text-success"></i>
                                                         {{ $subscriber->whatsapp_number }}
@@ -122,10 +153,12 @@
                                         <span class="badge bg-info">{{ $subscriber->country }}</span>
                                     </td>
                                     <td>
-                                        <span class="badge bg-secondary">{{ $subscriber->years_of_experience }} Years</span>
+                                        <span class="badge bg-secondary">{{ $subscriber->years_of_experience }}
+                                            Years</span>
                                     </td>
                                     <td>
-                                        <span class="badge {{ $subscriber->language === 'ar' ? 'bg-warning' : 'bg-primary' }}">
+                                        <span
+                                            class="badge {{ $subscriber->language === 'ar' ? 'bg-warning' : 'bg-primary' }}">
                                             {{ $subscriber->language === 'ar' ? 'العربية' : 'English' }}
                                         </span>
                                     </td>
@@ -146,7 +179,8 @@
                                                 method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete"
+                                                <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                    title="Delete"
                                                     onclick="return confirm('Are you sure you want to delete this subscriber?')">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
@@ -160,7 +194,8 @@
                                         <div class="text-muted">
                                             <i class="fa fa-users fa-3x mb-3"></i>
                                             <p class="mb-0">No subscribers found.</p>
-                                            <small>Subscribers will appear here when users sign up on the coming soon page.</small>
+                                            <small>Subscribers will appear here when users sign up on the coming soon
+                                                page.</small>
                                         </div>
                                     </td>
                                 </tr>
@@ -177,71 +212,6 @@
             </div>
         </div>
 
-        <!-- Statistics -->
-        @if($subscribers->total() > 0)
-            <div class="row mt-4">
-                <div class="col-md-3">
-                    <div class="card bg-primary text-white">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center">
-                                <div class="flex-grow-1">
-                                    <h4 class="mb-0">{{ $subscribers->total() }}</h4>
-                                    <p class="mb-0">Total Subscribers</p>
-                                </div>
-                                <div class="ms-3">
-                                    <i class="fa fa-users fa-2x opacity-75"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card bg-success text-white">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center">
-                                <div class="flex-grow-1">
-                                    <h4 class="mb-0">{{ \App\Models\Subscriber::where('language', 'en')->count() }}</h4>
-                                    <p class="mb-0">English Users</p>
-                                </div>
-                                <div class="ms-3">
-                                    <i class="fa fa-globe fa-2x opacity-75"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card bg-warning text-white">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center">
-                                <div class="flex-grow-1">
-                                    <h4 class="mb-0">{{ \App\Models\Subscriber::where('language', 'ar')->count() }}</h4>
-                                    <p class="mb-0">Arabic Users</p>
-                                </div>
-                                <div class="ms-3">
-                                    <i class="fa fa-globe fa-2x opacity-75"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card bg-info text-white">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center">
-                                <div class="flex-grow-1">
-                                    <h4 class="mb-0">{{ \App\Models\Subscriber::whereDate('created_at', today())->count() }}</h4>
-                                    <p class="mb-0">Today's Signups</p>
-                                </div>
-                                <div class="ms-3">
-                                    <i class="fa fa-calendar fa-2x opacity-75"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @endif
     </div>
 
     <style>
@@ -251,4 +221,29 @@
             font-size: 14px;
         }
     </style>
+
+    <script>
+        // Auto-submit form when filters change
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterForm = document.getElementById('filterForm');
+            const filterInputs = filterForm.querySelectorAll('input, select');
+
+            filterInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    filterForm.submit();
+                });
+            });
+
+            // Auto-submit search input with delay
+            const searchInput = document.getElementById('search');
+            let searchTimeout;
+
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(function() {
+                    filterForm.submit();
+                }, 500); // 500ms delay
+            });
+        });
+    </script>
 @endsection
