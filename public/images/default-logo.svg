@@ -1,0 +1,18 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="60" cy="60" r="58" fill="#f15a29" stroke="#ffffff" stroke-width="4"/>
+
+  <!-- Graduation cap -->
+  <path d="M30 45 L60 25 L90 45 L90 75 L30 75 Z" fill="#ffffff"/>
+  <path d="M25 75 L95 75 L95 85 L25 85 Z" fill="#ffffff"/>
+
+  <!-- Book -->
+  <rect x="40" y="50" width="40" height="25" rx="2" fill="#17506b"/>
+  <rect x="42" y="52" width="36" height="3" rx="1" fill="#ffffff"/>
+  <rect x="42" y="58" width="30" height="2" rx="1" fill="#ffffff"/>
+  <rect x="42" y="62" width="32" height="2" rx="1" fill="#ffffff"/>
+  <rect x="42" y="66" width="28" height="2" rx="1" fill="#ffffff"/>
+
+  <!-- Star -->
+  <path d="M70 35 L72 40 L77 40 L73 43 L75 48 L70 45 L65 48 L67 43 L63 40 L68 40 Z" fill="#ffffff"/>
+</svg>

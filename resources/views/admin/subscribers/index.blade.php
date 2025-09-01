@@ -10,6 +10,9 @@
                 <p class="text-muted">Manage coming soon page subscribers</p>
             </div>
             <div class="d-flex gap-2">
+                <button id="bulkDeleteBtn" class="btn btn-danger" style="display: none;">
+                    <i class="fa fa-trash me-2"></i>Delete Selected (<span id="selectedCount">0</span>)
+                </button>
                 <a href="{{ route('admin.subscribers.export', request()->query()) }}" class="btn btn-success">
                     <i class="fa fa-download me-2"></i>Export CSV
                 </a>
@@ -102,6 +105,14 @@
             </div>
         </div>
 
+        <!-- Bulk Delete Form -->
+        <form id="bulkDeleteForm" action="{{ route('admin.subscribers.bulk-delete') }}" method="POST"
+            style="display: none;">
+            @csrf
+            @method('DELETE')
+            <input type="hidden" id="selectedSubscribers" name="subscribers" value="">
+        </form>
+
         <!-- Subscribers Table -->
         <div class="card shadow-sm">
             <div class="card-body">
@@ -109,6 +120,11 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
+                                <th width="50">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="selectAll">
+                                    </div>
+                                </th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Phone</th>
@@ -122,6 +138,13 @@
                         <tbody>
                             @forelse($subscribers as $subscriber)
                                 <tr>
+                                    <td>
+                                        <div class="form-check">
+                                            <input class="form-check-input subscriber-checkbox" type="checkbox"
+                                                value="{{ $subscriber->id }}"
+                                                data-subscriber-name="{{ $subscriber->name }}">
+                                        </div>
+                                    </td>
                                     <td>
                                         <div class="d-flex align-items-center">
                                             <div
@@ -190,7 +213,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center py-4">
+                                    <td colspan="9" class="text-center py-4">
                                         <div class="text-muted">
                                             <i class="fa fa-users fa-3x mb-3"></i>
                                             <p class="mb-0">No subscribers found.</p>
@@ -243,6 +266,83 @@
                 searchTimeout = setTimeout(function() {
                     filterForm.submit();
                 }, 500); // 500ms delay
+            });
+
+            // Multi-select functionality
+            const selectAllCheckbox = document.getElementById('selectAll');
+            const subscriberCheckboxes = document.querySelectorAll('.subscriber-checkbox');
+            const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+            const selectedCountSpan = document.getElementById('selectedCount');
+            const bulkDeleteForm = document.getElementById('bulkDeleteForm');
+            const selectedSubscribersInput = document.getElementById('selectedSubscribers');
+
+            // Select all functionality
+            selectAllCheckbox.addEventListener('change', function() {
+                subscriberCheckboxes.forEach(checkbox => {
+                    checkbox.checked = this.checked;
+                });
+                updateBulkDeleteButton();
+            });
+
+            // Individual checkbox functionality
+            subscriberCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    updateSelectAllCheckbox();
+                    updateBulkDeleteButton();
+                });
+            });
+
+            // Update select all checkbox state
+            function updateSelectAllCheckbox() {
+                const checkedBoxes = document.querySelectorAll('.subscriber-checkbox:checked');
+                const totalBoxes = subscriberCheckboxes.length;
+
+                if (checkedBoxes.length === 0) {
+                    selectAllCheckbox.checked = false;
+                    selectAllCheckbox.indeterminate = false;
+                } else if (checkedBoxes.length === totalBoxes) {
+                    selectAllCheckbox.checked = true;
+                    selectAllCheckbox.indeterminate = false;
+                } else {
+                    selectAllCheckbox.checked = false;
+                    selectAllCheckbox.indeterminate = true;
+                }
+            }
+
+            // Update bulk delete button visibility and count
+            function updateBulkDeleteButton() {
+                const checkedBoxes = document.querySelectorAll('.subscriber-checkbox:checked');
+                const count = checkedBoxes.length;
+
+                if (count > 0) {
+                    bulkDeleteBtn.style.display = 'inline-block';
+                    selectedCountSpan.textContent = count;
+                } else {
+                    bulkDeleteBtn.style.display = 'none';
+                }
+            }
+
+            // Bulk delete functionality
+            bulkDeleteBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                const checkedBoxes = document.querySelectorAll('.subscriber-checkbox:checked');
+                const selectedIds = Array.from(checkedBoxes).map(checkbox => checkbox.value);
+                const selectedNames = Array.from(checkedBoxes).map(checkbox => checkbox.dataset
+                    .subscriberName);
+
+                if (selectedIds.length === 0) {
+                    alert('Please select at least one subscriber to delete.');
+                    return;
+                }
+
+                const confirmMessage =
+                    `Are you sure you want to delete ${selectedIds.length} subscriber(s)?\n\nSelected subscribers:\n${selectedNames.join('\n')}`;
+
+                if (confirm(confirmMessage)) {
+                    selectedSubscribersInput.value = JSON.stringify(selectedIds);
+                    bulkDeleteForm.submit();
+                }
             });
         });
     </script>

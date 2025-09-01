@@ -140,12 +140,19 @@
             align-items: center;
             justify-content: center;
             margin-bottom: var(--spacing-2xl);
-            font-size: 3rem;
-            font-weight: 600;
-            color: var(--white);
             transition: var(--transition-normal);
             position: relative;
             z-index: 1;
+            overflow: hidden;
+        }
+
+        .logo-image {
+            max-width: 80px;
+            max-height: 80px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
         }
 
         .logo:hover {
@@ -437,6 +444,59 @@
             margin: 0;
         }
 
+        /* WhatsApp input enhancements */
+        .input-group-text {
+            background-color: var(--gray-100);
+            border-color: var(--gray-300);
+            color: var(--gray-600);
+        }
+
+        .input-group:focus-within .input-group-text {
+            border-color: var(--brand-orange);
+            background-color: var(--brand-orange);
+            color: var(--white);
+        }
+
+        .form-control.is-valid {
+            border-color: var(--success);
+            box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.25);
+        }
+
+        .form-control.is-invalid {
+            border-color: var(--error);
+            box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.25);
+        }
+
+        .invalid-feedback {
+            display: block;
+            color: var(--error);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        .form-text {
+            color: var(--gray-600);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        /* WhatsApp icon animation */
+        .input-group:focus-within .input-group-text i {
+            animation: pulse 0.6s ease-in-out;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
         /* Reduced motion support */
         @media (prefers-reduced-motion: reduce) {
             * {
@@ -454,10 +514,15 @@
 
 <body>
     <div class="coming-soon-container">
+        @php
+                    $mainContentSettings = \App\Models\MainContentSettings::getActive();
+                @endphp
         <!-- Left Section - Brand Panel -->
         <div class="left-section" role="banner" aria-label="{{ custom_trans('title') }}">
             <div class="logo" aria-hidden="true">
-                <i class="fas fa-graduation-cap"></i>
+                <img src="{{ $mainContentSettings ? $mainContentSettings->logo_url : asset('images/default-logo.svg') }}"
+                    alt="{{ $mainContentSettings ? $mainContentSettings->logo_alt_text : 'Site Logo' }}"
+                    class="logo-image">
             </div>
             <h1 class="coming-soon-title">{{ custom_trans('title') }}</h1>
             <p class="coming-soon-subtitle">{{ custom_trans('subtitle') }}</p>
@@ -495,9 +560,15 @@
 
                 <div class="form-group">
                     <label for="whatsapp_number" class="form-label">{{ custom_trans('whatsapp_number') }}</label>
-                    <input type="tel" class="form-control" id="whatsapp_number" name="whatsapp_number"
-                        placeholder="{{ custom_trans('whatsapp_number') }}" pattern="[0-9+\-\s\(\)]+"
-                        inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9+\-\s\(\)]/g, '')">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fab fa-whatsapp text-success"></i>
+                        </span>
+                        <input type="tel" class="form-control" id="whatsapp_number" name="whatsapp_number"
+                            placeholder="{{ custom_trans('whatsapp_number') }}" pattern="^\+?[1-9]\d{1,14}$"
+                            inputmode="tel" maxlength="20" autocomplete="tel" data-format="international">
+                        <div class="invalid-feedback" id="whatsapp-error"></div>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -536,12 +607,118 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // WhatsApp Number Input Enhancement
+        document.addEventListener('DOMContentLoaded', function() {
+            const whatsappInput = document.getElementById('whatsapp_number');
+            const whatsappError = document.getElementById('whatsapp-error');
+
+            // Common country codes for auto-completion
+            const countryCodes = [
+                '+1', '+44', '+33', '+49', '+39', '+34', '+31', '+32', '+41', '+46',
+                '+47', '+45', '+358', '+46', '+47', '+45', '+358', '+46', '+47', '+45',
+                '+20', '+27', '+234', '+254', '+234', '+254', '+234', '+254', '+234', '+254',
+                '+91', '+86', '+81', '+82', '+65', '+60', '+66', '+84', '+62', '+63',
+                '+971', '+966', '+974', '+973', '+965', '+968', '+973', '+965', '+968', '+973'
+            ];
+
+            // Format phone number as user types
+            whatsappInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, ''); // Remove all non-digits
+
+                // Auto-add + if it starts with a number
+                if (value.length > 0 && !value.startsWith('+')) {
+                    value = '+' + value;
+                }
+
+                // Format the number
+                if (value.length > 1) {
+                    // Remove the + for formatting
+                    let number = value.substring(1);
+
+                    // Format based on length
+                    if (number.length <= 3) {
+                        value = '+' + number;
+                    } else if (number.length <= 6) {
+                        value = '+' + number.substring(0, 3) + ' ' + number.substring(3);
+                    } else if (number.length <= 10) {
+                        value = '+' + number.substring(0, 3) + ' ' + number.substring(3, 6) + ' ' + number
+                            .substring(6);
+                    } else {
+                        value = '+' + number.substring(0, 3) + ' ' + number.substring(3, 6) + ' ' + number
+                            .substring(6, 10) + ' ' + number.substring(10);
+                    }
+                }
+
+                e.target.value = value;
+                validateWhatsAppNumber();
+            });
+
+
+
+            // Validate WhatsApp number
+            function validateWhatsAppNumber() {
+                const value = whatsappInput.value.replace(/\D/g, '');
+                const isValid = /^[1-9]\d{6,14}$/.test(value);
+
+                if (value.length > 0) {
+                    if (!isValid) {
+                        whatsappInput.classList.add('is-invalid');
+                        whatsappError.textContent = 'Please enter a valid WhatsApp number with country code';
+                        return false;
+                    } else {
+                        whatsappInput.classList.remove('is-invalid');
+                        whatsappInput.classList.add('is-valid');
+                        whatsappError.textContent = '';
+                        return true;
+                    }
+                } else {
+                    whatsappInput.classList.remove('is-invalid', 'is-valid');
+                    whatsappError.textContent = '';
+                    return true; // Empty is valid since it's optional
+                }
+            }
+
+            // Validate on blur
+            whatsappInput.addEventListener('blur', validateWhatsAppNumber);
+
+            // Add keyboard shortcuts
+            whatsappInput.addEventListener('keydown', function(e) {
+                // Allow: backspace, delete, tab, escape, enter, and navigation keys
+                if ([8, 9, 27, 13, 46, 37, 38, 39, 40].indexOf(e.keyCode) !== -1 ||
+                    // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                    (e.keyCode === 65 && e.ctrlKey === true) ||
+                    (e.keyCode === 67 && e.ctrlKey === true) ||
+                    (e.keyCode === 86 && e.ctrlKey === true) ||
+                    (e.keyCode === 88 && e.ctrlKey === true)) {
+                    return;
+                }
+
+                // Allow numbers and +
+                if ((e.keyCode >= 48 && e.keyCode <= 57) || e.keyCode === 187) {
+                    return;
+                }
+
+                e.preventDefault();
+            });
+        });
+
         document.getElementById('subscriptionForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
             const submitBtn = document.getElementById('submitBtn');
             const loadingSpinner = document.getElementById('loadingSpinner');
             const alertContainer = document.getElementById('alert-container');
+            const whatsappInput = document.getElementById('whatsapp_number');
+
+            // Validate WhatsApp number before submission
+            const whatsappValue = whatsappInput.value.replace(/\D/g, '');
+            if (whatsappValue.length > 0 && !/^[1-9]\d{6,14}$/.test(whatsappValue)) {
+                whatsappInput.classList.add('is-invalid');
+                document.getElementById('whatsapp-error').textContent =
+                    'Please enter a valid WhatsApp number with country code';
+                whatsappInput.focus();
+                return;
+            }
 
             // Show loading state
             submitBtn.disabled = true;
@@ -551,6 +728,11 @@
             alertContainer.innerHTML = '';
 
             const formData = new FormData(this);
+
+            // Clean WhatsApp number before sending (remove spaces and formatting)
+            if (formData.get('whatsapp_number')) {
+                formData.set('whatsapp_number', formData.get('whatsapp_number').replace(/\s/g, ''));
+            }
 
             try {
                 const response = await fetch('{{ route('coming-soon.subscribe') }}', {

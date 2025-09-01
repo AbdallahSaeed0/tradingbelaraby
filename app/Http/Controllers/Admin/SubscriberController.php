@@ -70,6 +70,42 @@ class SubscriberController extends Controller
     }
 
     /**
+     * Bulk delete subscribers
+     */
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'subscribers' => 'required|string'
+        ]);
+
+        try {
+            $subscriberIds = json_decode($request->subscribers, true);
+
+            if (!is_array($subscriberIds) || empty($subscriberIds)) {
+                return redirect()->route('admin.subscribers.index')
+                    ->with('error', 'No subscribers selected for deletion.');
+            }
+
+            $deletedCount = Subscriber::whereIn('id', $subscriberIds)->delete();
+
+            if ($deletedCount > 0) {
+                $message = $deletedCount === 1
+                    ? '1 subscriber deleted successfully.'
+                    : "{$deletedCount} subscribers deleted successfully.";
+
+                return redirect()->route('admin.subscribers.index')
+                    ->with('success', $message);
+            } else {
+                return redirect()->route('admin.subscribers.index')
+                    ->with('error', 'No subscribers were deleted.');
+            }
+        } catch (\Exception $e) {
+            return redirect()->route('admin.subscribers.index')
+                ->with('error', 'An error occurred while deleting subscribers: ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Export subscribers to CSV
      */
     public function export(Request $request)

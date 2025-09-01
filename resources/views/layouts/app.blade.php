@@ -460,7 +460,7 @@
                 @endphp
                 <div class="logo">
                     <a href="{{ route('home') }}" class="logo-link">
-                        <img src="{{ $mainContentSettings ? $mainContentSettings->logo_url : asset('images/default-logo.png') }}"
+                        <img src="{{ $mainContentSettings ? $mainContentSettings->logo_url : asset('images/default-logo.svg') }}"
                             alt="{{ $mainContentSettings ? $mainContentSettings->logo_alt_text : 'Site Logo' }}"
                             class="logo-img">
                     </a>
@@ -491,8 +491,8 @@
                 @endphp
                 <div class="language-switcher me-3">
                     <div class="dropdown">
-                        <button class="btn btn-outline-light dropdown-toggle text-black" type="button" id="frontendLangDropdown"
-                            data-bs-toggle="dropdown" aria-expanded="false">
+                        <button class="btn btn-outline-light dropdown-toggle text-black" type="button"
+                            id="frontendLangDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-globe me-1"></i>
                             {{ strtoupper($currentLanguage->code) }}
                         </button>
@@ -901,7 +901,7 @@
         <div class="footer-bottom-bar d-flex justify-content-between align-items-center px-3 px-md-5 py-3">
             <div class="footer-logo d-flex align-items-center">
                 <a href="{{ route('home') }}" class="footer-logo-link">
-                    <img src="{{ $mainContentSettings ? $mainContentSettings->logo_url : asset('images/default-logo.png') }}"
+                    <img src="{{ $mainContentSettings ? $mainContentSettings->logo_url : asset('images/default-logo.svg') }}"
                         alt="{{ $mainContentSettings ? $mainContentSettings->logo_alt_text : 'Site Logo' }}"
                         style="height:32px; margin-right:10px;">
                 </a>

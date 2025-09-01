@@ -41,7 +41,7 @@ class MainContentSettings extends Model
     public function getLogoUrlAttribute()
     {
         if (!$this->logo) {
-            return asset('images/default-logo.png');
+            return asset('images/default-logo.svg');
         }
 
         if (filter_var($this->logo, FILTER_VALIDATE_URL)) {
