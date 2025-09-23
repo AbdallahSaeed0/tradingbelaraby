@@ -511,9 +511,9 @@
                     console.log(key, value);
                 }
 
-                // Log specific learning items
-                console.log('Learning items array:', learnItems);
-                console.log('Learning items JSON:', JSON.stringify(learnItems));
+                // Log specific learning items (will be collected below)
+                // console.log('Learning items array:', learnItems);
+                // console.log('Learning items JSON:', JSON.stringify(learnItems));
 
                 // Collect sections and lectures data
                 const sections = [];
@@ -576,6 +576,10 @@
                 });
 
                 console.log('Final learn items array:', learnItems);
+
+                // Log specific learning items now that they're collected
+                console.log('Learning items array:', learnItems);
+                console.log('Learning items JSON:', JSON.stringify(learnItems));
 
                 // Add sections and learn items data to FormData
                 formData.append('sections', JSON.stringify(sections));

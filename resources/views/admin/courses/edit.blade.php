@@ -264,20 +264,22 @@
                                                                     </select>
                                                                 </div>
                                                                 <div class="col-md-9">
-                                                                    <div class="lecture-url-input">
+                                                                    <div class="lecture-url-input"
+                                                                        style="display: {{ $lecture->type == 'url' ? 'block' : 'none' }};">
                                                                         <input type="url"
                                                                             class="form-control form-control-sm lecture-link"
                                                                             name="lectures[{{ $lecture->id }}][video_url]"
                                                                             value="{{ $lecture->video_url }}"
                                                                             placeholder="Video URL (YouTube, Vimeo, etc.)"
-                                                                            required>
+                                                                            {{ $lecture->type == 'url' ? 'required' : '' }}>
                                                                     </div>
                                                                     <div class="lecture-upload-input"
-                                                                        style="display: none;">
+                                                                        style="display: {{ $lecture->type == 'upload' ? 'block' : 'none' }};">
                                                                         <input type="file"
                                                                             class="form-control form-control-sm lecture-file"
                                                                             name="lectures[{{ $lecture->id }}][file]"
-                                                                            accept="video/*,audio/*,.pdf,.doc,.docx,.ppt,.pptx">
+                                                                            accept="video/*,audio/*,.pdf,.doc,.docx,.ppt,.pptx"
+                                                                            {{ $lecture->type == 'upload' ? 'required' : '' }}>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -665,13 +667,21 @@
                     const lectureItem = e.target.closest('.lecture-item');
                     const urlInput = lectureItem.querySelector('.lecture-url-input');
                     const uploadInput = lectureItem.querySelector('.lecture-upload-input');
+                    const urlField = lectureItem.querySelector('.lecture-link');
+                    const fileField = lectureItem.querySelector('.lecture-file');
 
                     if (e.target.value === 'url') {
                         urlInput.style.display = 'block';
                         uploadInput.style.display = 'none';
+                        // Make URL field required and file field not required
+                        if (urlField) urlField.setAttribute('required', 'required');
+                        if (fileField) fileField.removeAttribute('required');
                     } else {
                         urlInput.style.display = 'none';
                         uploadInput.style.display = 'block';
+                        // Make file field required and URL field not required
+                        if (fileField) fileField.setAttribute('required', 'required');
+                        if (urlField) urlField.removeAttribute('required');
                     }
                 }
             });

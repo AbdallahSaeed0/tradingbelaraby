@@ -116,7 +116,9 @@ class CheckoutController extends Controller
                 // Enroll user in course
                 $user->enrollments()->create([
                     'course_id' => $cartItem->course_id,
+                    'status' => 'active',
                     'enrolled_at' => now(),
+                    'progress_percentage' => 0,
                 ]);
             }
 

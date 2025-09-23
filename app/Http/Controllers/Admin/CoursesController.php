@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\CourseCategory;
 use App\Models\CourseLecture;
+use App\Models\CourseSection;
 use App\Models\User;
 use App\Models\Admin;
 use Illuminate\Support\Facades\Storage;
@@ -302,35 +303,72 @@ class CoursesController extends Controller
 
         // Handle lecture updates
         if ($request->has('lectures')) {
+            Log::info('Lecture data received:', $request->lectures);
             foreach ($request->lectures as $lectureId => $lectureData) {
-                $lecture = CourseLecture::find($lectureId);
-                if ($lecture && $lecture->section->course_id === $course->id) {
-                    $lecture->update([
+                if (strpos($lectureId, 'new_') === 0) {
+                    // Handle new lectures - we need to create them
+                    // For now, we'll need a default section. Let's get the first section or create one
+                    $section = $course->sections()->first();
+                    if (!$section) {
+                        $section = $course->sections()->create([
+                            'title' => 'General',
+                            'description' => 'Course content',
+                            'sort_order' => 1
+                        ]);
+                    }
+
+                    // Create new lecture
+                    $newLecture = $section->lectures()->create([
+                        'course_id' => $course->id,
                         'title' => $lectureData['title'],
                         'description' => $lectureData['description'] ?? '',
                         'video_url' => $lectureData['video_url'] ?? null,
+                        'type' => isset($lectureData['video_url']) && $lectureData['video_url'] ? 'url' : 'upload',
+                        'sort_order' => $section->lectures()->count() + 1
                     ]);
 
-                    // Handle lecture file upload
+                    // Handle lecture file upload for new lecture
                     if (isset($lectureData['file']) && $lectureData['file']) {
-                        // Delete old file if exists
-                        if ($lecture->document_file && Storage::disk('public')->exists($lecture->document_file)) {
-                            Storage::disk('public')->delete($lecture->document_file);
-                        }
-
                         $filePath = $lectureData['file']->store('lectures', 'public');
-                        $lecture->update(['document_file' => $filePath]);
+                        $newLecture->update(['document_file' => $filePath]);
                     }
 
-                    // Handle lecture book upload
+                    // Handle lecture book upload for new lecture
                     if (isset($lectureData['book']) && $lectureData['book']) {
-                        // Delete old book if exists
-                        if ($lecture->book && Storage::disk('public')->exists($lecture->book)) {
-                            Storage::disk('public')->delete($lecture->book);
+                        $bookPath = $lectureData['book']->store('lectures/books', 'public');
+                        $newLecture->update(['book' => $bookPath]);
+                    }
+                } else {
+                    // Handle existing lectures
+                    $lecture = CourseLecture::find($lectureId);
+                    if ($lecture && $lecture->section->course_id === $course->id) {
+                        $lecture->update([
+                            'title' => $lectureData['title'],
+                            'description' => $lectureData['description'] ?? '',
+                            'video_url' => $lectureData['video_url'] ?? null,
+                        ]);
+
+                        // Handle lecture file upload
+                        if (isset($lectureData['file']) && $lectureData['file']) {
+                            // Delete old file if exists
+                            if ($lecture->document_file && Storage::disk('public')->exists($lecture->document_file)) {
+                                Storage::disk('public')->delete($lecture->document_file);
+                            }
+
+                            $filePath = $lectureData['file']->store('lectures', 'public');
+                            $lecture->update(['document_file' => $filePath]);
                         }
 
-                        $bookPath = $lectureData['book']->store('lectures/books', 'public');
-                        $lecture->update(['book' => $bookPath]);
+                        // Handle lecture book upload
+                        if (isset($lectureData['book']) && $lectureData['book']) {
+                            // Delete old book if exists
+                            if ($lecture->book && Storage::disk('public')->exists($lecture->book)) {
+                                Storage::disk('public')->delete($lecture->book);
+                            }
+
+                            $bookPath = $lectureData['book']->store('lectures/books', 'public');
+                            $lecture->update(['book' => $bookPath]);
+                        }
                     }
                 }
             }

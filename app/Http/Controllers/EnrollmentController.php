@@ -21,7 +21,8 @@ class EnrollmentController extends Controller
         if (!$user->enrollments()->where('course_id', $course->id)->exists()) {
             $user->enrollments()->create([
                 'course_id' => $course->id,
-                'status' => 'enrolled',
+                'status' => 'active',
+                'enrolled_at' => now(),
                 'progress_percentage' => 0,
             ]);
         }
