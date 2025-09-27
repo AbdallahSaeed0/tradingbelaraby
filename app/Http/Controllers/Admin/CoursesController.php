@@ -172,6 +172,7 @@ class CoursesController extends Controller
                     if (isset($sectionData['lectures']) && is_array($sectionData['lectures'])) {
                         foreach ($sectionData['lectures'] as $lectureData) {
                             $lecture = $section->lectures()->create([
+                                'course_id' => $course->id,
                                 'title' => $lectureData['title'],
                                 'description' => $lectureData['description'] ?? '',
                                 'content_type' => $lectureData['type'] === 'url' ? 'video' : 'document',
@@ -235,7 +236,8 @@ class CoursesController extends Controller
 
     public function update(Request $request, Course $course)
     {
-        $data = $request->validate([
+        try {
+            $data = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'category_id' => 'required|exists:course_categories,id',
@@ -247,6 +249,9 @@ class CoursesController extends Controller
             'book' => 'nullable|file|mimes:pdf|max:10240',
             'learning_objectives' => 'nullable|array',
             'learning_objectives.*' => 'string',
+            'sections' => 'nullable|array',
+            'sections.*.title' => 'required|string',
+            'sections.*.description' => 'nullable|string',
             'lectures' => 'nullable|array',
             'lectures.*.title' => 'required|string',
             'lectures.*.description' => 'nullable|string',
@@ -301,31 +306,117 @@ class CoursesController extends Controller
             $course->update(['what_to_learn' => $request->learning_objectives]);
         }
 
-        // Handle lecture updates
+        // Handle section updates
+        Log::info('Form submitted successfully');
+        Log::info('Request has sections:', ['has_sections' => $request->has('sections')]);
+        Log::info('Request has lectures:', ['has_lectures' => $request->has('lectures')]);
+
+        // Initialize array to track new section IDs
+        $newSectionIds = [];
+
+        if ($request->has('sections')) {
+            Log::info('Section data received:', $request->sections);
+
+            foreach ($request->sections as $sectionId => $sectionData) {
+                Log::info("Processing section: {$sectionId}", $sectionData);
+
+                if (strpos($sectionId, 'new_') === 0) {
+                    // Handle new sections
+                    Log::info("Creating new section with data:", $sectionData);
+                    $newSection = $course->sections()->create([
+                        'title' => $sectionData['title'],
+                        'description' => $sectionData['description'] ?? '',
+                        'order' => $course->sections()->count() + 1
+                    ]);
+                    Log::info("New section created with ID: {$newSection->id}");
+
+                    // Store the new section ID for lecture processing
+                    $newSectionIds[$sectionId] = $newSection->id;
+                } else {
+                    // Handle existing sections
+                    $section = \App\Models\CourseSection::find($sectionId);
+                    if ($section && $section->course_id === $course->id) {
+                        Log::info("Updating existing section {$sectionId} with data:", $sectionData);
+                        $section->update([
+                            'title' => $sectionData['title'],
+                            'description' => $sectionData['description'] ?? '',
+                        ]);
+                        Log::info("Section {$sectionId} updated successfully");
+                    }
+                }
+            }
+        }
+
         if ($request->has('lectures')) {
             Log::info('Lecture data received:', $request->lectures);
+            Log::info('All request data:', $request->all());
+
+            // Debug: Check if we have any lectures data
+            if (empty($request->lectures)) {
+                Log::warning('No lectures data found in request');
+                return redirect()->back()->with('error', 'No lecture data received');
+            }
+
+            // First, update the order of all lectures based on their position in the form
+            $lectureOrder = 1;
             foreach ($request->lectures as $lectureId => $lectureData) {
                 if (strpos($lectureId, 'new_') === 0) {
+                    // For new lectures, we'll handle order when creating them
+                    continue;
+                } else {
+                    // Update existing lecture order
+                    $lecture = CourseLecture::find($lectureId);
+                    if ($lecture && $lecture->section->course_id === $course->id) {
+                        $lecture->update(['order' => $lectureOrder]);
+                        $lectureOrder++;
+                    }
+                }
+            }
+
+            // Then handle the actual lecture data updates
+            foreach ($request->lectures as $lectureId => $lectureData) {
+                Log::info("Processing lecture: {$lectureId}", $lectureData);
+
+                if (strpos($lectureId, 'new_') === 0) {
                     // Handle new lectures - we need to create them
-                    // For now, we'll need a default section. Let's get the first section or create one
-                    $section = $course->sections()->first();
+                    $section = null;
+
+                    // Check if lecture has a section_id
+                    if (isset($lectureData['section_id'])) {
+                        $sectionId = $lectureData['section_id'];
+
+                        // Check if it's a new section ID
+                        if (strpos($sectionId, 'new_') === 0 && isset($newSectionIds[$sectionId])) {
+                            $section = \App\Models\CourseSection::find($newSectionIds[$sectionId]);
+                        } else {
+                            // It's an existing section ID
+                            $section = \App\Models\CourseSection::find($sectionId);
+                        }
+                    }
+
+                    // If no section found, use the first available section or create one
                     if (!$section) {
-                        $section = $course->sections()->create([
-                            'title' => 'General',
-                            'description' => 'Course content',
-                            'sort_order' => 1
-                        ]);
+                        $section = $course->sections()->first();
+                        if (!$section) {
+                            $section = $course->sections()->create([
+                                'title' => 'General',
+                                'description' => 'Course content',
+                                'order' => 1
+                            ]);
+                        }
                     }
 
                     // Create new lecture
+                    Log::info("Creating new lecture with data:", $lectureData);
                     $newLecture = $section->lectures()->create([
                         'course_id' => $course->id,
                         'title' => $lectureData['title'],
                         'description' => $lectureData['description'] ?? '',
                         'video_url' => $lectureData['video_url'] ?? null,
-                        'type' => isset($lectureData['video_url']) && $lectureData['video_url'] ? 'url' : 'upload',
-                        'sort_order' => $section->lectures()->count() + 1
+                        'content_type' => isset($lectureData['video_url']) && $lectureData['video_url'] ? 'video' : 'document',
+                        'order' => isset($lectureData['order']) ? $lectureData['order'] : ($section->lectures()->count() + 1)
                     ]);
+                    Log::info("New lecture created with ID: {$newLecture->id}");
 
                     // Handle lecture file upload for new lecture
                     if (isset($lectureData['file']) && $lectureData['file']) {
@@ -342,11 +433,14 @@ class CoursesController extends Controller
                     // Handle existing lectures
                     $lecture = CourseLecture::find($lectureId);
                     if ($lecture && $lecture->section->course_id === $course->id) {
+                        Log::info("Updating existing lecture {$lectureId} with data:", $lectureData);
                         $lecture->update([
                             'title' => $lectureData['title'],
                             'description' => $lectureData['description'] ?? '',
                             'video_url' => $lectureData['video_url'] ?? null,
+                            'content_type' => isset($lectureData['video_url']) && $lectureData['video_url'] ? 'video' : 'document',
                         ]);
+                        Log::info("Lecture {$lectureId} updated successfully");
 
                         // Handle lecture file upload
                         if (isset($lectureData['file']) && $lectureData['file']) {
@@ -358,6 +452,7 @@ class CoursesController extends Controller
                             $filePath = $lectureData['file']->store('lectures', 'public');
                             $lecture->update(['document_file' => $filePath]);
                         }
+                        // Note: If no new file is uploaded, the existing file is preserved
 
                         // Handle lecture book upload
                         if (isset($lectureData['book']) && $lectureData['book']) {
@@ -369,12 +464,21 @@ class CoursesController extends Controller
                             $bookPath = $lectureData['book']->store('lectures/books', 'public');
                             $lecture->update(['book' => $bookPath]);
                         }
+                        // Note: If no new book is uploaded, the existing book is preserved
                     }
                 }
             }
         }
 
         return redirect()->route('admin.courses.index')->with('success', 'Course updated successfully.');
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Validation failed:', $e->errors());
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        } catch (\Exception $e) {
+            Log::error('Error updating course:', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            return redirect()->back()->with('error', 'Error updating course: ' . $e->getMessage())->withInput();
+        }
     }
 
     public function destroy(Course $course)

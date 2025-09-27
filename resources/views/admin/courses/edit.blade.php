@@ -78,6 +78,29 @@
             padding: 0.5rem;
             margin-bottom: 0.5rem;
         }
+
+        .lecture-item {
+            cursor: move;
+            transition: all 0.3s ease;
+        }
+
+        .lecture-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .lecture-item.dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+        }
+
+        .drag-handle {
+            cursor: move;
+            color: #6c757d;
+        }
+
+        .drag-handle:hover {
+            color: #495057;
+        }
     </style>
 @endpush
 
@@ -256,30 +279,49 @@
                                                                     <select
                                                                         class="form-select form-select-sm lecture-type">
                                                                         <option value="url"
-                                                                            {{ $lecture->type == 'url' ? 'selected' : '' }}>
+                                                                            {{ $lecture->content_type == 'video' ? 'selected' : '' }}>
                                                                             Video URL</option>
                                                                         <option value="upload"
-                                                                            {{ $lecture->type == 'upload' ? 'selected' : '' }}>
+                                                                            {{ $lecture->content_type == 'document' ? 'selected' : '' }}>
                                                                             Upload File</option>
                                                                     </select>
                                                                 </div>
                                                                 <div class="col-md-9">
                                                                     <div class="lecture-url-input"
-                                                                        style="display: {{ $lecture->type == 'url' ? 'block' : 'none' }};">
+                                                                        style="display: {{ $lecture->content_type == 'video' ? 'block' : 'none' }};">
                                                                         <input type="url"
                                                                             class="form-control form-control-sm lecture-link"
                                                                             name="lectures[{{ $lecture->id }}][video_url]"
                                                                             value="{{ $lecture->video_url }}"
                                                                             placeholder="Video URL (YouTube, Vimeo, etc.)"
-                                                                            {{ $lecture->type == 'url' ? 'required' : '' }}>
+                                                                            {{ $lecture->content_type == 'video' ? 'required' : '' }}>
                                                                     </div>
                                                                     <div class="lecture-upload-input"
-                                                                        style="display: {{ $lecture->type == 'upload' ? 'block' : 'none' }};">
+                                                                        style="display: {{ $lecture->content_type == 'document' ? 'block' : 'none' }};">
+                                                                        @if ($lecture->document_file)
+                                                                            <div class="mb-2">
+                                                                                <small class="text-muted">Current
+                                                                                    file:</small>
+                                                                                <div class="d-flex align-items-center">
+                                                                                    <i class="fa fa-file me-2"></i>
+                                                                                    <span
+                                                                                        class="text-truncate">{{ basename($lecture->document_file) }}</span>
+                                                                                    <a href="{{ asset('storage/' . $lecture->document_file) }}"
+                                                                                        target="_blank"
+                                                                                        class="btn btn-sm btn-outline-primary ms-2">
+                                                                                        <i class="fa fa-download"></i>
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        @endif
                                                                         <input type="file"
                                                                             class="form-control form-control-sm lecture-file"
                                                                             name="lectures[{{ $lecture->id }}][file]"
                                                                             accept="video/*,audio/*,.pdf,.doc,.docx,.ppt,.pptx"
-                                                                            {{ $lecture->type == 'upload' ? 'required' : '' }}>
+                                                                            {{ $lecture->content_type == 'document' && !$lecture->document_file ? 'required' : '' }}>
+                                                                        <small class="form-text text-muted">
+                                                                            {{ $lecture->document_file ? 'Upload a new file to replace the current one' : 'Upload a file for this lecture' }}
+                                                                        </small>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -288,12 +330,28 @@
                                                                     <label class="form-label small text-muted">Lecture Book
                                                                         (Optional)
                                                                     </label>
+                                                                    @if ($lecture->book)
+                                                                        <div class="mb-2">
+                                                                            <small class="text-muted">Current book:</small>
+                                                                            <div class="d-flex align-items-center">
+                                                                                <i class="fa fa-book me-2"></i>
+                                                                                <span
+                                                                                    class="text-truncate">{{ basename($lecture->book) }}</span>
+                                                                                <a href="{{ asset('storage/' . $lecture->book) }}"
+                                                                                    target="_blank"
+                                                                                    class="btn btn-sm btn-outline-primary ms-2">
+                                                                                    <i class="fa fa-download"></i>
+                                                                                </a>
+                                                                            </div>
+                                                                        </div>
+                                                                    @endif
                                                                     <input type="file"
                                                                         class="form-control form-control-sm lecture-book"
                                                                         name="lectures[{{ $lecture->id }}][book]"
                                                                         accept=".pdf">
-                                                                    <div class="form-text small">Upload a book/material
-                                                                        specific to this lecture (PDF format)</div>
+                                                                    <div class="form-text small">
+                                                                        {{ $lecture->book ? 'Upload a new book to replace the current one' : 'Upload a book/material specific to this lecture (PDF format)' }}
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -476,6 +534,10 @@
                 </div>
             </div>
             <div class="ms-4">
+                <div class="mb-2">
+                    <textarea class="form-control form-control-sm lecture-description" name="lectures[new][description]"
+                        placeholder="Lecture Description (Optional)" rows="2"></textarea>
+                </div>
                 <div class="row mb-2">
                     <div class="col-md-3">
                         <select class="form-select form-select-sm lecture-type">
@@ -640,14 +702,28 @@
                     lectureClone.querySelector('.lecture-item').dataset.lectureId = lectureId;
 
                     // Update input names for new lecture
-                    const inputs = lectureClone.querySelectorAll('input, select');
+                    const inputs = lectureClone.querySelectorAll('input, select, textarea');
                     inputs.forEach(input => {
                         if (input.name) {
                             input.name = input.name.replace('[new]', `[${lectureId}]`);
                         }
                     });
 
+                    // Add hidden input to track which section this lecture belongs to
+                    const sectionId = section.dataset.sectionId;
+                    const hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = `lectures[${lectureId}][section_id]`;
+                    hiddenInput.value = sectionId;
+                    lectureClone.querySelector('.lecture-item').appendChild(hiddenInput);
+
                     lecturesContainer.appendChild(lectureClone);
+
+                    // Update the order for all lectures in this section
+                    updateLectureOrder();
+
+                    // Don't scroll to the new lecture
+                    e.preventDefault();
                 }
             });
 
@@ -699,6 +775,99 @@
             learnItemsContainer.addEventListener('click', function(e) {
                 if (e.target.classList.contains('remove-learn-item')) {
                     e.target.closest('.learn-item').remove();
+                }
+            });
+
+            // Lecture ordering functionality
+            function initializeLectureOrdering() {
+                const lectureItems = document.querySelectorAll('.lecture-item');
+                lectureItems.forEach(lecture => {
+                    lecture.draggable = true;
+
+                    lecture.addEventListener('dragstart', function(e) {
+                        e.dataTransfer.setData('text/plain', '');
+                        this.classList.add('dragging');
+                    });
+
+                    lecture.addEventListener('dragend', function(e) {
+                        this.classList.remove('dragging');
+                        // Update order after drag ends
+                        updateLectureOrder();
+                    });
+                });
+
+                const lectureContainers = document.querySelectorAll('.lectures-container');
+                lectureContainers.forEach(container => {
+                    container.addEventListener('dragover', function(e) {
+                        e.preventDefault();
+                        const dragging = document.querySelector('.dragging');
+                        if (!dragging) return;
+
+                        const afterElement = getDragAfterElement(this, e.clientY);
+                        if (afterElement == null) {
+                            this.appendChild(dragging);
+                        } else {
+                            this.insertBefore(dragging, afterElement);
+                        }
+                    });
+                });
+            }
+
+            // Update lecture order based on DOM position
+            function updateLectureOrder() {
+                const lectureContainers = document.querySelectorAll('.lectures-container');
+                lectureContainers.forEach(container => {
+                    const lectures = container.querySelectorAll('.lecture-item');
+                    lectures.forEach((lecture, index) => {
+                        // Add or update hidden order input
+                        let orderInput = lecture.querySelector('input[name*="[order]"]');
+                        if (!orderInput) {
+                            orderInput = document.createElement('input');
+                            orderInput.type = 'hidden';
+                            orderInput.name = lecture.querySelector('input[name*="[title]"]').name
+                                .replace('[title]', '[order]');
+                            lecture.appendChild(orderInput);
+                        }
+                        orderInput.value = index + 1;
+                    });
+                });
+            }
+
+            function getDragAfterElement(container, y) {
+                const draggableElements = [...container.querySelectorAll('.lecture-item:not(.dragging)')];
+
+                return draggableElements.reduce((closest, child) => {
+                    const box = child.getBoundingClientRect();
+                    const offset = y - box.top - box.height / 2;
+
+                    if (offset < 0 && offset > closest.offset) {
+                        return {
+                            offset: offset,
+                            element: child
+                        };
+                    } else {
+                        return closest;
+                    }
+                }, {
+                    offset: Number.NEGATIVE_INFINITY
+                }).element;
+            }
+
+            // Initialize lecture ordering when page loads
+            initializeLectureOrdering();
+
+            // Set initial order for existing lectures
+            updateLectureOrder();
+
+            // Re-initialize ordering when new lectures are added
+            const originalAddLecture = courseSections.addEventListener;
+            courseSections.addEventListener('click', function(e) {
+                if (e.target.classList.contains('add-lecture')) {
+                    // Wait for the lecture to be added, then re-initialize ordering
+                    setTimeout(() => {
+                        initializeLectureOrdering();
+                        updateLectureOrder();
+                    }, 100);
                 }
             });
         });

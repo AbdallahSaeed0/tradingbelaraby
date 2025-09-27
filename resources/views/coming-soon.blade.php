@@ -130,8 +130,8 @@
         }
 
         .logo {
-            width: 120px;
-            height: 120px;
+            width: 250px;
+            height: 250px;
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(10px);
             border: 2px solid rgba(255, 255, 255, 0.2);
@@ -147,8 +147,8 @@
         }
 
         .logo-image {
-            max-width: 80px;
-            max-height: 80px;
+            min-width: 110px;
+            max-height: 140px;
             width: auto;
             height: auto;
             object-fit: contain;

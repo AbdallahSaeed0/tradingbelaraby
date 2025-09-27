@@ -1072,8 +1072,10 @@
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
+                                'Accept': 'application/json',
                                 'X-CSRF-TOKEN': csrfToken.getAttribute('content')
-                            }
+                            },
+                            body: JSON.stringify({})
                         })
                         .then(response => {
                             if (!response.ok) {
@@ -1087,17 +1089,26 @@
                         })
                         .then(data => {
                             if (data && data.success) {
-                                // Replace button with "Go to Course" link
-                                const goToCourseLink = document.createElement('a');
-                                goToCourseLink.href = `/courses/${courseId}/learn`;
-                                goToCourseLink.className = 'btn btn-success flex-fill';
-                                goToCourseLink.innerHTML =
-                                    '<i class="fa fa-graduation-cap me-1"></i>Go to Course';
+                                // Show enrolled state first
+                                this.className = 'btn btn-success flex-fill';
+                                this.innerHTML = '<i class="fa fa-check me-1"></i>Enrolled';
+                                this.disabled = true;
 
-                                this.parentNode.replaceChild(goToCourseLink, this);
-
+                                // Show success message
                                 toastr.success(data.message ||
                                     'Successfully enrolled in course!');
+
+                                // After 2 seconds, replace with "Go to Course" link
+                                setTimeout(() => {
+                                    const goToCourseLink = document.createElement('a');
+                                    goToCourseLink.href = `/courses/${courseId}/learn`;
+                                    goToCourseLink.className =
+                                        'btn btn-success flex-fill';
+                                    goToCourseLink.innerHTML =
+                                        '<i class="fa fa-graduation-cap me-1"></i>Go to Course';
+
+                                    this.parentNode.replaceChild(goToCourseLink, this);
+                                }, 2000);
                             } else if (data) {
                                 toastr.error(data.message || 'An error occurred');
                                 this.disabled = false;
