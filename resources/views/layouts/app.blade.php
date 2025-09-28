@@ -93,18 +93,18 @@
 
         .search-input {
             background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white;
+            border: 1px solid rgba(0, 0, 0, 0.3);
+
         }
 
         .search-input::placeholder {
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(0, 0, 0, 0.7);
         }
 
         .search-input:focus {
             background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.5);
-            color: white;
+            border-color: rgba(58, 58, 58, 0.5);
+            color: black;
             box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
         }
 
@@ -434,7 +434,8 @@
                                         alt="Phone" class="contact-icon">
                                     <div class="contact-info">
                                         <span class="contact-label">Call Now !</span>
-                                        <span class="contact-value"><b>{{ $contactSettings->phone }}</b></span>
+                                        <span class="contact-value"><b><a href="tel:{{ $contactSettings->phone }}"
+                                                    class="text-decoration-none">{{ $contactSettings->phone }}</a></b></span>
                                     </div>
                                 </div>
                             @endif
@@ -444,7 +445,8 @@
                                         alt="Email" class="contact-icon">
                                     <div class="contact-info">
                                         <span class="contact-label">Email Now</span>
-                                        <span class="contact-value"><b>{{ $contactSettings->email }}</b></span>
+                                        <span class="contact-value"><b><a href="mailto:{{ $contactSettings->email }}"
+                                                    class="text-decoration-none">{{ $contactSettings->email }}</a></b></span>
                                     </div>
                                 </div>
                             @endif
@@ -821,17 +823,21 @@
                     <h4 class="footer-title mb-2">{{ custom_trans('latest_posts') }}</h4>
                     <div class="footer-title-underline mb-3"></div>
                     @php
-                        $latestBlogs = \App\Models\Blog::published()->with('category')->latest()->take(2)->get();
+                        $latestBlogs = \App\Models\Blog::published()
+                            ->with(['category', 'author'])
+                            ->latest()
+                            ->take(2)
+                            ->get();
                     @endphp
                     @forelse($latestBlogs as $blog)
                         <div class="footer-post d-flex align-items-center {{ !$loop->last ? 'mb-3' : '' }}">
-                            <img src="{{ $blog->image_url ?? asset('images/placeholder-image.png') }}"
-                                class="footer-post-img me-3" alt="{{ $blog->title }}">
+                            <img src="{{ $blog->getLocalizedImageUrl() ?? asset('images/placeholder-image.png') }}"
+                                class="footer-post-img me-3" alt="{{ $blog->getLocalizedTitle() }}">
                             <div>
                                 <div class="footer-post-title">
                                     <a href="{{ route('blog.show', $blog->slug) }}"
                                         class="text-white text-decoration-none">
-                                        {{ Str::limit($blog->title, 50) }}
+                                        {{ Str::limit($blog->getLocalizedTitle(), 50) }}
                                     </a>
                                 </div>
                                 <div class="footer-post-date">{{ $blog->created_at->format('d-m-Y') }}</div>

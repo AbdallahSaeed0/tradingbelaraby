@@ -9,24 +9,40 @@
         </div>
         <div class="row justify-content-center g-4">
             @php
-                $blogs = \App\Models\Blog::latest()->take(3)->get();
+                $blogs = \App\Models\Blog::with(['author', 'category'])
+                    ->latest()
+                    ->take(3)
+                    ->get();
             @endphp
             @if ($blogs->count() > 0)
                 @foreach ($blogs as $blog)
                     <div class="col-md-6 col-lg-4 d-flex">
                         <div class="blog-card bg-white rounded-4 shadow-sm w-100 d-flex flex-column">
                             <div class="blog-img-wrap position-relative overflow-hidden rounded-top-4">
-                                <img src="{{ $blog->image_url ?? asset('images/placeholder.jpg') }}"
-                                    class="blog-img w-100" alt="{{ $blog->title }}">
+                                <img src="{{ $blog->getLocalizedImageUrl() ?? asset('images/placeholder.jpg') }}"
+                                    class="blog-img w-100" alt="{{ $blog->getLocalizedTitle() }}">
                                 <span class="badge blog-date-badge position-absolute top-0 start-0 m-3 px-3 py-2"><i
                                         class="fa fa-calendar me-2"></i>{{ $blog->created_at->format('M d, Y') }}</span>
                             </div>
                             <div class="p-4 flex-grow-1 d-flex flex-column">
                                 <div class="mb-2 text-muted small"><i class="fa fa-user me-1"></i> By
-                                    {{ $blog->author ?? 'Admin' }}</div>
-                                <h5 class="fw-bold mb-2">{{ $blog->title }}</h5>
+                                    {{ $blog->author_name ?? 'Admin' }}</div>
+                                <h5 class="fw-bold mb-2">{{ $blog->getLocalizedTitle() }}</h5>
                                 <p class="mb-3 text-muted flex-grow-1">
-                                    {{ Str::limit($blog->content ?? 'Not Found', 100) }}</p>
+                                    {{ Str::limit($blog->getLocalizedExcerpt() ?: strip_tags($blog->getLocalizedDescription()), 100) }}
+                                </p>
+
+                                <!-- Blog Tags -->
+                                @php $tags = $blog->getTagsArray(); @endphp
+                                @if (!empty($tags))
+                                    <div class="blog-tags mb-3">
+                                        <div class="d-flex flex-wrap gap-1">
+                                            @foreach (array_slice($tags, 0, 2) as $tag)
+                                                <span class="badge bg-light text-dark border">{{ $tag }}</span>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endif
                                 <a href="{{ route('blog.show', $blog->slug) }}"
                                     class="text-primary fw-bold mt-auto">Read More &rarr;</a>
                             </div>

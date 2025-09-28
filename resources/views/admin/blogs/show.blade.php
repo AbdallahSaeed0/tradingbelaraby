@@ -40,7 +40,7 @@
                         <div class="mb-4">
                             <div class="d-flex align-items-center text-muted mb-2">
                                 <i class="fas fa-user me-2"></i>
-                                <span>{{ $blog->author ?: 'Admin' }}</span>
+                                <span>{{ $blog->author_name ?: 'Admin' }}</span>
                                 <i class="fas fa-calendar ms-3 me-2"></i>
                                 <span>{{ $blog->created_at->format('F d, Y') }}</span>
                                 <i class="fas fa-eye ms-3 me-2"></i>
@@ -152,7 +152,7 @@
                             </tr>
                             <tr>
                                 <td><strong>Author:</strong></td>
-                                <td>{{ $blog->author ?: 'Admin' }}</td>
+                                <td>{{ $blog->author_name ?: 'Admin' }}</td>
                             </tr>
                             <tr>
                                 <td><strong>Word Count:</strong></td>

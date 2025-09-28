@@ -13,25 +13,45 @@ class Blog extends Model
 
     protected $fillable = [
         'title',
+        'title_ar',
         'slug',
+        'slug_ar',
+        'custom_slug',
         'image',
+        'image_ar',
         'description',
+        'description_ar',
         'excerpt',
+        'excerpt_ar',
         'category_id',
+        'author_id',
         'status',
-        'author',
         'views_count',
-        'is_featured'
+        'is_featured',
+        'meta_title',
+        'meta_title_ar',
+        'meta_description',
+        'meta_description_ar',
+        'meta_keywords',
+        'meta_keywords_ar',
+        'tags',
+        'reading_time'
     ];
 
     protected $casts = [
         'views_count' => 'integer',
         'is_featured' => 'boolean',
+        'tags' => 'array',
+        'meta_keywords' => 'array',
+        'meta_keywords_ar' => 'array',
+        'reading_time' => 'integer',
     ];
 
     protected $appends = [
         'image_url',
-        'category_name'
+        'image_ar_url',
+        'category_name',
+        'author_name'
     ];
 
     /**
@@ -40,6 +60,14 @@ class Blog extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(BlogCategory::class, 'category_id');
+    }
+
+    /**
+     * Get the author that owns the blog
+     */
+    public function author(): BelongsTo
+    {
+        return $this->belongsTo(Admin::class, 'author_id');
     }
 
     /**
@@ -88,11 +116,30 @@ class Blog extends Model
     }
 
     /**
+     * Get Arabic image URL attribute
+     */
+    public function getImageArUrlAttribute(): ?string
+    {
+        if ($this->image_ar) {
+            return asset('storage/' . $this->image_ar);
+        }
+        return null;
+    }
+
+    /**
      * Get category name attribute
      */
     public function getCategoryNameAttribute(): ?string
     {
         return $this->category?->name;
+    }
+
+    /**
+     * Get author name attribute
+     */
+    public function getAuthorNameAttribute(): ?string
+    {
+        return $this->author?->name;
     }
 
     /**
@@ -129,5 +176,115 @@ class Blog extends Model
         }
 
         return Str::limit(strip_tags($this->description), 150);
+    }
+
+    /**
+     * Get excerpt or generate from description for Arabic
+     */
+    public function getExcerptArOrGenerated(): string
+    {
+        if ($this->excerpt_ar) {
+            return $this->excerpt_ar;
+        }
+
+        return Str::limit(strip_tags($this->description_ar), 150);
+    }
+
+    /**
+     * Get localized title based on current language
+     */
+    public function getLocalizedTitle(): string
+    {
+        $currentLang = app()->getLocale();
+        if ($currentLang === 'ar' && $this->title_ar) {
+            return $this->title_ar;
+        }
+        return $this->title;
+    }
+
+    /**
+     * Get localized description based on current language
+     */
+    public function getLocalizedDescription(): string
+    {
+        $currentLang = app()->getLocale();
+        if ($currentLang === 'ar' && $this->description_ar) {
+            return $this->description_ar;
+        }
+        return $this->description;
+    }
+
+    /**
+     * Get localized excerpt based on current language
+     */
+    public function getLocalizedExcerpt(): string
+    {
+        $currentLang = app()->getLocale();
+        if ($currentLang === 'ar') {
+            return $this->getExcerptArOrGenerated();
+        }
+        return $this->getExcerptOrGenerated();
+    }
+
+    /**
+     * Get localized image based on current language
+     */
+    public function getLocalizedImageUrl(): ?string
+    {
+        $currentLang = app()->getLocale();
+        if ($currentLang === 'ar' && $this->image_ar_url) {
+            return $this->image_ar_url;
+        }
+        return $this->image_url;
+    }
+
+    /**
+     * Get the final slug (custom or generated)
+     */
+    public function getFinalSlug(): string
+    {
+        if ($this->custom_slug) {
+            return $this->custom_slug;
+        }
+
+        $currentLang = app()->getLocale();
+        if ($currentLang === 'ar' && $this->slug_ar) {
+            return $this->slug_ar;
+        }
+
+        return $this->slug;
+    }
+
+    /**
+     * Calculate estimated reading time
+     */
+    public function calculateReadingTime(): int
+    {
+        if ($this->reading_time) {
+            return $this->reading_time;
+        }
+
+        $content = strip_tags($this->getLocalizedDescription());
+        $wordCount = str_word_count($content);
+        $readingTime = ceil($wordCount / 200); // Average reading speed: 200 words per minute
+
+        return max(1, $readingTime); // Minimum 1 minute
+    }
+
+    /**
+     * Get tags as array safely
+     */
+    public function getTagsArray(): array
+    {
+        if (is_array($this->tags)) {
+            return $this->tags;
+        }
+
+        if (is_string($this->tags)) {
+            $decoded = json_decode($this->tags, true);
+            return is_array($decoded) ? $decoded : [];
+        }
+
+        return [];
     }
 }

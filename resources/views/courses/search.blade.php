@@ -14,7 +14,7 @@
                 <div class="col-lg-8">
                     <h1 class="fw-bold mb-3">{{ custom_trans('search_results') }}</h1>
                     <p class="lead mb-0">
-                        {{ custom_trans('search_results_for') }}: <strong>"{{ $query }}"</strong>
+                        {{ custom_trans('search_results_for') }}: <strong>"{{ $searchQuery }}"</strong>
                     </p>
                 </div>
             </div>
@@ -30,11 +30,11 @@
                     <div class="filter-section p-3 rounded-3 shadow-sm bg-white mb-4">
                         <h5 class="fw-bold mb-3">{{ custom_trans('categories') }}</h5>
                         <ul class="list-unstyled mb-0">
-                            <li><a href="{{ route('courses.search', ['q' => $query]) }}"
+                            <li><a href="{{ route('courses.search', ['q' => $searchQuery]) }}"
                                     class="filter-link fw-bold text-primary">{{ custom_trans('all_categories') }}</a>
                             </li>
                             @foreach ($categories as $category)
-                                <li><a href="{{ route('courses.search', ['q' => $query, 'category' => $category->id]) }}"
+                                <li><a href="{{ route('courses.search', ['q' => $searchQuery, 'category' => $category->id]) }}"
                                         class="filter-link">{{ $category->name }}
                                         ({{ $category->courses_count }})
                                     </a></li>
@@ -75,7 +75,7 @@
                             <div class="row mt-4">
                                 <div class="col-12">
                                     <nav aria-label="Search results pagination">
-                                        {{ $courses->appends(['q' => $query])->links() }}
+                                        {{ $courses->appends(['q' => $searchQuery])->links() }}
                                     </nav>
                                 </div>
                             </div>
@@ -86,7 +86,7 @@
                             <h3 class="fw-bold mb-3">{{ custom_trans('no_courses_found') }}</h3>
                             <p class="text-muted mb-4">{{ custom_trans('no_courses_found_message') }}</p>
                             <div class="d-flex gap-2 justify-content-center">
-                                <a href="{{ route('categories') }}" class="btn btn-primary">
+                                <a href="{{ route('categories.index') }}" class="btn btn-primary">
                                     <i class="fa fa-th-large me-2"></i>{{ custom_trans('browse_all_courses') }}
                                 </a>
                                 <a href="{{ route('home') }}" class="btn btn-outline-primary">

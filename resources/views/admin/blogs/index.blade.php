@@ -242,7 +242,7 @@
                         <tbody>
                             @forelse($blogs as $blog)
                                 <tr class="blog-row"
-                                    data-search="{{ strtolower($blog->title . ' ' . $blog->description . ' ' . ($blog->author ?: 'admin')) }}"
+                                    data-search="{{ strtolower($blog->title . ' ' . $blog->description . ' ' . ($blog->author_name ?: 'admin')) }}"
                                     data-category="{{ $blog->category_id }}" data-status="{{ $blog->status }}"
                                     data-featured="{{ $blog->is_featured ? 'featured' : 'not_featured' }}">
                                     <td>
@@ -280,7 +280,7 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <small>{{ $blog->author ?: 'Admin' }}</small>
+                                        <small>{{ $blog->author_name ?: 'Admin' }}</small>
                                     </td>
                                     <td>
                                         <span
@@ -475,7 +475,7 @@
                 }
 
                 if (confirm(
-                    'Are you sure you want to delete the selected blogs? This action cannot be undone.')) {
+                        'Are you sure you want to delete the selected blogs? This action cannot be undone.')) {
                     const blogIds = Array.from(checkedBoxes).map(cb => cb.value);
                     const csrfToken = document.querySelector('meta[name="csrf-token"]');
                     if (!csrfToken) {
@@ -565,17 +565,27 @@
             // Delete blog
             window.deleteBlog = function(blogId) {
                 if (confirm('Are you sure you want to delete this blog?')) {
-                    fetch(`/admin/blogs/${blogId}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
-                                .getAttribute('content'),
-                        },
-                    }).then(response => {
-                        if (response.ok) {
-                            location.reload();
-                        }
-                    });
+                    // Create a form for deletion
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = `/admin/blogs/${blogId}`;
+
+                    // Add CSRF token
+                    const csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = '_token';
+                    csrfInput.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+                    // Add method spoofing for DELETE
+                    const methodInput = document.createElement('input');
+                    methodInput.type = 'hidden';
+                    methodInput.name = '_method';
+                    methodInput.value = 'DELETE';
+
+                    form.appendChild(csrfInput);
+                    form.appendChild(methodInput);
+                    document.body.appendChild(form);
+                    form.submit();
                 }
             };
 

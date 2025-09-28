@@ -258,6 +258,10 @@ class CoursesController extends Controller
             'lectures.*.video_url' => 'nullable|url',
             'lectures.*.file' => 'nullable|file',
             'lectures.*.book' => 'nullable|file|mimes:pdf',
+            'deleted_sections' => 'nullable|array',
+            'deleted_sections.*' => 'integer|exists:course_sections,id',
+            'deleted_lectures' => 'nullable|array',
+            'deleted_lectures.*' => 'integer|exists:course_lectures,id',
         ]);
 
         // Handle image upload
@@ -304,6 +308,39 @@ class CoursesController extends Controller
         // Handle learning objectives
         if ($request->has('learning_objectives')) {
             $course->update(['what_to_learn' => $request->learning_objectives]);
+        }
+
+        // Handle deletions first
+        if ($request->has('deleted_sections')) {
+            Log::info('Deleting sections:', $request->deleted_sections);
+            foreach ($request->deleted_sections as $sectionId) {
+                $section = \App\Models\CourseSection::find($sectionId);
+                if ($section && $section->course_id === $course->id) {
+                    // Delete all lectures in this section first
+                    $section->lectures()->delete();
+                    // Then delete the section
+                    $section->delete();
+                    Log::info("Section {$sectionId} and its lectures deleted successfully");
+                }
+            }
+        }
+
+        if ($request->has('deleted_lectures')) {
+            Log::info('Deleting lectures:', $request->deleted_lectures);
+            foreach ($request->deleted_lectures as $lectureId) {
+                $lecture = \App\Models\CourseLecture::find($lectureId);
+                if ($lecture && $lecture->section->course_id === $course->id) {
+                    // Delete associated files
+                    if ($lecture->document_file && Storage::disk('public')->exists($lecture->document_file)) {
+                        Storage::disk('public')->delete($lecture->document_file);
+                    }
+                    if ($lecture->book && Storage::disk('public')->exists($lecture->book)) {
+                        Storage::disk('public')->delete($lecture->book);
+                    }
+                    $lecture->delete();
+                    Log::info("Lecture {$lectureId} deleted successfully");
+                }
+            }
         }
 
         // Handle section updates

@@ -23,11 +23,13 @@
 .contact-label {
   font-size: 1.1rem;
   font-weight: 600;
-  background: #fff;
-  color: #222;
+  color: #fff;
   border-radius: 32px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
   display: inline-block;
+}
+.contact-value a{
+    color: #fff;
 }
 
 /* Contact Info Boxes */

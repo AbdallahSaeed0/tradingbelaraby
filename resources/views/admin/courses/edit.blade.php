@@ -130,6 +130,11 @@
             enctype="multipart/form-data">
             @csrf
             @method('PUT')
+
+            <!-- Hidden inputs to track deleted items -->
+            <div id="deletedItems">
+                <!-- Deleted sections and lectures will be tracked here -->
+            </div>
             <div class="row">
                 <div class="col-lg-8">
                     <!-- Basic Information -->
@@ -730,10 +735,35 @@
             // Remove section/lecture functionality
             courseSections.addEventListener('click', function(e) {
                 if (e.target.classList.contains('remove-section')) {
-                    e.target.closest('.section-item').remove();
+                    const sectionItem = e.target.closest('.section-item');
+                    const sectionId = sectionItem.dataset.sectionId;
+
+                    // If it's an existing section (not a new one), track it for deletion
+                    if (sectionId && !sectionId.startsWith('new_')) {
+                        trackDeletedItem('deleted_sections[]', sectionId);
+                    }
+
+                    // Remove all lectures in this section from tracking
+                    const lectures = sectionItem.querySelectorAll('.lecture-item');
+                    lectures.forEach(lecture => {
+                        const lectureId = lecture.dataset.lectureId;
+                        if (lectureId && !lectureId.startsWith('new_')) {
+                            trackDeletedItem('deleted_lectures[]', lectureId);
+                        }
+                    });
+
+                    sectionItem.remove();
                 }
                 if (e.target.classList.contains('remove-lecture')) {
-                    e.target.closest('.lecture-item').remove();
+                    const lectureItem = e.target.closest('.lecture-item');
+                    const lectureId = lectureItem.dataset.lectureId;
+
+                    // If it's an existing lecture (not a new one), track it for deletion
+                    if (lectureId && !lectureId.startsWith('new_')) {
+                        trackDeletedItem('deleted_lectures[]', lectureId);
+                    }
+
+                    lectureItem.remove();
                 }
             });
 
@@ -851,6 +881,20 @@
                 }, {
                     offset: Number.NEGATIVE_INFINITY
                 }).element;
+            }
+
+            // Function to track deleted items
+            function trackDeletedItem(inputName, itemId) {
+                // Check if this item is already tracked for deletion
+                const existingInput = document.querySelector(`input[name="${inputName}"][value="${itemId}"]`);
+                if (!existingInput) {
+                    const deletedItemsContainer = document.getElementById('deletedItems');
+                    const hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = inputName;
+                    hiddenInput.value = itemId;
+                    deletedItemsContainer.appendChild(hiddenInput);
+                }
             }
 
             // Initialize lecture ordering when page loads

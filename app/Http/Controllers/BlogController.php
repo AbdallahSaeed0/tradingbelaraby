@@ -11,7 +11,7 @@ class BlogController extends Controller
     public function index(Request $request)
     {
         $query = Blog::published()
-            ->with(['category'])
+            ->with(['category', 'author'])
             ->orderBy('created_at', 'desc');
 
         // Filter by category if provided
@@ -36,7 +36,7 @@ class BlogController extends Controller
         $relatedBlogs = Blog::published()
             ->where('id', '!=', $blog->id)
             ->where('category_id', $blog->category_id)
-            ->with('category')
+            ->with(['category', 'author'])
             ->limit(3)
             ->get();
 

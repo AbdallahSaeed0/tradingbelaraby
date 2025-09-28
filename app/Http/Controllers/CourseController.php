@@ -88,11 +88,48 @@ class CourseController extends Controller
     public function search(Request $request)
     {
         $query = Course::query();
+        $searchQuery = $request->get('q', '');
+
         if ($request->filled('q')) {
             $query->where('name', 'like', '%' . $request->q . '%');
         }
+
+        // Apply category filter if provided
+        if ($request->filled('category')) {
+            $query->where('category_id', $request->category);
+        }
+
+        // Apply sorting
+        $sort = $request->get('sort', 'newest');
+        switch ($sort) {
+            case 'popular':
+                $query->withCount('enrollments')->orderByDesc('enrollments_count');
+                break;
+            case 'price_low':
+                $query->orderBy('price');
+                break;
+            case 'price_high':
+                $query->orderByDesc('price');
+                break;
+            case 'newest':
+            default:
+                $query->orderByDesc('created_at');
+                break;
+        }
+
         $courses = $query->paginate(12);
-        return view('courses.search', compact('courses'));
+
+        // Get categories for the sidebar filter
+        $categories = CourseCategory::active()
+            ->withCount(['courses' => function($query) use ($searchQuery) {
+                if ($searchQuery) {
+                    $query->where('name', 'like', '%' . $searchQuery . '%');
+                }
+            }])
+            ->orderBy('name')
+            ->get();
+
+        return view('courses.search', compact('courses', 'searchQuery', 'categories'));
     }
 
     public function category(CourseCategory $category)

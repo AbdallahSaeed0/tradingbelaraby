@@ -26,8 +26,9 @@
                         <div class="col-md-6 col-lg-4 d-flex">
                             <div class="blog-card bg-white rounded-4 shadow-sm w-100 d-flex flex-column">
                                 <div class="blog-img-wrap position-relative overflow-hidden rounded-top-4">
-                                    @if ($blog->image)
-                                        <img src="{{ $blog->image_url }}" class="blog-img w-100" alt="{{ $blog->title }}">
+                                    @if ($blog->getLocalizedImageUrl())
+                                        <img src="{{ $blog->getLocalizedImageUrl() }}" class="blog-img w-100"
+                                            alt="{{ $blog->getLocalizedTitle() }}">
                                     @else
                                         <div
                                             class="blog-placeholder d-flex align-items-center justify-content-center bg-light">
@@ -43,16 +44,22 @@
                                 <div class="p-4 flex-grow-1 d-flex flex-column">
                                     <div class="mb-2 text-muted small">
                                         <i class="fa fa-calendar me-1"></i> {{ $blog->created_at->format('d-m-Y') }}
+                                        @if ($blog->author_name)
+                                            <span class="ms-2">
+                                                <i class="fas fa-user me-1"></i> {{ $blog->author_name }}
+                                            </span>
+                                        @endif
                                         @if ($blog->category)
                                             <span class="ms-2">
                                                 <i class="fas fa-folder me-1"></i> {{ $blog->category->name }}
                                             </span>
                                         @endif
                                     </div>
-                                    <h5 class="fw-bold mb-2">{{ Str::limit($blog->title, 50) }}</h5>
+                                    <h5 class="fw-bold mb-2">{{ Str::limit($blog->getLocalizedTitle(), 50) }}</h5>
                                     <p class="mb-3 text-muted flex-grow-1">
-                                        {{ Str::limit($blog->excerpt ?: $blog->description, 120) }}
+                                        {{ Str::limit($blog->getLocalizedExcerpt() ?: strip_tags($blog->getLocalizedDescription()), 120) }}
                                     </p>
+
                                     <div class="d-flex justify-content-between align-items-center mt-auto">
                                         <small class="text-muted">
                                             <i class="fas fa-eye me-1"></i> {{ $blog->views_count }} views

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Blog;
 use App\Models\BlogCategory;
+use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -29,7 +30,7 @@ class BlogsController extends Controller
             ->when($status, function($query) use ($status) {
                 $query->where('status', $status);
             })
-            ->with('category')
+            ->with(['category', 'author'])
             ->latest()
             ->paginate($per)
             ->withQueryString();
@@ -72,68 +73,168 @@ class BlogsController extends Controller
     public function create()
     {
         $categories = BlogCategory::active()->ordered()->get();
-        return view('admin.blogs.create', compact('categories'));
+        $authors = Admin::whereHas('adminType', function($query) {
+            $query->whereIn('name', ['admin', 'instructor']);
+        })->where('is_active', true)->get();
+
+        return view('admin.blogs.create', compact('categories', 'authors'));
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
+            // English fields
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'excerpt' => 'nullable|string',
-            'category_id' => 'nullable|exists:blog_categories,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+
+            // Arabic fields
+            'title_ar' => 'nullable|string|max:255',
+            'description_ar' => 'nullable|string',
+            'excerpt_ar' => 'nullable|string',
+            'image_ar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+
+            // Other fields
+            'category_id' => 'nullable|exists:blog_categories,id',
+            'author_id' => 'nullable|exists:admins,id',
             'status' => 'required|in:draft,published,archived',
-            'author' => 'nullable|string|max:255',
-            'is_featured' => 'boolean'
+            'is_featured' => 'boolean',
+            'custom_slug' => 'nullable|string|max:255|unique:blogs,custom_slug',
+            'tags' => 'nullable|string',
+
+            // SEO fields
+            'meta_title' => 'nullable|string|max:255',
+            'meta_title_ar' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string',
+            'meta_description_ar' => 'nullable|string',
+            'meta_keywords' => 'nullable|string',
+            'meta_keywords_ar' => 'nullable|string',
         ]);
 
+        // Generate slugs
         $data['slug'] = Str::slug($data['title']);
+        if ($data['title_ar']) {
+            $data['slug_ar'] = Str::slug($data['title_ar']);
+        }
+
         $data['is_featured'] = $request->has('is_featured');
 
+        // Process JSON fields - keep as JSON strings for database storage
+        if ($request->filled('tags')) {
+            $data['tags'] = $request->tags; // Keep as JSON string
+        }
+
+        if ($request->filled('meta_keywords')) {
+            $data['meta_keywords'] = $request->meta_keywords; // Keep as JSON string
+        }
+
+        if ($request->filled('meta_keywords_ar')) {
+            $data['meta_keywords_ar'] = $request->meta_keywords_ar; // Keep as JSON string
+        }
+
+        // Handle file uploads
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('blogs', 'public');
         }
 
-        Blog::create($data);
+        if ($request->hasFile('image_ar')) {
+            $data['image_ar'] = $request->file('image_ar')->store('blogs', 'public');
+        }
 
-        return redirect()->route('admin.blogs.index')->with('success', 'Blog created successfully');
+        try {
+            Blog::create($data);
+            return redirect()->route('admin.blogs.index')->with('success', 'Blog created successfully');
+        } catch (\Exception $e) {
+            \Log::error('Blog creation failed: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Failed to create blog: ' . $e->getMessage());
+        }
     }
 
     public function show(Blog $blog)
     {
-        $blog->load('category');
+        $blog->load(['category', 'author']);
         return view('admin.blogs.show', compact('blog'));
     }
 
     public function edit(Blog $blog)
     {
         $categories = BlogCategory::active()->ordered()->get();
-        return view('admin.blogs.edit', compact('blog', 'categories'));
+        $authors = Admin::whereHas('adminType', function($query) {
+            $query->whereIn('name', ['admin', 'instructor']);
+        })->where('is_active', true)->get();
+
+        return view('admin.blogs.edit', compact('blog', 'categories', 'authors'));
     }
 
     public function update(Request $request, Blog $blog)
     {
         $data = $request->validate([
+            // English fields
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'excerpt' => 'nullable|string',
-            'category_id' => 'nullable|exists:blog_categories,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+
+            // Arabic fields
+            'title_ar' => 'nullable|string|max:255',
+            'description_ar' => 'nullable|string',
+            'excerpt_ar' => 'nullable|string',
+            'image_ar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+
+            // Other fields
+            'category_id' => 'nullable|exists:blog_categories,id',
+            'author_id' => 'nullable|exists:admins,id',
             'status' => 'required|in:draft,published,archived',
-            'author' => 'nullable|string|max:255',
-            'is_featured' => 'boolean'
+            'is_featured' => 'boolean',
+            'custom_slug' => 'nullable|string|max:255|unique:blogs,custom_slug,' . $blog->id,
+            'tags' => 'nullable|string',
+
+            // SEO fields
+            'meta_title' => 'nullable|string|max:255',
+            'meta_title_ar' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string',
+            'meta_description_ar' => 'nullable|string',
+            'meta_keywords' => 'nullable|string',
+            'meta_keywords_ar' => 'nullable|string',
         ]);
 
+        // Generate slugs
         $data['slug'] = Str::slug($data['title']);
+        if ($data['title_ar']) {
+            $data['slug_ar'] = Str::slug($data['title_ar']);
+        }
+
         $data['is_featured'] = $request->has('is_featured');
 
+        // Process JSON fields
+        if ($request->filled('tags')) {
+            $data['tags'] = $request->tags; // Keep as JSON string
+        }
+
+        if ($request->filled('meta_keywords')) {
+            $data['meta_keywords'] = $request->meta_keywords; // Keep as JSON string
+        }
+
+        if ($request->filled('meta_keywords_ar')) {
+            $data['meta_keywords_ar'] = $request->meta_keywords_ar; // Keep as JSON string
+        }
+
+        // Handle file uploads
         if ($request->hasFile('image')) {
             // Delete old image
             if ($blog->image) {
                 Storage::disk('public')->delete($blog->image);
             }
             $data['image'] = $request->file('image')->store('blogs', 'public');
+        }
+
+        if ($request->hasFile('image_ar')) {
+            // Delete old Arabic image
+            if ($blog->image_ar) {
+                Storage::disk('public')->delete($blog->image_ar);
+            }
+            $data['image_ar'] = $request->file('image_ar')->store('blogs', 'public');
         }
 
         $blog->update($data);
@@ -145,6 +246,10 @@ class BlogsController extends Controller
     {
         if ($blog->image) {
             Storage::disk('public')->delete($blog->image);
+        }
+
+        if ($blog->image_ar) {
+            Storage::disk('public')->delete($blog->image_ar);
         }
 
         $blog->delete();
@@ -165,6 +270,9 @@ class BlogsController extends Controller
         foreach ($blogs as $blog) {
             if ($blog->image) {
                 Storage::disk('public')->delete($blog->image);
+            }
+            if ($blog->image_ar) {
+                Storage::disk('public')->delete($blog->image_ar);
             }
             $blog->delete();
             $deletedCount++;

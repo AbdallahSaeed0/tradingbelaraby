@@ -1,6 +1,10 @@
 @extends('layouts.app')
 
-@section('title', ($blog->title ?? 'Blog') . ' - ' . (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site
+@section('title',
+    ($blog->title ?? 'Blog') .
+    ' - ' .
+    (\App\Models\MainContentSettings::getActive()?->site_name ??
+    'Site
     Name'))
 
 @section('content')
@@ -11,7 +15,7 @@
         <div class="container position-relative z-3 text-center">
             <div class="row justify-content-center">
                 <div class="col-lg-8">
-                    <h1 class="display-4 fw-bold text-white mb-3">{{ $blog->title }}</h1>
+                    <h1 class="display-4 fw-bold text-white mb-3">{{ $blog->getLocalizedTitle() }}</h1>
                     <div class="d-flex justify-content-center align-items-center mb-3 text-white">
                         <span class="me-3">
                             <i class="fas fa-calendar me-1"></i> {{ $blog->created_at->format('F d, Y') }}
@@ -25,9 +29,9 @@
                             </span>
                         @endif
                     </div>
-                    @if ($blog->author)
+                    @if ($blog->author_name)
                         <div class="text-white">
-                            <i class="fas fa-user me-1"></i> By {{ $blog->author }}
+                            <i class="fas fa-user me-1"></i> By {{ $blog->author_name }}
                         </div>
                     @endif
                 </div>
@@ -41,26 +45,42 @@
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <!-- Blog Image -->
-                    @if ($blog->image)
+                    @if ($blog->getLocalizedImageUrl())
                         <div class="blog-image mb-4">
-                            <img src="{{ $blog->image_url }}" alt="{{ $blog->title }}" class="img-fluid rounded-4 w-100">
+                            <img src="{{ $blog->getLocalizedImageUrl() }}" alt="{{ $blog->getLocalizedTitle() }}"
+                                class="img-fluid rounded-4 w-100">
                         </div>
                     @endif
 
                     <!-- Blog Content -->
                     <div class="blog-content bg-white rounded-4 shadow-sm p-4 p-md-5 mb-5">
-                        @if ($blog->excerpt)
+                        @if ($blog->getLocalizedExcerpt())
                             <div class="blog-excerpt mb-4 p-4 bg-light rounded">
                                 <h5 class="text-primary mb-2">Summary</h5>
-                                <p class="mb-0">{{ $blog->excerpt }}</p>
+                                <p class="mb-0">{{ $blog->getLocalizedExcerpt() }}</p>
                             </div>
                         @endif
 
                         <div class="blog-body">
-                            {!! nl2br(e($blog->description)) !!}
+                            {!! $blog->getLocalizedDescription() !!}
                         </div>
 
                         <hr class="my-4">
+
+                        <!-- Blog Tags -->
+                        @php $tags = $blog->getTagsArray(); @endphp
+                        @if (!empty($tags))
+                            <div class="blog-tags mb-4">
+                                <h6 class="text-muted mb-2">
+                                    <i class="fas fa-tags me-1"></i> Tags:
+                                </h6>
+                                <div class="d-flex flex-wrap gap-2">
+                                    @foreach ($tags as $tag)
+                                        <span class="badge bg-primary">{{ $tag }}</span>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
 
                         <!-- Blog Meta -->
                         <div class="blog-meta d-flex justify-content-between align-items-center">
