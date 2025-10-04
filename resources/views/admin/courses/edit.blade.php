@@ -101,6 +101,37 @@
         .drag-handle:hover {
             color: #495057;
         }
+
+        .multilingual-field .nav-tabs .nav-link {
+            border: 1px solid transparent;
+            border-top-left-radius: 0.375rem;
+            border-top-right-radius: 0.375rem;
+        }
+
+        .multilingual-field .nav-tabs .nav-link:hover {
+            border-color: #e9ecef #e9ecef #dee2e6;
+        }
+
+        .multilingual-field .nav-tabs .nav-link.active {
+            color: #495057;
+            background-color: #fff;
+            border-color: #dee2e6 #dee2e6 #fff;
+        }
+
+        .multilingual-field .tab-content {
+            border: 1px solid #dee2e6;
+            border-top: none;
+            border-radius: 0 0 0.375rem 0.375rem;
+            padding: 1rem;
+        }
+
+        .multilingual-field textarea[dir="rtl"] {
+            text-align: right;
+        }
+
+        .multilingual-field input[dir="rtl"] {
+            text-align: right;
+        }
     </style>
 @endpush
 
@@ -143,22 +174,31 @@
                             <h5><i class="fa fa-info-circle me-2"></i>Basic Information</h5>
                         </div>
                         <div class="row">
+                            <!-- Course Title (Multilingual) -->
                             <div class="col-md-12 mb-3">
-                                <label for="title" class="form-label">Course Title <span
-                                        class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="title" name="title"
-                                    value="{{ old('title', $course->name) }}" required>
-                                @error('title')
-                                    <div class="text-danger small">{{ $message }}</div>
-                                @enderror
+                                @include('admin.courses.partials.multilingual-fields', [
+                                    'fieldName' => 'name',
+                                    'label' => 'Course Title',
+                                    'type' => 'input',
+                                    'required' => true,
+                                    'placeholder' => 'Enter course title',
+                                    'value' => old('name', $course->name),
+                                    'valueAr' => old('name_ar', $course->name_ar),
+                                ])
                             </div>
+
+                            <!-- Course Description (Multilingual) -->
                             <div class="col-md-12 mb-3">
-                                <label for="description" class="form-label">Description <span
-                                        class="text-danger">*</span></label>
-                                <textarea class="form-control" id="description" name="description" rows="4" required>{{ old('description', $course->description) }}</textarea>
-                                @error('description')
-                                    <div class="text-danger small">{{ $message }}</div>
-                                @enderror
+                                @include('admin.courses.partials.multilingual-fields', [
+                                    'fieldName' => 'description',
+                                    'label' => 'Course Description',
+                                    'type' => 'textarea',
+                                    'required' => true,
+                                    'rows' => 4,
+                                    'placeholder' => 'Enter course description',
+                                    'value' => old('description', $course->description),
+                                    'valueAr' => old('description_ar', $course->description_ar),
+                                ])
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="category_id" class="form-label">Category <span
@@ -236,20 +276,40 @@
                                                     class="btn btn-sm btn-outline-primary add-lecture me-1">
                                                     <i class="fa fa-plus me-1"></i>Add Lecture
                                                 </button>
-                                                <button type="button"
-                                                    class="btn btn-sm btn-outline-danger remove-section">
+                                                <button type="button" class="btn btn-sm btn-outline-danger remove-section">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
                                             </div>
                                         </div>
                                         <div class="mb-3">
-                                            <input type="text" class="form-control section-title"
-                                                name="sections[{{ $section->id }}][title]"
-                                                value="{{ $section->title }}" placeholder="Section Title" required>
+                                            <label class="form-label">Section Title</label>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <input type="text" class="form-control section-title"
+                                                        name="sections[{{ $section->id }}][title]"
+                                                        value="{{ $section->title }}"
+                                                        placeholder="Section Title (English)" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <input type="text" class="form-control section-title-ar"
+                                                        name="sections[{{ $section->id }}][title_ar]"
+                                                        value="{{ $section->title_ar ?? '' }}"
+                                                        placeholder="عنوان القسم (العربية)" dir="rtl">
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="mb-3">
-                                            <textarea class="form-control section-description" name="sections[{{ $section->id }}][description]"
-                                                placeholder="Section Description" rows="2">{{ $section->description ?? '' }}</textarea>
+                                            <label class="form-label">Section Description</label>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <textarea class="form-control section-description" name="sections[{{ $section->id }}][description]"
+                                                        placeholder="Section Description (English)" rows="2">{{ $section->description ?? '' }}</textarea>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <textarea class="form-control section-description-ar" name="sections[{{ $section->id }}][description_ar]"
+                                                        placeholder="وصف القسم (العربية)" rows="2" dir="rtl">{{ $section->description_ar ?? '' }}</textarea>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="lectures-container">
                                             @if ($section->lectures && $section->lectures->count() > 0)
@@ -260,11 +320,24 @@
                                                             <div class="d-flex align-items-center flex-grow-1">
                                                                 <i class="fa fa-grip-vertical drag-handle me-2"></i>
                                                                 <div class="flex-grow-1">
-                                                                    <input type="text"
-                                                                        class="form-control form-control-sm lecture-title mb-1"
-                                                                        name="lectures[{{ $lecture->id }}][title]"
-                                                                        value="{{ $lecture->title }}"
-                                                                        placeholder="Lecture Title" required>
+                                                                    <div class="row">
+                                                                        <div class="col-md-6">
+                                                                            <input type="text"
+                                                                                class="form-control form-control-sm lecture-title mb-1"
+                                                                                name="lectures[{{ $lecture->id }}][title]"
+                                                                                value="{{ $lecture->title }}"
+                                                                                placeholder="Lecture Title (English)"
+                                                                                required>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <input type="text"
+                                                                                class="form-control form-control-sm lecture-title-ar mb-1"
+                                                                                name="lectures[{{ $lecture->id }}][title_ar]"
+                                                                                value="{{ $lecture->title_ar ?? '' }}"
+                                                                                placeholder="عنوان المحاضرة (العربية)"
+                                                                                dir="rtl">
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                             <div class="ms-2">
@@ -276,8 +349,17 @@
                                                         </div>
                                                         <div class="ms-4">
                                                             <div class="mb-2">
-                                                                <textarea class="form-control form-control-sm lecture-description" name="lectures[{{ $lecture->id }}][description]"
-                                                                    placeholder="Lecture Description (Optional)" rows="2">{{ $lecture->description }}</textarea>
+                                                                <div class="row">
+                                                                    <div class="col-md-6">
+                                                                        <textarea class="form-control form-control-sm lecture-description" name="lectures[{{ $lecture->id }}][description]"
+                                                                            placeholder="Lecture Description (Optional)" rows="2">{{ $lecture->description }}</textarea>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <textarea class="form-control form-control-sm lecture-description-ar"
+                                                                            name="lectures[{{ $lecture->id }}][description_ar]" placeholder="وصف المحاضرة (اختياري)" rows="2"
+                                                                            dir="rtl">{{ $lecture->description_ar ?? '' }}</textarea>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                             <div class="row mb-2">
                                                                 <div class="col-md-3">
@@ -370,36 +452,50 @@
                         </div>
                     </div>
 
-                    <!-- What You'll Learn -->
+                    <!-- What You'll Learn (Multilingual) -->
                     <div class="form-section">
                         <div class="section-header">
                             <h5><i class="fa fa-graduation-cap me-2"></i>What You'll Learn</h5>
                         </div>
-                        <div class="row">
-                            <div class="col-md-12 mb-3">
-                                <button type="button" class="btn btn-sm btn-outline-primary add-learn-item">
-                                    <i class="fa fa-plus me-1"></i>Add Learning Item
-                                </button>
-                            </div>
-                            <div id="learnItems">
-                                @if ($course->what_to_learn && count($course->what_to_learn) > 0)
-                                    @foreach ($course->what_to_learn as $index => $objective)
-                                        <div class="learn-item">
-                                            <div class="d-flex align-items-center">
-                                                <i class="fa fa-check-circle me-2 text-success"></i>
-                                                <input type="text"
-                                                    class="form-control form-control-sm learn-item-title"
-                                                    name="learning_objectives[]" value="{{ $objective }}"
-                                                    placeholder="Learning Item Title" required>
-                                                <button type="button"
-                                                    class="btn btn-sm btn-outline-danger remove-learn-item ms-2">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
+
+                        <div class="mb-3">
+                            <button type="button" class="btn btn-sm btn-outline-primary" id="addLearningObjective">
+                                <i class="fa fa-plus me-1"></i>Add Learning Objective
+                            </button>
+                        </div>
+
+                        <div id="learningObjectives">
+                            @if ($course->what_to_learn && count($course->what_to_learn) > 0)
+                                @php
+                                    $englishObjectives = $course->what_to_learn ?? [];
+                                    $arabicObjectives = $course->what_to_learn_ar ?? [];
+                                    $maxCount = max(count($englishObjectives), count($arabicObjectives));
+                                @endphp
+                                @for ($i = 0; $i < $maxCount; $i++)
+                                    <div class="learning-objective mb-3 p-3 border rounded">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label class="form-label">English Learning Objective</label>
+                                                <input type="text" class="form-control" name="what_to_learn[]"
+                                                    value="{{ $englishObjectives[$i] ?? '' }}"
+                                                    placeholder="Enter learning objective in English">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">Arabic Learning Objective</label>
+                                                <input type="text" class="form-control" name="what_to_learn_ar[]"
+                                                    value="{{ $arabicObjectives[$i] ?? '' }}"
+                                                    placeholder="أدخل هدف التعلم باللغة العربية" dir="rtl">
                                             </div>
                                         </div>
-                                    @endforeach
-                                @endif
-                            </div>
+                                        <div class="mt-2">
+                                            <button type="button"
+                                                class="btn btn-sm btn-outline-danger remove-learning-objective">
+                                                <i class="fa fa-trash me-1"></i>Remove
+                                            </button>
+                                        </div>
+                                    </div>
+                                @endfor
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -485,6 +581,9 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- SEO Settings -->
+                    @include('admin.courses.partials.seo-fields', ['course' => $course])
                 </div>
             </div>
         </form>
@@ -508,12 +607,30 @@
                 </div>
             </div>
             <div class="mb-3">
-                <input type="text" class="form-control section-title" name="sections[new][title]"
-                    placeholder="Section Title" required>
+                <label class="form-label">Section Title</label>
+                <div class="row">
+                    <div class="col-md-6">
+                        <input type="text" class="form-control section-title" name="sections[new][title]"
+                            placeholder="Section Title (English)" required>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control section-title-ar" name="sections[new][title_ar]"
+                            placeholder="عنوان القسم (العربية)" dir="rtl">
+                    </div>
+                </div>
             </div>
             <div class="mb-3">
-                <textarea class="form-control section-description" name="sections[new][description]"
-                    placeholder="Section Description" rows="2"></textarea>
+                <label class="form-label">Section Description</label>
+                <div class="row">
+                    <div class="col-md-6">
+                        <textarea class="form-control section-description" name="sections[new][description]"
+                            placeholder="Section Description (English)" rows="2"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <textarea class="form-control section-description-ar" name="sections[new][description_ar]"
+                            placeholder="وصف القسم (العربية)" rows="2" dir="rtl"></textarea>
+                    </div>
+                </div>
             </div>
             <div class="lectures-container">
                 <!-- Lectures will be added here -->
@@ -528,8 +645,16 @@
                 <div class="d-flex align-items-center flex-grow-1">
                     <i class="fa fa-grip-vertical drag-handle me-2"></i>
                     <div class="flex-grow-1">
-                        <input type="text" class="form-control form-control-sm lecture-title mb-1"
-                            name="lectures[new][title]" placeholder="Lecture Title" required>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control form-control-sm lecture-title mb-1"
+                                    name="lectures[new][title]" placeholder="Lecture Title (English)" required>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control form-control-sm lecture-title-ar mb-1"
+                                    name="lectures[new][title_ar]" placeholder="عنوان المحاضرة (العربية)" dir="rtl">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="ms-2">
@@ -540,8 +665,16 @@
             </div>
             <div class="ms-4">
                 <div class="mb-2">
-                    <textarea class="form-control form-control-sm lecture-description" name="lectures[new][description]"
-                        placeholder="Lecture Description (Optional)" rows="2"></textarea>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <textarea class="form-control form-control-sm lecture-description" name="lectures[new][description]"
+                                placeholder="Lecture Description (Optional)" rows="2"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <textarea class="form-control form-control-sm lecture-description-ar" name="lectures[new][description_ar]"
+                                placeholder="وصف المحاضرة (اختياري)" rows="2" dir="rtl"></textarea>
+                        </div>
+                    </div>
                 </div>
                 <div class="row mb-2">
                     <div class="col-md-3">
@@ -792,19 +925,51 @@
                 }
             });
 
-            // Learning items management
-            const addLearnItemBtn = document.querySelector('.add-learn-item');
-            const learnItemsContainer = document.getElementById('learnItems');
-            const learnItemTemplate = document.getElementById('learnItemTemplate');
+            // Learning Objectives management
+            let learningObjectiveCounter = {{ $course->what_to_learn ? count($course->what_to_learn) : 0 }};
 
-            addLearnItemBtn.addEventListener('click', function() {
-                const learnItemClone = learnItemTemplate.content.cloneNode(true);
-                learnItemsContainer.appendChild(learnItemClone);
+            document.getElementById('addLearningObjective').addEventListener('click', function() {
+                addLearningObjective();
             });
 
-            learnItemsContainer.addEventListener('click', function(e) {
-                if (e.target.classList.contains('remove-learn-item')) {
-                    e.target.closest('.learn-item').remove();
+            function addLearningObjective() {
+                const index = learningObjectiveCounter++;
+                const container = document.getElementById('learningObjectives');
+
+                const objectiveDiv = document.createElement('div');
+                objectiveDiv.className = 'learning-objective mb-3 p-3 border rounded';
+                objectiveDiv.innerHTML = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label">English Learning Objective</label>
+                            <input type="text" class="form-control" name="what_to_learn[]"
+                                   placeholder="Enter learning objective in English">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Arabic Learning Objective</label>
+                            <input type="text" class="form-control" name="what_to_learn_ar[]"
+                                   placeholder="أدخل هدف التعلم باللغة العربية" dir="rtl">
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <button type="button" class="btn btn-sm btn-outline-danger remove-learning-objective">
+                            <i class="fa fa-trash me-1"></i>Remove
+                        </button>
+                    </div>
+                `;
+
+                container.appendChild(objectiveDiv);
+
+                // Add remove functionality
+                objectiveDiv.querySelector('.remove-learning-objective').addEventListener('click', function() {
+                    objectiveDiv.remove();
+                });
+            }
+
+            // Add event listeners to existing remove buttons
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('remove-learning-objective')) {
+                    e.target.closest('.learning-objective').remove();
                 }
             });
 

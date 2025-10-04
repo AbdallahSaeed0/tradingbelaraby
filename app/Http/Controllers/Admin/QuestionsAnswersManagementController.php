@@ -510,4 +510,16 @@ class QuestionsAnswersManagementController extends Controller
 
         return response()->stream($callback, 200, $headers);
     }
+
+    /**
+     * Delete a single question
+     */
+    public function destroy(QuestionsAnswer $questionsAnswer)
+    {
+        $questionsAnswer->delete();
+
+        return redirect()->back()
+            ->with('success', 'Question deleted successfully.');
+    }
+
 }

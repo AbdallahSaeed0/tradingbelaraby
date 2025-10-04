@@ -515,8 +515,8 @@
 <body>
     <div class="coming-soon-container">
         @php
-                    $mainContentSettings = \App\Models\MainContentSettings::getActive();
-                @endphp
+            $mainContentSettings = \App\Models\MainContentSettings::getActive();
+        @endphp
         <!-- Left Section - Brand Panel -->
         <div class="left-section" role="banner" aria-label="{{ custom_trans('title') }}">
             <div class="logo" aria-hidden="true">

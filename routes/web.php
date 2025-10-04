@@ -52,26 +52,41 @@ Route::post('/newsletter/unsubscribe', [App\Http\Controllers\NewsletterControlle
 Route::get('/instructors', [App\Http\Controllers\InstructorController::class, 'index'])->name('instructor.index');
 Route::get('/instructors/{id}', [App\Http\Controllers\InstructorController::class, 'show'])->name('instructor.show');
 
-// Language switching route
+// Language switching routes
 Route::get('/language/{code}', function($code) {
-    $success = \App\Helpers\TranslationHelper::setLanguage($code);
+    // Frontend language switching
+    $success = \App\Helpers\TranslationHelper::setFrontendLanguage($code);
     if ($success) {
         \App\Helpers\TranslationHelper::clearCache();
     }
     return redirect()->back();
 })->name('language.switch');
 
+// Admin language switching route
+Route::get('/admin/language/{code}', function($code) {
+    // Admin language switching
+    $success = \App\Helpers\TranslationHelper::setAdminLanguage($code);
+    if ($success) {
+        \App\Helpers\TranslationHelper::clearCache();
+    }
+    return redirect()->back();
+})->name('admin.language.switch')->middleware('auth');
+
 // Debug route to test language switching
 Route::get('/debug-language', function() {
-    $currentLanguage = \App\Helpers\TranslationHelper::getCurrentLanguage();
-    $sessionLocale = session('locale');
+    $frontendLanguage = \App\Helpers\TranslationHelper::getFrontendLanguage();
+    $adminLanguage = \App\Helpers\TranslationHelper::getAdminLanguage();
+    $frontendLocale = session('frontend_locale');
+    $adminLocale = session('admin_locale');
     $appLocale = app()->getLocale();
 
     return response()->json([
-        'current_language' => $currentLanguage ? $currentLanguage->toArray() : null,
-        'session_locale' => $sessionLocale,
+        'frontend_language' => $frontendLanguage ? $frontendLanguage->toArray() : null,
+        'admin_language' => $adminLanguage ? $adminLanguage->toArray() : null,
+        'frontend_locale' => $frontendLocale,
+        'admin_locale' => $adminLocale,
         'app_locale' => $appLocale,
-        'helper_language_code' => get_current_language_code(),
+        'is_admin_area' => request()->is('admin*'),
     ]);
 })->name('debug.language');
 
@@ -88,6 +103,16 @@ Route::get('/courses/{course}', [CourseController::class, 'show'])->name('course
 // Blog routes
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{blog:slug}', [BlogController::class, 'show'])->name('blog.show');
+
+// Trader registration routes
+Route::post('/traders', [App\Http\Controllers\TraderController::class, 'store'])->name('traders.store');
+
+// Admin trader management routes
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('traders/export', [App\Http\Controllers\Admin\TraderController::class, 'export'])->name('traders.export');
+    Route::delete('traders/bulk-delete', [App\Http\Controllers\Admin\TraderController::class, 'bulkDelete'])->name('traders.bulk-delete');
+    Route::resource('traders', App\Http\Controllers\Admin\TraderController::class)->only(['index', 'show', 'destroy']);
+});
 Route::post('/courses/{course}/enroll', [EnrollmentController::class, 'enroll'])->name('courses.enroll');
 Route::get('/category/{category:slug}', [CourseController::class, 'category'])->name('category.show');
 Route::get('/categories/{category:slug}', [CourseController::class, 'category'])->name('categories.show'); // Alias for layout compatibility
@@ -214,6 +239,7 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
     Route::resource('admins', App\Http\Controllers\Admin\AdminsController::class)->middleware('admin.permission:manage_admins');
     Route::resource('admin-types', App\Http\Controllers\Admin\AdminTypeController::class)->middleware('admin.permission:manage_admins');
     Route::post('/admin-types/{adminType}/toggle-status', [App\Http\Controllers\Admin\AdminTypeController::class, 'toggleStatus'])->name('admin-types.toggle_status')->middleware('admin.permission:manage_admins');
+    Route::delete('/users/bulk-delete', [App\Http\Controllers\Admin\UsersController::class, 'bulkDelete'])->name('users.bulk-delete');
     Route::resource('users', App\Http\Controllers\Admin\UsersController::class)->middleware('admin.permission:manage_users');
     Route::resource('categories', App\Http\Controllers\Admin\CategoriesController::class)->middleware('admin.permission:manage_categories');
     Route::resource('courses', App\Http\Controllers\Admin\CoursesController::class)->middleware('admin.permission:manage_courses,manage_own_courses');
@@ -228,6 +254,7 @@ Route::resource('quizzes.questions', App\Http\Controllers\Admin\QuizQuestionMana
     Route::get('/live-classes/{liveClass}/duplicate', [App\Http\Controllers\Admin\LiveClassManagementController::class, 'duplicate'])->name('live-classes.duplicate')->middleware('admin.permission:manage_live_classes,manage_own_live_classes');
     Route::post('/live-classes/bulk-delete', [App\Http\Controllers\Admin\LiveClassManagementController::class, 'bulkDelete'])->name('live-classes.bulk_delete')->middleware('admin.permission:manage_live_classes,manage_own_live_classes');
     Route::post('/live-classes/bulk-update-status', [App\Http\Controllers\Admin\LiveClassManagementController::class, 'bulkUpdateStatus'])->name('live-classes.bulk_update_status')->middleware('admin.permission:manage_live_classes,manage_own_live_classes');
+    Route::delete('/questions-answers/bulk-delete', [App\Http\Controllers\Admin\QuestionsAnswersManagementController::class, 'bulkDelete'])->name('questions-answers.bulk-delete');
     Route::resource('questions-answers', App\Http\Controllers\Admin\QuestionsAnswersManagementController::class)->middleware('admin.permission:manage_questions_answers,manage_own_questions_answers');
     Route::resource('languages', App\Http\Controllers\Admin\LanguageController::class)->middleware('admin.permission:manage_languages');
     Route::resource('translations', App\Http\Controllers\Admin\TranslationController::class)->middleware('admin.permission:manage_translations');

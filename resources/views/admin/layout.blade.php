@@ -81,6 +81,10 @@
                         <i class="fa fa-globe"></i>
                     </a>
                 </li>
+                <!-- Admin Language Switcher -->
+                <li class="nav-item me-3">
+                    @include('partials.admin-language-switcher')
+                </li>
                 <!-- Notifications -->
                 @php
                     $pendingQuestions = \App\Models\QuestionsAnswer::where('status', 'pending')->count();
@@ -175,8 +179,13 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link d-flex align-items-center profile-dropdown" href="#" id="profileDropdown"
                         role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="https://i.pravatar.cc/32?img=1" class="rounded-circle me-2" width="32"
-                            height="32" alt="avatar">
+                        @if (auth('admin')->user()->avatar)
+                            <img src="{{ auth('admin')->user()->avatar_url }}?v={{ auth('admin')->user()->updated_at->timestamp }}"
+                                class="rounded-circle me-2" width="32" height="32" alt="avatar">
+                        @else
+                            <img src="https://ui-avatars.com/api/?name={{ urlencode(auth('admin')->user()->name) }}&size=32&background=007bff&color=fff"
+                                class="rounded-circle me-2" width="32" height="32" alt="avatar">
+                        @endif
                         <span>Hi {{ auth('admin')->user()->name }}</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">

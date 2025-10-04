@@ -70,6 +70,37 @@
             border-radius: 0.375rem;
             padding: 1rem;
         }
+
+        .multilingual-field .nav-tabs .nav-link {
+            border: 1px solid transparent;
+            border-top-left-radius: 0.375rem;
+            border-top-right-radius: 0.375rem;
+        }
+
+        .multilingual-field .nav-tabs .nav-link:hover {
+            border-color: #e9ecef #e9ecef #dee2e6;
+        }
+
+        .multilingual-field .nav-tabs .nav-link.active {
+            color: #495057;
+            background-color: #fff;
+            border-color: #dee2e6 #dee2e6 #fff;
+        }
+
+        .multilingual-field .tab-content {
+            border: 1px solid #dee2e6;
+            border-top: none;
+            border-radius: 0 0 0.375rem 0.375rem;
+            padding: 1rem;
+        }
+
+        .multilingual-field textarea[dir="rtl"] {
+            text-align: right;
+        }
+
+        .multilingual-field input[dir="rtl"] {
+            text-align: right;
+        }
     </style>
 @endpush
 
@@ -105,15 +136,31 @@
                             <h5><i class="fa fa-info-circle me-2"></i>Basic Information</h5>
                         </div>
                         <div class="row">
+                            <!-- Course Title (Multilingual) -->
                             <div class="col-md-12 mb-3">
-                                <label for="title" class="form-label">Course Title <span
-                                        class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="title" name="title" required>
+                                @include('admin.courses.partials.multilingual-fields', [
+                                    'fieldName' => 'name',
+                                    'label' => 'Course Title',
+                                    'type' => 'input',
+                                    'required' => true,
+                                    'placeholder' => 'Enter course title',
+                                    'value' => old('name'),
+                                    'valueAr' => old('name_ar'),
+                                ])
                             </div>
+
+                            <!-- Course Description (Multilingual) -->
                             <div class="col-md-12 mb-3">
-                                <label for="description" class="form-label">Description <span
-                                        class="text-danger">*</span></label>
-                                <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+                                @include('admin.courses.partials.multilingual-fields', [
+                                    'fieldName' => 'description',
+                                    'label' => 'Course Description',
+                                    'type' => 'textarea',
+                                    'required' => true,
+                                    'rows' => 4,
+                                    'placeholder' => 'Enter course description',
+                                    'value' => old('description'),
+                                    'valueAr' => old('description_ar'),
+                                ])
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="category" class="form-label">Category <span class="text-danger">*</span></label>
@@ -162,20 +209,20 @@
                         </div>
                     </div>
 
-                    <!-- What You'll Learn -->
+                    <!-- What You'll Learn (Multilingual) -->
                     <div class="form-section">
                         <div class="section-header">
                             <h5><i class="fa fa-graduation-cap me-2"></i>What You'll Learn</h5>
                         </div>
-                        <div class="row">
-                            <div class="col-md-12 mb-3">
-                                <button type="button" class="btn btn-sm btn-outline-primary add-learn-item">
-                                    <i class="fa fa-plus me-1"></i>Add Learning Item
-                                </button>
-                            </div>
-                            <div id="learnItems">
-                                <!-- Learning items will be added here -->
-                            </div>
+
+                        <div class="mb-3">
+                            <button type="button" class="btn btn-sm btn-outline-primary" id="addLearningObjective">
+                                <i class="fa fa-plus me-1"></i>Add Learning Objective
+                            </button>
+                        </div>
+
+                        <div id="learningObjectives">
+                            <!-- Learning objectives will be added here -->
                         </div>
                     </div>
                 </div>
@@ -227,16 +274,26 @@
                         </div>
                         <div class="mb-3">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="featured" name="featured">
-                                <label class="form-check-label" for="featured">
+                                <input class="form-check-input" type="checkbox" id="is_featured" name="is_featured"
+                                    value="1">
+                                <label class="form-check-label" for="is_featured">
                                     Featured Course
                                 </label>
                             </div>
                         </div>
-
-
-
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="is_free" name="is_free"
+                                    value="1">
+                                <label class="form-check-label" for="is_free">
+                                    Free Course
+                                </label>
+                            </div>
+                        </div>
                     </div>
+
+                    <!-- SEO Settings -->
+                    @include('admin.courses.partials.seo-fields')
                 </div>
             </div>
         </form>
@@ -260,10 +317,29 @@
                 </div>
             </div>
             <div class="mb-3">
-                <input type="text" class="form-control section-title" placeholder="Section Title" required>
+                <label class="form-label">Section Title</label>
+                <div class="row">
+                    <div class="col-md-6">
+                        <input type="text" class="form-control section-title" placeholder="Section Title (English)"
+                            required>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control section-title-ar" placeholder="عنوان القسم (العربية)"
+                            dir="rtl">
+                    </div>
+                </div>
             </div>
             <div class="mb-3">
-                <textarea class="form-control section-description" placeholder="Section Description" rows="2"></textarea>
+                <label class="form-label">Section Description</label>
+                <div class="row">
+                    <div class="col-md-6">
+                        <textarea class="form-control section-description" placeholder="Section Description (English)" rows="2"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <textarea class="form-control section-description-ar" placeholder="وصف القسم (العربية)" rows="2"
+                            dir="rtl"></textarea>
+                    </div>
+                </div>
             </div>
             <div class="lectures-container">
                 <!-- Lectures will be added here -->
@@ -278,8 +354,16 @@
                 <div class="d-flex align-items-center flex-grow-1">
                     <i class="fa fa-grip-vertical drag-handle me-2"></i>
                     <div class="flex-grow-1">
-                        <input type="text" class="form-control form-control-sm lecture-title mb-1"
-                            placeholder="Lecture Title" required>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control form-control-sm lecture-title mb-1"
+                                    placeholder="Lecture Title (English)" required>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control form-control-sm lecture-title-ar mb-1"
+                                    placeholder="عنوان المحاضرة (العربية)" dir="rtl">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="ms-2">
@@ -290,8 +374,16 @@
             </div>
             <div class="ms-4">
                 <div class="mb-2">
-                    <textarea class="form-control form-control-sm lecture-description" placeholder="Lecture Description (Optional)"
-                        rows="2"></textarea>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <textarea class="form-control form-control-sm lecture-description" placeholder="Lecture Description (Optional)"
+                                rows="2"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <textarea class="form-control form-control-sm lecture-description-ar" placeholder="وصف المحاضرة (اختياري)"
+                                rows="2" dir="rtl"></textarea>
+                        </div>
+                    </div>
                 </div>
                 <div class="row mb-2">
                     <div class="col-md-3">
@@ -477,24 +569,46 @@
             // Add initial section
             addSection();
 
-            // What You'll Learn management
-            document.querySelector('.add-learn-item').addEventListener('click', addLearnItem);
+            // Learning Objectives management
+            let learningObjectiveCounter = 0;
 
-            function addLearnItem() {
-                const template = document.getElementById('learnItemTemplate');
-                const clone = template.content.cloneNode(true);
-                const learnItemContainer = clone.querySelector('.d-flex');
+            document.getElementById('addLearningObjective').addEventListener('click', function() {
+                addLearningObjective();
+            });
 
-                // Add event listeners
-                clone.querySelector('.remove-learn-item').addEventListener('click', () => {
-                    learnItemContainer.remove();
+            function addLearningObjective() {
+                const index = learningObjectiveCounter++;
+                const container = document.getElementById('learningObjectives');
+
+                const objectiveDiv = document.createElement('div');
+                objectiveDiv.className = 'learning-objective mb-3 p-3 border rounded';
+                objectiveDiv.innerHTML = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label">English Learning Objective</label>
+                            <input type="text" class="form-control" name="what_to_learn[]"
+                                   placeholder="Enter learning objective in English">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Arabic Learning Objective</label>
+                            <input type="text" class="form-control" name="what_to_learn_ar[]"
+                                   placeholder="أدخل هدف التعلم باللغة العربية" dir="rtl">
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <button type="button" class="btn btn-sm btn-outline-danger remove-learning-objective">
+                            <i class="fa fa-trash me-1"></i>Remove
+                        </button>
+                    </div>
+                `;
+
+                container.appendChild(objectiveDiv);
+
+                // Add remove functionality
+                objectiveDiv.querySelector('.remove-learning-objective').addEventListener('click', function() {
+                    objectiveDiv.remove();
                 });
-
-                document.getElementById('learnItems').appendChild(clone);
             }
-
-            // Add initial learning item
-            addLearnItem();
 
             // Form submission
             document.getElementById('courseForm').addEventListener('submit', function(e) {
@@ -525,8 +639,12 @@
                         const lectureType = lectureEl.querySelector('.lecture-type').value;
                         const lectureData = {
                             title: lectureEl.querySelector('.lecture-title').value,
+                            title_ar: lectureEl.querySelector('.lecture-title-ar')
+                                .value,
                             description: lectureEl.querySelector('.lecture-description')
                                 .value,
+                            description_ar: lectureEl.querySelector(
+                                '.lecture-description-ar').value,
                             type: lectureType
                         };
 
@@ -558,40 +676,52 @@
 
                     sections.push({
                         title: sectionEl.querySelector('.section-title').value,
+                        title_ar: sectionEl.querySelector('.section-title-ar').value,
                         description: sectionEl.querySelector('.section-description').value,
+                        description_ar: sectionEl.querySelector('.section-description-ar')
+                            .value,
                         lectures: lectures
                     });
                 });
 
-                // Collect learn items data
-                const learnItems = [];
-                const learnItemElements = document.querySelectorAll('.learn-item-title');
-                console.log('Found learn item elements:', learnItemElements.length);
+                // Collect learning objectives data
+                const whatToLearn = [];
+                const whatToLearnAr = [];
 
-                learnItemElements.forEach((itemEl, index) => {
-                    console.log(`Learn item ${index}:`, itemEl.value);
-                    if (itemEl.value.trim()) {
-                        learnItems.push(itemEl.value.trim());
+                document.querySelectorAll('input[name="what_to_learn[]"]').forEach((input, index) => {
+                    if (input.value.trim()) {
+                        whatToLearn.push(input.value.trim());
                     }
                 });
 
-                console.log('Final learn items array:', learnItems);
+                document.querySelectorAll('input[name="what_to_learn_ar[]"]').forEach((input, index) => {
+                    if (input.value.trim()) {
+                        whatToLearnAr.push(input.value.trim());
+                    }
+                });
 
-                // Log specific learning items now that they're collected
-                console.log('Learning items array:', learnItems);
-                console.log('Learning items JSON:', JSON.stringify(learnItems));
+                console.log('Learning objectives:', {
+                    whatToLearn,
+                    whatToLearnAr
+                });
+
 
                 // Add sections and learn items data to FormData
                 formData.append('sections', JSON.stringify(sections));
-                formData.append('learn_items', JSON.stringify(learnItems));
+                // Add learning objectives as arrays
+                whatToLearn.forEach((item, index) => {
+                    formData.append(`what_to_learn[${index}]`, item);
+                });
 
-                // Also add learning items as individual form fields
-                learnItems.forEach((item, index) => {
-                    formData.append(`learning_objectives[${index}]`, item);
+                whatToLearnAr.forEach((item, index) => {
+                    formData.append(`what_to_learn_ar[${index}]`, item);
                 });
 
                 // Debug: Log the data being sent
-                console.log('Learning items being sent:', learnItems);
+                console.log('Learning objectives being sent:', {
+                    whatToLearn,
+                    whatToLearnAr
+                });
                 console.log('Sections being sent:', sections);
 
                 // Submit form via fetch

@@ -35,13 +35,15 @@
                         <div class="swiper-slide">
                             <div class="course-card-custom">
                                 <div class="course-img-wrap">
-                                    <img src="{{ $instructor->avatar_url }}" class="course-img"
-                                        alt="{{ $instructor->name }}">
+                                    <!-- Instructor Cover Image -->
+                                    <img src="{{ $instructor->cover_url }}" class="course-img"
+                                        alt="{{ $instructor->name }} Cover">
                                     <span class="badge badge-green">{{ __('Instructor') }}</span>
                                     <span class="price-badge">
                                         <span class="discounted">{{ $instructor->courses->count() }}</span>
                                         <span class="original">{{ __('Courses') }}</span>
                                     </span>
+                                    <!-- Instructor Avatar -->
                                     <img src="{{ $instructor->avatar_url }}" class="author-avatar"
                                         alt="{{ $instructor->name }}">
                                     <div class="course-hover-icons">
@@ -51,10 +53,7 @@
                                 </div>
                                 <div class="course-card-body">
                                     <h5 class="course-title">{{ $instructor->name }}</h5>
-                                    <p class="course-desc">{{ $instructor->email }}</p>
-                                    @if ($instructor->phone)
-                                        <p class="course-desc">{{ $instructor->phone }}</p>
-                                    @endif
+                                    <p class="course-desc">{{ __('Instructor') }}</p>
                                     <a href="{{ route('instructor.show', $instructor->id) }}"
                                         class="read-more">{{ __('View Profile') }} &rarr;</a>
                                     <img src="https://eclass.mediacity.co.in/demo2/public/frontcss/img/icon/cou-icon.png"

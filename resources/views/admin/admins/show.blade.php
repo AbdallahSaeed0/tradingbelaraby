@@ -17,8 +17,8 @@
                     <div class="card-header fw-semibold">Admin #{{ $admin->id }}</div>
                     <div class="card-body">
                         <div class="text-center mb-3">
-                            <img src="{{ $admin->avatar ? asset('storage/' . $admin->avatar) : 'https://i.pravatar.cc/100?u=' . $admin->id }}"
-                                class="rounded-circle" width="100" height="100" alt="avatar">
+                            <img src="{{ $admin->avatar_url }}" class="rounded-circle" width="100" height="100"
+                                alt="avatar">
                         </div>
                         <table class="table table-borderless">
                             <tr>

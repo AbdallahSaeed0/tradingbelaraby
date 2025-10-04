@@ -8,6 +8,27 @@
         <link rel="stylesheet" href="{{ asset('css/main.css') }}">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+        <style>
+            /* Instructor Cover Image Styles */
+            .instructor-cover {
+                height: 200px;
+                overflow: hidden;
+                border-radius: 12px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }
+
+            .instructor-cover img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.3s ease;
+            }
+
+            .instructor-cover:hover img {
+                transform: scale(1.05);
+            }
+        </style>
     @endpush
 
 @section('content')
@@ -25,6 +46,9 @@
                 <span class="course-label px-4 py-2 rounded-pill bg-white text-dark fw-semibold shadow">Home &nbsp;|&nbsp;
                     Course Details</span>
             </div>
+            <div class="d-flex justify-content-center">
+                @include('partials.language-switcher')
+            </div>
         </div>
     </section>
 
@@ -34,13 +58,20 @@
             <div class="row justify-content-center">
                 <!-- Left Side -->
                 <div class="col-lg-8 mb-4 mb-lg-0">
-                    <h2 class="fw-bold mb-4">{{ $course->name }}</h2>
+                    <h2 class="fw-bold mb-4">
+                        {{ \App\Helpers\TranslationHelper::getLocalizedContent($course->name, $course->name_ar) }}</h2>
                     <img src="{{ $course->image_url }}" class="img-fluid rounded-4 mb-4" alt="{{ $course->name }}">
                     <div class="what-learn-box p-4 rounded-4 border">
                         <h5 class="fw-bold mb-3">What learn</h5>
-                        @if (!empty($course->what_to_learn) && is_array($course->what_to_learn))
+                        @php
+                            $localizedLearningObjectives = \App\Helpers\TranslationHelper::getLocalizedArray(
+                                $course->what_to_learn,
+                                $course->what_to_learn_ar,
+                            );
+                        @endphp
+                        @if (!empty($localizedLearningObjectives) && is_array($localizedLearningObjectives))
                             <div class="row g-3">
-                                @foreach (array_chunk($course->what_to_learn, 2) as $chunk)
+                                @foreach (array_chunk($localizedLearningObjectives, 2) as $chunk)
                                     <div class="col-md-6">
                                         @foreach ($chunk as $item)
                                             @if (!empty($item))
@@ -71,9 +102,15 @@
                             </div>
                         @endif
                         <h4 class="fw-bold mb-3">Description</h4>
-                        @if (!empty($course->description))
-                            <div class="mb-4">
-                                {!! nl2br(e($course->description)) !!}
+                        @php
+                            $localizedDescription = \App\Helpers\TranslationHelper::getLocalizedContent(
+                                $course->description,
+                                $course->description_ar,
+                            );
+                        @endphp
+                        @if (!empty($localizedDescription))
+                            <div class="mb-4" @if (\App\Helpers\TranslationHelper::getFrontendLanguage()->code === 'ar') dir="rtl" @endif>
+                                {!! nl2br(e($localizedDescription)) !!}
                             </div>
                         @else
                             <div class="mb-4 text-muted">
@@ -82,13 +119,19 @@
                         @endif
                         <!-- FAQ Section -->
                         <h4 class="fw-bold mb-4">Frequently Asked Questions</h4>
-                        @if (!empty($course->faq_course) && is_array($course->faq_course))
+                        @php
+                            $localizedFaq = \App\Helpers\TranslationHelper::getLocalizedArray(
+                                $course->faq_course,
+                                $course->faq_course_ar,
+                            );
+                        @endphp
+                        @if (!empty($localizedFaq) && is_array($localizedFaq))
                             <section class="faq-section">
                                 <div class="container px-0">
                                     <div class="row">
                                         <div class="col-12">
                                             <div class="accordion faq-accordion" id="accordionExample">
-                                                @foreach ($course->faq_course as $index => $faq)
+                                                @foreach ($localizedFaq as $index => $faq)
                                                     @if (!empty($faq['question']) && !empty($faq['answer']))
                                                         <div class="accordion-item mb-3">
                                                             <h2 class="accordion-header">
@@ -97,7 +140,8 @@
                                                                     type="button" data-bs-toggle="collapse"
                                                                     data-bs-target="#collapse{{ $index }}"
                                                                     {{ $index === 0 ? 'aria-expanded="true"' : '' }}
-                                                                    aria-controls="collapse{{ $index }}">
+                                                                    aria-controls="collapse{{ $index }}"
+                                                                    @if (\App\Helpers\TranslationHelper::getFrontendLanguage()->code === 'ar') dir="rtl" @endif>
                                                                     <span class="fw-bold">{{ $faq['question'] }}</span>
                                                                     <span class="ms-auto faq-chevron"><i
                                                                             class="fa-solid fa-chevron-down"></i></span>
@@ -106,7 +150,8 @@
                                                             <div id="collapse{{ $index }}"
                                                                 class="accordion-collapse collapse {{ $index === 0 ? 'show' : '' }}"
                                                                 data-bs-parent="#accordionExample">
-                                                                <div class="accordion-body faq-accordion-body">
+                                                                <div class="accordion-body faq-accordion-body"
+                                                                    @if (\App\Helpers\TranslationHelper::getFrontendLanguage()->code === 'ar') dir="rtl" @endif>
                                                                     {{ $faq['answer'] }}
                                                                 </div>
                                                             </div>
@@ -128,6 +173,14 @@
                         <section class="about-instructor-section mt-5">
                             <h4 class="fw-bold mb-4">About Instructor</h4>
                             @if ($course->instructor)
+                                <!-- Instructor Cover Image -->
+                                @if ($course->instructor->cover)
+                                    <div class="instructor-cover mb-4">
+                                        <img src="{{ $course->instructor->cover_url }}"
+                                            alt="{{ $course->instructor->name }} Cover" class="img-fluid rounded">
+                                    </div>
+                                @endif
+
                                 <div class="row align-items-center g-4">
                                     <div class="col-auto">
                                         @if ($course->instructor->avatar)

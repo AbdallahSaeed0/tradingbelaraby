@@ -15,18 +15,23 @@ class Course extends Model
 
     protected $fillable = [
         'name',
+        'name_ar',
         'slug',
         'description',
+        'description_ar',
         'image',
         'duration',
         'price',
         'original_price',
         'certificate_template',
         'certificate_text',
+        'certificate_text_ar',
         'book',
         'category_id',
         'what_to_learn',
+        'what_to_learn_ar',
         'faq_course',
+        'faq_course_ar',
         'instructor_id',
         'status',
         'is_featured',
@@ -39,18 +44,42 @@ class Course extends Model
         'total_ratings',
         'total_reviews',
         'meta_title',
+        'meta_title_ar',
         'meta_description',
+        'meta_description_ar',
         'meta_keywords',
+        'meta_keywords_ar',
+        'canonical_url',
+        'robots',
+        'og_title',
+        'og_title_ar',
+        'og_description',
+        'og_description_ar',
+        'og_image',
+        'twitter_title',
+        'twitter_title_ar',
+        'twitter_description',
+        'twitter_description_ar',
+        'twitter_image',
+        'structured_data',
+        'structured_data_ar',
+        'default_language',
+        'supported_languages',
     ];
 
     protected $casts = [
         'what_to_learn' => 'array',
+        'what_to_learn_ar' => 'array',
         'faq_course' => 'array',
+        'faq_course_ar' => 'array',
         'price' => 'decimal:2',
         'original_price' => 'decimal:2',
         'average_rating' => 'decimal:2',
         'is_featured' => 'boolean',
         'is_free' => 'boolean',
+        'structured_data' => 'array',
+        'structured_data_ar' => 'array',
+        'supported_languages' => 'array',
     ];
 
     protected $appends = [
@@ -484,5 +513,112 @@ class Course extends Model
             return asset('storage/' . $this->book);
         }
         return null;
+    }
+
+    /**
+     * Get localized name based on current locale
+     */
+    public function getLocalizedNameAttribute(): string
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'ar' && $this->name_ar) {
+            return $this->name_ar;
+        }
+        return $this->name;
+    }
+
+    /**
+     * Get localized description based on current locale
+     */
+    public function getLocalizedDescriptionAttribute(): string
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'ar' && $this->description_ar) {
+            return $this->description_ar;
+        }
+        return $this->description;
+    }
+
+    /**
+     * Get localized what to learn based on current locale
+     */
+    public function getLocalizedWhatToLearnAttribute(): ?array
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'ar' && $this->what_to_learn_ar) {
+            return $this->what_to_learn_ar;
+        }
+        return $this->what_to_learn;
+    }
+
+    /**
+     * Get localized FAQ based on current locale
+     */
+    public function getLocalizedFaqCourseAttribute(): ?array
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'ar' && $this->faq_course_ar) {
+            return $this->faq_course_ar;
+        }
+        return $this->faq_course;
+    }
+
+    /**
+     * Get localized meta title based on current locale
+     */
+    public function getLocalizedMetaTitleAttribute(): ?string
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'ar' && $this->meta_title_ar) {
+            return $this->meta_title_ar;
+        }
+        return $this->meta_title;
+    }
+
+    /**
+     * Get localized meta description based on current locale
+     */
+    public function getLocalizedMetaDescriptionAttribute(): ?string
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'ar' && $this->meta_description_ar) {
+            return $this->meta_description_ar;
+        }
+        return $this->meta_description;
+    }
+
+    /**
+     * Get localized meta keywords based on current locale
+     */
+    public function getLocalizedMetaKeywordsAttribute(): ?string
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'ar' && $this->meta_keywords_ar) {
+            return $this->meta_keywords_ar;
+        }
+        return $this->meta_keywords;
+    }
+
+    /**
+     * Check if course supports a specific language
+     */
+    public function supportsLanguage(string $language): bool
+    {
+        if (!$this->supported_languages) {
+            return $language === $this->default_language;
+        }
+        return in_array($language, $this->supported_languages);
+    }
+
+    /**
+     * Get available languages for this course
+     */
+    public function getAvailableLanguagesAttribute(): array
+    {
+        $languages = [$this->default_language];
+        if ($this->supported_languages) {
+            $languages = array_unique(array_merge($languages, $this->supported_languages));
+        }
+        return $languages;
     }
 }

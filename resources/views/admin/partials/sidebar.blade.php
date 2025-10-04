@@ -90,6 +90,12 @@
                     <i class="fa fa-user-plus me-2"></i> Subscribers
                 </a>
             @endif
+            @if (auth('admin')->user()->hasPermission('manage_users'))
+                <a href="{{ route('admin.traders.index') }}"
+                    class="list-group-item list-group-item-action {{ request()->routeIs('admin.traders.*') ? 'active' : '' }}">
+                    <i class="fa fa-chart-bar me-2"></i> Traders
+                </a>
+            @endif
 
             <!-- Content Management Section -->
             <div class="list-group-item bg-light text-muted small fw-bold text-uppercase">
@@ -137,8 +143,8 @@
             <div class="list-group-item bg-light text-muted small fw-bold text-uppercase">
                 <i class="fa fa-cog me-2"></i> Settings
             </div>
-                            <a href="{{ route('admin.settings.index') }}"
-                   class="list-group-item list-group-item-action {{ request()->routeIs('admin.settings*') ? 'active' : '' }}">
+            <a href="{{ route('admin.settings.index') }}"
+                class="list-group-item list-group-item-action {{ request()->routeIs('admin.settings*') ? 'active' : '' }}">
                 <i class="fa fa-sliders-h me-2"></i> General Settings
             </a>
         </div>

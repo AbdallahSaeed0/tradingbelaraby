@@ -11,7 +11,11 @@ class TranslationHelper
 {
     public static function getCurrentLanguage()
     {
-        $languageCode = Session::get('locale', config('app.locale'));
+        // Check if we're in admin area
+        $isAdmin = request()->is('admin*');
+        $sessionKey = $isAdmin ? 'admin_locale' : 'frontend_locale';
+
+        $languageCode = Session::get($sessionKey, config('app.locale'));
         return Language::where('code', $languageCode)->first() ?? Language::default()->first();
     }
 
@@ -83,7 +87,11 @@ class TranslationHelper
         $language = Language::where('code', $languageCode)->first();
 
         if ($language && $language->is_active) {
-            Session::put('locale', $languageCode);
+            // Check if we're in admin area
+            $isAdmin = request()->is('admin*');
+            $sessionKey = $isAdmin ? 'admin_locale' : 'frontend_locale';
+
+            Session::put($sessionKey, $languageCode);
             app()->setLocale($languageCode);
             return true;
         }
@@ -99,5 +107,86 @@ class TranslationHelper
     public static function getAvailableLanguages()
     {
         return Language::active()->get();
+    }
+
+    /**
+     * Get localized content based on current language
+     * Returns Arabic content if current language is Arabic, otherwise returns English content
+     */
+    public static function getLocalizedContent($englishContent, $arabicContent = null)
+    {
+        $currentLanguage = self::getCurrentLanguage();
+
+        // If current language is Arabic and Arabic content exists, return Arabic content
+        if ($currentLanguage && $currentLanguage->code === 'ar' && !empty($arabicContent)) {
+            return $arabicContent;
+        }
+
+        // Otherwise return English content
+        return $englishContent;
+    }
+
+    /**
+     * Get localized array content (for arrays like learning objectives, FAQ)
+     */
+    public static function getLocalizedArray($englishArray, $arabicArray = null)
+    {
+        $currentLanguage = self::getCurrentLanguage();
+
+        // If current language is Arabic and Arabic array exists and is not empty, return Arabic array
+        if ($currentLanguage && $currentLanguage->code === 'ar' && !empty($arabicArray) && is_array($arabicArray)) {
+            return $arabicArray;
+        }
+
+        // Otherwise return English array
+        return is_array($englishArray) ? $englishArray : [];
+    }
+
+    /**
+     * Get current language for frontend specifically
+     */
+    public static function getFrontendLanguage()
+    {
+        $languageCode = Session::get('frontend_locale', config('app.locale'));
+        return Language::where('code', $languageCode)->first() ?? Language::default()->first();
+    }
+
+    /**
+     * Get current language for admin specifically
+     */
+    public static function getAdminLanguage()
+    {
+        $languageCode = Session::get('admin_locale', config('app.locale'));
+        return Language::where('code', $languageCode)->first() ?? Language::default()->first();
+    }
+
+    /**
+     * Set language for frontend specifically
+     */
+    public static function setFrontendLanguage($languageCode)
+    {
+        $language = Language::where('code', $languageCode)->first();
+
+        if ($language && $language->is_active) {
+            Session::put('frontend_locale', $languageCode);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Set language for admin specifically
+     */
+    public static function setAdminLanguage($languageCode)
+    {
+        $language = Language::where('code', $languageCode)->first();
+
+        if ($language && $language->is_active) {
+            Session::put('admin_locale', $languageCode);
+            return true;
+        }
+
+        return false;
     }
 }

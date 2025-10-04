@@ -27,7 +27,9 @@ class AdminsController extends Controller
 
         // Apply type filter
         if ($request->filled('type')) {
-            $query->where('admin_type_id', $request->type);
+            $query->whereHas('adminType', function($q) use ($request) {
+                $q->where('name', $request->type);
+            });
         }
 
         // Apply status filter
@@ -104,6 +106,7 @@ class AdminsController extends Controller
             'admin_type_id' => 'required|exists:admin_types,id',
             'phone' => 'nullable|string|max:20',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'cover' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'is_active' => 'boolean',
         ]);
 
@@ -111,6 +114,12 @@ class AdminsController extends Controller
         if ($request->hasFile('avatar')) {
             $avatarPath = $request->file('avatar')->store('admins/avatars', 'public');
             $data['avatar'] = $avatarPath;
+        }
+
+        // Handle cover upload
+        if ($request->hasFile('cover')) {
+            $coverPath = $request->file('cover')->store('admins/covers', 'public');
+            $data['cover'] = $coverPath;
         }
 
         // Hash password
@@ -146,6 +155,7 @@ class AdminsController extends Controller
             'admin_type_id' => 'required|exists:admin_types,id',
             'phone' => 'nullable|string|max:20',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'cover' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'is_active' => 'boolean',
         ]);
 
@@ -157,6 +167,16 @@ class AdminsController extends Controller
             }
             $avatarPath = $request->file('avatar')->store('admins/avatars', 'public');
             $data['avatar'] = $avatarPath;
+        }
+
+        // Handle cover upload
+        if ($request->hasFile('cover')) {
+            // Delete old cover if exists
+            if ($admin->cover && Storage::disk('public')->exists($admin->cover)) {
+                Storage::disk('public')->delete($admin->cover);
+            }
+            $coverPath = $request->file('cover')->store('admins/covers', 'public');
+            $data['cover'] = $coverPath;
         }
 
         // Hash password if provided
@@ -180,6 +200,11 @@ class AdminsController extends Controller
         // Delete avatar if exists
         if ($admin->avatar && Storage::disk('public')->exists($admin->avatar)) {
             Storage::disk('public')->delete($admin->avatar);
+        }
+
+        // Delete cover if exists
+        if ($admin->cover && Storage::disk('public')->exists($admin->cover)) {
+            Storage::disk('public')->delete($admin->cover);
         }
 
         $admin->delete();

@@ -16,7 +16,9 @@ class CourseLecture extends Model
         'course_id',
         'section_id',
         'title',
+        'title_ar',
         'description',
+        'description_ar',
         'order',
         'content_type',
         'video_file',
@@ -24,6 +26,7 @@ class CourseLecture extends Model
         'document_file',
         'book',
         'content_text',
+        'content_text_ar',
         'live_link',
         'live_scheduled_at',
         'is_live',
@@ -33,6 +36,21 @@ class CourseLecture extends Model
         'is_completed',
         'attachments',
         'notes',
+        'notes_ar',
+        'learning_objectives',
+        'learning_objectives_ar',
+        'lecture_resources',
+        'lecture_resources_ar',
+        'lecture_type',
+        'difficulty_level',
+        'prerequisites',
+        'prerequisites_ar',
+        'tags',
+        'tags_ar',
+        'transcript',
+        'transcript_ar',
+        'subtitles',
+        'subtitles_ar',
     ];
 
     protected $casts = [
@@ -44,6 +62,16 @@ class CourseLecture extends Model
         'is_completed' => 'boolean',
         'attachments' => 'array',
         'order' => 'integer',
+        'learning_objectives' => 'array',
+        'learning_objectives_ar' => 'array',
+        'lecture_resources' => 'array',
+        'lecture_resources_ar' => 'array',
+        'prerequisites' => 'array',
+        'prerequisites_ar' => 'array',
+        'tags' => 'array',
+        'tags_ar' => 'array',
+        'subtitles' => 'array',
+        'subtitles_ar' => 'array',
     ];
 
     protected $appends = [
@@ -401,5 +429,170 @@ class CourseLecture extends Model
         }
 
         $completion->save();
+    }
+
+    /**
+     * Get localized title based on current locale
+     */
+    public function getLocalizedTitleAttribute(): string
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'ar' && $this->title_ar) {
+            return $this->title_ar;
+        }
+        return $this->title;
+    }
+
+    /**
+     * Get localized description based on current locale
+     */
+    public function getLocalizedDescriptionAttribute(): ?string
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'ar' && $this->description_ar) {
+            return $this->description_ar;
+        }
+        return $this->description;
+    }
+
+    /**
+     * Get localized content text based on current locale
+     */
+    public function getLocalizedContentTextAttribute(): ?string
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'ar' && $this->content_text_ar) {
+            return $this->content_text_ar;
+        }
+        return $this->content_text;
+    }
+
+    /**
+     * Get localized notes based on current locale
+     */
+    public function getLocalizedNotesAttribute(): ?string
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'ar' && $this->notes_ar) {
+            return $this->notes_ar;
+        }
+        return $this->notes;
+    }
+
+    /**
+     * Get localized learning objectives based on current locale
+     */
+    public function getLocalizedLearningObjectivesAttribute(): ?array
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'ar' && $this->learning_objectives_ar) {
+            return $this->learning_objectives_ar;
+        }
+        return $this->learning_objectives;
+    }
+
+    /**
+     * Get localized lecture resources based on current locale
+     */
+    public function getLocalizedLectureResourcesAttribute(): ?array
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'ar' && $this->lecture_resources_ar) {
+            return $this->lecture_resources_ar;
+        }
+        return $this->lecture_resources;
+    }
+
+    /**
+     * Get localized prerequisites based on current locale
+     */
+    public function getLocalizedPrerequisitesAttribute(): ?array
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'ar' && $this->prerequisites_ar) {
+            return $this->prerequisites_ar;
+        }
+        return $this->prerequisites;
+    }
+
+    /**
+     * Get localized tags based on current locale
+     */
+    public function getLocalizedTagsAttribute(): ?array
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'ar' && $this->tags_ar) {
+            return $this->tags_ar;
+        }
+        return $this->tags;
+    }
+
+    /**
+     * Get localized transcript based on current locale
+     */
+    public function getLocalizedTranscriptAttribute(): ?string
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'ar' && $this->transcript_ar) {
+            return $this->transcript_ar;
+        }
+        return $this->transcript;
+    }
+
+    /**
+     * Get localized subtitles based on current locale
+     */
+    public function getLocalizedSubtitlesAttribute(): ?array
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'ar' && $this->subtitles_ar) {
+            return $this->subtitles_ar;
+        }
+        return $this->subtitles;
+    }
+
+    /**
+     * Get difficulty level badge color
+     */
+    public function getDifficultyBadgeColorAttribute(): string
+    {
+        return match ($this->difficulty_level) {
+            'beginner' => 'success',
+            'intermediate' => 'warning',
+            'advanced' => 'danger',
+            default => 'secondary',
+        };
+    }
+
+    /**
+     * Get lecture type display name
+     */
+    public function getLectureTypeDisplayAttribute(): string
+    {
+        return match ($this->lecture_type) {
+            'theory' => 'Theory',
+            'demo' => 'Demo',
+            'exercise' => 'Exercise',
+            'quiz' => 'Quiz',
+            'assignment' => 'Assignment',
+            'project' => 'Project',
+            'discussion' => 'Discussion',
+            default => 'Content',
+        };
+    }
+
+    /**
+     * Get content type icon
+     */
+    public function getContentTypeIconAttribute(): string
+    {
+        return match ($this->content_type) {
+            'video' => 'fa-play-circle',
+            'document' => 'fa-file-pdf',
+            'audio' => 'fa-headphones',
+            'text' => 'fa-file-text',
+            'live' => 'fa-video',
+            default => 'fa-file',
+        };
     }
 }

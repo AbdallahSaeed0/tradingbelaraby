@@ -13,9 +13,13 @@
                 </div>
             </div>
             <div class="col-md-7">
-                <h2 class="fw-bold mb-2">{{ $course->name }}</h2>
+                <h2 class="fw-bold mb-2" @if (\App\Helpers\TranslationHelper::getFrontendLanguage()->code === 'ar') dir="rtl" @endif>
+                    {{ \App\Helpers\TranslationHelper::getLocalizedContent($course->name, $course->name_ar) }}
+                </h2>
                 <div class="text-muted mb-2">{{ $course->instructor->name ?? __('Instructor') }}</div>
-                <div class="mb-3">{{ $course->description }}</div>
+                <div class="mb-3" @if (\App\Helpers\TranslationHelper::getFrontendLanguage()->code === 'ar') dir="rtl" @endif>
+                    {{ \App\Helpers\TranslationHelper::getLocalizedContent($course->description, $course->description_ar) }}
+                </div>
                 <div class="d-flex align-items-center mb-3">
                     <div class="flex-grow-1">
                         <div class="progress" style="height:8px;">

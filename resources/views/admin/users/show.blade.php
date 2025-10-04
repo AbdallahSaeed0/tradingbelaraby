@@ -17,8 +17,8 @@
                     <div class="card-header fw-semibold">User #{{ $user->id }}</div>
                     <div class="card-body">
                         <div class="text-center mb-3">
-                            <img src="{{ 'https://i.pravatar.cc/100?u=' . $user->id }}" class="rounded-circle" width="100"
-                                height="100" alt="avatar">
+                            <img src="{{ $user->avatar ? asset('storage/' . $user->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&size=100&background=007bff&color=fff' }}"
+                                class="rounded-circle" width="100" height="100" alt="avatar">
                         </div>
                         <table class="table table-borderless">
                             <tr>

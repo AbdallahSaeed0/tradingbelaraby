@@ -96,8 +96,11 @@ class CoursesController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'title' => 'required|string|max:255',
+            // Basic fields
+            'name' => 'required|string|max:255',
+            'name_ar' => 'nullable|string|max:255',
             'description' => 'required|string',
+            'description_ar' => 'nullable|string',
             'category_id' => 'required|exists:course_categories,id',
             'instructor_id' => 'required|exists:admins,id',
             'price' => 'required|numeric|min:0',
@@ -105,40 +108,65 @@ class CoursesController extends Controller
             'status' => 'required|in:draft,published,archived',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'book' => 'nullable|file|mimes:pdf|max:10240',
+
+            // Multilingual learning objectives
+            'what_to_learn' => 'nullable|array',
+            'what_to_learn.*' => 'string|max:500',
+            'what_to_learn_ar' => 'nullable|array',
+            'what_to_learn_ar.*' => 'nullable|string|max:500',
+
+            // SEO fields
+            'meta_title' => 'nullable|string|max:60',
+            'meta_title_ar' => 'nullable|string|max:60',
+            'meta_description' => 'nullable|string|max:160',
+            'meta_description_ar' => 'nullable|string|max:160',
+            'meta_keywords' => 'nullable|string|max:255',
+            'meta_keywords_ar' => 'nullable|string|max:255',
+            'default_language' => 'nullable|string|in:en,ar',
+
+
+            // Course settings
+            'is_featured' => 'boolean',
+            'is_free' => 'boolean',
             'sections' => 'nullable|string', // JSON string
             'learn_items' => 'nullable|string', // JSON string
         ]);
 
-        // Handle image upload
+        // Handle file uploads
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('courses', 'public');
-            $data['image'] = $imagePath;
+            $data['image'] = $request->file('image')->store('courses', 'public');
         }
 
-        // Handle book upload
         if ($request->hasFile('book')) {
-            $bookPath = $request->file('book')->store('courses/books', 'public');
-            $data['book'] = $bookPath;
+            $data['book'] = $request->file('book')->store('courses/books', 'public');
         }
 
-        // Handle boolean fields
-        $data['is_featured'] = $request->has('featured');
-        $data['is_free'] = $request->has('free');
+
+        // Set supported languages
+        $supportedLanguages = ['en'];
+        if (!empty($data['name_ar']) || !empty($data['description_ar'])) {
+            $supportedLanguages[] = 'ar';
+        }
+        $data['supported_languages'] = $supportedLanguages;
+
+        // Set default language
+        $data['default_language'] = $data['default_language'] ?? 'en';
+
+        // Clean up learning objectives arrays - remove null values
+        if (isset($data['what_to_learn_ar']) && is_array($data['what_to_learn_ar'])) {
+            $data['what_to_learn_ar'] = array_filter($data['what_to_learn_ar'], function($value) {
+                return $value !== null && $value !== '';
+            });
+        }
+
+        if (isset($data['what_to_learn']) && is_array($data['what_to_learn'])) {
+            $data['what_to_learn'] = array_filter($data['what_to_learn'], function($value) {
+                return $value !== null && $value !== '';
+            });
+        }
 
         // Create course
-        $course = Course::create([
-            'name' => $data['title'],
-            'description' => $data['description'],
-            'category_id' => $data['category_id'],
-            'instructor_id' => $data['instructor_id'],
-            'price' => $data['price'],
-            'duration' => $data['duration'],
-            'status' => $data['status'],
-            'image' => $data['image'] ?? null,
-            'book' => $data['book'] ?? null,
-            'is_featured' => $data['is_featured'],
-            'is_free' => $data['is_free'],
-        ]);
+        $course = Course::create($data);
 
         // Handle learning items (what you'll learn)
         if ($request->filled('learn_items')) {
@@ -151,11 +179,6 @@ class CoursesController extends Controller
             $course->update(['what_to_learn' => $request->learning_objectives]);
         }
 
-        // Debug: Log the learning items
-        Log::info('Learning items received:', [
-            'learn_items' => $request->learn_items,
-            'decoded' => $request->filled('learn_items') ? json_decode($request->learn_items, true) : null
-        ]);
 
         // Handle sections and lectures
         if ($request->filled('sections')) {
@@ -164,7 +187,9 @@ class CoursesController extends Controller
                 foreach ($sections as $sectionData) {
                     $section = $course->sections()->create([
                         'title' => $sectionData['title'],
+                        'title_ar' => $sectionData['title_ar'] ?? null,
                         'description' => $sectionData['description'] ?? '',
+                        'description_ar' => $sectionData['description_ar'] ?? null,
                         'order' => $sectionData['order'] ?? 1,
                     ]);
 
@@ -174,7 +199,9 @@ class CoursesController extends Controller
                             $lecture = $section->lectures()->create([
                                 'course_id' => $course->id,
                                 'title' => $lectureData['title'],
+                                'title_ar' => $lectureData['title_ar'] ?? null,
                                 'description' => $lectureData['description'] ?? '',
+                                'description_ar' => $lectureData['description_ar'] ?? null,
                                 'content_type' => $lectureData['type'] === 'url' ? 'video' : 'document',
                                 'video_url' => $lectureData['type'] === 'url' ? $lectureData['link'] : null,
                                 'order' => $lectureData['order'] ?? 1,
@@ -238,8 +265,11 @@ class CoursesController extends Controller
     {
         try {
             $data = $request->validate([
-            'title' => 'required|string|max:255',
+            // Basic fields
+            'name' => 'required|string|max:255',
+            'name_ar' => 'nullable|string|max:255',
             'description' => 'required|string',
+            'description_ar' => 'nullable|string',
             'category_id' => 'required|exists:course_categories,id',
             'instructor_id' => 'required|exists:admins,id',
             'price' => 'required|numeric|min:0',
@@ -247,14 +277,38 @@ class CoursesController extends Controller
             'status' => 'required|in:draft,published,archived',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'book' => 'nullable|file|mimes:pdf|max:10240',
+
+            // Multilingual learning objectives
+            'what_to_learn' => 'nullable|array',
+            'what_to_learn.*' => 'string|max:500',
+            'what_to_learn_ar' => 'nullable|array',
+            'what_to_learn_ar.*' => 'nullable|string|max:500',
+
+            // SEO fields
+            'meta_title' => 'nullable|string|max:60',
+            'meta_title_ar' => 'nullable|string|max:60',
+            'meta_description' => 'nullable|string|max:160',
+            'meta_description_ar' => 'nullable|string|max:160',
+            'meta_keywords' => 'nullable|string|max:255',
+            'meta_keywords_ar' => 'nullable|string|max:255',
+            'default_language' => 'nullable|string|in:en,ar',
+
+
+            // Course settings
+            'is_featured' => 'boolean',
+            'is_free' => 'boolean',
             'learning_objectives' => 'nullable|array',
             'learning_objectives.*' => 'string',
             'sections' => 'nullable|array',
             'sections.*.title' => 'required|string',
+            'sections.*.title_ar' => 'nullable|string',
             'sections.*.description' => 'nullable|string',
+            'sections.*.description_ar' => 'nullable|string',
             'lectures' => 'nullable|array',
             'lectures.*.title' => 'required|string',
+            'lectures.*.title_ar' => 'nullable|string',
             'lectures.*.description' => 'nullable|string',
+            'lectures.*.description_ar' => 'nullable|string',
             'lectures.*.video_url' => 'nullable|url',
             'lectures.*.file' => 'nullable|file',
             'lectures.*.book' => 'nullable|file|mimes:pdf',
@@ -264,51 +318,55 @@ class CoursesController extends Controller
             'deleted_lectures.*' => 'integer|exists:course_lectures,id',
         ]);
 
-        // Handle image upload
+        // Handle file uploads
         if ($request->hasFile('image')) {
             // Delete old image if exists
             if ($course->image && Storage::disk('public')->exists($course->image)) {
                 Storage::disk('public')->delete($course->image);
             }
-
-            $imagePath = $request->file('image')->store('courses', 'public');
-            $data['image'] = $imagePath;
+            $data['image'] = $request->file('image')->store('courses', 'public');
         }
 
-        // Handle book upload
         if ($request->hasFile('book')) {
             // Delete old book if exists
             if ($course->book && Storage::disk('public')->exists($course->book)) {
                 Storage::disk('public')->delete($course->book);
             }
-
-            $bookPath = $request->file('book')->store('courses/books', 'public');
-            $data['book'] = $bookPath;
+            $data['book'] = $request->file('book')->store('courses/books', 'public');
         }
 
-        // Handle boolean fields
-        $data['is_featured'] = $request->has('featured');
-        $data['is_free'] = $request->has('free');
 
-        // Update course basic info
-        $course->update([
-            'name' => $data['title'],
-            'description' => $data['description'],
-            'category_id' => $data['category_id'],
-            'instructor_id' => $data['instructor_id'],
-            'price' => $data['price'],
-            'duration' => $data['duration'],
-            'status' => $data['status'],
-            'image' => $data['image'] ?? $course->image,
-            'book' => $data['book'] ?? $course->book,
-            'is_featured' => $data['is_featured'],
-            'is_free' => $data['is_free'],
-        ]);
-
-        // Handle learning objectives
-        if ($request->has('learning_objectives')) {
-            $course->update(['what_to_learn' => $request->learning_objectives]);
+        // Set supported languages
+        $supportedLanguages = ['en'];
+        if (!empty($data['name_ar']) || !empty($data['description_ar'])) {
+            $supportedLanguages[] = 'ar';
         }
+        $data['supported_languages'] = $supportedLanguages;
+
+        // Set default language
+        $data['default_language'] = $data['default_language'] ?? 'en';
+
+
+        // Clean up learning objectives arrays - remove null values
+        if (isset($data['what_to_learn_ar']) && is_array($data['what_to_learn_ar'])) {
+            $data['what_to_learn_ar'] = array_filter($data['what_to_learn_ar'], function($value) {
+                return $value !== null && $value !== '';
+            });
+        }
+
+        if (isset($data['what_to_learn']) && is_array($data['what_to_learn'])) {
+            $data['what_to_learn'] = array_filter($data['what_to_learn'], function($value) {
+                return $value !== null && $value !== '';
+            });
+        }
+
+
+        // Update course
+        $course->update($data);
+
+
+        // Handle learning objectives - they are already processed in the main update above
+        // The what_to_learn and what_to_learn_ar arrays are already included in $data and updated
 
         // Handle deletions first
         if ($request->has('deleted_sections')) {
@@ -362,7 +420,9 @@ class CoursesController extends Controller
                     Log::info("Creating new section with data:", $sectionData);
                     $newSection = $course->sections()->create([
                         'title' => $sectionData['title'],
+                        'title_ar' => $sectionData['title_ar'] ?? null,
                         'description' => $sectionData['description'] ?? '',
+                        'description_ar' => $sectionData['description_ar'] ?? null,
                         'order' => $course->sections()->count() + 1
                     ]);
                     Log::info("New section created with ID: {$newSection->id}");
@@ -376,7 +436,9 @@ class CoursesController extends Controller
                         Log::info("Updating existing section {$sectionId} with data:", $sectionData);
                         $section->update([
                             'title' => $sectionData['title'],
+                            'title_ar' => $sectionData['title_ar'] ?? null,
                             'description' => $sectionData['description'] ?? '',
+                            'description_ar' => $sectionData['description_ar'] ?? null,
                         ]);
                         Log::info("Section {$sectionId} updated successfully");
                     }
@@ -437,7 +499,9 @@ class CoursesController extends Controller
                         if (!$section) {
                             $section = $course->sections()->create([
                                 'title' => 'General',
+                                'title_ar' => null,
                                 'description' => 'Course content',
+                                'description_ar' => null,
                                 'order' => 1
                             ]);
                         }
@@ -448,7 +512,9 @@ class CoursesController extends Controller
                     $newLecture = $section->lectures()->create([
                         'course_id' => $course->id,
                         'title' => $lectureData['title'],
+                        'title_ar' => $lectureData['title_ar'] ?? null,
                         'description' => $lectureData['description'] ?? '',
+                        'description_ar' => $lectureData['description_ar'] ?? null,
                         'video_url' => $lectureData['video_url'] ?? null,
                         'content_type' => isset($lectureData['video_url']) && $lectureData['video_url'] ? 'video' : 'document',
                         'order' => isset($lectureData['order']) ? $lectureData['order'] : ($section->lectures()->count() + 1)
@@ -473,7 +539,9 @@ class CoursesController extends Controller
                         Log::info("Updating existing lecture {$lectureId} with data:", $lectureData);
                         $lecture->update([
                             'title' => $lectureData['title'],
+                            'title_ar' => $lectureData['title_ar'] ?? null,
                             'description' => $lectureData['description'] ?? '',
+                            'description_ar' => $lectureData['description_ar'] ?? null,
                             'video_url' => $lectureData['video_url'] ?? null,
                             'content_type' => isset($lectureData['video_url']) && $lectureData['video_url'] ? 'video' : 'document',
                         ]);
@@ -506,6 +574,7 @@ class CoursesController extends Controller
                 }
             }
         }
+
 
         return redirect()->route('admin.courses.index')->with('success', 'Course updated successfully.');
 

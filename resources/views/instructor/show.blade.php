@@ -4,8 +4,16 @@
 
 @section('content')
     <!-- Instructor Profile Header -->
-    <section class="instructor-profile-header py-5 bg-gradient-primary">
-        <div class="container">
+    <section class="instructor-profile-header py-5 bg-gradient-primary position-relative">
+        <!-- Instructor Cover Image Background -->
+        @if ($instructor->cover)
+            <div class="instructor-cover-bg position-absolute w-100 h-100" style="top: 0; left: 0; opacity: 0.1;">
+                <img src="{{ $instructor->cover_url }}" alt="{{ $instructor->name }} Cover" class="w-100 h-100"
+                    style="object-fit: cover;">
+            </div>
+        @endif
+
+        <div class="container position-relative" style="z-index: 2;">
             <div class="row align-items-center">
                 <div class="col-lg-4 text-center">
                     <div class="instructor-avatar-wrapper mb-4">
@@ -18,13 +26,8 @@
                     <div class="instructor-info text-white">
                         <h1 class="display-4 fw-bold mb-3">{{ $instructor->name }}</h1>
                         <p class="lead mb-3">
-                            <i class="fas fa-envelope me-2"></i>{{ $instructor->email }}
+                            <i class="fas fa-graduation-cap me-2"></i>{{ __('Instructor') }}
                         </p>
-                        @if ($instructor->phone)
-                            <p class="lead mb-3">
-                                <i class="fas fa-phone me-2"></i>{{ $instructor->phone }}
-                            </p>
-                        @endif
                         <div class="instructor-stats d-flex flex-wrap gap-4 mb-4">
                             <div class="stat-item text-center">
                                 <h3 class="fw-bold mb-1">{{ $instructor->courses->count() }}</h3>
@@ -111,7 +114,7 @@
                                             {{ __('students') }}</span>
                                         <span><i class="fas fa-clock me-1"></i>{{ $course->duration }}</span>
                                     </div>
-                                    <a href="{{ route('courses.show', $course->slug) }}" class="btn btn-primary w-100">
+                                    <a href="{{ route('courses.show', $course->id) }}" class="btn btn-primary w-100">
                                         {{ __('View Course') }}
                                     </a>
                                 </div>
@@ -183,6 +186,15 @@
 
         .empty-state {
             padding: 3rem;
+        }
+
+        /* Instructor Cover Background Styles */
+        .instructor-cover-bg {
+            z-index: 1;
+        }
+
+        .instructor-cover-bg img {
+            filter: blur(2px);
         }
     </style>
 @endpush

@@ -14,12 +14,20 @@ class CourseSection extends Model
     protected $fillable = [
         'course_id',
         'title',
+        'title_ar',
         'description',
+        'description_ar',
         'order',
         'is_published',
         'is_free',
         'total_lectures',
         'total_duration_minutes',
+        'learning_objectives',
+        'learning_objectives_ar',
+        'resources',
+        'resources_ar',
+        'section_type',
+        'difficulty_level',
     ];
 
     protected $casts = [
@@ -27,6 +35,10 @@ class CourseSection extends Model
         'is_free' => 'boolean',
         'total_lectures' => 'integer',
         'total_duration_minutes' => 'integer',
+        'learning_objectives' => 'array',
+        'learning_objectives_ar' => 'array',
+        'resources' => 'array',
+        'resources_ar' => 'array',
     ];
 
     protected $appends = [
@@ -238,5 +250,81 @@ class CourseSection extends Model
             ->where('is_published', true)
             ->orderBy('order', 'desc')
             ->first();
+    }
+
+    /**
+     * Get localized title based on current locale
+     */
+    public function getLocalizedTitleAttribute(): string
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'ar' && $this->title_ar) {
+            return $this->title_ar;
+        }
+        return $this->title;
+    }
+
+    /**
+     * Get localized description based on current locale
+     */
+    public function getLocalizedDescriptionAttribute(): ?string
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'ar' && $this->description_ar) {
+            return $this->description_ar;
+        }
+        return $this->description;
+    }
+
+    /**
+     * Get localized learning objectives based on current locale
+     */
+    public function getLocalizedLearningObjectivesAttribute(): ?array
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'ar' && $this->learning_objectives_ar) {
+            return $this->learning_objectives_ar;
+        }
+        return $this->learning_objectives;
+    }
+
+    /**
+     * Get localized resources based on current locale
+     */
+    public function getLocalizedResourcesAttribute(): ?array
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'ar' && $this->resources_ar) {
+            return $this->resources_ar;
+        }
+        return $this->resources;
+    }
+
+    /**
+     * Get difficulty level badge color
+     */
+    public function getDifficultyBadgeColorAttribute(): string
+    {
+        return match ($this->difficulty_level) {
+            'beginner' => 'success',
+            'intermediate' => 'warning',
+            'advanced' => 'danger',
+            default => 'secondary',
+        };
+    }
+
+    /**
+     * Get section type display name
+     */
+    public function getSectionTypeDisplayAttribute(): string
+    {
+        return match ($this->section_type) {
+            'theory' => 'Theory',
+            'practice' => 'Practice',
+            'assessment' => 'Assessment',
+            'project' => 'Project',
+            'discussion' => 'Discussion',
+            default => 'Content',
+        };
     }
 }

@@ -176,12 +176,12 @@
                         <div class="col-md-2">
                             <select class="form-select" name="type" id="typeFilter">
                                 <option value="">All Types</option>
-                                <option value="admin" {{ request('type') == 'admin' ? 'selected' : '' }}>System Admin
-                                </option>
-                                <option value="instructor" {{ request('type') == 'instructor' ? 'selected' : '' }}>
-                                    Instructor</option>
-                                <option value="employee" {{ request('type') == 'employee' ? 'selected' : '' }}>Employee
-                                </option>
+                                @foreach ($adminTypes as $adminType)
+                                    <option value="{{ $adminType->name }}"
+                                        {{ request('type') == $adminType->name ? 'selected' : '' }}>
+                                        {{ $adminType->display_name }}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="col-md-2">

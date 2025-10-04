@@ -21,7 +21,20 @@ class BlogController extends Controller
             });
         }
 
-        $blogs = $query->paginate(9);
+        // Search functionality
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%")
+                  ->orWhere('excerpt', 'like', "%{$search}%")
+                  ->orWhereHas('author', function($authorQuery) use ($search) {
+                      $authorQuery->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        $blogs = $query->paginate(9)->withQueryString();
         $categories = BlogCategory::active()->withCount('blogs')->get();
 
         return view('pages.blog', compact('blogs', 'categories'));

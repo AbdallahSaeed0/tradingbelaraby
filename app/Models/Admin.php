@@ -17,6 +17,7 @@ class Admin extends Authenticatable
         'admin_type_id',
         'phone',
         'avatar',
+        'cover',
         'is_active',
     ];
 
@@ -60,6 +61,16 @@ class Admin extends Authenticatable
 
         // Generate avatar from name using UI Avatars API
         return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&size=400&background=random';
+    }
+
+    public function getCoverUrlAttribute()
+    {
+        if ($this->cover) {
+            return asset('storage/' . $this->cover);
+        }
+
+        // Return default cover
+        return 'https://via.placeholder.com/800x400/007bff/ffffff?text=' . urlencode($this->name);
     }
 
     // Scopes

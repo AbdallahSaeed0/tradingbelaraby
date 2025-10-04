@@ -29,6 +29,34 @@
             border-color: #007bff;
             background-color: #f8f9fa;
         }
+
+        /* Cover Image Styles */
+        .cover-preview {
+            width: 100%;
+            max-width: 300px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid #dee2e6;
+        }
+
+        .cover-upload-area {
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+
+        .cover-upload-area:hover {
+            border-color: #007bff;
+        }
+
+        .cover-upload-area.dragover {
+            border-color: #007bff;
+            background-color: #f8f9fa;
+        }
     </style>
 @endpush
 
@@ -154,7 +182,7 @@
                                 </div>
 
                                 <!-- Avatar Upload -->
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <div class="mb-3">
                                         <label class="form-label">Profile Avatar</label>
 
@@ -182,6 +210,41 @@
                                             </button>
                                         </div>
                                         @error('avatar')
+                                            <div class="text-danger small mt-1">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <!-- Cover Image Upload -->
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Cover Image</label>
+
+                                        @if ($admin->cover)
+                                            <div class="text-center mb-3">
+                                                <img src="{{ asset('storage/' . $admin->cover) }}" alt="Current Cover"
+                                                    class="cover-preview">
+                                                <p class="text-muted small mt-2">Current cover</p>
+                                            </div>
+                                        @endif
+
+                                        <div class="cover-upload-area" id="coverUploadArea">
+                                            <i class="fa fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                            <p class="text-muted mb-2">Drag and drop a cover image here or click to select
+                                            </p>
+                                            <p class="text-muted small">Recommended size: 800x400px</p>
+                                            <input type="file" class="d-none" id="cover" name="cover"
+                                                accept="image/*">
+                                        </div>
+                                        <div id="coverPreview" class="mt-3 text-center" style="display: none;">
+                                            <img id="previewCoverImg" class="cover-preview mb-2">
+                                            <br>
+                                            <button type="button" class="btn btn-sm btn-outline-danger"
+                                                id="removeCover">
+                                                <i class="fa fa-trash me-1"></i>Remove
+                                            </button>
+                                        </div>
+                                        @error('cover')
                                             <div class="text-danger small mt-1">{{ $message }}</div>
                                         @enderror
                                     </div>
@@ -256,6 +319,57 @@
                 avatarInput.value = '';
                 avatarPreview.style.display = 'none';
                 avatarUploadArea.style.display = 'block';
+            });
+
+            // Cover image upload functionality
+            const coverUploadArea = document.getElementById('coverUploadArea');
+            const coverInput = document.getElementById('cover');
+            const coverPreview = document.getElementById('coverPreview');
+            const previewCoverImg = document.getElementById('previewCoverImg');
+            const removeCoverBtn = document.getElementById('removeCover');
+
+            coverUploadArea.addEventListener('click', () => coverInput.click());
+
+            coverUploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                coverUploadArea.classList.add('dragover');
+            });
+
+            coverUploadArea.addEventListener('dragleave', () => {
+                coverUploadArea.classList.remove('dragover');
+            });
+
+            coverUploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                coverUploadArea.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    coverInput.files = files;
+                    handleCoverPreview(files[0]);
+                }
+            });
+
+            coverInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    handleCoverPreview(file);
+                }
+            });
+
+            function handleCoverPreview(file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewCoverImg.src = e.target.result;
+                    coverPreview.style.display = 'block';
+                    coverUploadArea.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+
+            removeCoverBtn.addEventListener('click', function() {
+                coverInput.value = '';
+                coverPreview.style.display = 'none';
+                coverUploadArea.style.display = 'block';
             });
 
             // Password confirmation validation

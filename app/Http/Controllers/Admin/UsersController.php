@@ -55,7 +55,8 @@ class UsersController extends Controller
             $query->orderByDesc('created_at');
         }
 
-        $users = $query->paginate(15);
+        $perPage = $request->get('per_page', 15);
+        $users = $query->paginate($perPage)->appends($request->query());
 
         // Calculate stats
         $stats = [
@@ -137,5 +138,18 @@ class UsersController extends Controller
         $user->is_active = !$user->is_active;
         $user->save();
         return back()->with('success','Status updated');
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'user_ids' => 'required|array',
+            'user_ids.*' => 'exists:users,id'
+        ]);
+
+        $count = User::whereIn('id', $request->user_ids)->delete();
+
+        return redirect()->back()
+            ->with('success', "Successfully deleted {$count} user(s).");
     }
 }

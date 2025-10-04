@@ -123,26 +123,36 @@
                         @foreach ($courses as $course)
                             <div class="col-lg-4 col-md-6">
                                 <div class="course-card h-100 shadow-sm">
-                                    <div class="course-image">
-                                        @if ($course->image)
-                                            <img src="{{ $course->image_url }}" alt="{{ $course->name }}"
-                                                class="img-fluid">
-                                        @else
-                                            <div class="course-placeholder">
-                                                <i class="fas fa-graduation-cap"></i>
+                                    <div class="course-img-wrap">
+                                        <div class="course-image">
+                                            @if ($course->image)
+                                                <img src="{{ $course->image_url }}" alt="{{ $course->name }}"
+                                                    class="img-fluid">
+                                            @else
+                                                <div class="course-placeholder">
+                                                    <i class="fas fa-graduation-cap"></i>
+                                                </div>
+                                            @endif
+
+                                            @if ($course->is_featured)
+                                                <span class="badge bg-warning position-absolute top-0 start-0 m-2">
+                                                    <i class="fas fa-star me-1"></i>Featured
+                                                </span>
+                                            @endif
+
+                                            <div class="course-overlay">
+                                                <a href="{{ route('courses.show', $course) }}"
+                                                    class="btn btn-primary btn-sm">
+                                                    <i class="fas fa-eye me-1"></i>View Course
+                                                </a>
                                             </div>
-                                        @endif
+                                        </div>
 
-                                        @if ($course->is_featured)
-                                            <span class="badge bg-warning position-absolute top-0 start-0 m-2">
-                                                <i class="fas fa-star me-1"></i>Featured
-                                            </span>
-                                        @endif
-
-                                        <div class="course-overlay">
-                                            <a href="{{ route('courses.show', $course) }}" class="btn btn-primary btn-sm">
-                                                <i class="fas fa-eye me-1"></i>View Course
-                                            </a>
+                                        <!-- Instructor Cover Image -->
+                                        <div class="instructor-cover mt-2">
+                                            <img src="{{ $course->instructor->cover_url ?? 'https://via.placeholder.com/300x100/007bff/ffffff?text=Instructor' }}"
+                                                alt="{{ $course->instructor->name ?? 'Instructor' }} Cover"
+                                                class="course-img img-fluid rounded">
                                         </div>
                                     </div>
 
@@ -360,6 +370,28 @@
             .course-description {
                 font-size: 0.85rem;
             }
+        }
+
+        /* Instructor Cover Image Styles */
+        .course-img-wrap {
+            position: relative;
+        }
+
+        .instructor-cover {
+            height: 80px;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        .course-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .course-card:hover .course-img {
+            transform: scale(1.02);
         }
     </style>
 @endpush

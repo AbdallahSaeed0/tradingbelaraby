@@ -39,4 +39,36 @@ class FAQ extends Model
     {
         return $query->where('is_expanded', true);
     }
+
+    // Multilingual display methods
+    public function getDisplayTitleAttribute()
+    {
+        return \App\Helpers\TranslationHelper::getLocalizedContent($this->title, $this->title_ar);
+    }
+
+    public function getDisplayContentAttribute()
+    {
+        return \App\Helpers\TranslationHelper::getLocalizedContent($this->content, $this->content_ar);
+    }
+
+    // Legacy method names for backward compatibility
+    public function getDisplayTitle()
+    {
+        return $this->getDisplayTitleAttribute();
+    }
+
+    public function getDisplayDescription()
+    {
+        return $this->getDisplayContentAttribute();
+    }
+
+    public function getDisplayQuestion()
+    {
+        return $this->getDisplayTitleAttribute();
+    }
+
+    public function getDisplayAnswer()
+    {
+        return $this->getDisplayContentAttribute();
+    }
 }

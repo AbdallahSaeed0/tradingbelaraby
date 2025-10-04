@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
 
         // Seed default admin accounts
         $this->call([
+            AdminTypeSeeder::class,
             AdminSeeder::class,
             LanguageSeeder::class,
             InstructorSeeder::class,

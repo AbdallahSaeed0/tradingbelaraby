@@ -24,7 +24,9 @@
                                     AM
                                 </div>
                                 <div>
-                                    <h6 class="mb-1">{{ __('What are') }} {{ $course->name }}?</h6>
+                                    <h6 class="mb-1">{{ __('What are') }}
+                                        {{ \App\Helpers\TranslationHelper::getLocalizedContent($course->name, $course->name_ar) }}?
+                                    </h6>
                                 </div>
                             </div>
                             <div class="question-item d-flex align-items-start">
@@ -33,7 +35,9 @@
                                     AM
                                 </div>
                                 <div>
-                                    <h6 class="mb-1">{{ __('How can') }} {{ $course->name }} {{ __('benefit') }}?</h6>
+                                    <h6 class="mb-1">{{ __('How can') }}
+                                        {{ \App\Helpers\TranslationHelper::getLocalizedContent($course->name, $course->name_ar) }}
+                                        {{ __('benefit') }}?</h6>
                                 </div>
                             </div>
                         @endforelse

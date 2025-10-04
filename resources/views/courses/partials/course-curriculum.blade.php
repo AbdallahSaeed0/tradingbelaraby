@@ -24,8 +24,13 @@
                                 <div class="flex-grow-1">
                                     <div class="d-flex justify-content-between align-items-center w-100">
                                         <div>
-                                            <h5 class="mb-1 fw-bold">{{ $section->title }}</h5>
-                                            <small class="text-muted">{{ $section->description }}</small>
+                                            <h5 class="mb-1 fw-bold" @if (\App\Helpers\TranslationHelper::getFrontendLanguage()->code === 'ar') dir="rtl" @endif>
+                                                {{ \App\Helpers\TranslationHelper::getLocalizedContent($section->title, $section->title_ar) }}
+                                            </h5>
+                                            <small class="text-muted"
+                                                @if (\App\Helpers\TranslationHelper::getFrontendLanguage()->code === 'ar') dir="rtl" @endif>
+                                                {{ \App\Helpers\TranslationHelper::getLocalizedContent($section->description, $section->description_ar) }}
+                                            </small>
                                         </div>
                                         <div class="text-end">
                                             <span class="fw-bold text-primary">{{ $section->lectures->count() }}
@@ -76,8 +81,9 @@
                                                 <div>
                                                     <h6 class="mb-1 fw-bold class-title" style="cursor: pointer;"
                                                         data-bs-toggle="collapse"
-                                                        data-bs-target="#class{{ $lecture->id }}-desc">
-                                                        {{ $lecture->title }}
+                                                        data-bs-target="#class{{ $lecture->id }}-desc"
+                                                        @if (\App\Helpers\TranslationHelper::getFrontendLanguage()->code === 'ar') dir="rtl" @endif>
+                                                        {{ \App\Helpers\TranslationHelper::getLocalizedContent($lecture->title, $lecture->title_ar) }}
                                                         @if ($isCompleted)
                                                             <span class="badge bg-success ms-2">
                                                                 <i class="fa fa-check"></i> {{ __('Completed') }}
@@ -86,8 +92,9 @@
                                                     </h6>
                                                     <div class="collapse class-description"
                                                         id="class{{ $lecture->id }}-desc">
-                                                        <p class="text-muted small mb-0">
-                                                            {{ $lecture->description }}
+                                                        <p class="text-muted small mb-0"
+                                                            @if (\App\Helpers\TranslationHelper::getFrontendLanguage()->code === 'ar') dir="rtl" @endif>
+                                                            {{ \App\Helpers\TranslationHelper::getLocalizedContent($lecture->description, $lecture->description_ar) }}
                                                         </p>
                                                     </div>
                                                 </div>

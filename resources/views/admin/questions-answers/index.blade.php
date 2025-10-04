@@ -309,6 +309,30 @@
             </div>
         </div>
 
+        <!-- Bulk Actions -->
+        <div class="row mb-4" id="bulkActions" style="display: none;">
+            <div class="col-12">
+                <div class="card shadow-sm border-warning">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <span class="fw-bold text-warning" id="selectedCount">0</span>
+                                {{ __('questions selected') }}
+                            </div>
+                            <div>
+                                <button type="button" class="btn btn-danger" id="bulkDeleteBtn" disabled>
+                                    <i class="fas fa-trash me-1"></i>{{ __('Delete Selected') }}
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary ms-2" id="clearSelection">
+                                    <i class="fas fa-times me-1"></i>{{ __('Clear Selection') }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Questions Table -->
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
@@ -529,5 +553,114 @@
             url.searchParams.set('sort', value);
             window.location = url;
         }
+
+        // Select All functionality
+        function toggleSelectAll() {
+            const selectAllCheckbox = document.getElementById('selectAll');
+            const questionCheckboxes = document.querySelectorAll('.question-checkbox');
+
+            questionCheckboxes.forEach(checkbox => {
+                checkbox.checked = selectAllCheckbox.checked;
+            });
+
+            updateSelection();
+        }
+
+        // Update selection count and bulk actions
+        function updateSelection() {
+            const checkedBoxes = document.querySelectorAll('.question-checkbox:checked');
+            const selectedCount = checkedBoxes.length;
+            const totalCheckboxes = document.querySelectorAll('.question-checkbox').length;
+            const selectAllCheckbox = document.getElementById('selectAll');
+            const bulkActions = document.getElementById('bulkActions');
+            const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+            const selectedCountSpan = document.getElementById('selectedCount');
+
+            // Update select all checkbox state
+            if (selectedCount === 0) {
+                selectAllCheckbox.checked = false;
+                selectAllCheckbox.indeterminate = false;
+            } else if (selectedCount === totalCheckboxes) {
+                selectAllCheckbox.checked = true;
+                selectAllCheckbox.indeterminate = false;
+            } else {
+                selectAllCheckbox.checked = false;
+                selectAllCheckbox.indeterminate = true;
+            }
+
+            // Show/hide bulk actions
+            if (selectedCount > 0) {
+                bulkActions.style.display = 'block';
+                bulkDeleteBtn.disabled = false;
+                selectedCountSpan.textContent = selectedCount;
+            } else {
+                bulkActions.style.display = 'none';
+                bulkDeleteBtn.disabled = true;
+            }
+        }
+
+        // Clear selection
+        document.addEventListener('DOMContentLoaded', function() {
+            const clearSelectionBtn = document.getElementById('clearSelection');
+            if (clearSelectionBtn) {
+                clearSelectionBtn.addEventListener('click', function() {
+                    document.querySelectorAll('.question-checkbox').forEach(checkbox => {
+                        checkbox.checked = false;
+                    });
+                    document.getElementById('selectAll').checked = false;
+                    document.getElementById('selectAll').indeterminate = false;
+                    updateSelection();
+                });
+            }
+
+            // Bulk delete functionality
+            const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+            if (bulkDeleteBtn) {
+                bulkDeleteBtn.addEventListener('click', function() {
+                    const selectedIds = Array.from(document.querySelectorAll('.question-checkbox:checked'))
+                        .map(checkbox => checkbox.value);
+
+                    if (selectedIds.length === 0) {
+                        alert('{{ __('Please select questions to delete.') }}');
+                        return;
+                    }
+
+                    if (confirm(
+                            '{{ __('Are you sure you want to delete the selected questions? This action cannot be undone.') }}'
+                            )) {
+                        // Create form and submit
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = '{{ route('admin.questions-answers.bulk-delete') }}';
+
+                        // Add CSRF token
+                        const csrfToken = document.createElement('input');
+                        csrfToken.type = 'hidden';
+                        csrfToken.name = '_token';
+                        csrfToken.value = '{{ csrf_token() }}';
+                        form.appendChild(csrfToken);
+
+                        // Add method override
+                        const methodField = document.createElement('input');
+                        methodField.type = 'hidden';
+                        methodField.name = '_method';
+                        methodField.value = 'DELETE';
+                        form.appendChild(methodField);
+
+                        // Add selected IDs
+                        selectedIds.forEach(id => {
+                            const input = document.createElement('input');
+                            input.type = 'hidden';
+                            input.name = 'question_ids[]';
+                            input.value = id;
+                            form.appendChild(input);
+                        });
+
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                });
+            }
+        });
     </script>
 @endpush
