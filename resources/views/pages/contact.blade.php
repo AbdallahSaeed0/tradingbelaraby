@@ -15,8 +15,10 @@
         <div class="container position-relative z-3 text-center">
             <h1 class="display-4 fw-bold text-white mb-3">Contact Us</h1>
             <div class="d-flex justify-content-center mb-2">
-                <span class="contact-label px-4 py-2 rounded-pill bg-white text-dark fw-semibold shadow">Home &nbsp;|&nbsp;
-                    Contact Us</span>
+                <span class="contact-label px-4 py-2 rounded-pill bg-white text-dark fw-semibold shadow">
+                    <a href="{{ route('home') }}" class="text-dark text-decoration-none hover-primary">Home</a> &nbsp;|&nbsp;
+                    Contact Us
+                </span>
             </div>
         </div>
     </section>
@@ -77,7 +79,7 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-10">
-                    <h2 class="fw-bold text-center mb-4">Customer Inquiry Form</h2>
+                    <h2 class="fw-bold text-center mb-4">Student Inquiry Form</h2>
                     <form id="contactForm" class="contact-form">
                         @csrf
                         <div class="row g-3 mb-3">

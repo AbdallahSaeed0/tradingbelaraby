@@ -43,8 +43,11 @@
         <div class="container position-relative z-3 text-center">
             <h1 class="display-4 fw-bold text-white mb-3">Course Detail</h1>
             <div class="d-flex justify-content-center mb-2">
-                <span class="course-label px-4 py-2 rounded-pill bg-white text-dark fw-semibold shadow">Home &nbsp;|&nbsp;
-                    Course Details</span>
+                <span class="course-label px-4 py-2 rounded-pill bg-white text-dark fw-semibold shadow">
+                    <a href="{{ route('home') }}" class="text-dark text-decoration-none hover-primary">Home</a>
+                    &nbsp;|&nbsp;
+                    Course Details
+                </span>
             </div>
             <div class="d-flex justify-content-center">
                 @include('partials.language-switcher')
@@ -171,16 +174,40 @@
                         @endif
                         <!-- About Instructor Section -->
                         <section class="about-instructor-section mt-5">
-                            <h4 class="fw-bold mb-4">About Instructor</h4>
-                            @if ($course->instructor)
-                                <!-- Instructor Cover Image -->
-                                @if ($course->instructor->cover)
-                                    <div class="instructor-cover mb-4">
-                                        <img src="{{ $course->instructor->cover_url }}"
-                                            alt="{{ $course->instructor->name }} Cover" class="img-fluid rounded">
-                                    </div>
+                            <h4 class="fw-bold mb-4">
+                                @if ($course->instructors && $course->instructors->count() > 1)
+                                    About Instructors
+                                @else
+                                    About Instructor
                                 @endif
-
+                            </h4>
+                            @if ($course->instructors && $course->instructors->count() > 0)
+                                @foreach ($course->instructors as $instructor)
+                                    <div
+                                        class="row align-items-center g-4 {{ !$loop->last ? 'mb-4 pb-4 border-bottom' : '' }}">
+                                        <div class="col-auto">
+                                            @if ($instructor->avatar)
+                                                <img src="{{ asset('storage/' . $instructor->avatar) }}"
+                                                    alt="{{ $instructor->name }}" class="rounded-circle instructor-img">
+                                            @else
+                                                <div
+                                                    class="rounded-circle instructor-img bg-primary text-white d-flex align-items-center justify-content-center">
+                                                    <i class="fas fa-user fa-2x"></i>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <div class="col">
+                                            <div class="fw-bold fs-5 mb-1 text-primary">
+                                                {{ $instructor->name ?? 'Not Found' }}</div>
+                                            <div class="text-muted mb-2 instructor-subtitle">
+                                                {{ $instructor->title ?? 'Instructor' }}</div>
+                                            <div class="text-muted instructor-desc">
+                                                {{ $instructor->bio ?? 'No bio available' }}</div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @elseif($course->instructor)
+                                <!-- Fallback to legacy single instructor -->
                                 <div class="row align-items-center g-4">
                                     <div class="col-auto">
                                         @if ($course->instructor->avatar)
@@ -206,7 +233,7 @@
                             @else
                                 <div class="text-center text-muted py-4">
                                     <i class="fas fa-user-tie fa-2x mb-2"></i>
-                                    <p class="mb-0">Not Found</p>
+                                    <p class="mb-0">No instructor assigned</p>
                                 </div>
                             @endif
                         </section>
@@ -290,10 +317,11 @@
                             <li class="list-group-item d-flex align-items-center justify-content-between">
                                 <span class="fs-5 text-orange fw-bold">
                                     @if ($course->price > 0)
-                                        ₹{{ number_format($course->price, 2) }}
+                                        {{ number_format($course->price, 2) }} SAR
                                         @if ($course->original_price > $course->price)
                                             <span
-                                                class="fs-6 text-decoration-line-through text-muted ms-2">₹{{ number_format($course->original_price, 2) }}</span>
+                                                class="fs-6 text-decoration-line-through text-muted ms-2">{{ number_format($course->original_price, 2) }}
+                                                SAR</span>
                                         @endif
                                     @else
                                         {{ custom_trans('free') }}

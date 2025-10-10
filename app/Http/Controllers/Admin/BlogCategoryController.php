@@ -57,7 +57,9 @@ class BlogCategoryController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|max:255|unique:blog_categories,name',
+            'name_ar' => 'nullable|string|max:255',
             'description' => 'nullable|string',
+            'description_ar' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'status' => 'required|in:active,inactive',
             'order' => 'nullable|integer|min:0',
@@ -95,7 +97,9 @@ class BlogCategoryController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|max:255|unique:blog_categories,name,' . $category->id,
+            'name_ar' => 'nullable|string|max:255',
             'description' => 'nullable|string',
+            'description_ar' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'status' => 'required|in:active,inactive',
             'order' => 'nullable|integer|min:0',

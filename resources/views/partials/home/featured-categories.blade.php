@@ -15,7 +15,8 @@
                         <div class="category-card h-100">
                             <div class="category-img-wrap">
                                 @if ($category->image)
-                                    <img src="{{ $category->image_url }}" alt="{{ $category->name }}"
+                                    <img src="{{ $category->image_url }}"
+                                        alt="{{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}"
                                         class="category-img">
                                 @else
                                     <div class="category-placeholder">
@@ -25,7 +26,7 @@
                             </div>
                             <div class="category-label">
                                 <i class="fas fa-folder me-2"></i>
-                                {{ $category->name }}
+                                {{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}
                             </div>
                             <div class="category-hover-text">{{ $category->courses_count }} courses</div>
                         </div>

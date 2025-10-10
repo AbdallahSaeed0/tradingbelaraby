@@ -83,3 +83,9 @@
     background: url("https://eclass.mediacity.co.in/demo2/public/frontcss/img/bg/blog_bg.png")
         center center/cover no-repeat !important;
 }
+
+/* Hover effects */
+.hover-primary:hover {
+    color: #667eea !important;
+    transition: color 0.3s ease !important;
+}

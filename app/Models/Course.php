@@ -119,11 +119,20 @@ class Course extends Model
     }
 
     /**
-     * Get the instructor that owns the course
+     * Get the instructor that owns the course (legacy - single instructor)
      */
     public function instructor(): BelongsTo
     {
         return $this->belongsTo(Admin::class, 'instructor_id');
+    }
+
+    /**
+     * Get the instructors for the course (many-to-many)
+     */
+    public function instructors()
+    {
+        return $this->belongsToMany(Admin::class, 'course_instructor', 'course_id', 'instructor_id')
+                    ->withTimestamps();
     }
 
     /**
@@ -383,7 +392,11 @@ class Course extends Model
      */
     public function getFormattedPriceAttribute(): string
     {
-        return $this->is_free ? 'Free' : '$' . number_format($this->price, 2);
+        if ($this->is_free) {
+            return 'Free';
+        }
+        $currency = config('app.currency', 'SAR');
+        return number_format($this->price, 2) . ' ' . $currency;
     }
 
     /**
@@ -391,7 +404,11 @@ class Course extends Model
      */
     public function getFormattedOriginalPriceAttribute(): ?string
     {
-        return $this->original_price ? '$' . number_format($this->original_price, 2) : null;
+        if (!$this->original_price) {
+            return null;
+        }
+        $currency = config('app.currency', 'SAR');
+        return number_format($this->original_price, 2) . ' ' . $currency;
     }
 
     /**

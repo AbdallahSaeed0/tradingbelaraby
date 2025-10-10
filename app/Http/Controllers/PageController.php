@@ -22,7 +22,7 @@ class PageController extends Controller
         }
 
         // Get courses based on selection
-        $coursesQuery = \App\Models\Course::with(['category', 'instructor'])
+        $coursesQuery = \App\Models\Course::with(['category', 'instructor', 'instructors'])
             ->published();
 
         if ($selectedCategory) {

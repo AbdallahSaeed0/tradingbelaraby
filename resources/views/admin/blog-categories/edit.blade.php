@@ -25,23 +25,28 @@
                             <div class="row">
                                 <div class="col-md-8">
                                     <div class="mb-3">
-                                        <label for="name" class="form-label">Name <span
-                                                class="text-danger">*</span></label>
-                                        <input type="text" name="name" id="name"
-                                            class="form-control @error('name') is-invalid @enderror"
-                                            value="{{ old('name', $category->name) }}" required>
-                                        @error('name')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                        @include('admin.courses.partials.multilingual-fields', [
+                                            'fieldName' => 'name',
+                                            'label' => 'Category Name',
+                                            'type' => 'input',
+                                            'required' => true,
+                                            'placeholder' => 'Enter category name',
+                                            'value' => old('name', $category->name),
+                                            'valueAr' => old('name_ar', $category->name_ar),
+                                        ])
                                     </div>
 
                                     <div class="mb-3">
-                                        <label for="description" class="form-label">Description</label>
-                                        <textarea name="description" id="description" rows="4"
-                                            class="form-control @error('description') is-invalid @enderror" placeholder="Enter category description...">{{ old('description', $category->description) }}</textarea>
-                                        @error('description')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                        @include('admin.courses.partials.multilingual-fields', [
+                                            'fieldName' => 'description',
+                                            'label' => 'Description',
+                                            'type' => 'textarea',
+                                            'required' => false,
+                                            'rows' => 4,
+                                            'placeholder' => 'Enter category description',
+                                            'value' => old('description', $category->description),
+                                            'valueAr' => old('description_ar', $category->description_ar),
+                                        ])
                                     </div>
 
                                     <div class="mb-3">

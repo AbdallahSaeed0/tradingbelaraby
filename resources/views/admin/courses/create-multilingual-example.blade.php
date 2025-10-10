@@ -155,7 +155,7 @@
 
                             <!-- Price and Duration -->
                             <div class="col-md-6 mb-3">
-                                <label for="price" class="form-label">Price ($)</label>
+                                <label for="price" class="form-label">Price (SAR)</label>
                                 <input type="number" class="form-control @error('price') is-invalid @enderror"
                                     id="price" name="price" step="0.01" min="0"
                                     value="{{ old('price', 0) }}" required>
@@ -355,7 +355,7 @@
 
             function addFaqItem(lang) {
                 const container = document.getElementById(
-                `faqItems${lang.charAt(0).toUpperCase() + lang.slice(1)}`);
+                    `faqItems${lang.charAt(0).toUpperCase() + lang.slice(1)}`);
                 const index = faqItemCounter[lang]++;
 
                 const itemDiv = document.createElement('div');

@@ -18,7 +18,8 @@ class CoursesController extends Controller
     public function index(Request $request)
     {
         // Get courses with filters
-        $query = Course::with(['category', 'instructor']);
+        $query = Course::with(['category', 'instructor', 'instructors', 'enrollments'])
+                       ->withCount('enrollments');
 
         // Filter by instructor permissions
         $admin = auth('admin')->user();
@@ -102,7 +103,9 @@ class CoursesController extends Controller
             'description' => 'required|string',
             'description_ar' => 'nullable|string',
             'category_id' => 'required|exists:course_categories,id',
-            'instructor_id' => 'required|exists:admins,id',
+            'instructor_id' => 'nullable|exists:admins,id',
+            'instructor_ids' => 'required|array|min:1',
+            'instructor_ids.*' => 'required|exists:admins,id',
             'price' => 'required|numeric|min:0',
             'duration' => 'nullable|string',
             'status' => 'required|in:draft,published,archived',
@@ -131,6 +134,16 @@ class CoursesController extends Controller
             'sections' => 'nullable|string', // JSON string
             'learn_items' => 'nullable|string', // JSON string
         ]);
+
+        // Set the first instructor as the main instructor_id for legacy compatibility
+        if (!empty($request->instructor_ids)) {
+            $data['instructor_id'] = $request->instructor_ids[0];
+        }
+
+        // If course is free, set price to 0
+        if ($request->has('is_free') && $request->is_free) {
+            $data['price'] = 0;
+        }
 
         // Handle file uploads
         if ($request->hasFile('image')) {
@@ -167,6 +180,11 @@ class CoursesController extends Controller
 
         // Create course
         $course = Course::create($data);
+
+        // Sync instructors (many-to-many relationship)
+        if (!empty($request->instructor_ids)) {
+            $course->instructors()->sync($request->instructor_ids);
+        }
 
         // Handle learning items (what you'll learn)
         if ($request->filled('learn_items')) {
@@ -237,7 +255,7 @@ class CoursesController extends Controller
 
     public function show(Course $course)
     {
-        $course->load(['category', 'instructor', 'sections.lectures']);
+        $course->load(['category', 'instructor', 'sections.lectures', 'enrollments.user']);
 
         // Get course statistics
         $stats = [
@@ -246,9 +264,17 @@ class CoursesController extends Controller
             'total_quizzes' => $course->quizzes()->count(),
             'total_homework' => $course->homework()->count(),
             'total_live_classes' => $course->liveClasses()->count(),
+            'total_enrollments' => $course->enrollments()->count(),
         ];
 
-        return view('admin.courses.show', compact('course', 'stats'));
+        // Get recent activity
+        $recentEnrollments = $course->enrollments()
+            ->with('user')
+            ->latest()
+            ->take(5)
+            ->get();
+
+        return view('admin.courses.show', compact('course', 'stats', 'recentEnrollments'));
     }
 
     public function edit(Course $course)
@@ -257,7 +283,7 @@ class CoursesController extends Controller
         $instructors = Admin::whereHas('adminType', function($query) {
             $query->where('name', 'instructor');
         })->get();
-        $course->load(['category', 'instructor', 'sections.lectures']);
+        $course->load(['category', 'instructor', 'instructors', 'sections.lectures']);
         return view('admin.courses.edit', compact('course', 'categories', 'instructors'));
     }
 
@@ -271,7 +297,9 @@ class CoursesController extends Controller
             'description' => 'required|string',
             'description_ar' => 'nullable|string',
             'category_id' => 'required|exists:course_categories,id',
-            'instructor_id' => 'required|exists:admins,id',
+            'instructor_id' => 'nullable|exists:admins,id',
+            'instructor_ids' => 'required|array|min:1',
+            'instructor_ids.*' => 'required|exists:admins,id',
             'price' => 'required|numeric|min:0',
             'duration' => 'nullable|string',
             'status' => 'required|in:draft,published,archived',
@@ -317,6 +345,16 @@ class CoursesController extends Controller
             'deleted_lectures' => 'nullable|array',
             'deleted_lectures.*' => 'integer|exists:course_lectures,id',
         ]);
+
+        // Set the first instructor as the main instructor_id for legacy compatibility
+        if (!empty($request->instructor_ids)) {
+            $data['instructor_id'] = $request->instructor_ids[0];
+        }
+
+        // If course is free, set price to 0
+        if ($request->has('is_free') && $request->is_free) {
+            $data['price'] = 0;
+        }
 
         // Handle file uploads
         if ($request->hasFile('image')) {
@@ -364,6 +402,10 @@ class CoursesController extends Controller
         // Update course
         $course->update($data);
 
+        // Sync instructors (many-to-many relationship)
+        if (!empty($request->instructor_ids)) {
+            $course->instructors()->sync($request->instructor_ids);
+        }
 
         // Handle learning objectives - they are already processed in the main update above
         // The what_to_learn and what_to_learn_ar arrays are already included in $data and updated
@@ -595,8 +637,76 @@ class CoursesController extends Controller
 
     public function analytics(Course $course)
     {
-        // Analytics logic here
-        return view('admin.courses.analytics', compact('course'));
+        // Get comprehensive analytics data
+        $totalEnrollments = $course->enrollments()->count();
+
+        $analytics = [
+            // Basic metrics
+            'total_enrollments' => $totalEnrollments,
+            'active' => $course->enrollments()->where('status', 'active')->count(),
+            'completed' => $course->enrollments()->where('status', 'completed')->count(),
+            'dropped' => $course->enrollments()->where('status', 'dropped')->count(),
+            'not_started' => $course->enrollments()->where('progress_percentage', 0)->count(),
+            'in_progress' => $course->enrollments()->where('progress_percentage', '>', 0)->where('status', '!=', 'completed')->count(),
+            'avg_progress' => round($course->enrollments()->avg('progress_percentage') ?? 0, 1),
+            'avg_rating' => round($course->ratings()->avg('rating') ?? 0, 1),
+            'total_ratings' => $course->ratings()->count(),
+            'completion_rate' => $totalEnrollments > 0
+                ? round(($course->enrollments()->where('status', 'completed')->count() / $totalEnrollments) * 100, 1)
+                : 0,
+
+            // Recent activity
+            'recent_enrollments' => $course->enrollments()->with('user')->latest()->take(5)->get(),
+            'recent_completions' => $course->enrollments()->with('user')->where('status', 'completed')->latest()->take(5)->get(),
+            'recent_ratings' => $course->ratings()->with('user')->latest()->take(5)->get(),
+
+            // Top lectures (mock data for now - requires lecture completion tracking)
+            'top_lectures' => collect(),
+
+            // Student engagement
+            'active_students' => $course->enrollments()->where('last_accessed_at', '>=', now()->subWeek())->count(),
+            'avg_time_spent' => 0, // Would need tracking implementation
+            'quiz_attempts' => $course->quizzes()->withCount('attempts')->get()->sum('attempts_count') ?? 0,
+            'quiz_pass_rate' => 0, // Would need pass/fail tracking
+            'homework_submissions' => $course->homework()->withCount('submissions')->get()->sum('submissions_count') ?? 0,
+            'homework_pass_rate' => 0, // Would need pass/fail tracking
+            'avg_session_duration' => 0, // Would need session tracking
+            'total_watch_time' => 0, // Would need video tracking
+
+            // Course content
+            'total_sections' => $course->sections()->count(),
+            'total_lectures' => $course->sections()->withCount('lectures')->get()->sum('lectures_count'),
+            'total_quizzes' => $course->quizzes()->count(),
+            'total_homework' => $course->homework()->count(),
+            'avg_lecture_completion_rate' => 0, // Would need lecture completion tracking
+
+            // Revenue analytics
+            'total_revenue' => $totalEnrollments * $course->price,
+            'monthly_revenue' => $course->enrollments()->where('created_at', '>=', now()->startOfMonth())->count() * $course->price,
+            'avg_revenue_per_student' => $course->price,
+
+            // Enrollment trends (last 12 months)
+            'enrollment_trends' => $this->getEnrollmentTrends($course),
+        ];
+
+        return view('admin.courses.analytics', compact('course', 'analytics'));
+    }
+
+    /**
+     * Get enrollment trends for the last 12 months
+     */
+    private function getEnrollmentTrends($course)
+    {
+        $trends = [];
+        for ($i = 11; $i >= 0; $i--) {
+            $month = now()->subMonths($i);
+            $count = $course->enrollments()
+                ->whereYear('created_at', $month->year)
+                ->whereMonth('created_at', $month->month)
+                ->count();
+            $trends[] = $count;
+        }
+        return $trends;
     }
 
     public function enrollments(Course $course)

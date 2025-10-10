@@ -25,7 +25,8 @@
                         </span>
                         @if ($blog->category)
                             <span>
-                                <i class="fas fa-folder me-1"></i> {{ $blog->category->name }}
+                                <i class="fas fa-folder me-1"></i>
+                                {{ \App\Helpers\TranslationHelper::getLocalizedContent($blog->category->name, $blog->category->name_ar) }}
                             </span>
                         @endif
                     </div>
@@ -93,7 +94,8 @@
                                 </span>
                                 @if ($blog->category)
                                     <span class="text-muted">
-                                        <i class="fas fa-folder me-1"></i> {{ $blog->category->name }}
+                                        <i class="fas fa-folder me-1"></i>
+                                        {{ \App\Helpers\TranslationHelper::getLocalizedContent($blog->category->name, $blog->category->name_ar) }}
                                     </span>
                                 @endif
                             </div>
@@ -163,7 +165,7 @@
                                         @foreach ($categories as $category)
                                             <a href="{{ route('blog.index', ['category' => $category->slug]) }}"
                                                 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                                                {{ $category->name }}
+                                                {{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}
                                                 <span
                                                     class="badge bg-primary rounded-pill">{{ $category->blogs_count }}</span>
                                             </a>

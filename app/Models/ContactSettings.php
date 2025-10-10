@@ -21,6 +21,8 @@ class ContactSettings extends Model
         'social_twitter',
         'social_youtube',
         'social_linkedin',
+        'social_snapchat',
+        'social_tiktok',
         'is_active'
     ];
 
@@ -65,6 +67,8 @@ class ContactSettings extends Model
             'twitter' => $this->social_twitter,
             'youtube' => $this->social_youtube,
             'linkedin' => $this->social_linkedin,
+            'snapchat' => $this->social_snapchat,
+            'tiktok' => $this->social_tiktok,
         ];
     }
 

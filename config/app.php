@@ -87,6 +87,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Application Currency
+    |--------------------------------------------------------------------------
+    |
+    | This value determines the default currency used throughout the application
+    | for displaying prices and monetary values.
+    |
+    */
+
+    'currency' => env('APP_CURRENCY', 'SAR'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Locale Configuration
     |--------------------------------------------------------------------------
     |

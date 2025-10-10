@@ -23,7 +23,7 @@ class StudentController extends Controller
 
         // Get user's enrollments with course details
         $enrollments = $user->enrollments()
-            ->with(['course.instructor', 'course.category'])
+            ->with(['course.instructor', 'course.instructors', 'course.category'])
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -56,7 +56,7 @@ class StudentController extends Controller
         $user = Auth::user();
 
         $query = $user->enrollments()
-            ->with(['course.instructor', 'course.category']);
+            ->with(['course.instructor', 'course.instructors', 'course.category']);
 
         // Apply filters
         if ($request->filled('status')) {
@@ -115,7 +115,7 @@ class StudentController extends Controller
         $user = Auth::user();
 
         $enrollment = $user->enrollments()
-            ->with(['course.sections.lectures', 'course.instructor'])
+            ->with(['course.sections.lectures', 'course.instructor', 'course.instructors'])
             ->where('course_id', $courseId)
             ->firstOrFail();
 

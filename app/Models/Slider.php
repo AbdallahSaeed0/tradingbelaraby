@@ -17,6 +17,7 @@ class Slider extends Model
         'welcome_text_ar',
         'subtitle',
         'subtitle_ar',
+        'text_position',
         'background_image',
         'button_text',
         'button_text_ar',

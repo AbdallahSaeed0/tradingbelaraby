@@ -13,7 +13,9 @@
                                 class="text-decoration-none">{{ custom_trans('home') }}</a></li>
                         <li class="breadcrumb-item"><a href="{{ route('categories') }}"
                                 class="text-decoration-none">{{ custom_trans('categories') }}</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">{{ $selectedCategory->name }}</li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            {{ \App\Helpers\TranslationHelper::getLocalizedContent($selectedCategory->name, $selectedCategory->name_ar) }}
+                        </li>
                     </ol>
                 </nav>
             </div>
@@ -28,7 +30,7 @@
         <div class="container position-relative z-3 text-center">
             <h1 class="display-3 fw-bold text-white mb-3">
                 @if ($selectedCategory)
-                    {{ $selectedCategory->name }}
+                    {{ \App\Helpers\TranslationHelper::getLocalizedContent($selectedCategory->name, $selectedCategory->name_ar) }}
                 @else
                     {{ custom_trans('explore_categories') }}
                 @endif
@@ -46,7 +48,8 @@
                         <a href="{{ route('categories') }}?category={{ $category->slug }}"
                             class="btn {{ $selectedCategory && $selectedCategory->id == $category->id ? 'btn-primary' : 'btn-light' }} w-100 py-4 shadow-sm d-flex flex-column align-items-center justify-content-center subcat-btn text-decoration-none">
                             <i class="fas fa-graduation-cap me-2 mb-2" style="font-size: 2rem;"></i>
-                            <span class="fw-semibold">{{ $category->name }}</span>
+                            <span
+                                class="fw-semibold">{{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}</span>
                         </a>
                     </div>
                 @empty
@@ -65,7 +68,8 @@
                 <div class="col-12 mb-4 d-flex flex-wrap align-items-center justify-content-between">
                     <h2 class="fw-bold mb-3 mb-md-0">
                         @if ($selectedCategory)
-                            {{ $selectedCategory->name }} {{ custom_trans('courses') }}
+                            {{ \App\Helpers\TranslationHelper::getLocalizedContent($selectedCategory->name, $selectedCategory->name_ar) }}
+                            {{ custom_trans('courses') }}
                         @else
                             {{ custom_trans('featured_courses') }}
                         @endif
@@ -95,7 +99,7 @@
                             </li>
                             @foreach ($categories as $category)
                                 <li><a href="{{ route('categories') }}?category={{ $category->slug }}"
-                                        class="filter-link {{ $selectedCategory && $selectedCategory->id == $category->id ? 'fw-bold text-primary' : '' }}">{{ $category->name }}
+                                        class="filter-link {{ $selectedCategory && $selectedCategory->id == $category->id ? 'fw-bold text-primary' : '' }}">{{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}
                                     </a></li>
                             @endforeach
                         </ul>

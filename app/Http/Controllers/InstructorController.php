@@ -16,10 +16,15 @@ class InstructorController extends Controller
             $query->where('name', 'instructor');
         })
         ->where('is_active', true)
-        ->with(['courses' => function($query) {
-            $query->where('status', 'published');
-        }])
         ->findOrFail($id);
+
+        // Load courses from both legacy relationship and many-to-many
+        $legacyCourses = $instructor->courses()->where('status', 'published')->with('instructors')->get();
+        $assignedCourses = $instructor->coursesAssigned()->where('status', 'published')->with('instructors')->get();
+
+        // Merge and remove duplicates
+        $allCourses = $legacyCourses->merge($assignedCourses)->unique('id');
+        $instructor->setRelation('courses', $allCourses);
 
         return view('instructor.show', compact('instructor'));
     }

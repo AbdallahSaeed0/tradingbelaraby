@@ -101,6 +101,75 @@
         .multilingual-field input[dir="rtl"] {
             text-align: right;
         }
+
+        /* Instructor Selector Styles */
+        .instructor-selector .selected-instructors {
+            display: none;
+        }
+
+        .instructor-selector .selected-instructors.has-instructors {
+            display: block;
+            margin-bottom: 0.5rem;
+            padding: 0.75rem;
+            background: #f8f9fa;
+            border-radius: 0.375rem;
+            border: 1px solid #dee2e6;
+        }
+
+        .instructor-tag {
+            display: inline-flex;
+            align-items: center;
+            background: #007bff;
+            color: white;
+            padding: 0.375rem 0.75rem;
+            border-radius: 1.5rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .instructor-tag:hover {
+            background: #0056b3;
+        }
+
+        .instructor-tag .remove-instructor {
+            margin-left: 0.5rem;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .instructor-tag .remove-instructor:hover {
+            opacity: 1;
+        }
+
+        .instructor-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #007bff;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .instructor-option {
+            cursor: pointer;
+        }
+
+        .instructor-option:hover {
+            background-color: #f8f9fa;
+        }
+
+        .instructor-option.selected {
+            background-color: #e3f2fd;
+            pointer-events: none;
+            opacity: 0.6;
+        }
     </style>
 @endpush
 
@@ -172,17 +241,55 @@
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="instructor" class="form-label">Instructor <span
+                                <label for="instructors" class="form-label">Instructors <span
                                         class="text-danger">*</span></label>
-                                <select class="form-select" id="instructor" name="instructor_id" required>
-                                    <option value="">Select Instructor</option>
-                                    @foreach ($instructors as $instructor)
-                                        <option value="{{ $instructor->id }}">{{ $instructor->name }}</option>
-                                    @endforeach
-                                </select>
+                                <div class="instructor-selector">
+                                    <div class="selected-instructors mb-2" id="selectedInstructors">
+                                        <!-- Selected instructors will appear here as tags -->
+                                    </div>
+                                    <div class="dropdown w-100">
+                                        <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start"
+                                            type="button" id="instructorDropdown" data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                            <i class="fa fa-plus me-2"></i>Add Instructor
+                                        </button>
+                                        <ul class="dropdown-menu w-100" aria-labelledby="instructorDropdown"
+                                            style="max-height: 300px; overflow-y: auto;">
+                                            <li class="px-3 py-2">
+                                                <input type="text" class="form-control form-control-sm"
+                                                    id="instructorSearch" placeholder="Search instructors..."
+                                                    autocomplete="off">
+                                            </li>
+                                            <li>
+                                                <hr class="dropdown-divider">
+                                            </li>
+                                            @foreach ($instructors as $instructor)
+                                                <li>
+                                                    <a class="dropdown-item instructor-option" href="#"
+                                                        data-id="{{ $instructor->id }}" data-name="{{ $instructor->name }}"
+                                                        data-email="{{ $instructor->email ?? '' }}">
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="instructor-avatar me-2">
+                                                                {{ strtoupper(substr($instructor->name, 0, 2)) }}
+                                                            </div>
+                                                            <div>
+                                                                <div class="fw-medium">{{ $instructor->name }}</div>
+                                                                @if ($instructor->email)
+                                                                    <small
+                                                                        class="text-muted">{{ $instructor->email }}</small>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                    <small class="text-muted">Click to add multiple instructors to this course</small>
+                                </div>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="price" class="form-label">Price ($)</label>
+                                <label for="price" class="form-label">Price (SAR)</label>
                                 <input type="number" class="form-control" id="price" name="price" step="0.01"
                                     min="0" value="0" required>
                             </div>
@@ -569,6 +676,128 @@
             // Add initial section
             addSection();
 
+            // Instructor Selector functionality
+            const selectedInstructorsContainer = document.getElementById('selectedInstructors');
+            const selectedInstructors = new Set();
+
+            // Search functionality
+            const instructorSearch = document.getElementById('instructorSearch');
+            if (instructorSearch) {
+                instructorSearch.addEventListener('input', function(e) {
+                    const searchTerm = e.target.value.toLowerCase();
+                    const options = document.querySelectorAll('.instructor-option');
+
+                    options.forEach(option => {
+                        const name = option.dataset.name.toLowerCase();
+                        const email = option.dataset.email.toLowerCase();
+                        const listItem = option.closest('li');
+
+                        if (name.includes(searchTerm) || email.includes(searchTerm)) {
+                            listItem.style.display = '';
+                        } else {
+                            listItem.style.display = 'none';
+                        }
+                    });
+                });
+
+                // Prevent dropdown from closing when clicking search input
+                instructorSearch.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            }
+
+            // Handle instructor selection
+            document.querySelectorAll('.instructor-option').forEach(option => {
+                option.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const id = this.dataset.id;
+                    const name = this.dataset.name;
+
+                    if (!selectedInstructors.has(id)) {
+                        selectedInstructors.add(id);
+                        addInstructorTag(id, name);
+                        this.classList.add('selected');
+                        updateRequiredValidation();
+                    }
+                });
+            });
+
+            function addInstructorTag(id, name) {
+                const tag = document.createElement('div');
+                tag.className = 'instructor-tag';
+                tag.dataset.id = id;
+                tag.innerHTML = `
+                    <span>${name}</span>
+                    <i class="fa fa-times remove-instructor" onclick="removeInstructor(${id})"></i>
+                    <input type="hidden" name="instructor_ids[]" value="${id}">
+                `;
+                selectedInstructorsContainer.appendChild(tag);
+                toggleSelectedContainer();
+            }
+
+            window.removeInstructor = function(id) {
+                const tag = selectedInstructorsContainer.querySelector(`[data-id="${id}"]`);
+                if (tag) {
+                    tag.remove();
+                    selectedInstructors.delete(id.toString());
+
+                    // Re-enable the option in dropdown
+                    const option = document.querySelector(`.instructor-option[data-id="${id}"]`);
+                    if (option) {
+                        option.classList.remove('selected');
+                    }
+
+                    toggleSelectedContainer();
+                    updateRequiredValidation();
+                }
+            };
+
+            function updateRequiredValidation() {
+                const hasInstructors = selectedInstructors.size > 0;
+                const dropdownButton = document.getElementById('instructorDropdown');
+
+                if (!hasInstructors) {
+                    dropdownButton.classList.add('border-danger');
+                } else {
+                    dropdownButton.classList.remove('border-danger');
+                }
+            }
+
+            function toggleSelectedContainer() {
+                if (selectedInstructors.size > 0) {
+                    selectedInstructorsContainer.classList.add('has-instructors');
+                } else {
+                    selectedInstructorsContainer.classList.remove('has-instructors');
+                }
+            }
+
+            // Initialize validation state
+            updateRequiredValidation();
+            toggleSelectedContainer();
+
+            // Free Course functionality
+            const isFreeCheckbox = document.getElementById('is_free');
+            const priceInput = document.getElementById('price');
+
+            function togglePriceInput() {
+                if (isFreeCheckbox.checked) {
+                    priceInput.value = '0';
+                    priceInput.readOnly = true;
+                    priceInput.style.backgroundColor = '#e9ecef';
+                    priceInput.style.cursor = 'not-allowed';
+                } else {
+                    priceInput.readOnly = false;
+                    priceInput.style.backgroundColor = '';
+                    priceInput.style.cursor = '';
+                }
+            }
+
+            // Initialize on page load
+            togglePriceInput();
+
+            // Add event listener for checkbox change
+            isFreeCheckbox.addEventListener('change', togglePriceInput);
+
             // Learning Objectives management
             let learningObjectiveCounter = 0;
 
@@ -744,7 +973,8 @@
                             } else {
                                 showToast('Course created successfully!', 'success');
                                 setTimeout(() => {
-                                    window.location.href = '{{ route('admin.courses.index') }}';
+                                    window.location.href =
+                                        '{{ route('admin.courses.index') }}';
                                 }, 1500);
                             }
                         } else {

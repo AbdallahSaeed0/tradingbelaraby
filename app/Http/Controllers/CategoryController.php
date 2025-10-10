@@ -37,7 +37,7 @@ class CategoryController extends Controller
         $category = CourseCategory::where('slug', $slug)->firstOrFail();
 
         $courses = Course::where('category_id', $category->id)
-            ->with(['instructor', 'category'])
+            ->with(['instructor', 'instructors', 'category'])
             ->withCount('enrollments as enrolled_students')
             ->withAvg('ratings', 'rating')
             ->orderBy('created_at', 'desc')

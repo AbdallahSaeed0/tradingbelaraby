@@ -34,7 +34,9 @@
     <div class="course-content p-4">
         <!-- Course Category -->
         <div class="course-category mb-2">
-            <span class="badge bg-light text-dark">{{ $course->category->name ?? 'Not Found' }}</span>
+            <span class="badge bg-light text-dark">
+                {{ \App\Helpers\TranslationHelper::getLocalizedContent($course->category->name ?? '', $course->category->name_ar ?? '') ?: 'Not Found' }}
+            </span>
         </div>
 
         <!-- Course Title -->
@@ -53,7 +55,16 @@
         <div class="course-meta d-flex justify-content-between align-items-center mb-3">
             <div class="d-flex align-items-center">
                 <i class="fa fa-user text-muted me-1"></i>
-                <small class="text-muted">{{ $course->instructor->name ?? 'Not Found' }}</small>
+                <small class="text-muted">
+                    @if ($course->instructors && $course->instructors->count() > 0)
+                        {{ $course->instructors->pluck('name')->take(2)->join(', ') }}
+                        @if ($course->instructors->count() > 2)
+                            <span>+{{ $course->instructors->count() - 2 }}</span>
+                        @endif
+                    @else
+                        {{ $course->instructor->name ?? 'Not Found' }}
+                    @endif
+                </small>
             </div>
             <div class="d-flex align-items-center">
                 <i class="fa fa-star text-warning me-1"></i>

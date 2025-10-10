@@ -11,8 +11,10 @@
         <div class="container position-relative z-3 text-center">
             <h1 class="display-3 fw-bold text-white mb-3">Blog</h1>
             <div class="d-flex justify-content-center mb-2">
-                <span class="blog-label px-4 py-2 rounded-pill bg-white text-dark fw-semibold shadow">Home &nbsp;|&nbsp;
-                    Blog</span>
+                <span class="blog-label px-4 py-2 rounded-pill bg-white text-dark fw-semibold shadow">
+                    <a href="{{ route('home') }}" class="text-dark text-decoration-none hover-primary">Home</a> &nbsp;|&nbsp;
+                    Blog
+                </span>
             </div>
         </div>
     </section>
@@ -44,7 +46,8 @@
                                         <a href="{{ route('blog.index', ['category' => $category->slug]) }}"
                                             class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {{ request('category') == $category->slug ? 'active' : '' }}">
                                             <span>
-                                                <i class="fas fa-folder me-2"></i>{{ $category->name }}
+                                                <i
+                                                    class="fas fa-folder me-2"></i>{{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}
                                             </span>
                                             <span
                                                 class="badge bg-secondary rounded-pill">{{ $category->blogs_count }}</span>
@@ -140,7 +143,8 @@
                                                 @endif
                                                 @if ($blog->category)
                                                     <span class="ms-2">
-                                                        <i class="fas fa-folder me-1"></i> {{ $blog->category->name }}
+                                                        <i class="fas fa-folder me-1"></i>
+                                                        {{ \App\Helpers\TranslationHelper::getLocalizedContent($blog->category->name, $blog->category->name_ar) }}
                                                     </span>
                                                 @endif
                                             </div>

@@ -27,7 +27,9 @@
                     <li class="breadcrumb-item">
                         <a href="{{ route('categories') }}" class="text-decoration-none">Categories</a>
                     </li>
-                    <li class="breadcrumb-item active" aria-current="page">{{ $category->name }}</li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        {{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}
+                    </li>
                 @elseif(isset($course))
                     <li class="breadcrumb-item">
                         <a href="{{ route('categories') }}" class="text-decoration-none">Courses</a>
@@ -35,7 +37,7 @@
                     @if (isset($course->category))
                         <li class="breadcrumb-item">
                             <a href="{{ route('categories') }}"
-                                class="text-decoration-none">{{ $course->category->name }}</a>
+                                class="text-decoration-none">{{ \App\Helpers\TranslationHelper::getLocalizedContent($course->category->name, $course->category->name_ar) }}</a>
                         </li>
                     @endif
                     <li class="breadcrumb-item active" aria-current="page">{{ $course->name }}</li>

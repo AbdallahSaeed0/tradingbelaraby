@@ -22,7 +22,7 @@ class HomeController extends Controller
         // Fetch featured courses with their relationships
         $featuredCourses = Course::featured()
             ->published()
-            ->with(['category', 'instructor', 'ratings'])
+            ->with(['category', 'instructor', 'instructors', 'ratings'])
             ->withCount(['enrollments', 'ratings'])
             ->orderBy('created_at', 'desc')
             ->limit(8)
@@ -30,7 +30,7 @@ class HomeController extends Controller
 
         // Fetch latest courses
         $latestCourses = Course::published()
-            ->with(['category', 'instructor', 'ratings'])
+            ->with(['category', 'instructor', 'instructors', 'ratings'])
             ->withCount(['enrollments', 'ratings'])
             ->orderBy('created_at', 'desc')
             ->limit(6)
@@ -38,7 +38,7 @@ class HomeController extends Controller
 
         // Fetch popular courses (by enrollment count)
         $popularCourses = Course::published()
-            ->with(['category', 'instructor', 'ratings'])
+            ->with(['category', 'instructor', 'instructors', 'ratings'])
             ->withCount(['enrollments', 'ratings'])
             ->orderBy('enrolled_students', 'desc')
             ->limit(6)

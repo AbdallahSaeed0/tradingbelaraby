@@ -46,7 +46,7 @@
                                     <div class="course-category mb-2">
                                         <span class="badge bg-light text-dark">
                                             <i
-                                                class="fas fa-folder me-1"></i>{{ $course->category->name ?? 'Uncategorized' }}
+                                                class="fas fa-folder me-1"></i>{{ \App\Helpers\TranslationHelper::getLocalizedContent($course->category->name ?? '', $course->category->name_ar ?? '') ?: 'Uncategorized' }}
                                         </span>
                                     </div>
 
@@ -65,7 +65,14 @@
                                         <div class="course-instructor">
                                             <small class="text-muted">
                                                 <i class="fas fa-user me-1"></i>
-                                                {{ $course->instructor->name ?? 'Unknown Instructor' }}
+                                                @if ($course->instructors && $course->instructors->count() > 0)
+                                                    {{ $course->instructors->pluck('name')->take(2)->join(', ') }}
+                                                    @if ($course->instructors->count() > 2)
+                                                        +{{ $course->instructors->count() - 2 }}
+                                                    @endif
+                                                @else
+                                                    {{ $course->instructor->name ?? 'Unknown Instructor' }}
+                                                @endif
                                             </small>
                                         </div>
                                         <div class="course-rating">
@@ -155,7 +162,7 @@
                                     <div class="course-category mb-2">
                                         <span class="badge bg-light text-dark">
                                             <i
-                                                class="fas fa-folder me-1"></i>{{ $course->category->name ?? 'Uncategorized' }}
+                                                class="fas fa-folder me-1"></i>{{ \App\Helpers\TranslationHelper::getLocalizedContent($course->category->name ?? '', $course->category->name_ar ?? '') ?: 'Uncategorized' }}
                                         </span>
                                     </div>
 
@@ -174,7 +181,14 @@
                                         <div class="course-instructor">
                                             <small class="text-muted">
                                                 <i class="fas fa-user me-1"></i>
-                                                {{ $course->instructor->name ?? 'Unknown Instructor' }}
+                                                @if ($course->instructors && $course->instructors->count() > 0)
+                                                    {{ $course->instructors->pluck('name')->take(2)->join(', ') }}
+                                                    @if ($course->instructors->count() > 2)
+                                                        +{{ $course->instructors->count() - 2 }}
+                                                    @endif
+                                                @else
+                                                    {{ $course->instructor->name ?? 'Unknown Instructor' }}
+                                                @endif
                                             </small>
                                         </div>
                                         <div class="course-rating">

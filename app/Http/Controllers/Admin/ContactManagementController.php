@@ -43,6 +43,8 @@ class ContactManagementController extends Controller
             'social_twitter' => 'nullable|url|max:255',
             'social_youtube' => 'nullable|url|max:255',
             'social_linkedin' => 'nullable|url|max:255',
+            'social_snapchat' => 'nullable|url|max:255',
+            'social_tiktok' => 'nullable|url|max:255',
             'is_active' => 'nullable|in:0,1',
         ]);
 

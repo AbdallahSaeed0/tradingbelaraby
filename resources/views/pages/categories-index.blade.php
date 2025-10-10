@@ -46,9 +46,11 @@
                                 </div>
                             </div>
                             <div class="card-body d-flex flex-column">
-                                <h5 class="card-title fw-bold mb-3">{{ $category->name }}</h5>
+                                <h5 class="card-title fw-bold mb-3">
+                                    {{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}
+                                </h5>
                                 <p class="card-text text-muted mb-3 flex-grow-1">
-                                    {{ $category->description ?: custom_trans('no_description_available') }}
+                                    {{ \App\Helpers\TranslationHelper::getLocalizedContent($category->description, $category->description_ar) ?: custom_trans('no_description_available') }}
                                 </p>
                                 <div class="d-flex justify-content-end">
                                     <a href="{{ route('categories.show', $category->slug) }}" class="btn btn-primary">

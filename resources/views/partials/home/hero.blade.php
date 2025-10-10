@@ -4,27 +4,58 @@
     <div class="swiper hero-swiper">
         <div class="swiper-wrapper">
             @forelse($sliders as $slider)
+                @php
+                    $position = $slider->text_position ?? 'center-left';
+                    [$vertical, $horizontal] = explode('-', $position);
+
+                    // Map vertical positions
+                    $alignClass = match ($vertical) {
+                        'top' => 'align-items-start',
+                        'center' => 'align-items-center',
+                        'bottom' => 'align-items-end',
+                        default => 'align-items-center',
+                    };
+
+                    // Map horizontal positions
+                    $textAlign = match ($horizontal) {
+                        'left' => 'text-start',
+                        'center' => 'text-center',
+                        'right' => 'text-end',
+                        default => 'text-start',
+                    };
+
+                    // Map justify content
+                    $justifyClass = match ($horizontal) {
+                        'left' => 'justify-content-start',
+                        'center' => 'justify-content-center',
+                        'right' => 'justify-content-end',
+                        default => 'justify-content-start',
+                    };
+                @endphp
                 <!-- Slide {{ $loop->iteration }} -->
                 <div class="swiper-slide hero-slide"
                     style="background-image: url('{{ $slider->background_image_url }}');">
                     <div class="hero-slide-overlay"></div>
-                    <div class="row align-items-center min-vh-75 min-h-520">
-                        <div class="col-lg-12 container col-md-10 mx-auto text-center text-lg-start">
-                            <span
-                                class="hero-welcome d-block mb-2">{{ get_current_language_code() === 'ar' && $slider->welcome_text_ar ? $slider->welcome_text_ar : $slider->welcome_text }}
-                                <span class="hero-underline"></span></span>
-                            <h1 class="fw-bold mb-3">
-                                {{ get_current_language_code() === 'ar' && $slider->title_ar ? $slider->title_ar : $slider->title }}
-                            </h1>
-                            <p class="hero-sub mb-4">
-                                {{ get_current_language_code() === 'ar' && $slider->subtitle_ar ? $slider->subtitle_ar : $slider->subtitle }}
-                            </p>
-                            <form class="search-box search-box-colored d-flex mx-auto mx-lg-0 max-w-480">
-                                <input type="text" class="form-control rounded-start-pill"
-                                    placeholder="{{ get_current_language_code() === 'ar' && $slider->search_placeholder_ar ? $slider->search_placeholder_ar : $slider->search_placeholder }}">
-                                <button type="submit"
-                                    class="btn btn-primary rounded-end-pill px-4 btn-orange">{{ get_current_language_code() === 'ar' && $slider->button_text_ar ? $slider->button_text_ar : $slider->button_text }}</button>
-                            </form>
+                    <div class="container-fluid h-100">
+                        <div class="row {{ $alignClass }} min-vh-75 min-h-520 {{ $justifyClass }} h-100">
+                            <div class="col-lg-6 col-md-8 col-sm-10 {{ $textAlign }}">
+                                <span
+                                    class="hero-welcome d-block mb-2">{{ get_current_language_code() === 'ar' && $slider->welcome_text_ar ? $slider->welcome_text_ar : $slider->welcome_text }}
+                                    <span class="hero-underline"></span></span>
+                                <h1 class="fw-bold mb-3">
+                                    {{ get_current_language_code() === 'ar' && $slider->title_ar ? $slider->title_ar : $slider->title }}
+                                </h1>
+                                <p class="hero-sub mb-4">
+                                    {{ get_current_language_code() === 'ar' && $slider->subtitle_ar ? $slider->subtitle_ar : $slider->subtitle }}
+                                </p>
+                                <form
+                                    class="search-box search-box-colored d-flex max-w-480 @if ($horizontal == 'center') mx-auto @elseif($horizontal == 'right') ms-auto @endif">
+                                    <input type="text" class="form-control rounded-start-pill"
+                                        placeholder="{{ get_current_language_code() === 'ar' && $slider->search_placeholder_ar ? $slider->search_placeholder_ar : $slider->search_placeholder }}">
+                                    <button type="submit"
+                                        class="btn btn-primary rounded-end-pill px-4 btn-orange">{{ get_current_language_code() === 'ar' && $slider->button_text_ar ? $slider->button_text_ar : $slider->button_text }}</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -201,9 +232,28 @@
         z-index: 1;
     }
 
-    .hero-slide .row {
+    .hero-slide .container-fluid {
         position: relative;
         z-index: 2;
+        height: 100%;
+    }
+
+    .hero-slide .row {
+        margin: 0;
+        padding: 2rem;
+    }
+
+    .hero-slide .row.align-items-start {
+        padding-top: 4rem;
+    }
+
+    .hero-slide .row.align-items-end {
+        padding-bottom: 4rem;
+    }
+
+    .hero-slide .row>div {
+        padding-left: 2rem;
+        padding-right: 2rem;
     }
 
     .hero-welcome {
@@ -244,6 +294,7 @@
 
     .search-box-colored {
         max-width: 480px;
+        width: 100%;
     }
 
     .search-box-colored .form-control {
@@ -252,6 +303,7 @@
         font-size: 1rem;
         background: rgba(255, 255, 255, 0.9);
         backdrop-filter: blur(10px);
+        flex: 1;
     }
 
     .search-box-colored .btn-orange {
@@ -260,6 +312,7 @@
         padding: 15px 30px;
         font-weight: 600;
         transition: all 0.3s ease;
+        white-space: nowrap;
     }
 
     .search-box-colored .btn-orange:hover {
@@ -391,14 +444,21 @@
             font-size: 1.2rem;
         }
 
+        .hero-slide .row>div {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
         .search-box-colored {
             flex-direction: column;
+            max-width: 100% !important;
         }
 
         .search-box-colored .form-control,
         .search-box-colored .btn {
             border-radius: 50px;
             margin-bottom: 0.5rem;
+            width: 100%;
         }
 
         .hero-swiper-button-next,

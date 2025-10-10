@@ -35,7 +35,7 @@
                             </li>
                             @foreach ($categories as $category)
                                 <li><a href="{{ route('courses.search', ['q' => $searchQuery, 'category' => $category->id]) }}"
-                                        class="filter-link">{{ $category->name }}
+                                        class="filter-link">{{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}
                                         ({{ $category->courses_count }})
                                     </a></li>
                             @endforeach

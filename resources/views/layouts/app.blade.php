@@ -408,22 +408,42 @@
                     <div class="row">
                         <div class="col-md-4 top-bar-left-colored">
                             <div class="top-bar-left">
-                                <span>Follow us:-</span>
-                                @if ($contactSettings && $contactSettings->social_facebook)
-                                    <a href="{{ $contactSettings->social_facebook }}" target="_blank"><i
-                                            class="fab fa-facebook-f"></i></a>
-                                @endif
-                                @if ($contactSettings && $contactSettings->social_twitter)
-                                    <a href="{{ $contactSettings->social_twitter }}" target="_blank"><i
-                                            class="fab fa-twitter"></i></a>
-                                @endif
-                                @if ($contactSettings && $contactSettings->social_youtube)
-                                    <a href="{{ $contactSettings->social_youtube }}" target="_blank"><i
-                                            class="fab fa-youtube"></i></a>
-                                @endif
-                                @if ($contactSettings && $contactSettings->social_linkedin)
-                                    <a href="{{ $contactSettings->social_linkedin }}" target="_blank"><i
-                                            class="fab fa-linkedin-in"></i></a>
+                                @php
+                                    $hasSocialLinks =
+                                        $contactSettings &&
+                                        ($contactSettings->social_facebook ||
+                                            $contactSettings->social_twitter ||
+                                            $contactSettings->social_youtube ||
+                                            $contactSettings->social_linkedin ||
+                                            $contactSettings->social_snapchat ||
+                                            $contactSettings->social_tiktok);
+                                @endphp
+                                @if ($hasSocialLinks)
+                                    <span>Follow us:-</span>
+                                    @if ($contactSettings->social_facebook)
+                                        <a href="{{ $contactSettings->social_facebook }}" target="_blank"><i
+                                                class="fab fa-facebook-f"></i></a>
+                                    @endif
+                                    @if ($contactSettings->social_twitter)
+                                        <a href="{{ $contactSettings->social_twitter }}" target="_blank"><i
+                                                class="fab fa-twitter"></i></a>
+                                    @endif
+                                    @if ($contactSettings->social_youtube)
+                                        <a href="{{ $contactSettings->social_youtube }}" target="_blank"><i
+                                                class="fab fa-youtube"></i></a>
+                                    @endif
+                                    @if ($contactSettings->social_linkedin)
+                                        <a href="{{ $contactSettings->social_linkedin }}" target="_blank"><i
+                                                class="fab fa-linkedin-in"></i></a>
+                                    @endif
+                                    @if ($contactSettings->social_snapchat)
+                                        <a href="{{ $contactSettings->social_snapchat }}" target="_blank"><i
+                                                class="fab fa-snapchat"></i></a>
+                                    @endif
+                                    @if ($contactSettings->social_tiktok)
+                                        <a href="{{ $contactSettings->social_tiktok }}" target="_blank"><i
+                                                class="fab fa-tiktok"></i></a>
+                                    @endif
                                 @endif
                             </div>
                         </div>
@@ -474,7 +494,7 @@
                         <ul class="dropdown-menu">
                             @forelse($navigationCategories as $category)
                                 <li><a
-                                        href="{{ route('categories.show', $category->slug) }}">{{ $category->name }}</a>
+                                        href="{{ route('categories.show', $category->slug) }}">{{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}</a>
                                 </li>
                             @empty
                                 <li><a
@@ -788,24 +808,44 @@
                 <div class="col-md-3 mb-4 mb-md-0">
                     <h4 class="footer-title mb-2">{{ custom_trans('about_us') }}</h4>
                     <div class="footer-title-underline mb-3"></div>
-                    <div class="footer-social mb-3">
-                        @if ($contactSettings && $contactSettings->social_facebook)
-                            <a href="{{ $contactSettings->social_facebook }}" target="_blank"
-                                class="footer-social-icon"><i class="fab fa-facebook-f"></i></a>
-                        @endif
-                        @if ($contactSettings && $contactSettings->social_twitter)
-                            <a href="{{ $contactSettings->social_twitter }}" target="_blank"
-                                class="footer-social-icon"><i class="fab fa-twitter"></i></a>
-                        @endif
-                        @if ($contactSettings && $contactSettings->social_youtube)
-                            <a href="{{ $contactSettings->social_youtube }}" target="_blank"
-                                class="footer-social-icon"><i class="fab fa-youtube"></i></a>
-                        @endif
-                        @if ($contactSettings && $contactSettings->social_linkedin)
-                            <a href="{{ $contactSettings->social_linkedin }}" target="_blank"
-                                class="footer-social-icon"><i class="fab fa-linkedin-in"></i></a>
-                        @endif
-                    </div>
+                    @php
+                        $hasFooterSocialLinks =
+                            $contactSettings &&
+                            ($contactSettings->social_facebook ||
+                                $contactSettings->social_twitter ||
+                                $contactSettings->social_youtube ||
+                                $contactSettings->social_linkedin ||
+                                $contactSettings->social_snapchat ||
+                                $contactSettings->social_tiktok);
+                    @endphp
+                    @if ($hasFooterSocialLinks)
+                        <div class="footer-social mb-3">
+                            @if ($contactSettings->social_facebook)
+                                <a href="{{ $contactSettings->social_facebook }}" target="_blank"
+                                    class="footer-social-icon"><i class="fab fa-facebook-f"></i></a>
+                            @endif
+                            @if ($contactSettings->social_twitter)
+                                <a href="{{ $contactSettings->social_twitter }}" target="_blank"
+                                    class="footer-social-icon"><i class="fab fa-twitter"></i></a>
+                            @endif
+                            @if ($contactSettings->social_youtube)
+                                <a href="{{ $contactSettings->social_youtube }}" target="_blank"
+                                    class="footer-social-icon"><i class="fab fa-youtube"></i></a>
+                            @endif
+                            @if ($contactSettings->social_linkedin)
+                                <a href="{{ $contactSettings->social_linkedin }}" target="_blank"
+                                    class="footer-social-icon"><i class="fab fa-linkedin-in"></i></a>
+                            @endif
+                            @if ($contactSettings->social_snapchat)
+                                <a href="{{ $contactSettings->social_snapchat }}" target="_blank"
+                                    class="footer-social-icon"><i class="fab fa-snapchat"></i></a>
+                            @endif
+                            @if ($contactSettings->social_tiktok)
+                                <a href="{{ $contactSettings->social_tiktok }}" target="_blank"
+                                    class="footer-social-icon"><i class="fab fa-tiktok"></i></a>
+                            @endif
+                        </div>
+                    @endif
                 </div>
                 <!-- Links -->
                 <div class="col-md-2 mb-4 mb-md-0">
@@ -1277,6 +1317,90 @@
     </script>
 
     @stack('scripts')
+
+    <!-- Floating WhatsApp Button -->
+    @php
+        $contactSettings = \App\Models\ContactSettings::getActive();
+        $whatsappPhone =
+            $contactSettings && $contactSettings->phone ? preg_replace('/[^0-9]/', '', $contactSettings->phone) : '';
+    @endphp
+
+    @if ($whatsappPhone)
+        <a href="https://wa.me/{{ $whatsappPhone }}" target="_blank" class="whatsapp-float"
+            title="Chat with us on WhatsApp" aria-label="Chat with us on WhatsApp">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+
+        <style>
+            .whatsapp-float {
+                position: fixed;
+                width: 60px;
+                height: 60px;
+                bottom: 80px;
+                right: 25px;
+                background-color: #25d366;
+                color: #FFF;
+                border-radius: 50px;
+                text-align: center;
+                font-size: 30px;
+                box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+                z-index: 9999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
+                animation: pulse 2s infinite;
+            }
+
+            .whatsapp-float:hover {
+                background-color: #128c7e;
+                color: #FFF;
+                transform: scale(1.1);
+                box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.4);
+            }
+
+            .whatsapp-float i {
+                margin-top: 3px;
+            }
+
+            @keyframes pulse {
+                0% {
+                    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+                }
+
+                50% {
+                    box-shadow: 0 0 0 15px rgba(37, 211, 102, 0);
+                }
+
+                100% {
+                    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+                }
+            }
+
+            /* RTL Support */
+            [dir="rtl"] .whatsapp-float {
+                right: auto;
+                left: 40px;
+            }
+
+            /* Mobile Responsive */
+            @media screen and (max-width: 768px) {
+                .whatsapp-float {
+                    width: 50px;
+                    height: 50px;
+                    bottom: 20px;
+                    right: 20px;
+                    font-size: 26px;
+                }
+
+                [dir="rtl"] .whatsapp-float {
+                    right: auto;
+                    left: 20px;
+                }
+            }
+        </style>
+    @endif
+
 </body>
 
 </html>

@@ -11,7 +11,7 @@ class CourseCategory extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'slug', 'description', 'image', 'is_featured'];
+    protected $fillable = ['name', 'name_ar', 'slug', 'description', 'description_ar', 'image', 'is_featured'];
 
     protected $casts = [
         'is_featured' => 'boolean',

@@ -75,7 +75,7 @@
                                     class="course-img" alt="Sample Course">
                                 <span class="badge badge-green">{{ __('Featured') }}</span>
                                 <span class="price-badge">
-                                    <span class="discounted">$99.99</span>
+                                    <span class="discounted">99.99 SAR</span>
                                 </span>
                                 <img src="https://randomuser.me/api/portraits/men/32.jpg" class="author-avatar"
                                     alt="author">

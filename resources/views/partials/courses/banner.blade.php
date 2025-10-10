@@ -11,7 +11,8 @@
                                 class="text-white text-decoration-none">Courses</a></li>
                         @if (isset($category))
                             <li class="breadcrumb-item"><a href="#"
-                                    class="text-white text-decoration-none">{{ $category->name }}</a></li>
+                                    class="text-white text-decoration-none">{{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}</a>
+                            </li>
                         @endif
                         <li class="breadcrumb-item active" aria-current="page">
                             @if (isset($course))

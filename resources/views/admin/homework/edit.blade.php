@@ -122,16 +122,17 @@
                                 <h5><i class="fa fa-info-circle me-2"></i>Basic Information</h5>
 
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <div class="form-group mb-3">
-                                            <label for="name" class="form-label">Homework Name <span
-                                                    class="text-danger">*</span></label>
-                                            <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                                id="name" name="name" value="{{ old('name', $homework->name) }}"
-                                                required>
-                                            @error('name')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
+                                            @include('admin.courses.partials.multilingual-fields', [
+                                                'fieldName' => 'name',
+                                                'label' => 'Homework Name',
+                                                'type' => 'input',
+                                                'required' => true,
+                                                'placeholder' => 'Enter homework name',
+                                                'value' => old('name', $homework->name),
+                                                'valueAr' => old('name_ar', $homework->name_ar),
+                                            ])
                                         </div>
                                     </div>
 
@@ -194,22 +195,29 @@
                                 </div>
 
                                 <div class="form-group mb-3">
-                                    <label for="description" class="form-label">Description <span
-                                            class="text-danger">*</span></label>
-                                    <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description"
-                                        rows="4" placeholder="Enter homework description...">{{ old('description', $homework->description) }}</textarea>
-                                    @error('description')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    @include('admin.courses.partials.multilingual-fields', [
+                                        'fieldName' => 'description',
+                                        'label' => 'Description',
+                                        'type' => 'textarea',
+                                        'required' => true,
+                                        'rows' => 4,
+                                        'placeholder' => 'Enter homework description...',
+                                        'value' => old('description', $homework->description),
+                                        'valueAr' => old('description_ar', $homework->description_ar),
+                                    ])
                                 </div>
 
                                 <div class="form-group mb-3">
-                                    <label for="instructions" class="form-label">Instructions</label>
-                                    <textarea class="form-control @error('instructions') is-invalid @enderror" id="instructions" name="instructions"
-                                        rows="3" placeholder="Enter instructions for students...">{{ old('instructions', $homework->instructions) }}</textarea>
-                                    @error('instructions')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    @include('admin.courses.partials.multilingual-fields', [
+                                        'fieldName' => 'instructions',
+                                        'label' => 'Instructions',
+                                        'type' => 'textarea',
+                                        'required' => false,
+                                        'rows' => 3,
+                                        'placeholder' => 'Enter instructions for students...',
+                                        'value' => old('instructions', $homework->instructions),
+                                        'valueAr' => old('instructions_ar', $homework->instructions_ar),
+                                    ])
                                 </div>
                             </div>
 
@@ -223,10 +231,9 @@
                                             <label for="max_score" class="form-label">Maximum Score <span
                                                     class="text-danger">*</span></label>
                                             <input type="number"
-                                                class="form-control @error('max_score') is-invalid @enderror"
-                                                id="max_score" name="max_score"
-                                                value="{{ old('max_score', $homework->max_score) }}" min="1"
-                                                max="1000" required>
+                                                class="form-control @error('max_score') is-invalid @enderror" id="max_score"
+                                                name="max_score" value="{{ old('max_score', $homework->max_score) }}"
+                                                min="1" max="1000" required>
                                             @error('max_score')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -253,9 +260,8 @@
                                     <div class="col-md-6">
                                         <div class="form-group mb-3">
                                             <div class="form-check">
-                                                <input type="checkbox" class="form-check-input"
-                                                    id="allow_late_submission" name="allow_late_submission"
-                                                    value="1"
+                                                <input type="checkbox" class="form-check-input" id="allow_late_submission"
+                                                    name="allow_late_submission" value="1"
                                                     {{ old('allow_late_submission', $homework->allow_late_submission) ? 'checked' : '' }}>
                                                 <label class="form-check-label" for="allow_late_submission">Allow Late
                                                     Submission</label>

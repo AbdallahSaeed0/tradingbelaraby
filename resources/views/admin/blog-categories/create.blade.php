@@ -30,93 +30,101 @@
                             @csrf
 
                             <div class="row">
-                                <div class="col-md-8">
+                                <div class="col-md-12">
                                     <div class="mb-3">
-                                        <label for="name" class="form-label">Category Name <span
-                                                class="text-danger">*</span></label>
-                                        <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                            id="name" name="name" value="{{ old('name') }}"
-                                            placeholder="Enter category name" required>
-                                        @error('name')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                        @include('admin.courses.partials.multilingual-fields', [
+                                            'fieldName' => 'name',
+                                            'label' => 'Category Name',
+                                            'type' => 'input',
+                                            'required' => true,
+                                            'placeholder' => 'Enter category name',
+                                            'value' => old('name'),
+                                            'valueAr' => old('name_ar'),
+                                        ])
                                         <div class="form-text">This will be used to generate the URL slug automatically.
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <label for="order" class="form-label">Display Order</label>
-                                        <input type="number" class="form-control @error('order') is-invalid @enderror"
-                                            id="order" name="order" value="{{ old('order', 0) }}" placeholder="0"
-                                            min="0">
-                                        @error('order')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                        <div class="form-text">Lower numbers appear first.</div>
+                                <div class="col-md-8">
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="order" class="form-label">Display Order</label>
+                                            <input type="number" class="form-control @error('order') is-invalid @enderror"
+                                                id="order" name="order" value="{{ old('order', 0) }}" placeholder="0"
+                                                min="0">
+                                            @error('order')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                            <div class="form-text">Lower numbers appear first.</div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="mb-3">
-                                <label for="description" class="form-label">Description</label>
-                                <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description"
-                                    rows="4" placeholder="Enter category description">{{ old('description') }}</textarea>
-                                @error('description')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                                <div class="form-text">A brief description of what this category is about.</div>
-                            </div>
+                                <div class="mb-3">
+                                    @include('admin.courses.partials.multilingual-fields', [
+                                        'fieldName' => 'description',
+                                        'label' => 'Description',
+                                        'type' => 'textarea',
+                                        'required' => false,
+                                        'rows' => 4,
+                                        'placeholder' => 'Enter category description',
+                                        'value' => old('description'),
+                                        'valueAr' => old('description_ar'),
+                                    ])
+                                    <div class="form-text">A brief description of what this category is about.</div>
+                                </div>
 
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="status" class="form-label">Status <span
-                                                class="text-danger">*</span></label>
-                                        <select class="form-select @error('status') is-invalid @enderror" id="status"
-                                            name="status" required>
-                                            <option value="">Select status</option>
-                                            <option value="active" {{ old('status') == 'active' ? 'selected' : '' }}>Active
-                                            </option>
-                                            <option value="inactive" {{ old('status') == 'inactive' ? 'selected' : '' }}>
-                                                Inactive</option>
-                                        </select>
-                                        @error('status')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="status" class="form-label">Status <span
+                                                    class="text-danger">*</span></label>
+                                            <select class="form-select @error('status') is-invalid @enderror" id="status"
+                                                name="status" required>
+                                                <option value="">Select status</option>
+                                                <option value="active" {{ old('status') == 'active' ? 'selected' : '' }}>
+                                                    Active
+                                                </option>
+                                                <option value="inactive"
+                                                    {{ old('status') == 'inactive' ? 'selected' : '' }}>
+                                                    Inactive</option>
+                                            </select>
+                                            @error('status')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="image" class="form-label">Category Image</label>
+                                            <input type="file" class="form-control @error('image') is-invalid @enderror"
+                                                id="image" name="image" accept="image/*">
+                                            @error('image')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                            <div class="form-text">Recommended size: 400x300px. Max size: 2MB.</div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="image" class="form-label">Category Image</label>
-                                        <input type="file" class="form-control @error('image') is-invalid @enderror"
-                                            id="image" name="image" accept="image/*">
-                                        @error('image')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                        <div class="form-text">Recommended size: 400x300px. Max size: 2MB.</div>
+
+                                <div class="mb-3">
+                                    <div id="imagePreview" class="d-none">
+                                        <img id="previewImg" src="" alt="Preview" class="img-thumbnail"
+                                            style="max-width: 200px;">
+                                        <button type="button" class="btn btn-sm btn-outline-danger ms-2" id="removeImage">
+                                            <i class="fas fa-times me-1"></i> Remove
+                                        </button>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="mb-3">
-                                <div id="imagePreview" class="d-none">
-                                    <img id="previewImg" src="" alt="Preview" class="img-thumbnail"
-                                        style="max-width: 200px;">
-                                    <button type="button" class="btn btn-sm btn-outline-danger ms-2" id="removeImage">
-                                        <i class="fas fa-times me-1"></i> Remove
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-1"></i> Create Category
                                     </button>
+                                    <a href="{{ route('admin.blog-categories.index') }}" class="btn btn-secondary">
+                                        <i class="fas fa-times me-1"></i> Cancel
+                                    </a>
                                 </div>
-                            </div>
-
-                            <div class="d-flex gap-2">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save me-1"></i> Create Category
-                                </button>
-                                <a href="{{ route('admin.blog-categories.index') }}" class="btn btn-secondary">
-                                    <i class="fas fa-times me-1"></i> Cancel
-                                </a>
-                            </div>
                         </form>
                     </div>
                 </div>

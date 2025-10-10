@@ -263,6 +263,26 @@
                             </div>
                         </div>
                         <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label for="text_position" class="form-label">{{ __('Text Position') }} *</label>
+                                    <select class="form-select" id="text_position" name="text_position" required>
+                                        <option value="top-left">{{ __('Top Left') }}</option>
+                                        <option value="top-center">{{ __('Top Center') }}</option>
+                                        <option value="top-right">{{ __('Top Right') }}</option>
+                                        <option value="center-left" selected>{{ __('Center Left') }}</option>
+                                        <option value="center-center">{{ __('Center Center') }}</option>
+                                        <option value="center-right">{{ __('Center Right') }}</option>
+                                        <option value="bottom-left">{{ __('Bottom Left') }}</option>
+                                        <option value="bottom-center">{{ __('Bottom Center') }}</option>
+                                        <option value="bottom-right">{{ __('Bottom Right') }}</option>
+                                    </select>
+                                    <small
+                                        class="form-text text-muted">{{ __('Choose where the text will be positioned on the slider') }}</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="button_text" class="form-label">{{ __('Button Text') }}</label>
@@ -398,6 +418,27 @@
                                     <label for="edit_subtitle_ar"
                                         class="form-label">{{ __('Subtitle (Arabic)') }}</label>
                                     <input type="text" class="form-control" id="edit_subtitle_ar" name="subtitle_ar">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label for="edit_text_position" class="form-label">{{ __('Text Position') }}
+                                        *</label>
+                                    <select class="form-select" id="edit_text_position" name="text_position" required>
+                                        <option value="top-left">{{ __('Top Left') }}</option>
+                                        <option value="top-center">{{ __('Top Center') }}</option>
+                                        <option value="top-right">{{ __('Top Right') }}</option>
+                                        <option value="center-left">{{ __('Center Left') }}</option>
+                                        <option value="center-center">{{ __('Center Center') }}</option>
+                                        <option value="center-right">{{ __('Center Right') }}</option>
+                                        <option value="bottom-left">{{ __('Bottom Left') }}</option>
+                                        <option value="bottom-center">{{ __('Bottom Center') }}</option>
+                                        <option value="bottom-right">{{ __('Bottom Right') }}</option>
+                                    </select>
+                                    <small
+                                        class="form-text text-muted">{{ __('Choose where the text will be positioned on the slider') }}</small>
                                 </div>
                             </div>
                         </div>
@@ -993,6 +1034,7 @@
                 $('#edit_welcome_text_ar').val(slider.welcome_text_ar);
                 $('#edit_subtitle').val(slider.subtitle);
                 $('#edit_subtitle_ar').val(slider.subtitle_ar);
+                $('#edit_text_position').val(slider.text_position || 'center-left');
                 $('#edit_button_text').val(slider.button_text);
                 $('#edit_button_text_ar').val(slider.button_text_ar);
                 $('#edit_button_url').val(slider.button_url);

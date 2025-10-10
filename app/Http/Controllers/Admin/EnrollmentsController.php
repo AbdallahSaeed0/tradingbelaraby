@@ -15,7 +15,7 @@ class EnrollmentsController extends Controller
      */
     public function index(Request $request)
     {
-        $query = CourseEnrollment::with(['user', 'course.instructor']);
+        $query = CourseEnrollment::with(['user', 'course.instructor', 'course.instructors']);
 
         // Apply search filter
         if ($request->filled('search')) {
@@ -100,7 +100,7 @@ class EnrollmentsController extends Controller
      */
     public function export(Request $request)
     {
-        $query = CourseEnrollment::with(['user', 'course.instructor']);
+        $query = CourseEnrollment::with(['user', 'course.instructor', 'course.instructors']);
 
         // Apply same filters as index method
         if ($request->filled('search')) {

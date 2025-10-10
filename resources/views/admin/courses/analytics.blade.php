@@ -466,21 +466,22 @@
 
                 <!-- Revenue Analytics -->
                 <div class="analytics-card p-4 mb-4">
-                    <h5 class="mb-3"><i class="fa fa-dollar-sign me-2"></i>Revenue Analytics</h5>
+                    <h5 class="mb-3"><i class="fa fa-money-bill-wave me-2"></i>Revenue Analytics</h5>
                     <div class="text-center">
                         <div class="metric-value h3 text-success">
-                            ${{ number_format($analytics['total_revenue'] ?? 0, 2) }}</div>
+                            {{ number_format($analytics['total_revenue'] ?? 0, 2) }} SAR</div>
                         <div class="metric-label">Total Revenue</div>
                     </div>
                     <hr>
                     <div class="row text-center">
                         <div class="col-6">
-                            <div class="metric-value h5">${{ number_format($analytics['monthly_revenue'] ?? 0, 2) }}</div>
+                            <div class="metric-value h5">{{ number_format($analytics['monthly_revenue'] ?? 0, 2) }} SAR
+                            </div>
                             <div class="metric-label small">This Month</div>
                         </div>
                         <div class="col-6">
                             <div class="metric-value h5">
-                                ${{ number_format($analytics['avg_revenue_per_student'] ?? 0, 2) }}</div>
+                                {{ number_format($analytics['avg_revenue_per_student'] ?? 0, 2) }} SAR</div>
                             <div class="metric-label small">Per Student</div>
                         </div>
                     </div>

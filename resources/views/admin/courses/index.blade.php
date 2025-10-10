@@ -296,21 +296,35 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <div class="d-flex align-items-center">
-                                            @if ($course->instructor && $course->instructor->avatar)
-                                                <img src="{{ asset('storage/' . $course->instructor->avatar) }}"
-                                                    class="rounded-circle me-2" width="24" height="24">
-                                            @else
-                                                <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center me-2"
-                                                    style="width: 24px; height: 24px; font-size: 10px;">
-                                                    {{ $course->instructor ? strtoupper(substr($course->instructor->name, 0, 2)) : 'NA' }}
-                                                </div>
+                                        @if ($course->instructors->count() > 0)
+                                            @foreach ($course->instructors as $index => $instructor)
+                                                @if ($index < 2)
+                                                    <div class="d-flex align-items-center {{ $index > 0 ? 'mt-1' : '' }}">
+                                                        @if ($instructor->avatar)
+                                                            <img src="{{ asset('storage/' . $instructor->avatar) }}"
+                                                                class="rounded-circle me-2" width="24"
+                                                                height="24">
+                                                        @else
+                                                            <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center me-2"
+                                                                style="width: 24px; height: 24px; font-size: 10px;">
+                                                                {{ strtoupper(substr($instructor->name, 0, 2)) }}
+                                                            </div>
+                                                        @endif
+                                                        <span class="small">{{ $instructor->name }}</span>
+                                                    </div>
+                                                @endif
+                                            @endforeach
+                                            @if ($course->instructors->count() > 2)
+                                                <small class="text-muted">+{{ $course->instructors->count() - 2 }}
+                                                    more</small>
                                             @endif
-                                            <span>{{ $course->instructor->name ?? 'Not Found' }}</span>
-                                        </div>
+                                        @else
+                                            <span class="text-muted">No instructor</span>
+                                        @endif
                                     </td>
                                     <td>
-                                        <span class="fw-bold">{{ $course->enrolled_students }}</span>
+                                        <span
+                                            class="fw-bold">{{ $course->enrollments_count ?? $course->enrollments->count() }}</span>
                                         <small class="text-muted d-block">enrolled</small>
                                     </td>
                                     <td>
@@ -445,7 +459,15 @@
 
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <small class="text-muted">
-                                            <i class="fa fa-user me-1"></i>{{ $course->instructor->name ?? 'Not Found' }}
+                                            <i class="fa fa-user me-1"></i>
+                                            @if ($course->instructors->count() > 0)
+                                                {{ $course->instructors->pluck('name')->take(2)->join(', ') }}
+                                                @if ($course->instructors->count() > 2)
+                                                    <span>+{{ $course->instructors->count() - 2 }}</span>
+                                                @endif
+                                            @else
+                                                No instructor
+                                            @endif
                                         </small>
                                         <small class="text-muted">
                                             <i class="fa fa-users me-1"></i>{{ $course->enrollments->count() }} students
@@ -453,7 +475,8 @@
                                     </div>
 
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <span class="fw-bold text-primary">${{ $course->price }}</span>
+                                        <span class="fw-bold text-primary">{{ number_format($course->price, 2) }}
+                                            SAR</span>
                                         <small class="text-muted">{{ $course->created_at->format('M d, Y') }}</small>
                                     </div>
                                 </div>

@@ -174,7 +174,14 @@
                                 <div class="course-instructor mb-3">
                                     <small class="text-muted">
                                         <i class="fas fa-user me-1"></i>
-                                        {{ $enrollment->course->instructor->name ?? 'Unknown Instructor' }}
+                                        @if ($enrollment->course->instructors && $enrollment->course->instructors->count() > 0)
+                                            {{ $enrollment->course->instructors->pluck('name')->take(2)->join(', ') }}
+                                            @if ($enrollment->course->instructors->count() > 2)
+                                                +{{ $enrollment->course->instructors->count() - 2 }}
+                                            @endif
+                                        @else
+                                            {{ $enrollment->course->instructor->name ?? 'Unknown Instructor' }}
+                                        @endif
                                     </small>
                                 </div>
 

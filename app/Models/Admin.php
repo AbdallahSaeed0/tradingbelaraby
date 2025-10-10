@@ -42,6 +42,15 @@ class Admin extends Authenticatable
         return $this->hasMany(Course::class, 'instructor_id');
     }
 
+    /**
+     * Get courses through many-to-many relationship
+     */
+    public function coursesAssigned()
+    {
+        return $this->belongsToMany(Course::class, 'course_instructor', 'instructor_id', 'course_id')
+                    ->withTimestamps();
+    }
+
     // Accessors
     public function getTypeNameAttribute()
     {

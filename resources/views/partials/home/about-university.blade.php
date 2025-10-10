@@ -22,9 +22,29 @@
                     <h2 class="fw-bold mb-3 fs-25">
                         {{ get_current_language_code() === 'ar' && $aboutUniversity->title_ar ? $aboutUniversity->title_ar : $aboutUniversity->title }}
                     </h2>
-                    <p class="mb-4 text-blue-247">
-                        {{ get_current_language_code() === 'ar' && $aboutUniversity->description_ar ? $aboutUniversity->description_ar : $aboutUniversity->description }}
-                    </p>
+                    @php
+                        $description =
+                            get_current_language_code() === 'ar' && $aboutUniversity->description_ar
+                                ? $aboutUniversity->description_ar
+                                : $aboutUniversity->description;
+                        $descriptionLimit = 200;
+                        $isLongDescription = strlen($description) > $descriptionLimit;
+                        $shortDescription = $isLongDescription
+                            ? substr($description, 0, $descriptionLimit) . '...'
+                            : $description;
+                    @endphp
+                    <div class="about-description-wrapper mb-4">
+                        <p class="text-blue-247 mb-2 about-description" id="aboutDescription">
+                            <span class="short-text">{{ $shortDescription }}</span>
+                            @if ($isLongDescription)
+                                <span class="full-text d-none">{{ $description }}</span>
+                            @endif
+                        </p>
+                        <button class="btn btn-link text-warning p-0 fw-semibold text-decoration-none read-more-btn"
+                            onclick="toggleDescription()" id="readMoreBtn">
+                            <i class="fas fa-arrow-right me-1"></i> {{ __('Read More') }}
+                        </button>
+                    </div>
                     <div class="row g-3">
                         @forelse($features as $feature)
                             <div class="col-sm-6">
@@ -34,8 +54,19 @@
                                         <div class="fw-bold">
                                             {{ get_current_language_code() === 'ar' && $feature->title_ar ? $feature->title_ar : $feature->title }}
                                         </div>
-                                        <div class="text-muted small">
-                                            {{ get_current_language_code() === 'ar' && $feature->description_ar ? $feature->description_ar : $feature->description }}
+                                        @php
+                                            $featureDesc =
+                                                get_current_language_code() === 'ar' && $feature->description_ar
+                                                    ? $feature->description_ar
+                                                    : $feature->description;
+                                            $featureLimit = 80;
+                                            $truncatedFeatureDesc =
+                                                strlen($featureDesc) > $featureLimit
+                                                    ? substr($featureDesc, 0, $featureLimit) . '...'
+                                                    : $featureDesc;
+                                        @endphp
+                                        <div class="text-muted small" title="{{ $featureDesc }}">
+                                            {{ $truncatedFeatureDesc }}
                                         </div>
                                     </div>
                                 </div>
@@ -93,4 +124,46 @@
                 class="about-bg-img d-none d-md-block">
         @endif
     </section>
+
+    <script>
+        function toggleDescription() {
+            const shortText = document.querySelector('#aboutDescription .short-text');
+            const fullText = document.querySelector('#aboutDescription .full-text');
+            const btn = document.getElementById('readMoreBtn');
+
+            if (fullText && shortText) {
+                if (fullText.classList.contains('d-none')) {
+                    // Show full text
+                    shortText.classList.add('d-none');
+                    fullText.classList.remove('d-none');
+                    btn.innerHTML = '<i class="fas fa-arrow-up me-1"></i> {{ __('Read Less') }}';
+                } else {
+                    // Show short text
+                    shortText.classList.remove('d-none');
+                    fullText.classList.add('d-none');
+                    btn.innerHTML = '<i class="fas fa-arrow-right me-1"></i> {{ __('Read More') }}';
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .read-more-btn {
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .read-more-btn:hover {
+            transform: translateX(5px);
+            color: #f89d28 !important;
+        }
+
+        [dir="rtl"] .read-more-btn:hover {
+            transform: translateX(-5px);
+        }
+
+        .about-description {
+            line-height: 1.8;
+        }
+    </style>
 @endif

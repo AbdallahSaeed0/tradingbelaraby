@@ -98,7 +98,7 @@
                                 @if ($course->price == 0)
                                     <span class="badge bg-success">Free</span>
                                 @else
-                                    <span class="badge bg-info">${{ number_format($course->price, 2) }}</span>
+                                    <span class="badge bg-info">{{ number_format($course->price, 2) }} SAR</span>
                                 @endif
                             </div>
                         </div>
@@ -157,7 +157,7 @@
             <div class="col-md-2">
                 <div class="stat-card text-center">
                     <i class="fa fa-users fa-2x text-secondary mb-2"></i>
-                    <h3 class="h4 mb-0">{{ $course->enrolled_students }}</h3>
+                    <h3 class="h4 mb-0">{{ $stats['total_enrollments'] ?? 0 }}</h3>
                     <small class="text-muted">Students</small>
                 </div>
             </div>
@@ -284,8 +284,27 @@
                     <div class="card-body">
                         <div class="row g-3">
                             <div class="col-6">
-                                <label class="form-label text-muted small">Instructor</label>
-                                <div class="fw-medium">{{ $course->instructor->name ?? 'Not assigned' }}</div>
+                                <label class="form-label text-muted small">Instructor(s)</label>
+                                <div class="fw-medium">
+                                    @if ($course->instructors->count() > 0)
+                                        @foreach ($course->instructors as $instructor)
+                                            <div class="d-flex align-items-center mb-1">
+                                                @if ($instructor->avatar)
+                                                    <img src="{{ asset('storage/' . $instructor->avatar) }}"
+                                                        class="rounded-circle me-2" width="20" height="20">
+                                                @else
+                                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-2"
+                                                        style="width: 20px; height: 20px; font-size: 9px;">
+                                                        {{ strtoupper(substr($instructor->name, 0, 2)) }}
+                                                    </div>
+                                                @endif
+                                                <span>{{ $instructor->name }}</span>
+                                            </div>
+                                        @endforeach
+                                    @else
+                                        <span class="text-muted">Not assigned</span>
+                                    @endif
+                                </div>
                             </div>
                             <div class="col-6">
                                 <label class="form-label text-muted small">Duration</label>
@@ -297,7 +316,7 @@
                                     @if ($course->price == 0)
                                         <span class="text-success">Free</span>
                                     @else
-                                        ${{ number_format($course->price, 2) }}
+                                        {{ number_format($course->price, 2) }} SAR
                                     @endif
                                 </div>
                             </div>
@@ -362,33 +381,29 @@
                     </div>
                     <div class="card-body">
                         <div class="list-group list-group-flush">
-                            <div class="list-group-item px-0 py-2">
-                                <div class="d-flex align-items-center">
-                                    <i class="fa fa-user-plus text-success me-2"></i>
-                                    <div class="flex-grow-1">
-                                        <div class="fw-medium">New enrollment</div>
-                                        <small class="text-muted">2 hours ago</small>
+                            @forelse($recentEnrollments as $enrollment)
+                                <div class="list-group-item px-0 py-2">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fa fa-user-plus text-success me-2"></i>
+                                        <div class="flex-grow-1">
+                                            <div class="fw-medium">{{ $enrollment->user->name ?? 'Unknown User' }}
+                                                enrolled</div>
+                                            <small
+                                                class="text-muted">{{ $enrollment->created_at->diffForHumans() }}</small>
+                                        </div>
+                                        @if ($enrollment->status == 'completed')
+                                            <span class="badge bg-success">Completed</span>
+                                        @elseif($enrollment->status == 'active')
+                                            <span class="badge bg-primary">Active</span>
+                                        @endif
                                     </div>
                                 </div>
-                            </div>
-                            <div class="list-group-item px-0 py-2">
-                                <div class="d-flex align-items-center">
-                                    <i class="fa fa-edit text-primary me-2"></i>
-                                    <div class="flex-grow-1">
-                                        <div class="fw-medium">Course updated</div>
-                                        <small class="text-muted">1 day ago</small>
-                                    </div>
+                            @empty
+                                <div class="text-center text-muted py-3">
+                                    <i class="fa fa-clock fa-2x mb-2"></i>
+                                    <p class="mb-0">No recent activity</p>
                                 </div>
-                            </div>
-                            <div class="list-group-item px-0 py-2">
-                                <div class="d-flex align-items-center">
-                                    <i class="fa fa-plus text-info me-2"></i>
-                                    <div class="flex-grow-1">
-                                        <div class="fw-medium">New lecture added</div>
-                                        <small class="text-muted">3 days ago</small>
-                                    </div>
-                                </div>
-                            </div>
+                            @endforelse
                         </div>
                     </div>
                 </div>

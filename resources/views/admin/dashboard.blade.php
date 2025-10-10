@@ -160,7 +160,8 @@
                                                         class="fa fa-calendar me-1"></i>{{ $blog->created_at->format('M d, Y') }}
                                                     @if ($blog->category)
                                                         <span class="ms-2">
-                                                            <i class="fa fa-folder me-1"></i>{{ $blog->category->name }}
+                                                            <i
+                                                                class="fa fa-folder me-1"></i>{{ \App\Helpers\TranslationHelper::getLocalizedContent($blog->category->name, $blog->category->name_ar) }}
                                                         </span>
                                                     @endif
                                                 </small>

@@ -1,13 +1,14 @@
 @extends('layouts.app')
 
-@section('title', (isset($category) ? $category->name : 'Category') . ' - ' .
-    (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site Name'))
+@section('title', (isset($category) ? \App\Helpers\TranslationHelper::getLocalizedContent($category->name,
+    $category->name_ar) : 'Category') . ' - ' . (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site Name'))
 
 @section('content')
     <!-- Category Banner -->
     <section class="category-banner position-relative d-flex align-items-center justify-content-center">
         @if ($category->image)
-            <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}"
+            <img src="{{ asset('storage/' . $category->image) }}"
+                alt="{{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}"
                 class="category-banner-bg position-absolute w-100 h-100 top-0 start-0">
         @else
             <img src="https://eclass.mediacity.co.in/demo2/public/images/breadcum/16953680301690548224bdrc-bg.png"
@@ -15,14 +16,23 @@
         @endif
         <div class="category-banner-overlay position-absolute w-100 h-100 top-0 start-0"></div>
         <div class="container position-relative z-3 text-center">
-            <h1 class="display-3 fw-bold text-white mb-3">{{ $category->name }}</h1>
+            <h1 class="display-3 fw-bold text-white mb-3">
+                {{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}</h1>
             <div class="d-flex justify-content-center mb-2">
                 <span class="category-label px-4 py-2 rounded-pill bg-white text-dark fw-semibold shadow">
+                    <a href="{{ route('home') }}" class="text-dark text-decoration-none hover-primary">Home</a>
+                    &nbsp;|&nbsp;
                     {{ custom_trans('category_detail') }}
                 </span>
             </div>
-            @if ($category->description)
-                <p class="text-white lead mb-0">{{ $category->description }}</p>
+            @php
+                $localizedDescription = \App\Helpers\TranslationHelper::getLocalizedContent(
+                    $category->description,
+                    $category->description_ar,
+                );
+            @endphp
+            @if ($localizedDescription)
+                <p class="text-white lead mb-0">{{ $localizedDescription }}</p>
             @endif
         </div>
     </section>
@@ -36,7 +46,8 @@
                             class="text-decoration-none">{{ custom_trans('home') }}</a></li>
                     <li class="breadcrumb-item"><a href="{{ route('categories.index') }}"
                             class="text-decoration-none">{{ custom_trans('categories') }}</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">{{ $category->name }}</li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        {{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}</li>
                 </ol>
             </nav>
         </div>
@@ -118,7 +129,9 @@
                     <!-- Header with Sort Options -->
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <div>
-                            <h4 class="fw-bold mb-1">{{ $category->name }} {{ custom_trans('courses') }}</h4>
+                            <h4 class="fw-bold mb-1">
+                                {{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}
+                                {{ custom_trans('courses') }}</h4>
                             <p class="text-muted mb-0">{{ $courses->total() }} {{ custom_trans('courses_found') }}</p>
                         </div>
                         <div class="d-flex gap-2">
@@ -156,10 +169,11 @@
                                         <div class="position-absolute top-0 end-0 m-2">
                                             @if ($course->price > 0)
                                                 <span
-                                                    class="badge bg-info text-white">{{ number_format($course->price, 2) }}₹</span>
+                                                    class="badge bg-info text-white">{{ number_format($course->price, 2) }}
+                                                    SAR</span>
                                                 @if ($course->original_price > $course->price)
                                                     <small class="text-decoration-line-through text-muted d-block">
-                                                        {{ number_format($course->original_price, 2) }}₹
+                                                        {{ number_format($course->original_price, 2) }} SAR
                                                     </small>
                                                 @endif
                                             @else
@@ -201,8 +215,16 @@
                                         <div class="course-meta d-flex align-items-center mb-3">
                                             <div class="d-flex align-items-center me-3">
                                                 <i class="fas fa-user text-muted me-1"></i>
-                                                <small
-                                                    class="text-muted">{{ $course->instructor->name ?? 'Instructor' }}</small>
+                                                <small class="text-muted">
+                                                    @if ($course->instructors && $course->instructors->count() > 0)
+                                                        {{ $course->instructors->pluck('name')->take(2)->join(', ') }}
+                                                        @if ($course->instructors->count() > 2)
+                                                            +{{ $course->instructors->count() - 2 }}
+                                                        @endif
+                                                    @else
+                                                        {{ $course->instructor->name ?? 'Instructor' }}
+                                                    @endif
+                                                </small>
                                             </div>
                                             <div class="d-flex align-items-center me-3">
                                                 <i class="fas fa-clock text-muted me-1"></i>

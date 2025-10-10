@@ -81,7 +81,13 @@
         <hr class="my-4">
         <div class="row">
             <div class="col-md-3">
-                <h5 class="fw-bold">{{ __('Instructor') }}</h5>
+                <h5 class="fw-bold">
+                    @if ($course->instructors && $course->instructors->count() > 1)
+                        {{ __('Instructors') }}
+                    @else
+                        {{ __('Instructor') }}
+                    @endif
+                </h5>
             </div>
             <div class="col-md-9">
                 @include('courses.partials.course-instructor', ['course' => $course])

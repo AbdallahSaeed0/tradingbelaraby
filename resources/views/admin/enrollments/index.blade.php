@@ -347,8 +347,16 @@
                                     <td>
                                         <div>
                                             <h6 class="mb-0">{{ $enrollment->course->name }}</h6>
-                                            <small
-                                                class="text-muted">{{ $enrollment->course->instructor->name ?? 'N/A' }}</small>
+                                            <small class="text-muted">
+                                                @if ($enrollment->course->instructors && $enrollment->course->instructors->count() > 0)
+                                                    {{ $enrollment->course->instructors->pluck('name')->take(2)->join(', ') }}
+                                                    @if ($enrollment->course->instructors->count() > 2)
+                                                        +{{ $enrollment->course->instructors->count() - 2 }}
+                                                    @endif
+                                                @else
+                                                    {{ $enrollment->course->instructor->name ?? 'N/A' }}
+                                                @endif
+                                            </small>
                                         </div>
                                     </td>
                                     <td>

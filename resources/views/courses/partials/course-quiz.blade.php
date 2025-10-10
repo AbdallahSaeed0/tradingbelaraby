@@ -41,7 +41,7 @@
                                         <span class="feature-label text-muted">{{ __('Quiz Price') }}</span>
                                         <span
                                             class="feature-value fw-bold {{ $quiz->price > 0 ? 'text-warning' : 'text-success' }}">
-                                            {{ $quiz->price > 0 ? '$' . number_format($quiz->price, 2) : __('Free') }}
+                                            {{ $quiz->price > 0 ? number_format($quiz->price, 2) . ' SAR' : __('Free') }}
                                         </span>
                                     </div>
                                 </div>

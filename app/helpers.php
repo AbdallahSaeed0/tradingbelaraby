@@ -17,9 +17,10 @@ if (!function_exists('format_currency')) {
     /**
      * Format currency
      */
-    function format_currency($amount, $currency = '$')
+    function format_currency($amount, $currency = null)
     {
-        return $currency . number_format($amount, 2);
+        $currency = $currency ?? config('app.currency', 'SAR');
+        return number_format($amount, 2) . ' ' . $currency;
     }
 }
 

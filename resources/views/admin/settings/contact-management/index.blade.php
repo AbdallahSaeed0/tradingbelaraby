@@ -204,6 +204,25 @@
                                 </div>
                             </div>
 
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="social_snapchat" class="form-label">{{ __('Snapchat URL') }}</label>
+                                        <input type="url" class="form-control" id="social_snapchat"
+                                            name="social_snapchat" value="{{ $contactSettings->social_snapchat ?? '' }}"
+                                            placeholder="https://snapchat.com/...">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="social_tiktok" class="form-label">{{ __('TikTok URL') }}</label>
+                                        <input type="url" class="form-control" id="social_tiktok"
+                                            name="social_tiktok" value="{{ $contactSettings->social_tiktok ?? '' }}"
+                                            placeholder="https://tiktok.com/...">
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="mb-3">
                                 <div class="form-check form-switch">
                                     <input type="hidden" name="is_active" value="0">
