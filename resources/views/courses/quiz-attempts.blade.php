@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Quiz Attempts - ' . $quiz->name)
+@section('title', 'Quiz Attempts - ' . $quiz->localized_name)
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/pages/quiz.css') }}">
@@ -16,7 +16,7 @@
             style="background:rgba(24,49,63,0.65); z-index:2;"></div>
         <div class="container position-relative z-3 text-center">
             <h1 class="display-4 fw-bold text-white mb-3">Quiz Attempts</h1>
-            <p class="text-white mb-3">{{ $quiz->name }}</p>
+            <p class="text-white mb-3">{{ $quiz->localized_name }}</p>
         </div>
     </section>
 

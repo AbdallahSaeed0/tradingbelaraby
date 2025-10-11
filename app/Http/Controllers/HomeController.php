@@ -44,6 +44,42 @@ class HomeController extends Controller
             ->limit(6)
             ->get();
 
+        // Fetch Top Discounted courses
+        $topDiscountedCourses = Course::topDiscounted()
+            ->published()
+            ->with(['category', 'instructor', 'instructors', 'ratings'])
+            ->withCount(['enrollments', 'ratings'])
+            ->orderBy('created_at', 'desc')
+            ->limit(8)
+            ->get();
+
+        // Fetch Subscription Bundles courses
+        $subscriptionBundlesCourses = Course::subscriptionBundles()
+            ->published()
+            ->with(['category', 'instructor', 'instructors', 'ratings'])
+            ->withCount(['enrollments', 'ratings'])
+            ->orderBy('created_at', 'desc')
+            ->limit(8)
+            ->get();
+
+        // Fetch Live Meeting courses
+        $liveMeetingCourses = Course::liveMeeting()
+            ->published()
+            ->with(['category', 'instructor', 'instructors', 'ratings'])
+            ->withCount(['enrollments', 'ratings'])
+            ->orderBy('created_at', 'desc')
+            ->limit(8)
+            ->get();
+
+        // Fetch Recent Courses
+        $recentCoursesSection = Course::recentCourses()
+            ->published()
+            ->with(['category', 'instructor', 'instructors', 'ratings'])
+            ->withCount(['enrollments', 'ratings'])
+            ->orderBy('created_at', 'desc')
+            ->limit(8)
+            ->get();
+
         // Fetch featured categories
         $featuredCategories = CourseCategory::featured()
             ->withCount('courses')
@@ -65,6 +101,10 @@ class HomeController extends Controller
             'featuredCourses',
             'latestCourses',
             'popularCourses',
+            'topDiscountedCourses',
+            'subscriptionBundlesCourses',
+            'liveMeetingCourses',
+            'recentCoursesSection',
             'featuredCategories',
             'allCategories'
         ));

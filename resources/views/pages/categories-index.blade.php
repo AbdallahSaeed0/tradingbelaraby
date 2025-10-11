@@ -46,8 +46,11 @@
                                 </div>
                             </div>
                             <div class="card-body d-flex flex-column">
-                                <h5 class="card-title fw-bold mb-3">
-                                    {{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}
+                                <h5 class="card-title category-title fw-bold mb-3">
+                                    <a href="{{ route('categories.show', $category->slug) }}"
+                                        class="text-decoration-none text-dark">
+                                        {{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}
+                                    </a>
                                 </h5>
                                 <p class="card-text text-muted mb-3 flex-grow-1">
                                     {{ \App\Helpers\TranslationHelper::getLocalizedContent($category->description, $category->description_ar) ?: custom_trans('no_description_available') }}
@@ -106,7 +109,12 @@
                                             <i class="fas fa-graduation-cap fa-2x text-white"></i>
                                         </div>
                                     </div>
-                                    <h5 class="card-title fw-bold mb-2">{{ $category->name }}</h5>
+                                    <h5 class="card-title category-title fw-bold mb-2">
+                                        <a href="{{ route('categories.show', $category->slug) }}"
+                                            class="text-decoration-none text-dark">
+                                            {{ $category->name }}
+                                        </a>
+                                    </h5>
                                     <p class="card-text text-muted small mb-3 flex-grow-1">
                                         {{ Str::limit($category->description, 80) }}</p>
                                     <div class="d-flex justify-content-end">

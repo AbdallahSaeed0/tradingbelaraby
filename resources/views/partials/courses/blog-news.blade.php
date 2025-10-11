@@ -27,7 +27,12 @@
                             <div class="p-4 flex-grow-1 d-flex flex-column">
                                 <div class="mb-2 text-muted small"><i class="fa fa-user me-1"></i> By
                                     {{ $blog->author_name ?? 'Admin' }}</div>
-                                <h5 class="fw-bold mb-2">{{ $blog->getLocalizedTitle() }}</h5>
+                                <h5 class="blog-title fw-bold mb-2">
+                                    <a href="{{ route('blog.show', $blog->slug) }}"
+                                        class="text-decoration-none text-dark">
+                                        {{ $blog->getLocalizedTitle() }}
+                                    </a>
+                                </h5>
                                 <p class="mb-3 text-muted flex-grow-1">
                                     {{ Str::limit($blog->getLocalizedExcerpt() ?: strip_tags($blog->getLocalizedDescription()), 100) }}
                                 </p>

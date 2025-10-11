@@ -28,8 +28,11 @@ class QuizQuestionManagementController extends Controller
         // Base validation
         $validationRules = [
             'question_text' => 'required|string|max:1000',
+            'question_text_ar' => 'nullable|string|max:1000',
             'question_type' => 'required|string|in:multiple_choice,true_false,fill_blank,essay',
             'points' => 'required|integer|min:1',
+            'explanation' => 'nullable|string',
+            'explanation_ar' => 'nullable|string',
         ];
 
         // Type-specific validation
@@ -37,6 +40,8 @@ class QuizQuestionManagementController extends Controller
             case 'multiple_choice':
                 $validationRules['options'] = 'required|array|min:2';
                 $validationRules['options.*'] = 'required|string|max:500';
+                $validationRules['options_ar'] = 'nullable|array';
+                $validationRules['options_ar.*'] = 'nullable|string|max:500';
                 $validationRules['correct_answers'] = 'required|array|min:1';
                 $validationRules['correct_answers.*'] = 'integer|min:0';
                 break;
@@ -48,10 +53,13 @@ class QuizQuestionManagementController extends Controller
             case 'fill_blank':
                 $validationRules['correct_answers_text'] = 'required|array|min:1';
                 $validationRules['correct_answers_text.*'] = 'required|string|max:500';
+                $validationRules['correct_answers_text_ar'] = 'nullable|array';
+                $validationRules['correct_answers_text_ar.*'] = 'nullable|string|max:500';
                 break;
 
             case 'essay':
                 $validationRules['sample_answer'] = 'nullable|string|max:1000';
+                $validationRules['sample_answer_ar'] = 'nullable|string|max:1000';
                 $validationRules['word_limit'] = 'nullable|integer|min:1';
                 break;
         }
@@ -61,16 +69,19 @@ class QuizQuestionManagementController extends Controller
         // Prepare question data
         $questionData = [
             'question_text' => $request->question_text,
+            'question_text_ar' => $request->question_text_ar,
             'question_type' => $questionType,
             'points' => $request->points,
             'order' => $request->order ?? ($quiz->questions()->max('order') + 1),
             'explanation' => $request->explanation,
+            'explanation_ar' => $request->explanation_ar,
         ];
 
         // Add type-specific data
         switch ($questionType) {
             case 'multiple_choice':
                 $questionData['options'] = $request->options;
+                $questionData['options_ar'] = $request->options_ar;
                 $questionData['correct_answers'] = $request->correct_answers;
                 break;
 
@@ -80,10 +91,12 @@ class QuizQuestionManagementController extends Controller
 
             case 'fill_blank':
                 $questionData['correct_answers_text'] = $request->correct_answers_text;
+                $questionData['correct_answers_text_ar'] = $request->correct_answers_text_ar;
                 break;
 
             case 'essay':
                 $questionData['sample_answer'] = $request->sample_answer;
+                $questionData['sample_answer_ar'] = $request->sample_answer_ar;
                 $questionData['word_limit'] = $request->word_limit;
                 break;
         }
@@ -135,8 +148,11 @@ class QuizQuestionManagementController extends Controller
         // Base validation
         $validationRules = [
             'question_text' => 'required|string|max:1000',
+            'question_text_ar' => 'nullable|string|max:1000',
             'question_type' => 'required|string|in:multiple_choice,true_false,fill_blank,essay',
             'points' => 'required|integer|min:1',
+            'explanation' => 'nullable|string',
+            'explanation_ar' => 'nullable|string',
         ];
 
         // Type-specific validation
@@ -144,6 +160,8 @@ class QuizQuestionManagementController extends Controller
             case 'multiple_choice':
                 $validationRules['options'] = 'required|array|min:2';
                 $validationRules['options.*'] = 'required|string|max:500';
+                $validationRules['options_ar'] = 'nullable|array';
+                $validationRules['options_ar.*'] = 'nullable|string|max:500';
                 $validationRules['correct_answers'] = 'required|array|min:1';
                 $validationRules['correct_answers.*'] = 'integer|min:0';
                 break;
@@ -155,10 +173,13 @@ class QuizQuestionManagementController extends Controller
             case 'fill_blank':
                 $validationRules['correct_answers_text'] = 'required|array|min:1';
                 $validationRules['correct_answers_text.*'] = 'required|string|max:500';
+                $validationRules['correct_answers_text_ar'] = 'nullable|array';
+                $validationRules['correct_answers_text_ar.*'] = 'nullable|string|max:500';
                 break;
 
             case 'essay':
                 $validationRules['sample_answer'] = 'nullable|string|max:1000';
+                $validationRules['sample_answer_ar'] = 'nullable|string|max:1000';
                 $validationRules['word_limit'] = 'nullable|integer|min:1';
                 break;
         }
@@ -168,16 +189,19 @@ class QuizQuestionManagementController extends Controller
         // Prepare question data
         $questionData = [
             'question_text' => $request->question_text,
+            'question_text_ar' => $request->question_text_ar,
             'question_type' => $questionType,
             'points' => $request->points,
             'order' => $request->order ?? $question->order,
             'explanation' => $request->explanation,
+            'explanation_ar' => $request->explanation_ar,
         ];
 
         // Add type-specific data
         switch ($questionType) {
             case 'multiple_choice':
                 $questionData['options'] = $request->options;
+                $questionData['options_ar'] = $request->options_ar;
                 $questionData['correct_answers'] = $request->correct_answers;
                 break;
 
@@ -187,10 +211,12 @@ class QuizQuestionManagementController extends Controller
 
             case 'fill_blank':
                 $questionData['correct_answers_text'] = $request->correct_answers_text;
+                $questionData['correct_answers_text_ar'] = $request->correct_answers_text_ar;
                 break;
 
             case 'essay':
                 $questionData['sample_answer'] = $request->sample_answer;
+                $questionData['sample_answer_ar'] = $request->sample_answer_ar;
                 $questionData['word_limit'] = $request->word_limit;
                 break;
         }

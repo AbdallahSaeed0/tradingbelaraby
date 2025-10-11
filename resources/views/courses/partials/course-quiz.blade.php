@@ -7,9 +7,13 @@
             @forelse($course->quizzes ?? [] as $quiz)
                 <div class="col-lg-6">
                     <div class="quiz-card bg-white p-4 rounded-4 shadow-sm h-100">
-                        <h4 class="quiz-title fw-bold mb-3">{{ $quiz->title }}</h4>
+                        <h4 class="quiz-title fw-bold mb-3">
+                            <a href="{{ route('quizzes.show', $quiz->id) }}" class="text-decoration-none text-dark">
+                                {{ $quiz->localized_name }}
+                            </a>
+                        </h4>
                         <p class="quiz-description text-muted mb-4">
-                            {{ $quiz->description }}
+                            {{ $quiz->localized_description }}
                         </p>
 
                         <!-- Quiz Features -->

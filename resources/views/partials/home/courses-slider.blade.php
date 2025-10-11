@@ -8,9 +8,9 @@
         <div class="d-flex justify-content-between mb-3">
             <div class="text-start mb-4">
                 <span class="text-warning fw-bold mb-2 d-block fs-11">
-                    <i class="fas fa-star"></i> {{ __('Featured Courses') }}
+                    <i class="fas fa-star"></i> {{ __('Our Courses') }}
                 </span>
-                <h2 class="fw-bold mb-3 fs-25">{{ __('Featured Courses') }}</h2>
+                <h2 class="fw-bold mb-3 fs-25">{{ __('Our Courses') }}</h2>
             </div>
             <div class="buts d-flex align-items-center">
                 <button class="btn btn-danger me-2 px-4 py-2 rounded-3 swiper-button-prev"></button>
@@ -57,7 +57,12 @@
                                 </div>
                             </div>
                             <div class="course-card-body">
-                                <h5 class="course-title">{{ $course->name }}</h5>
+                                <h5 class="course-title">
+                                    <a href="{{ route('courses.show', $course) }}"
+                                        class="text-decoration-none text-dark">
+                                        {{ $course->name }}
+                                    </a>
+                                </h5>
                                 <p class="course-desc">{{ Str::limit($course->description, 80) }}</p>
                                 <a href="{{ route('courses.show', $course) }}" class="read-more">{{ __('Read More') }}
                                     &rarr;</a>

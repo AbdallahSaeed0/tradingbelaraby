@@ -6,7 +6,11 @@
                     alt="{{ $instructor->name }}" class="instructor-avatar rounded-circle me-3" width="64"
                     height="64">
                 <div>
-                    <h4 class="fw-bold mb-1">{{ $instructor->name }}</h4>
+                    <h4 class="fw-bold mb-1">
+                        <a href="{{ route('instructor.show', $instructor->id) }}" class="text-decoration-none text-dark">
+                            {{ $instructor->name }}
+                        </a>
+                    </h4>
                     <p class="text-muted mb-0">{{ $instructor->email ?? '' }}</p>
                     @if ($instructor->bio)
                         <p class="instructor-description mt-2">
@@ -23,7 +27,12 @@
                 alt="{{ $course->instructor->name }}" class="instructor-avatar rounded-circle me-3" width="64"
                 height="64">
             <div>
-                <h4 class="fw-bold mb-1">{{ $course->instructor->name }}</h4>
+                <h4 class="fw-bold mb-1">
+                    <a href="{{ route('instructor.show', $course->instructor->id) }}"
+                        class="text-decoration-none text-dark">
+                        {{ $course->instructor->name }}
+                    </a>
+                </h4>
                 <p class="text-muted mb-0">{{ $course->instructor->email ?? '' }}</p>
             </div>
         </div>

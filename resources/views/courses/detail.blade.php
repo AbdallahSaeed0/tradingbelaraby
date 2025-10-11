@@ -96,12 +96,12 @@
                     </div>
                     <!-- Meetings Requirements & Description -->
                     <div class="mt-5">
-                        <h4 class="fw-bold mb-3">Meetings Requirements</h4>
-                        @if (!empty($course->requirements))
-                            <div class="mb-3 text-muted" style="font-size:1rem;">{{ $course->requirements }}</div>
+                        <h4 class="fw-bold mb-3">{{ __('Meetings Requirements') }}</h4>
+                        @if (!empty($course->localized_requirements))
+                            <div class="mb-3 text-muted" style="font-size:1rem;">{{ $course->localized_requirements }}</div>
                         @else
                             <div class="mb-3 text-muted" style="font-size:1rem;">
-                                <i class="fas fa-info-circle me-2"></i>Not Found
+                                <i class="fas fa-info-circle me-2"></i>{{ __('Not Found') }}
                             </div>
                         @endif
                         <h4 class="fw-bold mb-3">Description</h4>
@@ -390,6 +390,24 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Preview Video Section -->
+                    @if ($course->preview_video_embed_url)
+                        <div class="course-preview-video rounded-4 shadow-sm bg-white mb-4">
+                            <div class="video-header p-3 rounded-top-4 text-white fw-bold" style="background:#156481;">
+                                <i class="fa fa-play-circle me-2"></i>Course Preview
+                            </div>
+                            <div class="video-container" style="padding: 1rem;">
+                                <div class="ratio ratio-16x9">
+                                    <iframe src="{{ $course->preview_video_embed_url }}" title="Course Preview Video"
+                                        frameborder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowfullscreen style="border-radius: 0.5rem;">
+                                    </iframe>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

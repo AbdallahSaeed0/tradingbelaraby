@@ -156,7 +156,12 @@
                                     </div>
                                     <div class="card-body d-flex flex-column">
                                         <div class="d-flex justify-content-between align-items-start mb-2">
-                                            <h5 class="card-title fw-bold mb-0 flex-grow-1">{{ $course->name }}</h5>
+                                            <h5 class="card-title course-title fw-bold mb-0 flex-grow-1">
+                                                <a href="{{ route('courses.show', $course->id) }}"
+                                                    class="text-decoration-none text-dark">
+                                                    {{ $course->name }}
+                                                </a>
+                                            </h5>
                                             <div class="d-flex align-items-center gap-2 ms-2">
                                                 @auth
                                                     <button class="btn btn-outline-danger btn-sm wishlist-btn"

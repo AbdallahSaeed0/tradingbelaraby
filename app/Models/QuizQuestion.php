@@ -13,18 +13,23 @@ class QuizQuestion extends Model
     protected $fillable = [
         'quiz_id',
         'question_text',
+        'question_text_ar',
         'question_type',
         'points',
         'order',
         'options',
+        'options_ar',
         'correct_answers',
         'correct_answer_boolean',
         'correct_answers_text',
+        'correct_answers_text_ar',
         'sample_answer',
+        'sample_answer_ar',
         'word_limit',
         'is_required',
         'shuffle_options',
         'explanation',
+        'explanation_ar',
         'image',
         'audio',
         'video',
@@ -32,8 +37,10 @@ class QuizQuestion extends Model
 
     protected $casts = [
         'options' => 'array',
+        'options_ar' => 'array',
         'correct_answers' => 'array',
         'correct_answers_text' => 'array',
+        'correct_answers_text_ar' => 'array',
         'correct_answer_boolean' => 'boolean',
         'is_required' => 'boolean',
         'shuffle_options' => 'boolean',
@@ -235,6 +242,84 @@ class QuizQuestion extends Model
               ->orWhereNotNull('audio')
               ->orWhereNotNull('video');
         });
+    }
+
+    /**
+     * Get localized question text based on current locale
+     */
+    public function getLocalizedQuestionTextAttribute(): string
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'ar' && $this->question_text_ar) {
+            return $this->question_text_ar;
+        }
+        return $this->question_text;
+    }
+
+    /**
+     * Get localized options based on current locale
+     */
+    public function getLocalizedOptionsAttribute(): ?array
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'ar' && $this->options_ar) {
+            return $this->options_ar;
+        }
+        return $this->options;
+    }
+
+    /**
+     * Get localized correct answers text based on current locale
+     */
+    public function getLocalizedCorrectAnswersTextAttribute(): ?array
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'ar' && $this->correct_answers_text_ar) {
+            return $this->correct_answers_text_ar;
+        }
+        return $this->correct_answers_text;
+    }
+
+    /**
+     * Get localized sample answer based on current locale
+     */
+    public function getLocalizedSampleAnswerAttribute(): ?string
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'ar' && $this->sample_answer_ar) {
+            return $this->sample_answer_ar;
+        }
+        return $this->sample_answer;
+    }
+
+    /**
+     * Get localized explanation based on current locale
+     */
+    public function getLocalizedExplanationAttribute(): ?string
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'ar' && $this->explanation_ar) {
+            return $this->explanation_ar;
+        }
+        return $this->explanation;
+    }
+
+    /**
+     * Get shuffled options with localization
+     */
+    public function getLocalizedShuffledOptions(): array
+    {
+        $options = $this->localized_options;
+
+        if (!$options) {
+            return [];
+        }
+
+        if ($this->shuffle_options) {
+            shuffle($options);
+        }
+
+        return $options;
     }
 
     /**

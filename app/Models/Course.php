@@ -19,7 +19,10 @@ class Course extends Model
         'slug',
         'description',
         'description_ar',
+        'requirements',
+        'requirements_ar',
         'image',
+        'preview_video_url',
         'duration',
         'price',
         'original_price',
@@ -35,6 +38,10 @@ class Course extends Model
         'instructor_id',
         'status',
         'is_featured',
+        'show_in_top_discounted',
+        'show_in_subscription_bundles',
+        'show_in_live_meeting',
+        'show_in_recent_courses',
         'is_free',
         'total_lessons',
         'total_duration_minutes',
@@ -76,6 +83,10 @@ class Course extends Model
         'original_price' => 'decimal:2',
         'average_rating' => 'decimal:2',
         'is_featured' => 'boolean',
+        'show_in_top_discounted' => 'boolean',
+        'show_in_subscription_bundles' => 'boolean',
+        'show_in_live_meeting' => 'boolean',
+        'show_in_recent_courses' => 'boolean',
         'is_free' => 'boolean',
         'structured_data' => 'array',
         'structured_data_ar' => 'array',
@@ -340,6 +351,38 @@ class Course extends Model
     }
 
     /**
+     * Scope for courses displayed in Top Discounted section
+     */
+    public function scopeTopDiscounted($query)
+    {
+        return $query->where('show_in_top_discounted', true);
+    }
+
+    /**
+     * Scope for courses displayed in Subscription Bundles section
+     */
+    public function scopeSubscriptionBundles($query)
+    {
+        return $query->where('show_in_subscription_bundles', true);
+    }
+
+    /**
+     * Scope for courses displayed in Live Meeting section
+     */
+    public function scopeLiveMeeting($query)
+    {
+        return $query->where('show_in_live_meeting', true);
+    }
+
+    /**
+     * Scope for courses displayed in Recent Courses section
+     */
+    public function scopeRecentCourses($query)
+    {
+        return $query->where('show_in_recent_courses', true);
+    }
+
+    /**
      * Scope for paid courses
      */
     public function scopePaid($query)
@@ -557,6 +600,18 @@ class Course extends Model
     }
 
     /**
+     * Get the localized requirements
+     */
+    public function getLocalizedRequirementsAttribute(): ?string
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'ar' && $this->requirements_ar) {
+            return $this->requirements_ar;
+        }
+        return $this->requirements;
+    }
+
+    /**
      * Get localized what to learn based on current locale
      */
     public function getLocalizedWhatToLearnAttribute(): ?array
@@ -637,5 +692,38 @@ class Course extends Model
             $languages = array_unique(array_merge($languages, $this->supported_languages));
         }
         return $languages;
+    }
+
+    /**
+     * Get embed URL for preview video
+     */
+    public function getPreviewVideoEmbedUrlAttribute(): ?string
+    {
+        if (!$this->preview_video_url) {
+            return null;
+        }
+
+        $url = $this->preview_video_url;
+
+        // YouTube URL patterns
+        if (preg_match('/youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/', $url, $matches)) {
+            return 'https://www.youtube.com/embed/' . $matches[1];
+        }
+        if (preg_match('/youtu\.be\/([a-zA-Z0-9_-]+)/', $url, $matches)) {
+            return 'https://www.youtube.com/embed/' . $matches[1];
+        }
+        if (preg_match('/youtube\.com\/embed\/([a-zA-Z0-9_-]+)/', $url, $matches)) {
+            return $url; // Already in embed format
+        }
+
+        // Vimeo URL patterns
+        if (preg_match('/vimeo\.com\/(\d+)/', $url, $matches)) {
+            return 'https://player.vimeo.com/video/' . $matches[1];
+        }
+        if (preg_match('/player\.vimeo\.com\/video\/(\d+)/', $url, $matches)) {
+            return $url; // Already in embed format
+        }
+
+        return null;
     }
 }

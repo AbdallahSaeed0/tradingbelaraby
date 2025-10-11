@@ -81,7 +81,12 @@
                                     @endif
                                 </div>
                                 <div class="course-content p-3">
-                                    <h5 class="course-title fw-bold mb-2">{{ $course->name }}</h5>
+                                    <h5 class="course-title fw-bold mb-2">
+                                        <a href="{{ route('courses.show', $course) }}"
+                                            class="text-decoration-none text-dark">
+                                            {{ $course->name }}
+                                        </a>
+                                    </h5>
                                     <p class="course-description text-muted mb-3">
                                         {{ Str::limit($course->description, 100) }}
                                     </p>

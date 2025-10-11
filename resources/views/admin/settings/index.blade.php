@@ -374,6 +374,50 @@
                 </div>
             </div>
 
+            <!-- Partner Logos Management -->
+            <div class="col-xl-4 col-lg-6 col-md-10">
+                <div class="card settings-card">
+                    <div class="card-body text-center p-5">
+                        <div class="settings-icon mb-4">
+                            <div class="icon-wrapper">
+                                <i class="fas fa-handshake fa-4x text-primary"></i>
+                            </div>
+                        </div>
+                        <h3 class="card-title mb-3">{{ __('Partner Logos') }}</h3>
+                        <p class="card-text text-muted mb-4">
+                            {{ __('Manage partner and sponsor logos displayed on your website. Add clickable logos with custom links and control their order and visibility.') }}
+                        </p>
+                        <div class="features-list mb-4">
+                            <div class="row text-start">
+                                <div class="col-md-6">
+                                    <div class="feature-item">
+                                        <i class="fas fa-image text-primary me-2"></i>
+                                        <span>{{ __('Logo Upload') }}</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-link text-info me-2"></i>
+                                        <span>{{ __('Custom Links') }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="feature-item">
+                                        <i class="fas fa-sort text-warning me-2"></i>
+                                        <span>{{ __('Order Control') }}</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-toggle-on text-success me-2"></i>
+                                        <span>{{ __('Active/Inactive') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="{{ route('admin.partner-logos.index') }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-handshake me-2"></i>{{ __('Manage Partner Logos') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+
             <!-- Info Split Section Management -->
             <div class="col-xl-4 col-lg-6 col-md-10">
                 <div class="card settings-card">

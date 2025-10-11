@@ -148,7 +148,12 @@
                                                     </span>
                                                 @endif
                                             </div>
-                                            <h5 class="fw-bold mb-2">{{ Str::limit($blog->getLocalizedTitle(), 50) }}</h5>
+                                            <h5 class="blog-title fw-bold mb-2">
+                                                <a href="{{ route('blog.show', $blog->slug) }}"
+                                                    class="text-decoration-none text-dark">
+                                                    {{ Str::limit($blog->getLocalizedTitle(), 50) }}
+                                                </a>
+                                            </h5>
                                             <p class="mb-3 text-muted flex-grow-1">
                                                 {{ Str::limit($blog->getLocalizedExcerpt() ?: strip_tags($blog->getLocalizedDescription()), 120) }}
                                             </p>

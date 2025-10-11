@@ -102,6 +102,8 @@ class CoursesController extends Controller
             'name_ar' => 'nullable|string|max:255',
             'description' => 'required|string',
             'description_ar' => 'nullable|string',
+            'requirements' => 'nullable|string',
+            'requirements_ar' => 'nullable|string',
             'category_id' => 'required|exists:course_categories,id',
             'instructor_id' => 'nullable|exists:admins,id',
             'instructor_ids' => 'required|array|min:1',
@@ -110,6 +112,7 @@ class CoursesController extends Controller
             'duration' => 'nullable|string',
             'status' => 'required|in:draft,published,archived',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'preview_video_url' => 'nullable|string|url',
             'book' => 'nullable|file|mimes:pdf|max:10240',
 
             // Multilingual learning objectives
@@ -117,6 +120,14 @@ class CoursesController extends Controller
             'what_to_learn.*' => 'string|max:500',
             'what_to_learn_ar' => 'nullable|array',
             'what_to_learn_ar.*' => 'nullable|string|max:500',
+
+            // Multilingual FAQ
+            'faq_course' => 'nullable|array',
+            'faq_course.*.question' => 'nullable|string|max:500',
+            'faq_course.*.answer' => 'nullable|string',
+            'faq_course_ar' => 'nullable|array',
+            'faq_course_ar.*.question' => 'nullable|string|max:500',
+            'faq_course_ar.*.answer' => 'nullable|string',
 
             // SEO fields
             'meta_title' => 'nullable|string|max:60',
@@ -130,6 +141,10 @@ class CoursesController extends Controller
 
             // Course settings
             'is_featured' => 'boolean',
+            'show_in_top_discounted' => 'boolean',
+            'show_in_subscription_bundles' => 'boolean',
+            'show_in_live_meeting' => 'boolean',
+            'show_in_recent_courses' => 'boolean',
             'is_free' => 'boolean',
             'sections' => 'nullable|string', // JSON string
             'learn_items' => 'nullable|string', // JSON string
@@ -296,6 +311,8 @@ class CoursesController extends Controller
             'name_ar' => 'nullable|string|max:255',
             'description' => 'required|string',
             'description_ar' => 'nullable|string',
+            'requirements' => 'nullable|string',
+            'requirements_ar' => 'nullable|string',
             'category_id' => 'required|exists:course_categories,id',
             'instructor_id' => 'nullable|exists:admins,id',
             'instructor_ids' => 'required|array|min:1',
@@ -304,6 +321,7 @@ class CoursesController extends Controller
             'duration' => 'nullable|string',
             'status' => 'required|in:draft,published,archived',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'preview_video_url' => 'nullable|string|url',
             'book' => 'nullable|file|mimes:pdf|max:10240',
 
             // Multilingual learning objectives
@@ -311,6 +329,14 @@ class CoursesController extends Controller
             'what_to_learn.*' => 'string|max:500',
             'what_to_learn_ar' => 'nullable|array',
             'what_to_learn_ar.*' => 'nullable|string|max:500',
+
+            // Multilingual FAQ
+            'faq_course' => 'nullable|array',
+            'faq_course.*.question' => 'nullable|string|max:500',
+            'faq_course.*.answer' => 'nullable|string',
+            'faq_course_ar' => 'nullable|array',
+            'faq_course_ar.*.question' => 'nullable|string|max:500',
+            'faq_course_ar.*.answer' => 'nullable|string',
 
             // SEO fields
             'meta_title' => 'nullable|string|max:60',
@@ -324,6 +350,10 @@ class CoursesController extends Controller
 
             // Course settings
             'is_featured' => 'boolean',
+            'show_in_top_discounted' => 'boolean',
+            'show_in_subscription_bundles' => 'boolean',
+            'show_in_live_meeting' => 'boolean',
+            'show_in_recent_courses' => 'boolean',
             'is_free' => 'boolean',
             'learning_objectives' => 'nullable|array',
             'learning_objectives.*' => 'string',

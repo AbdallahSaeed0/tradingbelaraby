@@ -65,6 +65,41 @@
             color: white !important;
         }
 
+        /* Global Title Styling - Make all titles clickable with hover effect */
+        .course-title a,
+        .quiz-title a,
+        .blog-title a,
+        .category-title a,
+        .instructor-section .course-title a,
+        .course-instructor h4 a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.3s ease, transform 0.2s ease;
+            display: inline-block;
+        }
+
+        .course-title a:hover,
+        .quiz-title a:hover,
+        .blog-title a:hover,
+        .category-title a:hover,
+        .instructor-section .course-title a:hover,
+        .course-instructor h4 a:hover {
+            color: #f15a29 !important;
+            transform: translateX(2px);
+        }
+
+        .course-title,
+        .quiz-title,
+        .blog-title,
+        .category-title {
+            cursor: pointer;
+        }
+
+        /* Instructor name hover effects */
+        .course-instructor h4 {
+            cursor: pointer;
+        }
+
         /* RTL specific adjustments for frontend */
         [dir="rtl"] .nav-links {
             flex-direction: row-reverse;
@@ -952,7 +987,8 @@
                         style="height:32px; margin-right:10px;">
                 </a>
             </div>
-            <div class="footer-copyright text-center flex-grow-1">Copyright © {{ date('Y') }} eClass.</div>
+            <div class="footer-copyright text-center flex-grow-1">Copyright © {{ date('Y') }} Tadawul Bel Araby.
+            </div>
             <button id="backToTopBtn" class="btn btn-light btn-lg rounded-circle shadow-sm"><i
                     class="fa fa-arrow-up"></i></button>
         </div>

@@ -19,8 +19,11 @@ class Quiz extends Model
         'section_id',
         'lecture_id',
         'name',
+        'name_ar',
         'description',
+        'description_ar',
         'instructions',
+        'instructions_ar',
         'time_limit_minutes',
         'total_questions',
         'total_marks',
@@ -327,6 +330,42 @@ class Quiz extends Model
     public function scopeByDifficulty($query, $difficulty)
     {
         return $query->where('difficulty', $difficulty);
+    }
+
+    /**
+     * Get localized name based on current locale
+     */
+    public function getLocalizedNameAttribute(): string
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'ar' && $this->name_ar) {
+            return $this->name_ar;
+        }
+        return $this->name;
+    }
+
+    /**
+     * Get localized description based on current locale
+     */
+    public function getLocalizedDescriptionAttribute(): ?string
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'ar' && $this->description_ar) {
+            return $this->description_ar;
+        }
+        return $this->description;
+    }
+
+    /**
+     * Get localized instructions based on current locale
+     */
+    public function getLocalizedInstructionsAttribute(): ?string
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'ar' && $this->instructions_ar) {
+            return $this->instructions_ar;
+        }
+        return $this->instructions;
     }
 
     /**

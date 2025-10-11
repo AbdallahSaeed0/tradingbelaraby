@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Quiz Results - ' . $quiz->name)
+@section('title', 'Quiz Results - ' . $quiz->localized_name)
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/pages/quiz.css') }}">
@@ -16,7 +16,7 @@
             style="background:rgba(24,49,63,0.65); z-index:2;"></div>
         <div class="container position-relative z-3 text-center">
             <h1 class="display-4 fw-bold text-white mb-3">Quiz Results</h1>
-            <p class="text-white mb-3">{{ $quiz->name }}</p>
+            <p class="text-white mb-3">{{ $quiz->localized_name }}</p>
         </div>
     </section>
 
@@ -123,7 +123,7 @@
                                 class="question-result mb-4 p-4 border rounded {{ $question->is_correct ? 'border-success bg-light' : 'border-danger bg-light' }}">
                                 <div class="d-flex justify-content-between align-items-start mb-3">
                                     <h5 class="fw-bold mb-0">
-                                        Question {{ $index + 1 }}: {{ $question->question_text }}
+                                        Question {{ $index + 1 }}: {{ $question->localized_question_text }}
                                     </h5>
                                     <div class="question-status">
                                         @if ($question->is_correct)
@@ -150,11 +150,12 @@
                                 <div class="user-answer mb-3">
                                     <strong>Your Answer:</strong>
                                     <div class="mt-2">
-                                        @if ($question->question_type === 'multiple_choice' && $question->options)
+                                        @if ($question->question_type === 'multiple_choice' && $question->localized_options)
                                             @php
                                                 $userAnswerIndex = $question->user_answer;
                                                 $userAnswerText =
-                                                    $question->options[$userAnswerIndex] ?? 'No answer provided';
+                                                    $question->localized_options[$userAnswerIndex] ??
+                                                    'No answer provided';
                                             @endphp
                                             <span
                                                 class="badge {{ $question->is_correct ? 'bg-success' : 'bg-danger' }} fs-6">
@@ -184,15 +185,15 @@
                                             @if ($question->question_type === 'multiple_choice' && $question->correct_answers)
                                                 @foreach ($question->correct_answers as $correctIndex)
                                                     <span class="badge bg-success fs-6 me-2">
-                                                        {{ $question->options[$correctIndex] ?? 'N/A' }}
+                                                        {{ $question->localized_options[$correctIndex] ?? 'N/A' }}
                                                     </span>
                                                 @endforeach
                                             @elseif($question->question_type === 'true_false')
                                                 <span class="badge bg-success fs-6">
                                                     {{ $question->correct_answer_boolean ? 'True' : 'False' }}
                                                 </span>
-                                            @elseif($question->question_type === 'fill_blank' && $question->correct_answers_text)
-                                                @foreach ($question->correct_answers_text as $correctAnswer)
+                                            @elseif($question->question_type === 'fill_blank' && $question->localized_correct_answers_text)
+                                                @foreach ($question->localized_correct_answers_text as $correctAnswer)
                                                     <span class="badge bg-success fs-6 me-2">{{ $correctAnswer }}</span>
                                                 @endforeach
                                             @endif
@@ -201,10 +202,10 @@
                                 @endif
 
                                 <!-- Explanation -->
-                                @if ($question->explanation)
+                                @if ($question->localized_explanation)
                                     <div class="explanation">
                                         <strong class="text-info">Explanation:</strong>
-                                        <p class="mt-2 mb-0 text-muted">{{ $question->explanation }}</p>
+                                        <p class="mt-2 mb-0 text-muted">{{ $question->localized_explanation }}</p>
                                     </div>
                                 @endif
                             </div>

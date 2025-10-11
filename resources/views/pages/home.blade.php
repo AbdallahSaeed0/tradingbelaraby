@@ -13,7 +13,20 @@
     <!-- Courses Slider Section -->
     @include('partials.home.courses-slider')
 
+    <!-- Top Discounted Courses Section -->
+    @include('partials.home.top-discounted-courses')
 
+    <!-- Subscription Bundles Section -->
+    @include('partials.home.subscription-bundles')
+
+    <!-- Live Meeting Courses Section -->
+    @include('partials.home.live-meeting-courses')
+
+    <!-- Recent Courses Section -->
+    @include('partials.home.recent-courses-section')
+
+    <!-- Courses by Category Tabs Section -->
+    @include('partials.home.courses-by-category-tabs')
 
     <!-- Featured Categories Section -->
     @include('partials.home.featured-categories')
@@ -82,7 +95,8 @@
         </section>
     @endif
 
-
+    <!-- Partner Logos Slider -->
+    @include('partials.home.partner-logos-slider')
 
 @endsection
 

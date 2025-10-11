@@ -276,7 +276,7 @@
                                 <div class="card-body">
                                     <div class="row g-3">
                                         <div class="col-md-6">
-                                            <label for="name" class="form-label">Quiz Name *</label>
+                                            <label for="name" class="form-label">Quiz Name (English) *</label>
                                             <input type="text" class="form-control @error('name') is-invalid @enderror"
                                                 id="name" name="name" value="{{ old('name', $quiz->name) }}"
                                                 required>
@@ -286,6 +286,16 @@
                                         </div>
 
                                         <div class="col-md-6">
+                                            <label for="name_ar" class="form-label">Quiz Name (Arabic)</label>
+                                            <input type="text"
+                                                class="form-control @error('name_ar') is-invalid @enderror" id="name_ar"
+                                                name="name_ar" value="{{ old('name_ar', $quiz->name_ar) }}" dir="rtl">
+                                            @error('name_ar')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+
+                                        <div class="col-md-12">
                                             <label for="course_id" class="form-label">Course *</label>
                                             <select class="form-select @error('course_id') is-invalid @enderror"
                                                 id="course_id" name="course_id" required>
@@ -302,8 +312,8 @@
                                             @enderror
                                         </div>
 
-                                        <div class="col-12">
-                                            <label for="description" class="form-label">Description</label>
+                                        <div class="col-md-6">
+                                            <label for="description" class="form-label">Description (English)</label>
                                             <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description"
                                                 rows="3">{{ old('description', $quiz->description) }}</textarea>
                                             @error('description')
@@ -311,7 +321,32 @@
                                             @enderror
                                         </div>
 
+                                        <div class="col-md-6">
+                                            <label for="description_ar" class="form-label">Description (Arabic)</label>
+                                            <textarea class="form-control @error('description_ar') is-invalid @enderror" id="description_ar"
+                                                name="description_ar" rows="3" dir="rtl">{{ old('description_ar', $quiz->description_ar) }}</textarea>
+                                            @error('description_ar')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
 
+                                        <div class="col-md-6">
+                                            <label for="instructions" class="form-label">Instructions (English)</label>
+                                            <textarea class="form-control @error('instructions') is-invalid @enderror" id="instructions" name="instructions"
+                                                rows="3">{{ old('instructions', $quiz->instructions) }}</textarea>
+                                            @error('instructions')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label for="instructions_ar" class="form-label">Instructions (Arabic)</label>
+                                            <textarea class="form-control @error('instructions_ar') is-invalid @enderror" id="instructions_ar"
+                                                name="instructions_ar" rows="3" dir="rtl">{{ old('instructions_ar', $quiz->instructions_ar) }}</textarea>
+                                            @error('instructions_ar')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -333,20 +368,22 @@
                                         }
                                     @endphp
 
-                                    <div class="connection-type-selector" onclick="selectConnectionType('course')">
-                                        <input type="radio" name="connection_type" id="connection_course" value="course"
-                                            {{ $connectionType === 'course' ? 'checked' : '' }}>
+                                    <div class="connection-type-selector" onclick="selectConnectionType('course', event)">
+                                        <input type="radio" name="connection_type" id="connection_course"
+                                            value="course" {{ $connectionType === 'course' ? 'checked' : '' }}>
                                         <label for="connection_course" class="fw-bold">Course Level</label>
                                         <p class="text-muted mb-0">Quiz available for the entire course</p>
                                     </div>
 
-                                    <div class="connection-type-selector" onclick="selectConnectionType('section')">
+                                    <div class="connection-type-selector"
+                                        onclick="selectConnectionType('section', event)">
                                         <input type="radio" name="connection_type" id="connection_section"
                                             value="section" {{ $connectionType === 'section' ? 'checked' : '' }}>
                                         <label for="connection_section" class="fw-bold">Section Level</label>
                                         <p class="text-muted mb-0">Quiz available after completing a specific section</p>
                                         <div id="section_selection" class="mt-3"
-                                            style="display: {{ $connectionType === 'section' ? 'block' : 'none' }};">
+                                            style="display: {{ $connectionType === 'section' ? 'block' : 'none' }};"
+                                            onclick="event.stopPropagation()">
                                             <select class="form-select" id="section_id" name="section_id">
                                                 <option value="">Select Section</option>
                                                 @if ($quiz->section)
@@ -358,13 +395,15 @@
                                         </div>
                                     </div>
 
-                                    <div class="connection-type-selector" onclick="selectConnectionType('lecture')">
+                                    <div class="connection-type-selector"
+                                        onclick="selectConnectionType('lecture', event)">
                                         <input type="radio" name="connection_type" id="connection_lecture"
                                             value="lecture" {{ $connectionType === 'lecture' ? 'checked' : '' }}>
                                         <label for="connection_lecture" class="fw-bold">Lecture Level</label>
                                         <p class="text-muted mb-0">Quiz available after completing a specific lecture</p>
                                         <div id="lecture_selection" class="mt-3"
-                                            style="display: {{ $connectionType === 'lecture' ? 'block' : 'none' }};">
+                                            style="display: {{ $connectionType === 'lecture' ? 'block' : 'none' }};"
+                                            onclick="event.stopPropagation()">
                                             <select class="form-select" id="lecture_id" name="lecture_id">
                                                 <option value="">Select Lecture</option>
                                                 @if ($quiz->lecture)
@@ -728,9 +767,14 @@
             <input type="hidden" id="questionType" name="question_type">
 
             <div class="row g-3">
-                <div class="col-12">
-                    <label for="questionText" class="form-label">Question Text *</label>
+                <div class="col-md-6">
+                    <label for="questionText" class="form-label">Question Text (English) *</label>
                     <textarea class="form-control" id="questionText" name="question_text" rows="3"></textarea>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="questionTextAr" class="form-label">Question Text (Arabic)</label>
+                    <textarea class="form-control" id="questionTextAr" name="question_text_ar" rows="3" dir="rtl"></textarea>
                 </div>
 
                 <div class="col-md-6">
@@ -749,19 +793,49 @@
                 <div id="multipleChoiceOptions" class="col-12" style="display: none;">
                     <label class="form-label">Options *</label>
                     <div id="optionsContainer">
-                        <div class="option-item d-flex align-items-center">
-                            <input type="radio" name="correct_answers[]" value="0" class="me-2">
-                            <input type="text" class="form-control me-2" name="options[]" placeholder="Option 1">
-                            <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeOption(this)">
-                                <i class="fa fa-times"></i>
-                            </button>
+                        <div class="option-item mb-3">
+                            <div class="d-flex align-items-center mb-2">
+                                <input type="radio" name="correct_answers[]" value="0" class="me-2">
+                                <label class="form-label mb-0 me-2"><strong>Option 1</strong></label>
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-md-5">
+                                    <input type="text" class="form-control" name="options[]"
+                                        placeholder="Option 1 (English)">
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="text" class="form-control" name="options_ar[]"
+                                        placeholder="الخيار 1 (عربي)" dir="rtl">
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-outline-danger w-100"
+                                        onclick="removeOption(this)">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="option-item d-flex align-items-center">
-                            <input type="radio" name="correct_answers[]" value="1" class="me-2">
-                            <input type="text" class="form-control me-2" name="options[]" placeholder="Option 2">
-                            <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeOption(this)">
-                                <i class="fa fa-times"></i>
-                            </button>
+                        <div class="option-item mb-3">
+                            <div class="d-flex align-items-center mb-2">
+                                <input type="radio" name="correct_answers[]" value="1" class="me-2">
+                                <label class="form-label mb-0 me-2"><strong>Option 2</strong></label>
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-md-5">
+                                    <input type="text" class="form-control" name="options[]"
+                                        placeholder="Option 2 (English)">
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="text" class="form-control" name="options_ar[]"
+                                        placeholder="الخيار 2 (عربي)" dir="rtl">
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-outline-danger w-100"
+                                        onclick="removeOption(this)">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <button type="button" class="btn btn-outline-primary btn-sm mt-2" onclick="addOption()">
@@ -788,12 +862,24 @@
                 <div id="fillBlankOptions" class="col-12" style="display: none;">
                     <label class="form-label">Correct Answers *</label>
                     <div id="fillBlankContainer">
-                        <div class="input-group mb-2">
-                            <input type="text" class="form-control" name="correct_answers_text[]"
-                                placeholder="Correct answer 1">
-                            <button type="button" class="btn btn-outline-danger" onclick="removeFillBlank(this)">
-                                <i class="fa fa-times"></i>
-                            </button>
+                        <div class="fill-blank-answer mb-3">
+                            <label class="form-label mb-2"><strong>Answer 1</strong></label>
+                            <div class="row g-2">
+                                <div class="col-md-5">
+                                    <input type="text" class="form-control" name="correct_answers_text[]"
+                                        placeholder="Correct answer 1 (English)">
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="text" class="form-control" name="correct_answers_text_ar[]"
+                                        placeholder="الإجابة الصحيحة 1 (عربي)" dir="rtl">
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-outline-danger w-100"
+                                        onclick="removeFillBlank(this)">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <button type="button" class="btn btn-outline-primary btn-sm" onclick="addFillBlank()">
@@ -801,9 +887,14 @@
                     </button>
                 </div>
 
-                <div class="col-12">
-                    <label for="explanation" class="form-label">Explanation (Optional)</label>
+                <div class="col-md-6">
+                    <label for="explanation" class="form-label">Explanation (English)</label>
                     <textarea class="form-control" id="explanation" name="explanation" rows="2"></textarea>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="explanationAr" class="form-label">Explanation (Arabic)</label>
+                    <textarea class="form-control" id="explanationAr" name="explanation_ar" rows="2" dir="rtl"></textarea>
                 </div>
 
                 <div class="col-12">
@@ -840,6 +931,12 @@
 
         // Connection type selection
         function selectConnectionType(type, event = null) {
+            // Prevent default action and stop propagation
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
             // Remove selected class from all selectors
             document.querySelectorAll('.connection-type-selector').forEach(selector => {
                 selector.classList.remove('selected');
@@ -879,16 +976,22 @@
 
         // Load sections for selected course
         function loadSections(courseId) {
-            fetch(`/admin/courses/${courseId}/sections`)
+            const select = document.getElementById('section_id');
+            const currentValue = select.value; // Save current selection
+
+            fetch(`/admin/quizzes/get-sections/${courseId}`)
                 .then(response => response.json())
                 .then(data => {
-                    const select = document.getElementById('section_id');
                     select.innerHTML = '<option value="">Select Section</option>';
 
                     data.forEach(section => {
                         const option = document.createElement('option');
                         option.value = section.id;
                         option.textContent = section.title;
+                        // Restore previous selection if it exists
+                        if (section.id == currentValue) {
+                            option.selected = true;
+                        }
                         select.appendChild(option);
                     });
                 })
@@ -899,16 +1002,22 @@
 
         // Load lectures for selected course
         function loadLectures(courseId) {
-            fetch(`/admin/courses/${courseId}/lectures`)
+            const select = document.getElementById('lecture_id');
+            const currentValue = select.value; // Save current selection
+
+            fetch(`/admin/quizzes/get-lectures/${courseId}`)
                 .then(response => response.json())
                 .then(data => {
-                    const select = document.getElementById('lecture_id');
                     select.innerHTML = '<option value="">Select Lecture</option>';
 
                     data.forEach(lecture => {
                         const option = document.createElement('option');
                         option.value = lecture.id;
                         option.textContent = `${lecture.section_title} - ${lecture.title}`;
+                        // Restore previous selection if it exists
+                        if (lecture.id == currentValue) {
+                            option.selected = true;
+                        }
                         select.appendChild(option);
                     });
                 })
@@ -1116,13 +1225,25 @@
 
             const container = form.querySelector('#optionsContainer');
             const newOption = document.createElement('div');
-            newOption.className = 'option-item d-flex align-items-center';
+            newOption.className = 'option-item mb-3';
             newOption.innerHTML = `
-                <input type="radio" name="correct_answers[]" value="${optionCount}" class="me-2">
-                <input type="text" class="form-control me-2" name="options[]" placeholder="Option ${optionCount + 1}" required>
-                <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeOption(this)">
-                    <i class="fa fa-times"></i>
-                </button>
+                <div class="d-flex align-items-center mb-2">
+                    <input type="radio" name="correct_answers[]" value="${optionCount}" class="me-2">
+                    <label class="form-label mb-0 me-2"><strong>Option ${optionCount + 1}</strong></label>
+                </div>
+                <div class="row g-2">
+                    <div class="col-md-5">
+                        <input type="text" class="form-control" name="options[]" placeholder="Option ${optionCount + 1} (English)" required>
+                    </div>
+                    <div class="col-md-5">
+                        <input type="text" class="form-control" name="options_ar[]" placeholder="الخيار ${optionCount + 1} (عربي)" dir="rtl">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-outline-danger w-100" onclick="removeOption(this)">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                </div>
             `;
             container.appendChild(newOption);
             optionCount++;
@@ -1143,26 +1264,45 @@
 
             const container = form.querySelector('#fillBlankContainer');
             const newAnswer = document.createElement('div');
-            newAnswer.className = 'input-group mb-2';
+            newAnswer.className = 'fill-blank-answer mb-3';
             newAnswer.innerHTML = `
-                <input type="text" class="form-control" name="correct_answers_text[]" placeholder="Correct answer ${fillBlankCount + 1}" required>
-                <button type="button" class="btn btn-outline-danger" onclick="removeFillBlank(this)">
-                    <i class="fa fa-times"></i>
-                </button>
+                <label class="form-label mb-2"><strong>Answer ${fillBlankCount + 1}</strong></label>
+                <div class="row g-2">
+                    <div class="col-md-5">
+                        <input type="text" class="form-control" name="correct_answers_text[]" placeholder="Correct answer ${fillBlankCount + 1} (English)" required>
+                    </div>
+                    <div class="col-md-5">
+                        <input type="text" class="form-control" name="correct_answers_text_ar[]" placeholder="الإجابة الصحيحة ${fillBlankCount + 1} (عربي)" dir="rtl">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-outline-danger w-100" onclick="removeFillBlank(this)">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                </div>
             `;
             container.appendChild(newAnswer);
             fillBlankCount++;
         }
 
         function removeFillBlank(button) {
-            if (document.querySelectorAll('#fillBlankContainer .input-group').length > 1) {
-                button.closest('.input-group').remove();
+            if (document.querySelectorAll('#fillBlankContainer .fill-blank-answer').length > 1) {
+                button.closest('.fill-blank-answer').remove();
             }
         }
 
         function resetQuestionForm() {
-            // Reset the original form
-            document.getElementById('addQuestionForm').reset();
+            // Try to get the cloned form first, fallback to original
+            let form = document.getElementById('addQuestionFormClone');
+            if (!form) {
+                form = document.getElementById('addQuestionForm');
+            }
+
+            if (form) {
+                form.reset();
+                // Clear edit state
+                form.removeAttribute('data-edit-question-id');
+            }
 
             // Remove selected class from type cards
             document.querySelectorAll('.type-card').forEach(card => {
@@ -1172,10 +1312,6 @@
             // Reset counters
             optionCount = 2;
             fillBlankCount = 1;
-
-            // Clear edit state
-            const form = document.getElementById('addQuestionForm');
-            form.removeAttribute('data-edit-question-id');
         }
 
         // Handle question form submission
@@ -1432,15 +1568,19 @@
             try {
                 // Set form values
                 const questionTextEl = form.querySelector('#questionText');
+                const questionTextArEl = form.querySelector('#questionTextAr');
                 const questionPointsEl = form.querySelector('#questionPoints');
                 const questionOrderEl = form.querySelector('#questionOrder');
                 const explanationEl = form.querySelector('#explanation');
+                const explanationArEl = form.querySelector('#explanationAr');
 
                 console.log('Form elements found:', {
                     questionText: !!questionTextEl,
+                    questionTextAr: !!questionTextArEl,
                     questionPoints: !!questionPointsEl,
                     questionOrder: !!questionOrderEl,
-                    explanation: !!explanationEl
+                    explanation: !!explanationEl,
+                    explanationAr: !!explanationArEl
                 });
 
                 if (questionTextEl) {
@@ -1448,6 +1588,12 @@
                     console.log('Set question text:', question.question_text);
                 } else {
                     console.error('Question text element not found!');
+                }
+                if (questionTextArEl) {
+                    questionTextArEl.value = question.question_text_ar || '';
+                    console.log('Set question text (Arabic):', question.question_text_ar || '');
+                } else {
+                    console.error('Question text (Arabic) element not found!');
                 }
                 if (questionPointsEl) {
                     questionPointsEl.value = question.points;
@@ -1467,6 +1613,12 @@
                 } else {
                     console.error('Explanation element not found!');
                 }
+                if (explanationArEl) {
+                    explanationArEl.value = question.explanation_ar || '';
+                    console.log('Set explanation (Arabic):', question.explanation_ar || '');
+                } else {
+                    console.error('Explanation (Arabic) element not found!');
+                }
 
                 // Set question type and show relevant options
                 const questionTypeEl = form.querySelector('#questionType');
@@ -1481,14 +1633,28 @@
 
                         question.options.forEach((option, index) => {
                             const isCorrect = question.correct_answers && question.correct_answers.includes(index);
+                            const optionAr = question.options_ar && question.options_ar[index] ? question
+                                .options_ar[index] : '';
                             const optionDiv = document.createElement('div');
-                            optionDiv.className = 'option-item d-flex align-items-center';
+                            optionDiv.className = 'option-item mb-3';
                             optionDiv.innerHTML = `
-                                <input type="radio" name="correct_answers[]" value="${index}" class="me-2" ${isCorrect ? 'checked' : ''}>
-                                <input type="text" class="form-control me-2" name="options[]" placeholder="Option ${index + 1}" value="${option}" required>
-                                <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeOption(this)">
-                                    <i class="fa fa-times"></i>
-                                </button>
+                                <div class="d-flex align-items-center mb-2">
+                                    <input type="radio" name="correct_answers[]" value="${index}" class="me-2" ${isCorrect ? 'checked' : ''}>
+                                    <label class="form-label mb-0 me-2"><strong>Option ${index + 1}</strong></label>
+                                </div>
+                                <div class="row g-2">
+                                    <div class="col-md-5">
+                                        <input type="text" class="form-control" name="options[]" placeholder="Option ${index + 1} (English)" value="${option}" required>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <input type="text" class="form-control" name="options_ar[]" placeholder="الخيار ${index + 1} (عربي)" value="${optionAr}" dir="rtl">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-outline-danger w-100" onclick="removeOption(this)">
+                                            <i class="fa fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             `;
                             container.appendChild(optionDiv);
                         });
@@ -1504,13 +1670,25 @@
                         container.innerHTML = '';
 
                         question.correct_answers_text.forEach((answer, index) => {
+                            const answerAr = question.correct_answers_text_ar && question.correct_answers_text_ar[
+                                index] ? question.correct_answers_text_ar[index] : '';
                             const answerDiv = document.createElement('div');
-                            answerDiv.className = 'input-group mb-2';
+                            answerDiv.className = 'fill-blank-answer mb-3';
                             answerDiv.innerHTML = `
-                                <input type="text" class="form-control" name="correct_answers_text[]" placeholder="Correct answer ${index + 1}" value="${answer}" required>
-                                <button type="button" class="btn btn-outline-danger" onclick="removeFillBlank(this)">
-                                    <i class="fa fa-times"></i>
-                                </button>
+                                <label class="form-label mb-2"><strong>Answer ${index + 1}</strong></label>
+                                <div class="row g-2">
+                                    <div class="col-md-5">
+                                        <input type="text" class="form-control" name="correct_answers_text[]" placeholder="Correct answer ${index + 1} (English)" value="${answer}" required>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <input type="text" class="form-control" name="correct_answers_text_ar[]" placeholder="الإجابة الصحيحة ${index + 1} (عربي)" value="${answerAr}" dir="rtl">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-outline-danger w-100" onclick="removeFillBlank(this)">
+                                            <i class="fa fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             `;
                             container.appendChild(answerDiv);
                         });
@@ -1597,10 +1775,10 @@
                     <h6>${question.question_text}</h6>
                     ${optionsHtml ? `<div class="mt-3">${optionsHtml}</div>` : ''}
                     ${question.explanation ? `
-                                                                                                                    <div class="mt-3">
-                                                                                                                        <small class="text-muted"><strong>Explanation:</strong> ${question.explanation}</small>
-                                                                                                                    </div>
-                                                                                                                ` : ''}
+                                                                                                                                                                    <div class="mt-3">
+                                                                                                                                                                        <small class="text-muted"><strong>Explanation:</strong> ${question.explanation}</small>
+                                                                                                                                                                    </div>
+                                                                                                                                                                ` : ''}
                 </div>
             `;
 
@@ -1735,6 +1913,17 @@
         // Initialize connection type selection
         document.addEventListener('DOMContentLoaded', function() {
             const connectionType = document.querySelector('input[name="connection_type"]:checked').value;
+            const courseId = document.getElementById('course_id').value;
+
+            // Load sections/lectures if needed
+            if (courseId) {
+                if (connectionType === 'section') {
+                    loadSections(courseId);
+                } else if (connectionType === 'lecture') {
+                    loadLectures(courseId);
+                }
+            }
+
             selectConnectionType(connectionType);
         });
     </script>

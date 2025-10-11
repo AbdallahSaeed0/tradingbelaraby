@@ -246,6 +246,8 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
     Route::resource('enrollments', App\Http\Controllers\Admin\EnrollmentsController::class)->middleware('admin.permission:manage_enrollments');
     Route::resource('homework', App\Http\Controllers\Admin\HomeworkManagementController::class)->middleware('admin.permission:manage_homework,manage_own_homework');
     Route::resource('quizzes', App\Http\Controllers\Admin\QuizManagementController::class)->middleware('admin.permission:manage_quizzes,manage_own_quizzes');
+    Route::get('/quizzes/get-sections/{course}', [App\Http\Controllers\Admin\QuizManagementController::class, 'getSections'])->name('quizzes.get-sections');
+    Route::get('/quizzes/get-lectures/{course}', [App\Http\Controllers\Admin\QuizManagementController::class, 'getLectures'])->name('quizzes.get-lectures');
 Route::resource('quizzes.questions', App\Http\Controllers\Admin\QuizQuestionManagementController::class)->middleware('admin.permission:manage_quizzes,manage_own_quizzes');
     Route::resource('live-classes', App\Http\Controllers\Admin\LiveClassManagementController::class)->middleware('admin.permission:manage_live_classes,manage_own_live_classes');
     Route::get('/live-classes/{liveClass}/registrations', [App\Http\Controllers\Admin\LiveClassManagementController::class, 'registrations'])->name('live-classes.registrations')->middleware('admin.permission:manage_live_classes,manage_own_live_classes');
@@ -266,6 +268,7 @@ Route::resource('quizzes.questions', App\Http\Controllers\Admin\QuizQuestionMana
 
     // Settings routes
     Route::put('/settings/coming-soon', [App\Http\Controllers\Admin\SettingsController::class, 'updateComingSoon'])->name('settings.coming-soon.update');
+    Route::resource('partner-logos', App\Http\Controllers\Admin\PartnerLogoController::class);
 
     // Admin analytics routes
     Route::get('/courses/{course}/analytics', [App\Http\Controllers\Admin\CoursesController::class, 'analytics'])->name('courses.analytics')->middleware('admin.permission:view_analytics,view_own_analytics');

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $quiz->title . ' - Quiz')
+@section('title', $quiz->localized_name . ' - Quiz')
 
 @push('styles')
     <style>
@@ -331,8 +331,8 @@
                         <div class="course-badge mb-3">
                             <i class="fas fa-graduation-cap me-2"></i>{{ $course->name }}
                         </div>
-                        <h1 class="display-4 fw-bold mb-3">{{ $quiz->title }}</h1>
-                        <p class="lead mb-4 opacity-90">{{ $quiz->description }}</p>
+                        <h1 class="display-4 fw-bold mb-3">{{ $quiz->localized_name }}</h1>
+                        <p class="lead mb-4 opacity-90">{{ $quiz->localized_description }}</p>
 
                         <!-- Quiz Stats -->
                         <div class="quiz-stats-card rounded-4 p-4 mb-4">
@@ -549,7 +549,8 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
-                    <p class="mb-3">Are you sure you want to start the quiz <strong>"{{ $quiz->title }}"</strong>?</p>
+                    <p class="mb-3">Are you sure you want to start the quiz
+                        <strong>"{{ $quiz->localized_name }}"</strong>?</p>
                     <div class="alert alert-info border-0 rounded-3">
                         <i class="fas fa-info-circle me-2"></i>
                         <strong>Important:</strong> Once you start, the timer will begin and you cannot pause the quiz.

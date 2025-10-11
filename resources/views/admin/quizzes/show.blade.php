@@ -79,9 +79,35 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6">
-                                <p><strong>Description:</strong></p>
+                                <p><strong>Name (English):</strong></p>
+                                <p class="text-muted">{{ $quiz->name }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Name (Arabic):</strong></p>
+                                <p class="text-muted" dir="rtl">{{ $quiz->name_ar ?: 'لا يوجد' }}</p>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <p><strong>Description (English):</strong></p>
                                 <p class="text-muted">{{ $quiz->description ?: 'No description provided' }}</p>
                             </div>
+                            <div class="col-md-6">
+                                <p><strong>Description (Arabic):</strong></p>
+                                <p class="text-muted" dir="rtl">{{ $quiz->description_ar ?: 'لا يوجد' }}</p>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <p><strong>Instructions (English):</strong></p>
+                                <p class="text-muted">{{ $quiz->instructions ?: 'No instructions provided' }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Instructions (Arabic):</strong></p>
+                                <p class="text-muted" dir="rtl">{{ $quiz->instructions_ar ?: 'لا يوجد' }}</p>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
                             <div class="col-md-6">
                                 <p><strong>Course:</strong></p>
                                 <p class="text-muted">{{ $quiz->course->name }}</p>
@@ -124,8 +150,19 @@
                         <div class="row mt-3">
                             <div class="col-md-6">
                                 <small class="text-muted">Quiz Connection</small><br>
+                                @php
+                                    $connectionType = 'Course';
+                                    $connectionDetail = '';
+                                    if ($quiz->lecture_id && $quiz->lecture) {
+                                        $connectionType = 'Lecture';
+                                        $connectionDetail = ' - ' . $quiz->lecture->title;
+                                    } elseif ($quiz->section_id && $quiz->section) {
+                                        $connectionType = 'Section';
+                                        $connectionDetail = ' - ' . $quiz->section->title;
+                                    }
+                                @endphp
                                 <span class="badge bg-primary">
-                                    <i class="fa fa-link me-1"></i>{{ ucfirst($quiz->connection_type ?? 'course') }}
+                                    <i class="fa fa-link me-1"></i>{{ $connectionType }}{{ $connectionDetail }}
                                 </span>
                             </div>
                             <div class="col-md-6">

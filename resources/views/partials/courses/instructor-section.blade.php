@@ -52,7 +52,12 @@
                                     </div>
                                 </div>
                                 <div class="course-card-body">
-                                    <h5 class="course-title">{{ $instructor->name }}</h5>
+                                    <h5 class="course-title">
+                                        <a href="{{ route('instructor.show', $instructor->id) }}"
+                                            class="text-decoration-none text-dark">
+                                            {{ $instructor->name }}
+                                        </a>
+                                    </h5>
                                     <p class="course-desc">{{ __('Instructor') }}</p>
                                     <a href="{{ route('instructor.show', $instructor->id) }}"
                                         class="read-more">{{ __('View Profile') }} &rarr;</a>

@@ -242,7 +242,7 @@
                                 <div class="card-body">
                                     <div class="row g-3">
                                         <div class="col-md-6">
-                                            <label for="name" class="form-label">Quiz Title *</label>
+                                            <label for="name" class="form-label">Quiz Title (English) *</label>
                                             <input type="text" class="form-control @error('name') is-invalid @enderror"
                                                 id="name" name="name" value="{{ old('name') }}" required>
                                             @error('name')
@@ -251,6 +251,16 @@
                                         </div>
 
                                         <div class="col-md-6">
+                                            <label for="name_ar" class="form-label">Quiz Title (Arabic)</label>
+                                            <input type="text"
+                                                class="form-control @error('name_ar') is-invalid @enderror" id="name_ar"
+                                                name="name_ar" value="{{ old('name_ar') }}" dir="rtl">
+                                            @error('name_ar')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+
+                                        <div class="col-md-12">
                                             <label for="course_id" class="form-label">Course *</label>
                                             <select class="form-select @error('course_id') is-invalid @enderror"
                                                 id="course_id" name="course_id" required>
@@ -267,8 +277,8 @@
                                             @enderror
                                         </div>
 
-                                        <div class="col-12">
-                                            <label for="description" class="form-label">Description</label>
+                                        <div class="col-md-6">
+                                            <label for="description" class="form-label">Description (English)</label>
                                             <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description"
                                                 rows="3" placeholder="Describe what this quiz covers...">{{ old('description') }}</textarea>
                                             @error('description')
@@ -276,7 +286,32 @@
                                             @enderror
                                         </div>
 
+                                        <div class="col-md-6">
+                                            <label for="description_ar" class="form-label">Description (Arabic)</label>
+                                            <textarea class="form-control @error('description_ar') is-invalid @enderror" id="description_ar" name="description_ar"
+                                                rows="3" placeholder="وصف الاختبار..." dir="rtl">{{ old('description_ar') }}</textarea>
+                                            @error('description_ar')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
 
+                                        <div class="col-md-6">
+                                            <label for="instructions" class="form-label">Instructions (English)</label>
+                                            <textarea class="form-control @error('instructions') is-invalid @enderror" id="instructions" name="instructions"
+                                                rows="3" placeholder="Enter quiz instructions...">{{ old('instructions') }}</textarea>
+                                            @error('instructions')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label for="instructions_ar" class="form-label">Instructions (Arabic)</label>
+                                            <textarea class="form-control @error('instructions_ar') is-invalid @enderror" id="instructions_ar"
+                                                name="instructions_ar" rows="3" placeholder="تعليمات الاختبار..." dir="rtl">{{ old('instructions_ar') }}</textarea>
+                                            @error('instructions_ar')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
                                     </div>
                                 </div>
 
@@ -286,35 +321,41 @@
                                         <h5 class="mb-0"><i class="fa fa-link me-2"></i>Quiz Connection</h5>
                                     </div>
                                     <div class="card-body">
-                                        <p class="text-muted mb-3">Choose how this quiz connects to your course content:</p>
+                                        <p class="text-muted mb-3">Choose how this quiz connects to your course content:
+                                        </p>
 
-                                        <div class="connection-type-selector" onclick="selectConnectionType('course')">
+                                        <div class="connection-type-selector"
+                                            onclick="selectConnectionType('course', event)">
                                             <input type="radio" name="connection_type" id="connection_course"
                                                 value="course" checked>
                                             <label for="connection_course" class="fw-bold">Course Level</label>
                                             <p class="text-muted mb-0">Quiz available for the entire course</p>
                                         </div>
 
-                                        <div class="connection-type-selector" onclick="selectConnectionType('section')">
+                                        <div class="connection-type-selector"
+                                            onclick="selectConnectionType('section', event)">
                                             <input type="radio" name="connection_type" id="connection_section"
                                                 value="section">
                                             <label for="connection_section" class="fw-bold">Section Level</label>
                                             <p class="text-muted mb-0">Quiz available after completing a specific section
                                             </p>
-                                            <div id="section_selection" class="mt-3" style="display: none;">
+                                            <div id="section_selection" class="mt-3" style="display: none;"
+                                                onclick="event.stopPropagation()">
                                                 <select class="form-select" id="section_id" name="section_id">
                                                     <option value="">Select Section</option>
                                                 </select>
                                             </div>
                                         </div>
 
-                                        <div class="connection-type-selector" onclick="selectConnectionType('lecture')">
+                                        <div class="connection-type-selector"
+                                            onclick="selectConnectionType('lecture', event)">
                                             <input type="radio" name="connection_type" id="connection_lecture"
                                                 value="lecture">
                                             <label for="connection_lecture" class="fw-bold">Lecture Level</label>
                                             <p class="text-muted mb-0">Quiz available after completing a specific lecture
                                             </p>
-                                            <div id="lecture_selection" class="mt-3" style="display: none;">
+                                            <div id="lecture_selection" class="mt-3" style="display: none;"
+                                                onclick="event.stopPropagation()">
                                                 <select class="form-select" id="lecture_id" name="lecture_id">
                                                     <option value="">Select Lecture</option>
                                                 </select>
@@ -492,10 +533,16 @@
                                             <input type="hidden" id="questionType" name="question_type">
 
                                             <div class="row g-3">
-                                                <div class="col-12">
-                                                    <label for="questionText" class="form-label">Question Text
+                                                <div class="col-md-6">
+                                                    <label for="questionText" class="form-label">Question Text (English)
                                                         *</label>
                                                     <textarea class="form-control" id="questionText" name="question_text" rows="3" required></textarea>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <label for="questionTextAr" class="form-label">Question Text
+                                                        (Arabic)</label>
+                                                    <textarea class="form-control" id="questionTextAr" name="question_text_ar" rows="3" dir="rtl"></textarea>
                                                 </div>
 
                                                 <div class="col-md-6">
@@ -514,25 +561,57 @@
                                                 <div id="multipleChoiceOptions" class="col-12" style="display: none;">
                                                     <label class="form-label">Options *</label>
                                                     <div id="optionsContainer">
-                                                        <div class="option-item d-flex align-items-center">
-                                                            <input type="radio" name="correct_answer" value="0"
-                                                                class="me-2">
-                                                            <input type="text" class="form-control me-2"
-                                                                name="options[]" placeholder="Option 1">
-                                                            <button type="button" class="btn btn-outline-danger btn-sm"
-                                                                onclick="removeOption(this)">
-                                                                <i class="fa fa-times"></i>
-                                                            </button>
+                                                        <div class="option-item mb-3">
+                                                            <div class="d-flex align-items-center mb-2">
+                                                                <input type="radio" name="correct_answer"
+                                                                    value="0" class="me-2">
+                                                                <label class="form-label mb-0 me-2"><strong>Option
+                                                                        1</strong></label>
+                                                            </div>
+                                                            <div class="row g-2">
+                                                                <div class="col-md-5">
+                                                                    <input type="text" class="form-control"
+                                                                        name="options[]" placeholder="Option 1 (English)">
+                                                                </div>
+                                                                <div class="col-md-5">
+                                                                    <input type="text" class="form-control"
+                                                                        name="options_ar[]" placeholder="الخيار 1 (عربي)"
+                                                                        dir="rtl">
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <button type="button"
+                                                                        class="btn btn-outline-danger w-100"
+                                                                        onclick="removeOption(this)">
+                                                                        <i class="fa fa-times"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                        <div class="option-item d-flex align-items-center">
-                                                            <input type="radio" name="correct_answer" value="1"
-                                                                class="me-2">
-                                                            <input type="text" class="form-control me-2"
-                                                                name="options[]" placeholder="Option 2">
-                                                            <button type="button" class="btn btn-outline-danger btn-sm"
-                                                                onclick="removeOption(this)">
-                                                                <i class="fa fa-times"></i>
-                                                            </button>
+                                                        <div class="option-item mb-3">
+                                                            <div class="d-flex align-items-center mb-2">
+                                                                <input type="radio" name="correct_answer"
+                                                                    value="1" class="me-2">
+                                                                <label class="form-label mb-0 me-2"><strong>Option
+                                                                        2</strong></label>
+                                                            </div>
+                                                            <div class="row g-2">
+                                                                <div class="col-md-5">
+                                                                    <input type="text" class="form-control"
+                                                                        name="options[]" placeholder="Option 2 (English)">
+                                                                </div>
+                                                                <div class="col-md-5">
+                                                                    <input type="text" class="form-control"
+                                                                        name="options_ar[]" placeholder="الخيار 2 (عربي)"
+                                                                        dir="rtl">
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <button type="button"
+                                                                        class="btn btn-outline-danger w-100"
+                                                                        onclick="removeOption(this)">
+                                                                        <i class="fa fa-times"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     <button type="button" class="btn btn-outline-primary btn-sm mt-2"
@@ -560,14 +639,29 @@
                                                 <div id="fillBlankOptions" class="col-12" style="display: none;">
                                                     <label class="form-label">Correct Answers *</label>
                                                     <div id="fillBlankContainer">
-                                                        <div class="input-group mb-2">
-                                                            <input type="text" class="form-control"
-                                                                name="correct_answers_text[]"
-                                                                placeholder="Correct answer 1">
-                                                            <button type="button" class="btn btn-outline-danger"
-                                                                onclick="removeFillBlank(this)">
-                                                                <i class="fa fa-times"></i>
-                                                            </button>
+                                                        <div class="fill-blank-answer mb-3">
+                                                            <label class="form-label mb-2"><strong>Answer
+                                                                    1</strong></label>
+                                                            <div class="row g-2">
+                                                                <div class="col-md-5">
+                                                                    <input type="text" class="form-control"
+                                                                        name="correct_answers_text[]"
+                                                                        placeholder="Correct answer 1 (English)">
+                                                                </div>
+                                                                <div class="col-md-5">
+                                                                    <input type="text" class="form-control"
+                                                                        name="correct_answers_text_ar[]"
+                                                                        placeholder="الإجابة الصحيحة 1 (عربي)"
+                                                                        dir="rtl">
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <button type="button"
+                                                                        class="btn btn-outline-danger w-100"
+                                                                        onclick="removeFillBlank(this)">
+                                                                        <i class="fa fa-times"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     <button type="button" class="btn btn-outline-primary btn-sm"
@@ -576,10 +670,16 @@
                                                     </button>
                                                 </div>
 
-                                                <div class="col-12">
+                                                <div class="col-md-6">
                                                     <label for="explanation" class="form-label">Explanation
-                                                        (Optional)</label>
+                                                        (English)</label>
                                                     <textarea class="form-control" id="explanation" name="explanation" rows="2"></textarea>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <label for="explanationAr" class="form-label">Explanation
+                                                        (Arabic)</label>
+                                                    <textarea class="form-control" id="explanationAr" name="explanation_ar" rows="2" dir="rtl"></textarea>
                                                 </div>
 
                                                 <div class="col-12">
@@ -696,14 +796,26 @@
         });
 
         // Connection type selection
-        function selectConnectionType(type) {
+        function selectConnectionType(type, event) {
+            // Prevent default action and stop propagation
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
             // Remove selected class from all selectors
             document.querySelectorAll('.connection-type-selector').forEach(selector => {
                 selector.classList.remove('selected');
             });
 
             // Add selected class to clicked selector
-            event.currentTarget.classList.add('selected');
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add('selected');
+            } else {
+                // Fallback if event is not available
+                document.querySelector(`.connection-type-selector input[value="${type}"]`)?.closest(
+                    '.connection-type-selector')?.classList.add('selected');
+            }
 
             // Check the radio button
             document.getElementById('connection_' + type).checked = true;
@@ -725,7 +837,7 @@
 
         // Load sections for selected course
         function loadSections(courseId) {
-            fetch(`/admin/courses/${courseId}/sections`)
+            fetch(`/admin/quizzes/get-sections/${courseId}`)
                 .then(response => response.json())
                 .then(data => {
                     const select = document.getElementById('section_id');
@@ -745,7 +857,7 @@
 
         // Load lectures for selected course
         function loadLectures(courseId) {
-            fetch(`/admin/courses/${courseId}/lectures`)
+            fetch(`/admin/quizzes/get-lectures/${courseId}`)
                 .then(response => response.json())
                 .then(data => {
                     const select = document.getElementById('lecture_id');
@@ -895,14 +1007,26 @@
         function addOption() {
             const container = document.getElementById('optionsContainer');
             const newOption = document.createElement('div');
-            newOption.className = 'option-item d-flex align-items-center';
+            newOption.className = 'option-item mb-3';
             const isRequired = document.getElementById('questionType').value === 'multiple_choice';
             newOption.innerHTML = `
-                <input type="radio" name="correct_answer" value="${optionCount}" class="me-2">
-                <input type="text" class="form-control me-2" name="options[]" placeholder="Option ${optionCount + 1}" ${isRequired ? 'required' : ''}>
-                <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeOption(this)">
-                    <i class="fa fa-times"></i>
-                </button>
+                <div class="d-flex align-items-center mb-2">
+                    <input type="radio" name="correct_answer" value="${optionCount}" class="me-2">
+                    <label class="form-label mb-0 me-2"><strong>Option ${optionCount + 1}</strong></label>
+                </div>
+                <div class="row g-2">
+                    <div class="col-md-5">
+                        <input type="text" class="form-control" name="options[]" placeholder="Option ${optionCount + 1} (English)" ${isRequired ? 'required' : ''}>
+                    </div>
+                    <div class="col-md-5">
+                        <input type="text" class="form-control" name="options_ar[]" placeholder="الخيار ${optionCount + 1} (عربي)" dir="rtl">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-outline-danger w-100" onclick="removeOption(this)">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                </div>
             `;
             container.appendChild(newOption);
             optionCount++;
@@ -917,21 +1041,31 @@
         function addFillBlank() {
             const container = document.getElementById('fillBlankContainer');
             const newAnswer = document.createElement('div');
-            newAnswer.className = 'input-group mb-2';
+            newAnswer.className = 'fill-blank-answer mb-3';
             const isRequired = document.getElementById('questionType').value === 'fill_blank';
             newAnswer.innerHTML = `
-                <input type="text" class="form-control" name="correct_answers_text[]" placeholder="Correct answer ${fillBlankCount + 1}" ${isRequired ? 'required' : ''}>
-                <button type="button" class="btn btn-outline-danger" onclick="removeFillBlank(this)">
-                    <i class="fa fa-times"></i>
-                </button>
+                <label class="form-label mb-2"><strong>Answer ${fillBlankCount + 1}</strong></label>
+                <div class="row g-2">
+                    <div class="col-md-5">
+                        <input type="text" class="form-control" name="correct_answers_text[]" placeholder="Correct answer ${fillBlankCount + 1} (English)" ${isRequired ? 'required' : ''}>
+                    </div>
+                    <div class="col-md-5">
+                        <input type="text" class="form-control" name="correct_answers_text_ar[]" placeholder="الإجابة الصحيحة ${fillBlankCount + 1} (عربي)" dir="rtl">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-outline-danger w-100" onclick="removeFillBlank(this)">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                </div>
             `;
             container.appendChild(newAnswer);
             fillBlankCount++;
         }
 
         function removeFillBlank(button) {
-            if (document.querySelectorAll('#fillBlankContainer .input-group').length > 1) {
-                button.closest('.input-group').remove();
+            if (document.querySelectorAll('#fillBlankContainer .fill-blank-answer').length > 1) {
+                button.closest('.fill-blank-answer').remove();
             }
         }
 
@@ -999,20 +1133,20 @@
                     <div class="question-body">
                         <h6>${question.text}</h6>
                         ${question.options ? `
-                                                                                            <div class="mt-3">
-                                                                                                ${question.options.map((option, optIndex) => `
+                                                                                                                                        <div class="mt-3">
+                                                                                                                                            ${question.options.map((option, optIndex) => `
                                     <div class="option-item ${question.correctAnswers.includes(optIndex) ? 'correct' : ''}">
                                         <i class="fa fa-${question.correctAnswers.includes(optIndex) ? 'check-circle text-success' : 'circle text-muted'} me-2"></i>
                                         ${option}
                                     </div>
                                 `).join('')}
-                                                                                            </div>
-                                                                                        ` : ''}
+                                                                                                                                        </div>
+                                                                                                                                    ` : ''}
                         ${question.explanation ? `
-                                                                                            <div class="mt-3">
-                                                                                                <small class="text-muted"><strong>Explanation:</strong> ${question.explanation}</small>
-                                                                                            </div>
-                                                                                        ` : ''}
+                                                                                                                                        <div class="mt-3">
+                                                                                                                                            <small class="text-muted"><strong>Explanation:</strong> ${question.explanation}</small>
+                                                                                                                                        </div>
+                                                                                                                                    ` : ''}
                     </div>
                 </div>
             `).join('');
@@ -1051,18 +1185,23 @@
             const question = {
                 type: questionData.question_type,
                 text: questionData.question_text,
+                text_ar: questionData.question_text_ar || '',
                 points: parseInt(questionData.points),
                 order: parseInt(questionData.order) || questions.length + 1,
                 explanation: questionData.explanation || '',
-                options: questionData.options ? questionData.options.filter(opt => opt.trim()) : null,
+                explanation_ar: questionData.explanation_ar || '',
+                options: formData.getAll('options[]').filter(opt => opt.trim()),
+                options_ar: formData.getAll('options_ar[]').filter(opt => opt.trim()),
                 correctAnswers: questionData.correct_answer ? [parseInt(questionData.correct_answer)] : [],
                 correctAnswerBoolean: questionData.correct_answer_boolean ? questionData
                     .correct_answer_boolean === '1' : null,
-                correctAnswersText: questionData.correct_answers_text ? questionData.correct_answers_text
-                    .filter(ans => ans.trim()) : null
+                correctAnswersText: formData.getAll('correct_answers_text[]').filter(ans => ans.trim()),
+                correctAnswersTextAr: formData.getAll('correct_answers_text_ar[]').filter(ans => ans.trim())
             };
 
             questions.push(question);
+            console.log('Question added to array. Total questions:', questions.length);
+            console.log('Question data:', question);
             renderQuestionsList();
             updateStatistics();
             hideQuestionForm();
@@ -1101,6 +1240,17 @@
             const name = document.getElementById('name').value.trim();
             const courseId = document.getElementById('course_id').value;
             const passingScore = document.getElementById('passing_score').value;
+            const connectionType = document.querySelector('input[name="connection_type"]:checked').value;
+            const sectionId = document.getElementById('section_id').value;
+            const lectureId = document.getElementById('lecture_id').value;
+
+            console.log('Form Submission Debug:', {
+                name: name,
+                courseId: courseId,
+                connectionType: connectionType,
+                sectionId: sectionId,
+                lectureId: lectureId
+            });
 
             if (!name) {
                 e.preventDefault();
@@ -1120,13 +1270,30 @@
                 return false;
             }
 
+            // Validate connection type requirements
+            if (connectionType === 'section' && !sectionId) {
+                e.preventDefault();
+                toastr.error('Please select a section');
+                return false;
+            }
+
+            if (connectionType === 'lecture' && !lectureId) {
+                e.preventDefault();
+                toastr.error('Please select a lecture');
+                return false;
+            }
+
             // Add questions data to form before submission
+            console.log('Submitting quiz with questions:', questions);
             if (questions.length > 0) {
                 const questionsInput = document.createElement('input');
                 questionsInput.type = 'hidden';
                 questionsInput.name = 'questions_data';
                 questionsInput.value = JSON.stringify(questions);
                 this.appendChild(questionsInput);
+                console.log('Questions data added to form:', questionsInput.value);
+            } else {
+                console.warn('No questions added to quiz!');
             }
         });
 

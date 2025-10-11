@@ -231,6 +231,20 @@
                                     'valueAr' => old('description_ar'),
                                 ])
                             </div>
+
+                            <!-- Meetings Requirements (Multilingual) -->
+                            <div class="col-md-12 mb-3">
+                                @include('admin.courses.partials.multilingual-fields', [
+                                    'fieldName' => 'requirements',
+                                    'label' => 'Meetings Requirements',
+                                    'type' => 'textarea',
+                                    'required' => false,
+                                    'rows' => 3,
+                                    'placeholder' => 'Enter course requirements',
+                                    'value' => old('requirements'),
+                                    'valueAr' => old('requirements_ar'),
+                                ])
+                            </div>
                             <div class="col-md-6 mb-3">
                                 <label for="category" class="form-label">Category <span class="text-danger">*</span></label>
                                 <select class="form-select" id="category" name="category_id" required>
@@ -298,6 +312,17 @@
                                 <input type="text" class="form-control" id="duration" name="duration"
                                     placeholder="e.g., 8 weeks, 40 hours">
                             </div>
+                            <div class="col-md-12 mb-3">
+                                <label for="preview_video_url" class="form-label">Preview Video URL (YouTube/Vimeo)</label>
+                                <input type="url" class="form-control @error('preview_video_url') is-invalid @enderror"
+                                    id="preview_video_url" name="preview_video_url" value="{{ old('preview_video_url') }}"
+                                    placeholder="https://www.youtube.com/watch?v=... or https://vimeo.com/...">
+                                @error('preview_video_url')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted">Add a YouTube or Vimeo video URL to show as course
+                                    preview</small>
+                            </div>
                         </div>
                     </div>
 
@@ -330,6 +355,23 @@
 
                         <div id="learningObjectives">
                             <!-- Learning objectives will be added here -->
+                        </div>
+                    </div>
+
+                    <!-- Frequently Asked Questions (Multilingual) -->
+                    <div class="form-section">
+                        <div class="section-header">
+                            <h5><i class="fa fa-question-circle me-2"></i>Frequently Asked Questions</h5>
+                        </div>
+
+                        <div class="mb-3">
+                            <button type="button" class="btn btn-sm btn-outline-primary" id="addFaqItem">
+                                <i class="fa fa-plus me-1"></i>Add FAQ Item
+                            </button>
+                        </div>
+
+                        <div id="faqItems">
+                            <!-- FAQ items will be added here -->
                         </div>
                     </div>
                 </div>
@@ -396,6 +438,39 @@
                                     Free Course
                                 </label>
                             </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Display in Homepage Sections:</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="show_in_top_discounted"
+                                    name="show_in_top_discounted" value="1">
+                                <label class="form-check-label" for="show_in_top_discounted">
+                                    Top Discounted Courses
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="show_in_subscription_bundles"
+                                    name="show_in_subscription_bundles" value="1">
+                                <label class="form-check-label" for="show_in_subscription_bundles">
+                                    Subscription Bundles
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="show_in_live_meeting"
+                                    name="show_in_live_meeting" value="1">
+                                <label class="form-check-label" for="show_in_live_meeting">
+                                    Live Meeting
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="show_in_recent_courses"
+                                    name="show_in_recent_courses" value="1">
+                                <label class="form-check-label" for="show_in_recent_courses">
+                                    Recent Courses
+                                </label>
+                            </div>
+                            <small class="text-muted">Select one or more sections to display this course on the
+                                homepage</small>
                         </div>
                     </div>
 
@@ -833,9 +908,63 @@
 
                 container.appendChild(objectiveDiv);
 
-                // Add remove functionality
+                // Remove learning objective event
                 objectiveDiv.querySelector('.remove-learning-objective').addEventListener('click', function() {
                     objectiveDiv.remove();
+                });
+            }
+
+            // FAQ Items management
+            let faqItemCounter = 0;
+
+            document.getElementById('addFaqItem').addEventListener('click', function() {
+                addFaqItem();
+            });
+
+            function addFaqItem() {
+                const index = faqItemCounter++;
+                const container = document.getElementById('faqItems');
+
+                const faqDiv = document.createElement('div');
+                faqDiv.className = 'faq-item mb-4 p-3 border rounded bg-light';
+                faqDiv.innerHTML = `
+                    <h6 class="mb-3"><i class="fa fa-question-circle me-2"></i>FAQ Item #${index + 1}</h6>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Question (English)</label>
+                            <input type="text" class="form-control" name="faq_course[${index}][question]"
+                                   placeholder="Enter question in English">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Question (Arabic)</label>
+                            <input type="text" class="form-control" name="faq_course_ar[${index}][question]"
+                                   placeholder="أدخل السؤال باللغة العربية" dir="rtl">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label">Answer (English)</label>
+                            <textarea class="form-control" name="faq_course[${index}][answer]" rows="3"
+                                      placeholder="Enter answer in English"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Answer (Arabic)</label>
+                            <textarea class="form-control" name="faq_course_ar[${index}][answer]" rows="3"
+                                      placeholder="أدخل الإجابة باللغة العربية" dir="rtl"></textarea>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <button type="button" class="btn btn-sm btn-outline-danger remove-faq-item">
+                            <i class="fa fa-trash me-1"></i>Remove FAQ
+                        </button>
+                    </div>
+                `;
+
+                container.appendChild(faqDiv);
+
+                // Remove FAQ event
+                faqDiv.querySelector('.remove-faq-item').addEventListener('click', function() {
+                    faqDiv.remove();
                 });
             }
 

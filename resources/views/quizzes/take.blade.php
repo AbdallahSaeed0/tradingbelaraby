@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $quiz->title . ' - Quiz')
+@section('title', $quiz->localized_name . ' - Quiz')
 
 @section('content')
     <!-- Banner Section -->
@@ -11,7 +11,7 @@
         <div class="quiz-banner-overlay position-absolute w-100 h-100 top-0 start-0"
             style="background:rgba(24,49,63,0.65); z-index:2;"></div>
         <div class="container position-relative z-3 text-center">
-            <h1 class="display-4 fw-bold text-white mb-3">{{ $quiz->title }}</h1>
+            <h1 class="display-4 fw-bold text-white mb-3">{{ $quiz->localized_name }}</h1>
             <div class="d-flex justify-content-center align-items-center gap-4 mb-3">
                 <!-- Timer -->
                 <div class="quiz-timer bg-white text-dark px-4 py-2 rounded-pill fw-bold shadow">
@@ -38,14 +38,14 @@
                         <!-- Question Title -->
                         <div class="question-title-section mb-4">
                             <h3 class="question-title fw-bold mb-3" id="questionTitle">
-                                Q1. {{ $questions->first()->question_text }}
+                                Q1. {{ $questions->first()->localized_question_text }}
                             </h3>
                         </div>
 
                         <!-- MCQ Options -->
                         <div class="mcq-options mb-5" id="mcqOptions">
-                            @if ($questions->first()->options && is_array($questions->first()->options))
-                                @foreach ($questions->first()->options as $index => $option)
+                            @if ($questions->first()->localized_options && is_array($questions->first()->localized_options))
+                                @foreach ($questions->first()->localized_options as $index => $option)
                                     <div class="form-check mcq-option mb-3">
                                         <input class="form-check-input mcq-radio" type="radio" name="answer"
                                             id="option{{ $index }}" value="{{ $index }}"
@@ -135,8 +135,8 @@
         {!! json_encode($questions->map(function ($question) {
             return [
                 'id' => $question->id,
-                'question' => $question->question_text,
-                'options' => $question->options ?? [],
+                'question' => $question->localized_question_text,
+                'options' => $question->localized_options ?? [],
                 'question_type' => $question->question_type,
             ];
         })) !!}
@@ -406,19 +406,25 @@
                 answers[questionId] = userAnswers[questionId];
             });
 
-            // Submit quiz
-            const formData = new FormData();
-            formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
-            formData.append('attempt_id', {{ $attempt->id }});
-            formData.append('answers', JSON.stringify(answers));
-
+            // Submit quiz using JSON
             fetch('{{ route('quizzes.submit', $quiz) }}', {
                     method: 'POST',
-                    body: formData
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        attempt_id: {{ $attempt->id }},
+                        answers: answers
+                    })
                 })
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('Network response was not ok');
+                        return response.text().then(text => {
+                            console.error('Server response:', text);
+                            throw new Error('Network response was not ok: ' + response.status);
+                        });
                     }
                     return response.json();
                 })
@@ -446,7 +452,7 @@
                             window.location.href = data.redirect_url;
                         }, 3000);
                     } else {
-                        alert('Error submitting quiz: ' + data.error);
+                        alert('Error submitting quiz: ' + (data.error || 'Unknown error'));
                     }
                 })
                 .catch(error => {

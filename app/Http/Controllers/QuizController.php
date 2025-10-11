@@ -36,7 +36,7 @@ class QuizController extends Controller
         if (!$enrollment) {
             return redirect()->route('courses.show', $course)->with('error', 'You must be enrolled in this course to view quiz attempts.');
         }
-        $attempts = $quiz->attempts()->where('user_id', Auth::id())->with(['answers'])->orderBy('created_at', 'desc')->paginate(10);
+        $attempts = $quiz->attempts()->where('user_id', Auth::id())->orderBy('created_at', 'desc')->paginate(10);
         return view('courses.quiz-attempts', compact('quiz', 'course', 'attempts'));
     }
 
@@ -49,15 +49,25 @@ class QuizController extends Controller
             abort(404);
         }
         $course = $quiz->course;
-        $questions = $quiz->questions()->with('options')->get();
+        $questions = $quiz->questions()->orderBy('order')->get();
         $totalQuestions = $questions->count();
 
-        // Count correct answers from the JSON answers field
+        // Count correct answers and attach result data to questions
         $correctAnswers = 0;
         if ($attempt->answers) {
-            foreach ($attempt->answers as $questionId => $answerData) {
-                if (isset($answerData['is_correct']) && $answerData['is_correct']) {
-                    $correctAnswers++;
+            foreach ($questions as $question) {
+                $answerData = $attempt->answers[$question->id] ?? null;
+
+                if ($answerData) {
+                    $question->user_answer = $answerData['answer'] ?? null;
+                    $question->is_correct = $answerData['is_correct'] ?? false;
+
+                    if ($question->is_correct) {
+                        $correctAnswers++;
+                    }
+                } else {
+                    $question->user_answer = null;
+                    $question->is_correct = false;
                 }
             }
         }
@@ -154,16 +164,18 @@ class QuizController extends Controller
     {
         $request->validate([
             'attempt_id' => 'required|exists:quiz_attempts,id',
-            'answers' => 'required|array',
-            'answers.*' => 'required|integer|min:0'
+            'answers' => 'required|array'
         ]);
+
         $attempt = QuizAttempt::where('id', $request->attempt_id)
             ->where('user_id', Auth::id())
             ->where('quiz_id', $quiz->id)
             ->first();
+
         if (!$attempt) {
             return response()->json(['error' => 'Invalid attempt.'], 404);
         }
+
         if ($attempt->status !== 'in_progress') {
             return response()->json(['error' => 'This attempt has already been submitted.'], 400);
         }
@@ -173,16 +185,44 @@ class QuizController extends Controller
         $totalQuestions = $quiz->questions()->count();
         $processedAnswers = [];
 
-        foreach ($answers as $questionId => $optionId) {
+        foreach ($answers as $questionId => $userAnswer) {
             $question = QuizQuestion::find($questionId);
-            $isCorrect = in_array($optionId, $question->correct_answers ?? []);
-            if ($isCorrect) {
+
+            if (!$question) {
+                continue;
+            }
+
+            $isCorrect = false;
+
+            // Check correctness based on question type
+            switch ($question->question_type) {
+                case 'multiple_choice':
+                    $isCorrect = in_array((int)$userAnswer, $question->correct_answers ?? []);
+                    break;
+
+                case 'true_false':
+                    $isCorrect = ((bool)$userAnswer) === $question->correct_answer_boolean;
+                    break;
+
+                case 'fill_blank':
+                    $userAnswerLower = strtolower(trim($userAnswer));
+                    $correctAnswers = array_map('strtolower', $question->correct_answers_text ?? []);
+                    $isCorrect = in_array($userAnswerLower, $correctAnswers);
+                    break;
+
+                case 'essay':
+                    // Essay questions require manual grading
+                    $isCorrect = null;
+                    break;
+            }
+
+            if ($isCorrect === true) {
                 $correctCount++;
             }
 
             // Store answer in JSON format
             $processedAnswers[$questionId] = [
-                'answer' => $optionId,
+                'answer' => $userAnswer,
                 'is_correct' => $isCorrect,
                 'submitted_at' => now()->toISOString()
             ];
@@ -198,6 +238,7 @@ class QuizController extends Controller
             'is_passed' => $score >= $quiz->passing_score,
             'answers' => $processedAnswers
         ]);
+
         return response()->json([
             'success' => true,
             'redirect_url' => route('quizzes.results', ['quiz' => $quiz, 'attempt' => $attempt])

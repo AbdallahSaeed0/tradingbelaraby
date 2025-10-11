@@ -108,17 +108,48 @@ class QuizManagementController extends Controller
     }
 
     /**
+     * Get sections for a course (AJAX)
+     */
+    public function getSections(Course $course)
+    {
+        $sections = $course->sections()->orderBy('order')->get(['id', 'title']);
+        return response()->json($sections);
+    }
+
+    /**
+     * Get lectures for a course (AJAX)
+     */
+    public function getLectures(Course $course)
+    {
+        $lectures = $course->lectures()
+            ->with('section:id,title')
+            ->orderBy('order')
+            ->get(['id', 'title', 'section_id'])
+            ->map(function ($lecture) {
+                return [
+                    'id' => $lecture->id,
+                    'title' => $lecture->title,
+                    'section_title' => $lecture->section->title ?? ''
+                ];
+            });
+
+        return response()->json($lectures);
+    }
+
+    /**
      * Store new quiz
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validationRules = [
             'name' => 'required|string|max:255',
+            'name_ar' => 'nullable|string|max:255',
             'description' => 'nullable|string',
+            'description_ar' => 'nullable|string',
+            'instructions' => 'nullable|string',
+            'instructions_ar' => 'nullable|string',
             'course_id' => 'required|exists:courses,id',
             'connection_type' => 'required|in:course,section,lecture',
-            'section_id' => 'nullable|required_if:connection_type,section|exists:course_sections,id',
-            'lecture_id' => 'nullable|required_if:connection_type,lecture|exists:course_lectures,id',
             'time_limit_minutes' => 'nullable|integer|min:1',
             'passing_score' => 'required|numeric|min:0|max:100',
             'available_from' => 'nullable|date',
@@ -126,23 +157,55 @@ class QuizManagementController extends Controller
             'is_published' => 'boolean',
             'is_randomized' => 'boolean',
             'show_results_immediately' => 'boolean',
+        ];
+
+        // Add conditional validation based on connection type
+        if ($request->connection_type === 'section') {
+            $validationRules['section_id'] = 'required|exists:course_sections,id';
+        } elseif ($request->connection_type === 'lecture') {
+            $validationRules['lecture_id'] = 'required|exists:course_lectures,id';
+        }
+
+        $request->validate($validationRules);
+
+        // Debug logging
+        \Log::info('Quiz Create Request Data:', [
+            'connection_type' => $request->connection_type,
+            'section_id' => $request->section_id,
+            'lecture_id' => $request->lecture_id,
         ]);
 
-        $data = $request->all();
-        $data['instructor_id'] = auth('admin')->id();
-        $data['is_published'] = $request->input('is_published') === '1';
-        $data['is_randomized'] = $request->has('is_randomized');
-        $data['show_results_immediately'] = $request->has('show_results_immediately');
+        $data = [
+            'name' => $request->name,
+            'name_ar' => $request->name_ar,
+            'description' => $request->description,
+            'description_ar' => $request->description_ar,
+            'instructions' => $request->instructions,
+            'instructions_ar' => $request->instructions_ar,
+            'course_id' => $request->course_id,
+            'instructor_id' => auth('admin')->id(),
+            'time_limit_minutes' => $request->time_limit_minutes,
+            'passing_score' => $request->passing_score,
+            'available_from' => $request->available_from,
+            'available_until' => $request->available_until,
+            'is_published' => $request->input('is_published') === '1',
+            'is_randomized' => $request->has('is_randomized'),
+            'show_results_immediately' => $request->has('show_results_immediately'),
+        ];
 
         // Handle connection type
         if ($request->connection_type === 'course') {
             $data['section_id'] = null;
             $data['lecture_id'] = null;
         } elseif ($request->connection_type === 'section') {
+            $data['section_id'] = $request->section_id;
             $data['lecture_id'] = null;
         } elseif ($request->connection_type === 'lecture') {
             $data['section_id'] = null;
+            $data['lecture_id'] = $request->lecture_id;
         }
+
+        \Log::info('Quiz Data to Save:', $data);
 
         $quiz = Quiz::create($data);
 
@@ -155,26 +218,31 @@ class QuizManagementController extends Controller
                     $question = new QuizQuestion([
                         'quiz_id' => $quiz->id,
                         'question_text' => $questionData['text'],
+                        'question_text_ar' => $questionData['text_ar'] ?? null,
                         'question_type' => $questionData['type'],
                         'points' => $questionData['points'],
                         'order' => $questionData['order'],
                         'explanation' => $questionData['explanation'] ?? null,
+                        'explanation_ar' => $questionData['explanation_ar'] ?? null,
                     ]);
 
                     // Handle different question types
                     switch ($questionData['type']) {
                         case 'multiple_choice':
-                            $question->options = $questionData['options'];
-                            $question->correct_answers = $questionData['correctAnswers'];
+                            $question->options = $questionData['options'] ?? [];
+                            $question->options_ar = $questionData['options_ar'] ?? [];
+                            $question->correct_answers = $questionData['correctAnswers'] ?? [];
                             break;
                         case 'true_false':
-                            $question->correct_answer_boolean = $questionData['correctAnswerBoolean'];
+                            $question->correct_answer_boolean = $questionData['correctAnswerBoolean'] ?? null;
                             break;
                         case 'fill_blank':
-                            $question->correct_answers_text = $questionData['correctAnswersText'];
+                            $question->correct_answers_text = $questionData['correctAnswersText'] ?? [];
+                            $question->correct_answers_text_ar = $questionData['correctAnswersTextAr'] ?? [];
                             break;
                         case 'essay':
-                            // Essay questions don't need specific answer data
+                            $question->sample_answer = $questionData['sampleAnswer'] ?? null;
+                            $question->sample_answer_ar = $questionData['sampleAnswerAr'] ?? null;
                             break;
                     }
 
@@ -223,13 +291,15 @@ class QuizManagementController extends Controller
         public function update(Request $request, Quiz $quiz)
     {
         try {
-            $request->validate([
+            $validationRules = [
                 'name' => 'required|string|max:255',
+                'name_ar' => 'nullable|string|max:255',
                 'description' => 'nullable|string',
+                'description_ar' => 'nullable|string',
+                'instructions' => 'nullable|string',
+                'instructions_ar' => 'nullable|string',
                 'course_id' => 'required|exists:courses,id',
                 'connection_type' => 'required|in:course,section,lecture',
-                'section_id' => 'nullable|required_if:connection_type,section|exists:course_sections,id',
-                'lecture_id' => 'nullable|required_if:connection_type,lecture|exists:course_lectures,id',
                 'time_limit_minutes' => 'nullable|integer|min:1',
                 'passing_score' => 'required|numeric|min:0|max:100',
                 'available_from' => 'nullable|date',
@@ -237,23 +307,44 @@ class QuizManagementController extends Controller
                 'is_published' => 'nullable|in:0,1',
                 'is_randomized' => 'boolean',
                 'show_results_immediately' => 'boolean',
-            ]);
+            ];
 
-            $data = $request->all();
+            // Add conditional validation based on connection type
+            if ($request->connection_type === 'section') {
+                $validationRules['section_id'] = 'required|exists:course_sections,id';
+            } elseif ($request->connection_type === 'lecture') {
+                $validationRules['lecture_id'] = 'required|exists:course_lectures,id';
+            }
 
-            // Handle boolean fields more robustly
-            $data['is_published'] = $request->has('is_published') && $request->input('is_published') === '1';
-            $data['is_randomized'] = $request->has('is_randomized');
-            $data['show_results_immediately'] = $request->has('show_results_immediately');
+            $request->validate($validationRules);
+
+            $data = [
+                'name' => $request->name,
+                'name_ar' => $request->name_ar,
+                'description' => $request->description,
+                'description_ar' => $request->description_ar,
+                'instructions' => $request->instructions,
+                'instructions_ar' => $request->instructions_ar,
+                'course_id' => $request->course_id,
+                'time_limit_minutes' => $request->time_limit_minutes,
+                'passing_score' => $request->passing_score,
+                'available_from' => $request->available_from,
+                'available_until' => $request->available_until,
+                'is_published' => $request->has('is_published') && $request->input('is_published') === '1',
+                'is_randomized' => $request->has('is_randomized'),
+                'show_results_immediately' => $request->has('show_results_immediately'),
+            ];
 
             // Handle connection type
             if ($request->connection_type === 'course') {
                 $data['section_id'] = null;
                 $data['lecture_id'] = null;
             } elseif ($request->connection_type === 'section') {
+                $data['section_id'] = $request->section_id;
                 $data['lecture_id'] = null;
             } elseif ($request->connection_type === 'lecture') {
                 $data['section_id'] = null;
+                $data['lecture_id'] = $request->lecture_id;
             }
 
             $quiz->update($data);
@@ -750,6 +841,7 @@ class QuizManagementController extends Controller
     {
         $newQuiz = $quiz->replicate();
         $newQuiz->name = $quiz->name . ' (Copy)';
+        $newQuiz->name_ar = $quiz->name_ar ? $quiz->name_ar . ' (نسخة)' : null;
         $newQuiz->is_published = false;
         $newQuiz->created_at = now();
         $newQuiz->updated_at = now();
