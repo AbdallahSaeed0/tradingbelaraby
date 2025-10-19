@@ -1,0 +1,49 @@
+/* Admin Analytics Pages */
+
+/* Analytics Cards */
+.analytics-card {
+    border-left: 4px solid #0d6efd;
+    transition: all 0.3s ease;
+}
+
+.analytics-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.analytics-card.success {
+    border-left-color: #198754;
+}
+
+.analytics-card.warning {
+    border-left-color: #ffc107;
+}
+
+.analytics-card.danger {
+    border-left-color: #dc3545;
+}
+
+.analytics-card.info {
+    border-left-color: #0dcaf0;
+}
+
+/* Statistics Numbers */
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Charts Container */
+.chart-container {
+    position: relative;
+    height: 300px;
+    padding: 1rem;
+}

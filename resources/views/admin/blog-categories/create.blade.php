@@ -109,8 +109,7 @@
 
                                 <div class="mb-3">
                                     <div id="imagePreview" class="d-none">
-                                        <img id="previewImg" src="" alt="Preview" class="img-thumbnail"
-                                            style="max-width: 200px;">
+                                        <img id="previewImg" src="" alt="Preview" class="img-thumbnail max-w-200">
                                         <button type="button" class="btn btn-sm btn-outline-danger ms-2" id="removeImage">
                                             <i class="fas fa-times me-1"></i> Remove
                                         </button>

@@ -47,7 +47,7 @@
                     <div class="col-12 col-md-4 col-lg-3">
                         <a href="{{ route('categories') }}?category={{ $category->slug }}"
                             class="btn {{ $selectedCategory && $selectedCategory->id == $category->id ? 'btn-primary' : 'btn-light' }} w-100 py-4 shadow-sm d-flex flex-column align-items-center justify-content-center subcat-btn text-decoration-none">
-                            <i class="fas fa-graduation-cap me-2 mb-2" style="font-size: 2rem;"></i>
+                            <i class="fas fa-graduation-cap me-2 mb-2 fs-2rem"></i>
                             <span
                                 class="fw-semibold">{{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}</span>
                         </a>
@@ -75,12 +75,12 @@
                         @endif
                     </h2>
                     <div class="d-flex gap-2">
-                        <select class="form-select sort-dropdown me-2" style="max-width:120px;">
+                        <select class="form-select sort-dropdown me-2 max-w-120">
                             <option>{{ custom_trans('sort') }}</option>
                             <option value="newest">{{ custom_trans('newest') }}</option>
                             <option value="popular">{{ custom_trans('popular') }}</option>
                         </select>
-                        <select class="form-select limit-dropdown" style="max-width:120px;">
+                        <select class="form-select limit-dropdown max-w-120">
                             <option>{{ custom_trans('limit') }}</option>
                             <option value="5">5</option>
                             <option value="10">10</option>
@@ -133,8 +133,8 @@
                             <div class="col-12 course-card-col">
                                 <div class="card h-100 shadow-sm border-0">
                                     <div class="position-relative">
-                                        <img src="{{ $course->image_url }}" class="card-img-top" alt="{{ $course->name }}"
-                                            style="height: 200px; object-fit: cover;">
+                                        <img src="{{ $course->image_url }}" class="card-img-top img-h-200"
+                                            alt="{{ $course->name }}">
                                         @if ($course->is_featured)
                                             <span class="badge bg-success position-absolute top-0 start-0 m-2">
                                                 {{ custom_trans('featured') }}

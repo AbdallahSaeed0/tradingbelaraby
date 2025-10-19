@@ -97,7 +97,7 @@
 
                         <div class="mb-4">
                             <label class="form-label fw-bold text-muted">{{ __('Message') }}</label>
-                            <div class="form-control-plaintext" style="min-height: 150px; white-space: pre-wrap;">
+                            <div class="form-control-plaintext min-h-150 ws-pre-wrap">
                                 {{ $contactForm->message }}</div>
                         </div>
 
@@ -168,7 +168,7 @@
                             </div>
                         </div>
 
-                        <div id="statusForm" style="display: none;">
+                        <div id="statusForm" class="d-none-initially">
                             <div class="mb-3">
                                 <label for="status" class="form-label">{{ __('New Status') }}</label>
                                 <select class="form-select" id="status">

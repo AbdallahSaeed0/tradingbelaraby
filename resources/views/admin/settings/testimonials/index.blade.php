@@ -135,7 +135,7 @@
                                     </td>
                                     <td>
                                         <img src="{{ $testimonial->avatar_url }}" alt="{{ $testimonial->name }}"
-                                            class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                                            class="rounded-circle w-40 h-40 img-h-60">
                                     </td>
                                     <td>{{ $testimonial->name }}</td>
                                     <td>{{ $testimonial->name_ar ?: '-' }}</td>
@@ -363,7 +363,7 @@
                 const totalCheckboxes = $('.testimonial-checkbox').length;
                 const checkedCheckboxes = $('.testimonial-checkbox:checked').length;
                 $('#select_all').prop('indeterminate', checkedCheckboxes > 0 && checkedCheckboxes <
-                totalCheckboxes);
+                    totalCheckboxes);
                 $('#select_all').prop('checked', checkedCheckboxes === totalCheckboxes && totalCheckboxes > 0);
             }
 
@@ -414,7 +414,7 @@
                         error: function() {
                             toastr.error(
                                 '{{ __('An error occurred while performing the bulk action') }}'
-                                );
+                            );
                         }
                     });
                 }
@@ -440,7 +440,7 @@
                     },
                     error: function() {
                         toastr.error(
-                        '{{ __('An error occurred while updating the status') }}');
+                            '{{ __('An error occurred while updating the status') }}');
                         // Revert the checkbox
                         $(this).prop('checked', !isChecked);
                     }
@@ -471,7 +471,7 @@
                         error: function() {
                             toastr.error(
                                 '{{ __('An error occurred while deleting the testimonial') }}'
-                                );
+                            );
                         }
                     });
                 }
@@ -499,7 +499,7 @@
                 if (testimonial.avatar) {
                     $('#edit_current_avatar').html(`
                         <img src="/storage/${testimonial.avatar}" alt="Current avatar"
-                             class="img-thumbnail" style="max-height: 100px;">
+                             class="img-thumbnail max-h-100">
                     `);
                 } else {
                     $('#edit_current_avatar').html(
@@ -544,7 +544,7 @@
                             error: function() {
                                 toastr.error(
                                     '{{ __('An error occurred while updating the order') }}'
-                                    );
+                                );
                             }
                         });
                     }

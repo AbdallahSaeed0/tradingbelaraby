@@ -275,8 +275,8 @@
                                                     <img src="{{ asset('storage/' . $admin->avatar) }}" alt="Avatar"
                                                         class="rounded-circle me-2" width="32" height="32">
                                                 @else
-                                                    <div class="bg-light rounded-circle me-2 d-flex align-items-center justify-content-center"
-                                                        style="width: 32px; height: 32px;">
+                                                    <div
+                                                        class="bg-light rounded-circle me-2 d-flex align-items-center justify-content-center w-32 h-32">
                                                         <i class="fa fa-user text-muted"></i>
                                                     </div>
                                                 @endif

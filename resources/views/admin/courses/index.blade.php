@@ -176,10 +176,10 @@
                                 <i class="fa fa-th me-1"></i>Grid View
                             </button>
                         </div>
-                        <button class="btn btn-sm btn-outline-danger me-2" id="bulkDelete" style="display: none;">
+                        <button class="btn btn-sm btn-outline-danger me-2 d-none-initially" id="bulkDelete">
                             <i class="fa fa-trash me-1"></i>Delete Selected
                         </button>
-                        <div class="dropdown me-2" id="bulkStatusDropdown" style="display: none;">
+                        <div class="dropdown me-2 d-none-initially" id="bulkStatusDropdown">
                             <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button"
                                 data-bs-toggle="dropdown">
                                 <i class="fa fa-toggle-on me-1"></i>Change Status
@@ -266,8 +266,8 @@
                                                 <img src="{{ $course->image_url }}" alt="Course"
                                                     class="course-thumbnail me-3">
                                             @else
-                                                <div class="course-thumbnail me-3 bg-primary text-white d-flex align-items-center justify-content-center"
-                                                    style="font-size: 12px;">
+                                                <div
+                                                    class="course-thumbnail me-3 bg-primary text-white d-flex align-items-center justify-content-center fs-12px">
                                                     {{ strtoupper(substr($course->name, 0, 2)) }}
                                                 </div>
                                             @endif
@@ -305,8 +305,8 @@
                                                                 class="rounded-circle me-2" width="24"
                                                                 height="24">
                                                         @else
-                                                            <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center me-2"
-                                                                style="width: 24px; height: 24px; font-size: 10px;">
+                                                            <div
+                                                                class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center me-2 w-24 h-24 fs-10px">
                                                                 {{ strtoupper(substr($instructor->name, 0, 2)) }}
                                                             </div>
                                                         @endif

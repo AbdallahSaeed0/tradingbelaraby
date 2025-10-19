@@ -84,7 +84,7 @@
                                                 value="{{ $mainContent->background_image }}">
                                             <div class="mt-2">
                                                 <img src="{{ $mainContent->background_image_url }}" alt="Background"
-                                                    class="img-thumbnail" style="max-width: 150px;">
+                                                    class="img-thumbnail max-w-150">
                                             </div>
                                         @endif
                                     </div>
@@ -99,7 +99,7 @@
                                                 value="{{ $mainContent->main_image }}">
                                             <div class="mt-2">
                                                 <img src="{{ $mainContent->main_image_url }}" alt="Main"
-                                                    class="img-thumbnail" style="max-width: 150px;">
+                                                    class="img-thumbnail max-w-150">
                                             </div>
                                         @endif
                                     </div>
@@ -232,7 +232,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <i class="fas fa-grip-vertical drag-handle" style="cursor: move;"></i>
+                                        <i class="fas fa-grip-vertical drag-handle cursor-move"></i>
                                         <span class="badge bg-secondary">{{ $feature->order }}</span>
                                     </td>
                                     <td>

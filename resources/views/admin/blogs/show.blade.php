@@ -30,8 +30,8 @@
                     <div class="card-body">
                         @if ($blog->image)
                             <div class="text-center mb-4">
-                                <img src="{{ $blog->image_url }}" alt="{{ $blog->title }}" class="img-fluid rounded"
-                                    style="max-height: 400px;">
+                                <img src="{{ $blog->image_url }}" alt="{{ $blog->title }}"
+                                    class="img-fluid rounded max-h-400">
                             </div>
                         @endif
 
@@ -220,10 +220,10 @@
                             <div class="d-flex align-items-center mb-3">
                                 @if ($blog->category->image)
                                     <img src="{{ $blog->category->image_url }}" alt="{{ $blog->category->name }}"
-                                        class="rounded me-2" style="width: 50px; height: 40px; object-fit: cover;">
+                                        class="rounded me-2 w-50 h-40 item-image-sm">
                                 @else
-                                    <div class="bg-secondary rounded me-2 d-flex align-items-center justify-content-center"
-                                        style="width: 50px; height: 40px;">
+                                    <div
+                                        class="bg-secondary rounded me-2 d-flex align-items-center justify-content-center w-50 h-40 item-placeholder-sm">
                                         <i class="fas fa-tag text-white"></i>
                                     </div>
                                 @endif

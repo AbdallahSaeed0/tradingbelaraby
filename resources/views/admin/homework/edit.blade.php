@@ -346,11 +346,11 @@
                                     <div class="file-upload-area" id="mainFileUpload">
                                         <i class="fa fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
                                         <p class="mb-1">Drag and drop a new file here or click to browse</p>
-                                        <input type="file" class="form-control" name="attachment_file"
-                                            id="attachment_file" style="display: none;">
+                                        <input type="file" class="form-control d-none" name="attachment_file"
+                                            id="attachment_file">
                                         <button type="button" class="btn btn-outline-primary btn-sm">Choose File</button>
                                     </div>
-                                    <div id="mainFilePreview" class="file-preview" style="display: none;">
+                                    <div id="mainFilePreview" class="file-preview d-none-initially">
                                         <div class="file-info">
                                             <div class="d-flex align-items-center">
                                                 <div class="file-icon text-primary">
@@ -419,8 +419,8 @@
                                     <div class="file-upload-area" id="additionalFilesUpload">
                                         <i class="fa fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
                                         <p class="mb-1">Drag and drop additional files here or click to browse</p>
-                                        <input type="file" class="form-control" name="additional_files[]"
-                                            id="additional_files" multiple style="display: none;">
+                                        <input type="file" class="form-control d-none" name="additional_files[]"
+                                            id="additional_files" multiple>
                                         <button type="button" class="btn btn-outline-primary btn-sm">Choose
                                             Files</button>
                                     </div>

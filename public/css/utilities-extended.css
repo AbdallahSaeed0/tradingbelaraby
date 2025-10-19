@@ -1,0 +1,408 @@
+/* Extended Utility Classes */
+
+/* Min Width Utilities */
+.min-w-200 {
+    min-width: 200px;
+}
+
+.min-w-250 {
+    min-width: 250px;
+}
+
+.min-w-300 {
+    min-width: 300px;
+}
+
+.min-w-350 {
+    min-width: 350px;
+}
+
+.min-w-400 {
+    min-width: 400px;
+}
+
+/* Min Height Utilities */
+.min-h-150 {
+    min-height: 150px;
+}
+
+/* Max Width Utilities */
+.max-w-100 {
+    max-width: 100px;
+}
+
+.max-w-120 {
+    max-width: 120px;
+}
+
+.max-w-150 {
+    max-width: 150px;
+}
+
+.max-w-200 {
+    max-width: 200px;
+}
+
+.max-w-400 {
+    max-width: 400px;
+}
+
+.max-w-500 {
+    max-width: 500px;
+}
+
+.max-w-520 {
+    max-width: 520px;
+}
+
+.max-w-560 {
+    max-width: 560px;
+}
+
+.max-w-600 {
+    max-width: 600px;
+}
+
+/* Background Utilities */
+.bg-light-gray {
+    background: #f8f9fa;
+}
+
+.bg-light-blue {
+    background: #e3f2fd;
+}
+
+.bg-light-blue-section {
+    background-color: #eff7ff;
+}
+
+.bg-light-green {
+    background: #e8f5e9;
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Display Utilities */
+.d-none-initially {
+    display: none;
+}
+
+/* Overflow Utilities */
+.overflow-auto {
+    overflow-y: auto;
+}
+
+/* Preview Elements */
+.avatar-preview {
+    max-width: 150px;
+    max-height: 150px;
+    border-radius: 50%;
+}
+
+.testimonial-avatar-img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.cover-preview {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 8px;
+}
+
+.img-preview-bordered {
+    border: 1px solid #ddd;
+    padding: 5px;
+}
+
+.logo-preview-md {
+    max-height: 100px;
+}
+
+.logo-preview-lg {
+    max-height: 150px;
+}
+
+.logo-preview-max {
+    max-width: 100px;
+    max-height: 50px;
+}
+
+.slider-thumb {
+    width: 80px;
+    height: 50px;
+    object-fit: cover;
+}
+
+.img-modal-preview {
+    max-width: 100%;
+    max-height: 300px;
+}
+
+/* Height Utilities */
+.h-200 {
+    height: 200px;
+}
+
+.h-300 {
+    height: 300px;
+}
+
+.h-8 {
+    height: 8px;
+}
+
+.h-20 {
+    height: 20px;
+}
+
+.h-24 {
+    height: 24px;
+}
+
+.h-32 {
+    height: 32px;
+}
+
+.h-40 {
+    height: 40px;
+}
+
+.h-50 {
+    height: 50px;
+}
+
+.h-60 {
+    height: 60px;
+}
+
+.h-80 {
+    height: 80px;
+}
+
+/* Max Height Utilities */
+.max-h-50 {
+    max-height: 50px;
+}
+
+.max-h-100 {
+    max-height: 100px;
+}
+
+.max-h-150 {
+    max-height: 150px;
+}
+
+.max-h-200 {
+    max-height: 200px;
+}
+
+.max-h-300 {
+    max-height: 300px;
+}
+
+.max-h-400 {
+    max-height: 400px;
+}
+
+/* Width Utilities */
+.w-auto {
+    width: auto;
+}
+
+.w-32px {
+    width: 32px;
+}
+
+.w-20 {
+    width: 20px;
+}
+
+.w-24 {
+    width: 24px;
+}
+
+.w-32 {
+    width: 32px;
+}
+
+.w-40 {
+    width: 40px;
+}
+
+.w-50 {
+    width: 50px;
+}
+
+.w-60 {
+    width: 60px;
+}
+
+.w-80 {
+    width: 80px;
+}
+
+.w-200 {
+    width: 200px;
+}
+
+/* Image Height Utilities (with object-fit) */
+.img-h-60 {
+    height: 60px;
+    object-fit: cover;
+}
+
+.img-h-120 {
+    height: 120px;
+    object-fit: cover;
+}
+
+.img-h-150 {
+    height: 150px;
+    object-fit: cover;
+}
+
+.img-h-200 {
+    height: 200px;
+    object-fit: cover;
+}
+
+/* Font Size Utilities */
+.fs-9px {
+    font-size: 9px;
+}
+
+.fs-10px {
+    font-size: 10px;
+}
+
+.fs-12px {
+    font-size: 12px;
+}
+
+.fs-1rem {
+    font-size: 1rem;
+}
+
+.fs-1-1rem {
+    font-size: 1.1rem;
+}
+
+.fs-1-2rem {
+    font-size: 1.2rem;
+}
+
+.fs-1-5rem {
+    font-size: 1.5rem;
+}
+
+.fs-2rem {
+    font-size: 2rem;
+}
+
+.fs-2-5rem {
+    font-size: 2.5rem;
+}
+
+.fs-4rem {
+    font-size: 4rem;
+}
+
+/* Opacity Utilities */
+.opacity-10 {
+    opacity: 0.1;
+}
+
+/* Transition Utilities */
+.transition-opacity {
+    transition: opacity 0.3s ease;
+}
+
+/* Z-Index Utilities */
+.z-2 {
+    z-index: 2;
+}
+
+/* Cursor Utilities */
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.cursor-move {
+    cursor: move;
+}
+
+/* Play Button */
+.play-btn-circle {
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+}
+
+/* Progress Bar */
+.progress-h-5 {
+    height: 5px;
+}
+
+.progress-h-6 {
+    height: 6px;
+}
+
+.progress-h-8 {
+    height: 8px;
+}
+
+.progress-h-20 {
+    height: 20px;
+}
+
+/* File Download Section */
+.file-download-section {
+    width: 100%;
+    text-align: center;
+    padding: 2rem;
+}
+
+/* Text Utilities */
+.text-truncate-200 {
+    max-width: 200px;
+}
+
+.text-truncate-300 {
+    max-width: 300px;
+}
+
+.ws-pre-wrap {
+    white-space: pre-wrap;
+}
+
+/* Input Transparent */
+.input-transparent {
+    border: none;
+    outline: none;
+    background: transparent;
+}
+
+/* PDF/Export Specific Styles */
+.pdf-empty-state {
+    text-align: center;
+    padding: 20px;
+}
+
+.pdf-footer {
+    margin-top: 30px;
+    text-align: center;
+    color: #666;
+    font-size: 12px;
+}
+
+/* Hero Slide Background */
+.hero-slide-bg {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}

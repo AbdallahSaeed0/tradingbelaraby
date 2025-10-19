@@ -9,9 +9,10 @@
             <form class="d-flex" method="get">
                 <input type="text" name="q" value="{{ $search ?? '' }}" class="form-control form-control-sm me-2"
                     placeholder="Search...">
-                <select name="per_page" class="form-select form-select-sm me-2" style="width:auto;">
+                <select name="per_page" class="form-select form-select-sm me-2 w-auto">
                     @foreach ([10, 15, 25, 50] as $s)
-                        <option value="{{ $s }}" {{ ($perPage ?? 15) == $s ? 'selected' : '' }}>{{ $s }}
+                        <option value="{{ $s }}" {{ ($perPage ?? 15) == $s ? 'selected' : '' }}>
+                            {{ $s }}
                         </option>
                     @endforeach
                 </select>

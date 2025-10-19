@@ -220,7 +220,7 @@
                                         </a>
                                     </td>
                                     <td>
-                                        <span class="text-truncate d-inline-block" style="max-width: 200px;"
+                                        <span class="text-truncate d-inline-block text-truncate-200"
                                             title="{{ $form->subject }}">
                                             {{ $form->subject ?? 'No subject' }}
                                         </span>

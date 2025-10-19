@@ -52,7 +52,7 @@
         </div>
 
         <!-- Bulk Actions -->
-        <div class="row mb-4" id="bulkActions" style="display: none;">
+        <div class="row mb-4 d-none-initially" id="bulkActions">
             <div class="col-12">
                 <div class="card shadow-sm border-warning">
                     <div class="card-body">
@@ -106,8 +106,8 @@
                                                 </td>
                                                 <td>
                                                     <div class="d-flex align-items-center">
-                                                        <div class="bg-primary rounded-circle me-3 d-flex align-items-center justify-content-center"
-                                                            style="width: 40px; height: 40px;">
+                                                        <div
+                                                            class="bg-primary rounded-circle me-3 d-flex align-items-center justify-content-center w-40 h-40">
                                                             <i class="fa fa-user text-white"></i>
                                                         </div>
                                                         <div>
@@ -197,7 +197,7 @@
     </div>
 
     <!-- Bulk Delete Form -->
-    <form id="bulkDeleteForm" action="{{ route('admin.traders.bulk-delete') }}" method="POST" style="display: none;">
+    <form id="bulkDeleteForm" action="{{ route('admin.traders.bulk-delete') }}" method="POST" class="d-none-initially">
         @csrf
         @method('DELETE')
         <input type="hidden" name="trader_ids" id="selectedTraderIds">

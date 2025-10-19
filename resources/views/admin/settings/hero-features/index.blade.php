@@ -11,7 +11,8 @@
                     <h4 class="page-title">{{ __('Hero Features Management') }}</h4>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ __('Settings') }}</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ __('Settings') }}</a>
+                        </li>
                         <li class="breadcrumb-item active">{{ __('Hero Features') }}</li>
                     </ol>
                 </div>
@@ -33,22 +34,29 @@
                         <label for="status_filter" class="form-label">{{ __('Status') }}</label>
                         <select class="form-select form-select-lg" id="status_filter" name="status">
                             <option value="">{{ __('All Status') }}</option>
-                            <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>{{ __('Active') }}</option>
-                            <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>{{ __('Inactive') }}</option>
+                            <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>
+                                {{ __('Active') }}</option>
+                            <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>
+                                {{ __('Inactive') }}</option>
                         </select>
                     </div>
                     <div class="col-md-4">
                         <label for="search_filter" class="form-label">{{ __('Search') }}</label>
-                        <input type="text" class="form-control form-control-lg" id="search_filter" name="search" 
-                               value="{{ request('search') }}" placeholder="{{ __('Search by title, subtitle...') }}" autocomplete="off">
+                        <input type="text" class="form-control form-control-lg" id="search_filter" name="search"
+                            value="{{ request('search') }}" placeholder="{{ __('Search by title, subtitle...') }}"
+                            autocomplete="off">
                     </div>
                     <div class="col-md-3">
                         <label for="order_filter" class="form-label">{{ __('Order By') }}</label>
                         <select class="form-select form-select-lg" id="order_filter" name="order_by">
-                            <option value="order" {{ request('order_by', 'order') === 'order' ? 'selected' : '' }}>{{ __('Order') }}</option>
-                            <option value="title" {{ request('order_by') === 'title' ? 'selected' : '' }}>{{ __('Title') }}</option>
-                            <option value="subtitle" {{ request('order_by') === 'subtitle' ? 'selected' : '' }}>{{ __('Subtitle') }}</option>
-                            <option value="created_at" {{ request('order_by') === 'created_at' ? 'selected' : '' }}>{{ __('Created Date') }}</option>
+                            <option value="order" {{ request('order_by', 'order') === 'order' ? 'selected' : '' }}>
+                                {{ __('Order') }}</option>
+                            <option value="title" {{ request('order_by') === 'title' ? 'selected' : '' }}>
+                                {{ __('Title') }}</option>
+                            <option value="subtitle" {{ request('order_by') === 'subtitle' ? 'selected' : '' }}>
+                                {{ __('Subtitle') }}</option>
+                            <option value="created_at" {{ request('order_by') === 'created_at' ? 'selected' : '' }}>
+                                {{ __('Created Date') }}</option>
                         </select>
                     </div>
                     <div class="col-md-2">
@@ -65,7 +73,7 @@
         <div class="card table-card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">{{ __('Hero Features') }}</h5>
-                <div class="bulk-actions" style="display: none;">
+                <div class="bulk-actions d-none-initially">
                     <div class="btn-group" role="group">
                         <button type="button" class="btn btn-success btn-sm" id="bulk_activate">
                             <i class="fas fa-check me-1"></i>{{ __('Activate') }}
@@ -104,7 +112,8 @@
                                 <tr data-id="{{ $heroFeature->id }}">
                                     <td>
                                         <div class="form-check">
-                                            <input class="form-check-input feature-checkbox" type="checkbox" value="{{ $heroFeature->id }}">
+                                            <input class="form-check-input feature-checkbox" type="checkbox"
+                                                value="{{ $heroFeature->id }}">
                                         </div>
                                     </td>
                                     <td>
@@ -116,26 +125,27 @@
                                     <td>{{ $heroFeature->title }}</td>
                                     <td>{{ $heroFeature->title_ar ?: '-' }}</td>
                                     <td>{{ Str::limit($heroFeature->subtitle, 50) }}</td>
-                                    <td>{{ $heroFeature->subtitle_ar ? Str::limit($heroFeature->subtitle_ar, 50) : '-' }}</td>
+                                    <td>{{ $heroFeature->subtitle_ar ? Str::limit($heroFeature->subtitle_ar, 50) : '-' }}
+                                    </td>
                                     <td>
                                         <div class="form-check form-switch">
-                                            <input class="form-check-input status-toggle" type="checkbox" 
-                                                   data-id="{{ $heroFeature->id }}" 
-                                                   {{ $heroFeature->is_active ? 'checked' : '' }}>
+                                            <input class="form-check-input status-toggle" type="checkbox"
+                                                data-id="{{ $heroFeature->id }}"
+                                                {{ $heroFeature->is_active ? 'checked' : '' }}>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="btn-group" role="group">
-                                            <button type="button" class="btn btn-sm btn-outline-info view-btn" 
-                                                    data-hero-feature="{{ json_encode($heroFeature->toArray()) }}">
+                                            <button type="button" class="btn btn-sm btn-outline-info view-btn"
+                                                data-hero-feature="{{ json_encode($heroFeature->toArray()) }}">
                                                 <i class="fas fa-eye"></i>
                                             </button>
-                                            <button type="button" class="btn btn-sm btn-outline-warning edit-btn" 
-                                                    data-hero-feature="{{ json_encode($heroFeature->toArray()) }}">
+                                            <button type="button" class="btn btn-sm btn-outline-warning edit-btn"
+                                                data-hero-feature="{{ json_encode($heroFeature->toArray()) }}">
                                                 <i class="fas fa-edit"></i>
                                             </button>
-                                            <button type="button" class="btn btn-sm btn-outline-danger delete-btn" 
-                                                    data-id="{{ $heroFeature->id }}">
+                                            <button type="button" class="btn btn-sm btn-outline-danger delete-btn"
+                                                data-id="{{ $heroFeature->id }}">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </div>
@@ -164,7 +174,8 @@
     </div>
 
     <!-- Add Hero Feature Modal -->
-    <div class="modal fade" id="addHeroFeatureModal" tabindex="-1" aria-labelledby="addHeroFeatureModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addHeroFeatureModal" tabindex="-1" aria-labelledby="addHeroFeatureModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -206,15 +217,17 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="icon" class="form-label">{{ __('Icon Class') }} *</label>
-                                    <input type="text" class="form-control" id="icon" name="icon" 
-                                           placeholder="fas fa-anchor" required>
-                                    <small class="form-text text-muted">{{ __('Enter FontAwesome icon class (e.g., fas fa-anchor)') }}</small>
+                                    <input type="text" class="form-control" id="icon" name="icon"
+                                        placeholder="fas fa-anchor" required>
+                                    <small
+                                        class="form-text text-muted">{{ __('Enter FontAwesome icon class (e.g., fas fa-anchor)') }}</small>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="order" class="form-label">{{ __('Order') }}</label>
-                                    <input type="number" class="form-control" id="order" name="order" value="0" min="0">
+                                    <input type="number" class="form-control" id="order" name="order"
+                                        value="0" min="0">
                                 </div>
                             </div>
                         </div>
@@ -228,7 +241,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('Cancel') }}</button>
+                        <button type="button" class="btn btn-secondary"
+                            data-bs-dismiss="modal">{{ __('Cancel') }}</button>
                         <button type="submit" class="btn btn-primary">{{ __('Create Hero Feature') }}</button>
                     </div>
                 </form>
@@ -237,7 +251,8 @@
     </div>
 
     <!-- Edit Hero Feature Modal -->
-    <div class="modal fade" id="editHeroFeatureModal" tabindex="-1" aria-labelledby="editHeroFeatureModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editHeroFeatureModal" tabindex="-1" aria-labelledby="editHeroFeatureModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -266,12 +281,14 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="edit_subtitle" class="form-label">{{ __('Subtitle') }} *</label>
-                                    <input type="text" class="form-control" id="edit_subtitle" name="subtitle" required>
+                                    <input type="text" class="form-control" id="edit_subtitle" name="subtitle"
+                                        required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="edit_subtitle_ar" class="form-label">{{ __('Subtitle (Arabic)') }}</label>
+                                    <label for="edit_subtitle_ar"
+                                        class="form-label">{{ __('Subtitle (Arabic)') }}</label>
                                     <input type="text" class="form-control" id="edit_subtitle_ar" name="subtitle_ar">
                                 </div>
                             </div>
@@ -281,13 +298,15 @@
                                 <div class="mb-3">
                                     <label for="edit_icon" class="form-label">{{ __('Icon Class') }} *</label>
                                     <input type="text" class="form-control" id="edit_icon" name="icon" required>
-                                    <small class="form-text text-muted">{{ __('Enter FontAwesome icon class (e.g., fas fa-anchor)') }}</small>
+                                    <small
+                                        class="form-text text-muted">{{ __('Enter FontAwesome icon class (e.g., fas fa-anchor)') }}</small>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="edit_order" class="form-label">{{ __('Order') }}</label>
-                                    <input type="number" class="form-control" id="edit_order" name="order" min="0">
+                                    <input type="number" class="form-control" id="edit_order" name="order"
+                                        min="0">
                                 </div>
                             </div>
                         </div>
@@ -301,7 +320,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('Cancel') }}</button>
+                        <button type="button" class="btn btn-secondary"
+                            data-bs-dismiss="modal">{{ __('Cancel') }}</button>
                         <button type="submit" class="btn btn-warning">{{ __('Update Hero Feature') }}</button>
                     </div>
                 </form>
@@ -310,7 +330,8 @@
     </div>
 
     <!-- View Hero Feature Modal -->
-    <div class="modal fade" id="viewHeroFeatureModal" tabindex="-1" aria-labelledby="viewHeroFeatureModalLabel" aria-hidden="true">
+    <div class="modal fade" id="viewHeroFeatureModal" tabindex="-1" aria-labelledby="viewHeroFeatureModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -372,7 +393,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('Close') }}</button>
+                    <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">{{ __('Close') }}</button>
                 </div>
             </div>
         </div>
@@ -538,8 +560,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
     </style>
 @endpush
@@ -617,7 +644,7 @@
             function updateSelectAll() {
                 const totalCheckboxes = $('.feature-checkbox').length;
                 const checkedCheckboxes = $('.feature-checkbox:checked').length;
-                
+
                 if (checkedCheckboxes === 0) {
                     $('#select_all').prop('indeterminate', false).prop('checked', false);
                 } else if (checkedCheckboxes === totalCheckboxes) {
@@ -637,7 +664,7 @@
             });
 
             $('#bulk_delete').on('click', function() {
-                if (confirm('{{ __("Are you sure you want to delete the selected hero features?") }}')) {
+                if (confirm('{{ __('Are you sure you want to delete the selected hero features?') }}')) {
                     performBulkAction('delete');
                 }
             });
@@ -648,7 +675,7 @@
                 }).get();
 
                 if (selectedIds.length === 0) {
-                    toastr.warning('{{ __("Please select at least one hero feature") }}');
+                    toastr.warning('{{ __('Please select at least one hero feature') }}');
                     return;
                 }
 
@@ -671,7 +698,7 @@
                         }
                     },
                     error: function() {
-                        toastr.error('{{ __("An error occurred while performing bulk action") }}');
+                        toastr.error('{{ __('An error occurred while performing bulk action') }}');
                     }
                 });
             }
@@ -695,7 +722,9 @@
                         }
                     },
                     error: function() {
-                        toastr.error('{{ __("An error occurred while updating the hero feature status") }}');
+                        toastr.error(
+                            '{{ __('An error occurred while updating the hero feature status') }}'
+                            );
                         // Revert the checkbox
                         $(this).prop('checked', !isChecked);
                     }
@@ -705,7 +734,7 @@
             // Add hero feature form
             $('#addHeroFeatureForm').on('submit', function(e) {
                 e.preventDefault();
-                
+
                 $.ajax({
                     url: '{{ route('admin.settings.hero-feature.store') }}',
                     method: 'POST',
@@ -728,7 +757,9 @@
                         }
                     },
                     error: function() {
-                        toastr.error('{{ __("An error occurred while creating the hero feature") }}');
+                        toastr.error(
+                            '{{ __('An error occurred while creating the hero feature') }}'
+                            );
                     }
                 });
             });
@@ -736,9 +767,9 @@
             // Edit hero feature form
             $('#editHeroFeatureForm').on('submit', function(e) {
                 e.preventDefault();
-                
+
                 const heroFeatureId = $('#edit_hero_feature_id').val();
-                
+
                 $.ajax({
                     url: `/admin/settings/hero-feature/${heroFeatureId}`,
                     method: 'POST',
@@ -761,7 +792,9 @@
                         }
                     },
                     error: function() {
-                        toastr.error('{{ __("An error occurred while updating the hero feature") }}');
+                        toastr.error(
+                            '{{ __('An error occurred while updating the hero feature') }}'
+                            );
                     }
                 });
             });
@@ -769,7 +802,7 @@
             // Edit button click
             $('.edit-btn').on('click', function() {
                 const heroFeature = $(this).data('hero-feature');
-                
+
                 $('#edit_hero_feature_id').val(heroFeature.id);
                 $('#edit_title').val(heroFeature.title);
                 $('#edit_title_ar').val(heroFeature.title_ar);
@@ -778,30 +811,31 @@
                 $('#edit_icon').val(heroFeature.icon);
                 $('#edit_order').val(heroFeature.order);
                 $('#edit_is_active').prop('checked', heroFeature.is_active);
-                
+
                 $('#editHeroFeatureModal').modal('show');
             });
 
             // View button click
             $('.view-btn').on('click', function() {
                 const heroFeature = $(this).data('hero-feature');
-                
+
                 $('#view_title').text(heroFeature.title);
                 $('#view_title_ar').text(heroFeature.title_ar || '-');
                 $('#view_subtitle').text(heroFeature.subtitle);
                 $('#view_subtitle_ar').text(heroFeature.subtitle_ar || '-');
                 $('#view_icon i').attr('class', heroFeature.icon + ' fa-3x text-primary');
                 $('#view_order').text(heroFeature.order);
-                $('#view_status').text(heroFeature.is_active ? '{{ __('Active') }}' : '{{ __('Inactive') }}');
-                
+                $('#view_status').text(heroFeature.is_active ? '{{ __('Active') }}' :
+                    '{{ __('Inactive') }}');
+
                 $('#viewHeroFeatureModal').modal('show');
             });
 
             // Delete button click
             $('.delete-btn').on('click', function() {
                 const heroFeatureId = $(this).data('id');
-                
-                if (confirm('{{ __("Are you sure you want to delete this hero feature?") }}')) {
+
+                if (confirm('{{ __('Are you sure you want to delete this hero feature?') }}')) {
                     $.ajax({
                         url: `/admin/settings/hero-feature/${heroFeatureId}`,
                         method: 'DELETE',
@@ -819,7 +853,9 @@
                             }
                         },
                         error: function() {
-                            toastr.error('{{ __("An error occurred while deleting the hero feature") }}');
+                            toastr.error(
+                                '{{ __('An error occurred while deleting the hero feature') }}'
+                                );
                         }
                     });
                 }
@@ -851,11 +887,13 @@
                             }
                         },
                         error: function() {
-                            toastr.error('{{ __("An error occurred while updating the order") }}');
+                            toastr.error(
+                                '{{ __('An error occurred while updating the order') }}'
+                                );
                         }
                     });
                 }
             });
         });
     </script>
-@endpush 
+@endpush

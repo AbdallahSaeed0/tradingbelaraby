@@ -293,8 +293,8 @@
                                                     <img src="{{ asset('storage/' . $instructor->avatar) }}"
                                                         class="rounded-circle me-2" width="20" height="20">
                                                 @else
-                                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-2"
-                                                        style="width: 20px; height: 20px; font-size: 9px;">
+                                                    <div
+                                                        class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-2 w-20 h-20 fs-9px">
                                                         {{ strtoupper(substr($instructor->name, 0, 2)) }}
                                                     </div>
                                                 @endif
@@ -484,12 +484,12 @@
                             <input type="url" class="form-control" id="videoUrl" name="video_url"
                                 placeholder="YouTube, Vimeo, etc.">
                         </div>
-                        <div class="mb-3" id="fileUploadInput" style="display: none;">
+                        <div class="mb-3 d-none-initially" id="fileUploadInput">
                             <label for="lectureFile" class="form-label">Upload File</label>
                             <input type="file" class="form-control" id="lectureFile" name="file"
                                 accept="video/*,audio/*,.pdf,.doc,.docx,.ppt,.pptx">
                         </div>
-                        <div class="mb-3" id="textContentInput" style="display: none;">
+                        <div class="mb-3 d-none-initially" id="textContentInput">
                             <label for="textContent" class="form-label">Text Content</label>
                             <textarea class="form-control" id="textContent" name="content_text" rows="6"></textarea>
                         </div>

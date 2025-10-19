@@ -112,8 +112,8 @@
                                                                 alt="{{ $registration->user->name }}"
                                                                 class="rounded-circle me-2" width="40" height="40">
                                                         @else
-                                                            <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center me-2"
-                                                                style="width: 40px; height: 40px;">
+                                                            <div
+                                                                class="bg-secondary rounded-circle d-flex align-items-center justify-content-center me-2 w-40 h-40">
                                                                 <i class="fas fa-user text-white"></i>
                                                             </div>
                                                         @endif
@@ -197,8 +197,8 @@
                                                 <td>{{ $index + 1 }}</td>
                                                 <td>
                                                     <div class="d-flex align-items-center">
-                                                        <div class="bg-danger rounded-circle d-flex align-items-center justify-content-center me-2"
-                                                            style="width: 40px; height: 40px;">
+                                                        <div
+                                                            class="bg-danger rounded-circle d-flex align-items-center justify-content-center me-2 w-40 h-40">
                                                             <i class="fas fa-user-slash text-white"></i>
                                                         </div>
                                                         <div>

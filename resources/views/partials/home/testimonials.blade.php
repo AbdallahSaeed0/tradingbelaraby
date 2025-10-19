@@ -35,8 +35,7 @@
                         </div>
 
                         <img src="{{ $testimonial->avatar_url }}" class="testimonial-avatar mb-2"
-                            alt="{{ $testimonial->getDisplayName() }}"
-                            style="width: 60px; height: 60px; object-fit: cover; border-radius: 50%;">
+                            alt="{{ $testimonial->getDisplayName() }}" class="testimonial-avatar-img">
                         <h5 class="mb-0">{{ $testimonial->getDisplayName() }}</h5>
                         <small class="text-muted">{{ $testimonial->getDisplayPosition() }} at
                             {{ $testimonial->getDisplayCompany() }}</small>
@@ -72,7 +71,7 @@
                             {{ __('It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.') }}
                         </p>
                         <img src="{{ $t['img'] }}" class="testimonial-avatar mb-2" alt="{{ $t['name'] }}"
-                            style="width: 60px; height: 60px; object-fit: cover; border-radius: 50%;">
+                            class="testimonial-avatar-img">
                         <h5 class="mb-0">{{ $t['name'] }}</h5>
                         <small class="text-muted">{{ $t['role'] }}</small>
                     </div>

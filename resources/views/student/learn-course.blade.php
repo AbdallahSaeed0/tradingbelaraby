@@ -98,7 +98,7 @@
 
                 <!-- Live Class Tab -->
                 <div class="tab-pane fade" id="live" role="tabpanel" aria-labelledby="live-tab">
-                    <div class="live-class-section" style="background-color: #EFF7FF; padding: 2rem 0;">
+                    <div class="live-class-section bg-light-blue-section py-5">
                         <div class="container">
                             <div class="d-flex justify-content-between align-items-center mb-4">
                                 <h3 class="fw-bold">{{ __('Live Classes') }}</h3>
@@ -220,7 +220,7 @@
 
                 <!-- Homework Tab -->
                 <div class="tab-pane fade" id="homework" role="tabpanel" aria-labelledby="homework-tab">
-                    <div class="homework-section" style="background-color: #EFF7FF; padding: 2rem 0;">
+                    <div class="homework-section bg-light-blue-section py-5">
                         <div class="container">
                             <div class="d-flex justify-content-between align-items-center mb-4">
                                 <h3 class="fw-bold">{{ __('Homework Assignments') }}</h3>
@@ -334,7 +334,7 @@
                     <!-- Video Player Container -->
                     <div id="videoPlayerContainer">
                         <!-- HTML5 Video Player for direct video files -->
-                        <div class="ratio ratio-16x9" id="html5VideoContainer" style="display: none;">
+                        <div class="ratio ratio-16x9 d-none-initially" id="html5VideoContainer">
                             <video controls id="courseVideo">
                                 <source src="" type="video/mp4">
                                 {{ __('Your browser does not support the video tag.') }}
@@ -342,17 +342,17 @@
                         </div>
 
                         <!-- YouTube Embed -->
-                        <div class="ratio ratio-16x9" id="youtubePlayer" style="display: none;">
+                        <div class="ratio ratio-16x9 d-none-initially" id="youtubePlayer">
                             <iframe id="youtubeIframe" frameborder="0" allowfullscreen></iframe>
                         </div>
 
                         <!-- Vimeo Embed -->
-                        <div class="ratio ratio-16x9" id="vimeoPlayer" style="display: none;">
+                        <div class="ratio ratio-16x9 d-none-initially" id="vimeoPlayer">
                             <iframe id="vimeoIframe" frameborder="0" allowfullscreen></iframe>
                         </div>
 
                         <!-- File Download for other file types -->
-                        <div id="fileDownload" style="width: 100%; display: none; text-align: center; padding: 2rem;">
+                        <div id="fileDownload" class="file-download-section d-none-initially">
                             <i class="fa fa-file fa-3x text-primary mb-3"></i>
                             <h5>{{ __('File Available for Download') }}</h5>
                             <p class="text-muted">{{ __('This content is available as a downloadable file.') }}</p>

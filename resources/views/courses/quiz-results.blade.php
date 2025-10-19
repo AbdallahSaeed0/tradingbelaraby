@@ -8,12 +8,10 @@
 
 @section('content')
     <!-- Banner Section -->
-    <section class="quiz-banner position-relative d-flex align-items-center justify-content-center"
-        style="min-height: 340px;">
+    <section class="quiz-banner position-relative d-flex align-items-center justify-content-center">
         <img src="https://eclass.mediacity.co.in/demo2/public/images/breadcum/16953680301690548224bdrc-bg.png" alt="Banner"
-            class="quiz-banner-bg position-absolute w-100 h-100 top-0 start-0" style="object-fit:cover; z-index:1;">
-        <div class="quiz-banner-overlay position-absolute w-100 h-100 top-0 start-0"
-            style="background:rgba(24,49,63,0.65); z-index:2;"></div>
+            class="quiz-banner-bg position-absolute w-100 h-100 top-0 start-0">
+        <div class="quiz-banner-overlay position-absolute w-100 h-100 top-0 start-0"></div>
         <div class="container position-relative z-3 text-center">
             <h1 class="display-4 fw-bold text-white mb-3">Quiz Results</h1>
             <p class="text-white mb-3">{{ $quiz->localized_name }}</p>
@@ -30,13 +28,13 @@
                         <div class="text-center mb-4">
                             @if ($attempt->is_passed)
                                 <div class="mb-3">
-                                    <i class="fa fa-trophy text-success" style="font-size: 4rem;"></i>
+                                    <i class="fa fa-trophy text-success fs-4rem"></i>
                                 </div>
                                 <h2 class="fw-bold text-success mb-2">Congratulations!</h2>
                                 <p class="text-muted">You have successfully passed this quiz.</p>
                             @else
                                 <div class="mb-3">
-                                    <i class="fa fa-times-circle text-danger" style="font-size: 4rem;"></i>
+                                    <i class="fa fa-times-circle text-danger fs-4rem"></i>
                                 </div>
                                 <h2 class="fw-bold text-danger mb-2">Quiz Completed</h2>
                                 <p class="text-muted">You need {{ $quiz->passing_score }}% to pass. Keep trying!</p>
@@ -82,7 +80,7 @@
                                 <span class="fw-bold">Your Score</span>
                                 <span class="text-muted">{{ number_format($attempt->percentage_score, 1) }}%</span>
                             </div>
-                            <div class="progress" style="height: 20px;">
+                            <div class="progress progress-h-20">
                                 <div class="progress-bar {{ $attempt->is_passed ? 'bg-success' : 'bg-danger' }}"
                                     role="progressbar" style="width: {{ $attempt->percentage_score }}%"
                                     aria-valuenow="{{ $attempt->percentage_score }}" aria-valuemin="0" aria-valuemax="100">
@@ -226,7 +224,7 @@
                                             <div class="stat-value h4 fw-bold text-primary">{{ $questions->count() }}
                                             </div>
                                         </div>
-                                        <i class="fa fa-question-circle text-primary" style="font-size: 2rem;"></i>
+                                        <i class="fa fa-question-circle text-primary fs-2rem"></i>
                                     </div>
                                 </div>
                             </div>
@@ -239,7 +237,7 @@
                                                 {{ $questions->where('is_correct', true)->count() }}
                                             </div>
                                         </div>
-                                        <i class="fa fa-check-circle text-success" style="font-size: 2rem;"></i>
+                                        <i class="fa fa-check-circle text-success fs-2rem"></i>
                                     </div>
                                 </div>
                             </div>
@@ -252,7 +250,7 @@
                                                 {{ $questions->where('is_correct', false)->count() }}
                                             </div>
                                         </div>
-                                        <i class="fa fa-times-circle text-danger" style="font-size: 2rem;"></i>
+                                        <i class="fa fa-times-circle text-danger fs-2rem"></i>
                                     </div>
                                 </div>
                             </div>
@@ -265,7 +263,7 @@
                                                 {{ $questions->count() > 0 ? number_format(($questions->where('is_correct', true)->count() / $questions->count()) * 100, 1) : 0 }}%
                                             </div>
                                         </div>
-                                        <i class="fa fa-percentage text-info" style="font-size: 2rem;"></i>
+                                        <i class="fa fa-percentage text-info fs-2rem"></i>
                                     </div>
                                 </div>
                             </div>

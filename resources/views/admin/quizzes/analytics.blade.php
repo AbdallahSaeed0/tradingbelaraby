@@ -188,7 +188,7 @@
                                             <small class="text-muted">Success Rate</small>
                                         </div>
                                     </div>
-                                    <div class="progress mb-2" style="height: 8px;">
+                                    <div class="progress mb-2 progress-h-8">
                                         <div class="progress-bar bg-success"
                                             style="width: {{ $question['success_rate'] }}%"></div>
                                     </div>
@@ -291,8 +291,8 @@
                             @foreach ($analytics['top_performers'] as $performer)
                                 <div class="d-flex align-items-center mb-3">
                                     <div class="flex-shrink-0">
-                                        <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center"
-                                            style="width: 40px; height: 40px;">
+                                        <div
+                                            class="bg-primary rounded-circle d-flex align-items-center justify-content-center w-40 h-40">
                                             <span
                                                 class="text-white fw-bold">{{ strtoupper(substr($performer['name'], 0, 1)) }}</span>
                                         </div>

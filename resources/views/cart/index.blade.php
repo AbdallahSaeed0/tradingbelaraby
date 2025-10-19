@@ -90,7 +90,7 @@
                                     <div class="row align-items-center">
                                         <div class="col-md-3">
                                             <img src="{{ $item->course->image_url }}" alt="{{ $item->course->name }}"
-                                                class="img-fluid rounded" style="height: 120px; object-fit: cover;">
+                                                class="img-fluid rounded img-h-120">
                                         </div>
                                         <div class="col-md-6">
                                             <h5 class="fw-bold mb-2">{{ $item->course->name }}</h5>
@@ -147,7 +147,7 @@
                             </div>
 
                             <!-- Discount -->
-                            <div class="d-flex justify-content-between mb-2 discount-row" style="display: none !important;">
+                            <div class="d-flex justify-content-between mb-2 discount-row d-none">
                                 <span>{{ custom_trans('discount') }}</span>
                                 <span class="fw-bold discount-applied">-₹0.00</span>
                             </div>

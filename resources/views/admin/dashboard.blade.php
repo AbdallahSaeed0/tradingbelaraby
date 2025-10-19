@@ -145,11 +145,10 @@
                                         <div class="d-flex align-items-start">
                                             @if ($blog->image)
                                                 <img src="{{ $blog->image_url }}" alt="{{ $blog->title }}"
-                                                    class="rounded me-3"
-                                                    style="width: 50px; height: 40px; object-fit: cover;">
+                                                    class="rounded me-3 item-image-sm">
                                             @else
-                                                <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center"
-                                                    style="width: 50px; height: 40px;">
+                                                <div
+                                                    class="bg-light rounded me-3 d-flex align-items-center justify-content-center item-placeholder-sm">
                                                     <i class="fa fa-newspaper text-muted"></i>
                                                 </div>
                                             @endif
@@ -201,11 +200,10 @@
                                         <div class="d-flex align-items-start">
                                             @if ($course->image)
                                                 <img src="{{ $course->image_url }}" alt="{{ $course->name }}"
-                                                    class="rounded me-3"
-                                                    style="width: 50px; height: 40px; object-fit: cover;">
+                                                    class="rounded me-3 item-image-sm">
                                             @else
-                                                <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center"
-                                                    style="width: 50px; height: 40px;">
+                                                <div
+                                                    class="bg-light rounded me-3 d-flex align-items-center justify-content-center item-placeholder-sm">
                                                     <i class="fa fa-book text-muted"></i>
                                                 </div>
                                             @endif
@@ -261,8 +259,7 @@
                                     <div class="list-group-item">
                                         <div class="d-flex align-items-start">
                                             <img src="{{ $instructor->avatar_url }}" alt="{{ $instructor->name }}"
-                                                class="rounded-circle me-3"
-                                                style="width: 50px; height: 50px; object-fit: cover;">
+                                                class="rounded-circle me-3 user-avatar-md">
                                             <div class="flex-grow-1">
                                                 <h6 class="mb-1">{{ $instructor->name }}</h6>
                                                 <small class="text-muted">
@@ -309,8 +306,8 @@
                                 @foreach ($latestTraders as $trader)
                                     <div class="list-group-item">
                                         <div class="d-flex align-items-start">
-                                            <div class="bg-warning rounded-circle me-3 d-flex align-items-center justify-content-center"
-                                                style="width: 50px; height: 50px;">
+                                            <div
+                                                class="bg-warning rounded-circle me-3 d-flex align-items-center justify-content-center user-avatar-placeholder">
                                                 <i class="fa fa-user text-white"></i>
                                             </div>
                                             <div class="flex-grow-1">

@@ -247,8 +247,8 @@
                             <p class="text-muted small">Recommended size: 800x600px</p>
                             <input type="file" class="d-none" id="courseImage" name="image" accept="image/*">
                         </div>
-                        <div id="imagePreview" class="mt-3" style="display: none;">
-                            <img id="previewImg" class="img-fluid rounded" style="max-height: 200px;">
+                        <div id="imagePreview" class="mt-3 d-none-initially">
+                            <img id="previewImg" class="img-fluid rounded max-h-200">
                             <button type="button" class="btn btn-sm btn-outline-danger mt-2" id="removeImage">
                                 <i class="fa fa-trash me-1"></i>Remove
                             </button>

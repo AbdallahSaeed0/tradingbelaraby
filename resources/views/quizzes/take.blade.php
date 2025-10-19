@@ -4,12 +4,10 @@
 
 @section('content')
     <!-- Banner Section -->
-    <section class="quiz-banner position-relative d-flex align-items-center justify-content-center"
-        style="min-height: 340px;">
+    <section class="quiz-banner position-relative d-flex align-items-center justify-content-center">
         <img src="https://eclass.mediacity.co.in/demo2/public/images/breadcum/16953680301690548224bdrc-bg.png" alt="Banner"
-            class="quiz-banner-bg position-absolute w-100 h-100 top-0 start-0" style="object-fit:cover; z-index:1;">
-        <div class="quiz-banner-overlay position-absolute w-100 h-100 top-0 start-0"
-            style="background:rgba(24,49,63,0.65); z-index:2;"></div>
+            class="quiz-banner-bg position-absolute w-100 h-100 top-0 start-0">
+        <div class="quiz-banner-overlay position-absolute w-100 h-100 top-0 start-0"></div>
         <div class="container position-relative z-3 text-center">
             <h1 class="display-4 fw-bold text-white mb-3">{{ $quiz->localized_name }}</h1>
             <div class="d-flex justify-content-center align-items-center gap-4 mb-3">
@@ -65,8 +63,7 @@
 
                         <!-- Navigation Buttons -->
                         <div class="quiz-navigation d-flex justify-content-between align-items-center">
-                            <button class="btn btn-outline-secondary px-4 py-2 fw-bold" id="prevBtn"
-                                style="display: none;">
+                            <button class="btn btn-outline-secondary px-4 py-2 fw-bold d-none-initially" id="prevBtn">
                                 <i class="fa fa-arrow-left me-2"></i>{{ __('Previous') }}
                             </button>
                             <div class="flex-grow-1"></div>
@@ -92,7 +89,7 @@
                 </div>
                 <div class="modal-body text-center py-5">
                     <div class="mb-4">
-                        <i class="fa fa-check-circle text-success" style="font-size: 4rem;"></i>
+                        <i class="fa fa-check-circle text-success fs-4rem"></i>
                     </div>
                     <h4 class="fw-bold mb-3">{{ __('Congratulations!') }}</h4>
                     <p class="text-muted mb-4">{{ __('You have successfully completed the quiz.') }}</p>

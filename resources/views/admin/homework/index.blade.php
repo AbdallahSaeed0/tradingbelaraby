@@ -362,7 +362,7 @@
                                                     <span
                                                         class="me-2">{{ $hw->submitted_assignments }}/{{ $hw->total_assignments ?: 'N/A' }}</span>
                                                     @if ($hw->total_assignments > 0)
-                                                        <div class="progress flex-grow-1" style="height: 6px;">
+                                                        <div class="progress flex-grow-1 progress-h-6">
                                                             <div class="progress-bar"
                                                                 style="width: {{ ($hw->submitted_assignments / $hw->total_assignments) * 100 }}%">
                                                             </div>
@@ -446,7 +446,7 @@
         </div>
 
         <!-- Grid View -->
-        <div id="gridViewContainer" style="display: none;">
+        <div id="gridViewContainer" class="d-none-initially">
             <div class="row g-4">
                 @forelse($homework as $hw)
                     <div class="col-lg-4 col-md-6">

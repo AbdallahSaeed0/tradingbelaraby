@@ -281,7 +281,7 @@
                                 <label for="meta_keywords_en" class="form-label">Meta Keywords</label>
                                 <div id="meta_keywords_en" class="tags-input" data-field="meta_keywords">
                                     <input type="text" placeholder="Type keywords and press Enter"
-                                        style="border: none; outline: none; background: transparent; width: 200px;">
+                                        class="input-transparent w-200">
                                 </div>
                                 <input type="hidden" name="meta_keywords" id="meta_keywords_hidden">
                                 <div class="form-text">Press Enter to add keywords</div>
@@ -313,7 +313,7 @@
                                 <label for="meta_keywords_ar_field" class="form-label">كلمات مفتاحية SEO</label>
                                 <div id="meta_keywords_ar_field" class="tags-input" data-field="meta_keywords_ar">
                                     <input type="text" placeholder="اكتب الكلمات المفتاحية واضغط Enter"
-                                        style="border: none; outline: none; background: transparent; width: 200px;">
+                                        class="input-transparent w-200">
                                 </div>
                                 <input type="hidden" name="meta_keywords_ar" id="meta_keywords_ar_hidden">
                                 <div class="form-text">اضغط Enter لإضافة كلمات مفتاحية</div>
@@ -384,7 +384,7 @@
                                 <label for="tags" class="form-label">Tags</label>
                                 <div id="tags" class="tags-input" data-field="tags">
                                     <input type="text" placeholder="Type tags and press Enter"
-                                        style="border: none; outline: none; background: transparent; width: 200px;">
+                                        class="input-transparent w-200">
                                 </div>
                                 <input type="hidden" name="tags" id="tags_hidden">
                                 <div class="form-text">Press Enter to add tags</div>

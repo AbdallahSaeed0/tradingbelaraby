@@ -117,7 +117,7 @@
                         <div class="text-center">
                             <button type="submit" class="btn btn-orange px-5 py-2 rounded-3 fw-bold" id="submitBtn">
                                 <span class="btn-text">Make An Request <i class="fa fa-arrow-right ms-2"></i></span>
-                                <span class="btn-loading" style="display: none;">
+                                <span class="btn-loading d-none-initially">
                                     <i class="fas fa-spinner fa-spin me-2"></i>Sending...
                                 </span>
                             </button>

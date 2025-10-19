@@ -10,7 +10,7 @@
                 <p class="text-muted">Manage coming soon page subscribers</p>
             </div>
             <div class="d-flex gap-2">
-                <button id="bulkDeleteBtn" class="btn btn-danger" style="display: none;">
+                <button id="bulkDeleteBtn" class="btn btn-danger d-none-initially">
                     <i class="fa fa-trash me-2"></i>Delete Selected (<span id="selectedCount">0</span>)
                 </button>
                 <a href="{{ route('admin.subscribers.export', request()->query()) }}" class="btn btn-success">
@@ -107,7 +107,7 @@
 
         <!-- Bulk Delete Form -->
         <form id="bulkDeleteForm" action="{{ route('admin.subscribers.bulk-delete') }}" method="POST"
-            style="display: none;">
+            class="d-none-initially">
             @csrf
             @method('DELETE')
             <input type="hidden" id="selectedSubscribers" name="subscribers" value="">

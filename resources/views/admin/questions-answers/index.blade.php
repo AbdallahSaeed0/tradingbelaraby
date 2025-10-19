@@ -310,7 +310,7 @@
         </div>
 
         <!-- Bulk Actions -->
-        <div class="row mb-4" id="bulkActions" style="display: none;">
+        <div class="row mb-4 d-none-initially" id="bulkActions">
             <div class="col-12">
                 <div class="card shadow-sm border-warning">
                     <div class="card-body">
@@ -353,8 +353,8 @@
                     <table class="table table-hover qa-table mb-0">
                         <thead>
                             <tr>
-                                <th style="width:32px"><input type="checkbox" id="selectAll"
-                                        onchange="toggleSelectAll()"></th>
+                                <th class="w-32px"><input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                                </th>
                                 <th>Question</th>
                                 <th>Student</th>
                                 <th>Course</th>
@@ -627,7 +627,7 @@
 
                     if (confirm(
                             '{{ __('Are you sure you want to delete the selected questions? This action cannot be undone.') }}'
-                            )) {
+                        )) {
                         // Create form and submit
                         const form = document.createElement('form');
                         form.method = 'POST';

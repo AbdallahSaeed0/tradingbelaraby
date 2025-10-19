@@ -153,7 +153,7 @@
                                             </td>
                                             <td>
                                                 <img src="{{ $feature->icon_url }}" alt="{{ $feature->title }}"
-                                                    class="rounded" style="width: 60px; height: 60px; object-fit: cover;">
+                                                    class="rounded w-60 h-60 img-h-60">
                                             </td>
                                             <td>{{ $feature->title }}</td>
                                             <td>{{ $feature->title_ar ?: '-' }}</td>
@@ -459,8 +459,7 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">{{ __('Icon') }}</label>
                         <div id="view_icon" class="text-center">
-                            <img src="" alt="Feature Icon" class="img-fluid rounded"
-                                style="max-width: 200px; max-height: 200px;">
+                            <img src="" alt="Feature Icon" class="img-fluid rounded max-w-200 max-h-200">
                         </div>
                     </div>
                 </div>
@@ -848,7 +847,7 @@
                         } else {
                             toastr.error(
                                 '{{ __('An error occurred while creating the feature') }}'
-                                );
+                            );
                         }
                     }
                 });
@@ -869,7 +868,7 @@
 
                 // Show current icon preview
                 $('#current_icon_preview').html(`
-                    <img src="${feature.icon_url}" alt="Current Icon" class="img-thumbnail" style="max-width: 100px;">
+                    <img src="${feature.icon_url}" alt="Current Icon" class="img-thumbnail max-w-100">
                 `);
 
                 $('#editFeatureModal').modal('show');
@@ -921,7 +920,7 @@
                         } else {
                             toastr.error(
                                 '{{ __('An error occurred while updating the feature') }}'
-                                );
+                            );
                         }
                     }
                 });
@@ -947,7 +946,7 @@
                         error: function() {
                             toastr.error(
                                 '{{ __('An error occurred while deleting the feature') }}'
-                                );
+                            );
                         }
                     });
                 }

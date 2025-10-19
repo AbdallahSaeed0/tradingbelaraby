@@ -1,6 +1,6 @@
 <!-- Live Meeting Courses Section -->
 @if ($liveMeetingCourses->count() > 0)
-    <section class="courses-section position-relative py-5" style="background: #f8f9fa;">
+    <section class="courses-section position-relative py-5 bg-light-gray">
         <!-- Background image on the left behind the cards -->
         <img src="https://eclass.mediacity.co.in/demo2/public/frontcss/img/bg/an-img-03.png" alt="an-img-01"
             class="courses-bg-img d-none d-md-block">
@@ -108,4 +108,3 @@
         });
     </script>
 @endif
-

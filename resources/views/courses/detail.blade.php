@@ -5,41 +5,14 @@
 
     @push('styles')
         <link rel="stylesheet" href="{{ asset('css/pages/course-detail.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/main.css') }}">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
-        <style>
-            /* Instructor Cover Image Styles */
-            .instructor-cover {
-                height: 200px;
-                overflow: hidden;
-                border-radius: 12px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            }
-
-            .instructor-cover img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                transition: transform 0.3s ease;
-            }
-
-            .instructor-cover:hover img {
-                transform: scale(1.05);
-            }
-        </style>
     @endpush
 
 @section('content')
     <!-- Banner Section -->
-    <section class="course-banner position-relative d-flex align-items-center justify-content-center"
-        style="min-height: 340px;">
-        <img src="https://eclass.mediacity.co.in/demo2/public/images/breadcum/16953680301690548224bdrc-bg.png"
-            alt="Banner" class="course-banner-bg position-absolute w-100 h-100 top-0 start-0"
-            style="object-fit:cover; z-index:1;">
-        <div class="course-banner-overlay position-absolute w-100 h-100 top-0 start-0"
-            style="background:rgba(24,49,63,0.65); z-index:2;"></div>
+    <section class="course-banner position-relative d-flex align-items-center justify-content-center">
+        <img src="https://eclass.mediacity.co.in/demo2/public/images/breadcum/16953680301690548224bdrc-bg.png" alt="Banner"
+            class="course-banner-bg position-absolute w-100 h-100 top-0 start-0">
+        <div class="course-banner-overlay position-absolute w-100 h-100 top-0 start-0"></div>
         <div class="container position-relative z-3 text-center">
             <h1 class="display-4 fw-bold text-white mb-3">Course Detail</h1>
             <div class="d-flex justify-content-center mb-2">
@@ -98,9 +71,9 @@
                     <div class="mt-5">
                         <h4 class="fw-bold mb-3">{{ __('Meetings Requirements') }}</h4>
                         @if (!empty($course->localized_requirements))
-                            <div class="mb-3 text-muted" style="font-size:1rem;">{{ $course->localized_requirements }}</div>
+                            <div class="mb-3 text-muted fs-1rem">{{ $course->localized_requirements }}</div>
                         @else
-                            <div class="mb-3 text-muted" style="font-size:1rem;">
+                            <div class="mb-3 text-muted fs-1rem">
                                 <i class="fas fa-info-circle me-2"></i>{{ __('Not Found') }}
                             </div>
                         @endif
@@ -311,8 +284,7 @@
                 <!-- Right Side -->
                 <div class="col-lg-4">
                     <div class="course-features-box rounded-4 shadow-sm bg-white mb-4">
-                        <div class="course-features-header p-3 rounded-top-4 text-white fw-bold"
-                            style="background:#156481;">Course Features</div>
+                        <div class="course-features-header p-3 rounded-top-4 text-white fw-bold">Course Features</div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item d-flex align-items-center justify-content-between">
                                 <span class="fs-5 text-orange fw-bold">
@@ -394,15 +366,15 @@
                     <!-- Preview Video Section -->
                     @if ($course->preview_video_embed_url)
                         <div class="course-preview-video rounded-4 shadow-sm bg-white mb-4">
-                            <div class="video-header p-3 rounded-top-4 text-white fw-bold" style="background:#156481;">
+                            <div class="video-header p-3 rounded-top-4 text-white fw-bold">
                                 <i class="fa fa-play-circle me-2"></i>Course Preview
                             </div>
-                            <div class="video-container" style="padding: 1rem;">
+                            <div class="video-container">
                                 <div class="ratio ratio-16x9">
                                     <iframe src="{{ $course->preview_video_embed_url }}" title="Course Preview Video"
                                         frameborder="0"
                                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                        allowfullscreen style="border-radius: 0.5rem;">
+                                        allowfullscreen>
                                     </iframe>
                                 </div>
                             </div>

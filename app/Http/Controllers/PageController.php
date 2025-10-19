@@ -80,4 +80,23 @@ class PageController extends Controller
     {
         return view('courses.quiz', compact('id'));
     }
+
+    /**
+     * Display the terms and conditions page.
+     *
+     * @param string $slug
+     * @return \Illuminate\View\View
+     */
+    public function termsConditions($slug)
+    {
+        $termsConditions = \App\Models\TermsConditions::where('slug', $slug)
+            ->where('is_active', true)
+            ->first();
+
+        if (!$termsConditions) {
+            abort(404);
+        }
+
+        return view('pages.terms-conditions', compact('termsConditions'));
+    }
 }

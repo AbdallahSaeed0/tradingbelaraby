@@ -281,7 +281,7 @@
         </div>
 
         <!-- Bulk Actions -->
-        <div class="row mb-4" id="bulkActions" style="display: none;">
+        <div class="row mb-4 d-none-initially" id="bulkActions">
             <div class="col-12">
                 <div class="card shadow-sm border-warning">
                     <div class="card-body">
@@ -444,8 +444,7 @@
                                 {{ $users->lastItem() ?? 0 }} of {{ $users->total() }} entries</span>
                             <div class="d-flex align-items-center">
                                 <label class="form-label me-2 mb-0 small">Per page:</label>
-                                <select class="form-select form-select-sm" style="width: auto;"
-                                    onchange="changePerPage(this.value)">
+                                <select class="form-select form-select-sm w-auto" onchange="changePerPage(this.value)">
                                     <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
                                     <option value="15"
                                         {{ request('per_page') == 15 || !request('per_page') ? 'selected' : '' }}>15
@@ -658,7 +657,7 @@
 
                     if (confirm(
                             '{{ __('Are you sure you want to delete the selected users? This action cannot be undone.') }}'
-                            )) {
+                        )) {
                         // Create form and submit
                         const form = document.createElement('form');
                         form.method = 'POST';

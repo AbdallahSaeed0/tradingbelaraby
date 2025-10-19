@@ -41,7 +41,7 @@
 @endif
 
 <!-- Trader Registration Form Section -->
-<section class="contact-form-section py-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+<section class="contact-form-section py-5 bg-gradient-primary">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-8">

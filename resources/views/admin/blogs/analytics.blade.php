@@ -167,7 +167,7 @@
                                                         <span>{{ $stat->category_name ?: 'Uncategorized' }}</span>
                                                         <span class="badge bg-primary">{{ $stat->blog_count }}</span>
                                                     </div>
-                                                    <div class="progress mt-1" style="height: 5px;">
+                                                    <div class="progress mt-1 progress-h-5">
                                                         <div class="progress-bar" role="progressbar"
                                                             style="width: {{ ($stat->blog_count / $totalBlogs) * 100 }}%">
                                                         </div>

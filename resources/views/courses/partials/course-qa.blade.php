@@ -1,4 +1,4 @@
-<div class="qa-section" style="background-color: #EFF7FF; padding: 2rem 0;">
+<div class="qa-section bg-light-blue-section py-5">
     <div class="container">
         <!-- Header with title and add question button -->
         <div class="d-flex justify-content-between align-items-center mb-4">

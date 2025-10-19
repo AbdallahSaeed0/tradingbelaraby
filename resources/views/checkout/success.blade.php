@@ -103,7 +103,7 @@
                                 <div class="row align-items-center">
                                     <div class="col-md-2">
                                         <img src="{{ $item->course->image_url }}" alt="{{ $item->course->name }}"
-                                            class="img-fluid rounded" style="height: 60px; object-fit: cover;">
+                                            class="img-fluid rounded img-h-60">
                                     </div>
                                     <div class="col-md-7">
                                         <h6 class="fw-bold mb-1">{{ $item->course->name }}</h6>

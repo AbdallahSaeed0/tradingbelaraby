@@ -56,7 +56,7 @@
                             </div>
                         </div>
                         <p class="text-muted">Answered Questions</p>
-                        <div class="progress" style="height: 5px;">
+                        <div class="progress progress-h-5">
                             <div class="progress-bar bg-success"
                                 style="width: {{ $stats['total_questions'] > 0 ? round(($stats['answered_questions'] / $stats['total_questions']) * 100) : 0 }}%">
                             </div>

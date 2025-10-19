@@ -368,8 +368,7 @@
                                             <div class="progress-circle bg-light me-2"
                                                 style="background: conic-gradient(#007bff {{ $enrollment->progress_percentage }}%, #e9ecef 0deg);">
                                                 <span
-                                                    class="bg-white rounded-circle d-flex align-items-center justify-content-center"
-                                                    style="width: 50px; height: 50px;">
+                                                    class="bg-white rounded-circle d-flex align-items-center justify-content-center w-50 h-50">
                                                     {{ round($enrollment->progress_percentage) }}%
                                                 </span>
                                             </div>

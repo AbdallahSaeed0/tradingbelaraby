@@ -1,0 +1,14 @@
+/* Language Switcher Styling */
+
+.language-switcher .dropdown-item.active {
+    background-color: var(--bs-primary) !important;
+    color: white !important;
+}
+
+.language-switcher .dropdown-item:hover {
+    background-color: var(--bs-light);
+}
+
+.language-switcher .dropdown-item.active:hover {
+    background-color: var(--bs-primary) !important;
+}

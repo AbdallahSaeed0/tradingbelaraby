@@ -7,19 +7,17 @@
     <section class="instructor-profile-header py-5 bg-gradient-primary position-relative">
         <!-- Instructor Cover Image Background -->
         @if ($instructor->cover)
-            <div class="instructor-cover-bg position-absolute w-100 h-100" style="top: 0; left: 0; opacity: 0.1;">
-                <img src="{{ $instructor->cover_url }}" alt="{{ $instructor->name }} Cover" class="w-100 h-100"
-                    style="object-fit: cover;">
+            <div class="instructor-cover-bg position-absolute w-100 h-100">
+                <img src="{{ $instructor->cover_url }}" alt="{{ $instructor->name }} Cover" class="w-100 h-100">
             </div>
         @endif
 
-        <div class="container position-relative" style="z-index: 2;">
+        <div class="container position-relative instructor-page-container">
             <div class="row align-items-center">
                 <div class="col-lg-4 text-center">
                     <div class="instructor-avatar-wrapper mb-4">
                         <img src="{{ $instructor->avatar_url }}" alt="{{ $instructor->name }}"
-                            class="instructor-avatar rounded-circle shadow-lg"
-                            style="width: 200px; height: 200px; object-fit: cover;">
+                            class="instructor-avatar rounded-circle shadow-lg instructor-large-avatar">
                     </div>
                 </div>
                 <div class="col-lg-8">
@@ -68,7 +66,7 @@
                             <div class="course-card h-100 shadow-sm rounded">
                                 <div class="course-image-wrapper position-relative">
                                     <img src="{{ $course->image_url }}" alt="{{ $course->name }}"
-                                        class="course-image w-100" style="height: 200px; object-fit: cover;">
+                                        class="course-image w-100 img-h-200">
                                     @if ($course->is_featured)
                                         <span class="badge bg-warning position-absolute top-0 start-0 m-2">
                                             {{ __('Featured') }}
@@ -141,65 +139,5 @@
 @endsection
 
 @push('styles')
-    <style>
-        .bg-gradient-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        .instructor-avatar {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .stat-item {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 1rem;
-            border-radius: 10px;
-            backdrop-filter: blur(10px);
-        }
-
-        .course-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 1px solid #e9ecef;
-        }
-
-        .course-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
-        }
-
-        .course-image-wrapper {
-            border-radius: 10px 10px 0 0;
-            overflow: hidden;
-        }
-
-        .section-title {
-            position: relative;
-            padding-bottom: 1rem;
-        }
-
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 3px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 2px;
-        }
-
-        .empty-state {
-            padding: 3rem;
-        }
-
-        /* Instructor Cover Background Styles */
-        .instructor-cover-bg {
-            z-index: 1;
-        }
-
-        .instructor-cover-bg img {
-            filter: blur(2px);
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/pages/instructor.css') }}">
 @endpush

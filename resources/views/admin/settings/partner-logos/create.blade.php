@@ -48,9 +48,9 @@
                                 @enderror
                                 <small class="text-muted">Recommended size: 200x100px. Max file size: 2MB</small>
 
-                                <div id="imagePreview" class="mt-3" style="display: none;">
+                                <div id="imagePreview" class="mt-3 d-none-initially">
                                     <img id="preview" src="" alt="Preview"
-                                        style="max-height: 150px; border: 1px solid #ddd; padding: 5px;">
+                                        class="logo-preview-lg img-preview-bordered">
                                 </div>
                             </div>
 

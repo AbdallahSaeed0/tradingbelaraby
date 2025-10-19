@@ -94,7 +94,7 @@
                                 @if ($scholarshipBanner && $scholarshipBanner->background_image)
                                     <div class="mt-2">
                                         <img src="{{ $scholarshipBanner->background_image_url }}" alt="Current background"
-                                            class="img-thumbnail" style="max-height: 100px;">
+                                            class="img-thumbnail max-h-100">
                                     </div>
                                 @endif
                             </div>
@@ -175,7 +175,7 @@
                                 @if ($ctaVideo && $ctaVideo->background_image)
                                     <div class="mt-2">
                                         <img src="{{ $ctaVideo->background_image_url }}" alt="Current background"
-                                            class="img-thumbnail" style="max-height: 100px;">
+                                            class="img-thumbnail max-h-100">
                                     </div>
                                 @endif
                             </div>

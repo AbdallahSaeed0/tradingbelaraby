@@ -8,12 +8,10 @@
 
 @section('content')
     <!-- Banner Section -->
-    <section class="quiz-banner position-relative d-flex align-items-center justify-content-center"
-        style="min-height: 340px;">
+    <section class="quiz-banner position-relative d-flex align-items-center justify-content-center">
         <img src="https://eclass.mediacity.co.in/demo2/public/images/breadcum/16953680301690548224bdrc-bg.png" alt="Banner"
-            class="quiz-banner-bg position-absolute w-100 h-100 top-0 start-0" style="object-fit:cover; z-index:1;">
-        <div class="quiz-banner-overlay position-absolute w-100 h-100 top-0 start-0"
-            style="background:rgba(24,49,63,0.65); z-index:2;"></div>
+            class="quiz-banner-bg position-absolute w-100 h-100 top-0 start-0">
+        <div class="quiz-banner-overlay position-absolute w-100 h-100 top-0 start-0"></div>
         <div class="container position-relative z-3 text-center">
             <h1 class="display-4 fw-bold text-white mb-3">Quiz Attempts</h1>
             <p class="text-white mb-3">{{ $quiz->localized_name }}</p>
@@ -144,7 +142,7 @@
                         <!-- No Attempts -->
                         <div class="no-attempts text-center py-5">
                             <div class="mb-4">
-                                <i class="fa fa-question-circle text-muted" style="font-size: 4rem;"></i>
+                                <i class="fa fa-question-circle text-muted fs-4rem"></i>
                             </div>
                             <h3 class="fw-bold mb-3">No Quiz Attempts Yet</h3>
                             <p class="text-muted mb-4">You haven't taken this quiz yet. Click the button below to start your

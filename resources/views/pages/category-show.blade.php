@@ -135,7 +135,7 @@
                             <p class="text-muted mb-0">{{ $courses->total() }} {{ custom_trans('courses_found') }}</p>
                         </div>
                         <div class="d-flex gap-2">
-                            <select class="form-select sort-dropdown" style="max-width:150px;">
+                            <select class="form-select sort-dropdown max-w-150">
                                 <option value="newest">{{ custom_trans('newest') }}</option>
                                 <option value="popular">{{ custom_trans('popular') }}</option>
                                 <option value="rating">{{ custom_trans('highest_rated') }}</option>
@@ -159,8 +159,8 @@
                             <div class="col-12 course-card-col">
                                 <div class="card h-100 shadow-sm border-0">
                                     <div class="position-relative">
-                                        <img src="{{ $course->image_url }}" class="card-img-top"
-                                            alt="{{ $course->name }}" style="height: 200px; object-fit: cover;">
+                                        <img src="{{ $course->image_url }}" class="card-img-top img-h-200"
+                                            alt="{{ $course->name }}">
                                         @if ($course->is_featured)
                                             <span class="badge bg-success position-absolute top-0 start-0 m-2">
                                                 {{ custom_trans('featured') }}

@@ -253,11 +253,10 @@
                                             <div class="me-3">
                                                 @if ($blog->image)
                                                     <img src="{{ $blog->image_url }}" alt="{{ $blog->title }}"
-                                                        class="rounded"
-                                                        style="width: 50px; height: 40px; object-fit: cover;">
+                                                        class="rounded w-50 h-40 item-image-sm">
                                                 @else
-                                                    <div class="bg-secondary rounded d-flex align-items-center justify-content-center"
-                                                        style="width: 50px; height: 40px;">
+                                                    <div
+                                                        class="bg-secondary rounded d-flex align-items-center justify-content-center w-50 h-40 item-placeholder-sm">
                                                         <i class="fa fa-image text-white"></i>
                                                     </div>
                                                 @endif

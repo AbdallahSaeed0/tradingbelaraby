@@ -53,7 +53,7 @@
                                         <tr>
                                             <td>
                                                 <img src="{{ $logo->logo_url }}" alt="{{ $logo->name }}"
-                                                    style="max-height: 50px; max-width: 100px;">
+                                                    class="logo-preview-max">
                                             </td>
                                             <td>{{ $logo->name }}</td>
                                             <td>

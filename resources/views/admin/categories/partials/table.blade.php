@@ -15,11 +15,9 @@
             <td>{{ $categories->firstItem() + $loop->index }}</td>
             <td>
                 @if ($cat->image)
-                    <img src="{{ $cat->image_url }}" alt="{{ $cat->name }}" class="rounded"
-                        style="width: 50px; height: 50px; object-fit: cover;">
+                    <img src="{{ $cat->image_url }}" alt="{{ $cat->name }}" class="rounded w-50 h-50 img-h-60">
                 @else
-                    <div class="bg-light rounded d-flex align-items-center justify-content-center"
-                        style="width: 50px; height: 50px;">
+                    <div class="bg-light rounded d-flex align-items-center justify-content-center w-50 h-50">
                         <i class="fas fa-image text-muted"></i>
                     </div>
                 @endif

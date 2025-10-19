@@ -259,8 +259,7 @@
                                             <div class="progress-circle bg-light me-2"
                                                 style="background: conic-gradient(#007bff {{ $enrollment->progress_percentage }}%, #e9ecef 0deg);">
                                                 <span
-                                                    class="bg-white rounded-circle d-flex align-items-center justify-content-center"
-                                                    style="width: 50px; height: 50px;">
+                                                    class="bg-white rounded-circle d-flex align-items-center justify-content-center w-50 h-50">
                                                     {{ round($enrollment->progress_percentage) }}%
                                                 </span>
                                             </div>
@@ -333,7 +332,7 @@
         </div>
 
         <!-- Enrollments Grid View -->
-        <div class="card" id="gridViewContainer" style="display: none;">
+        <div class="card d-none-initially" id="gridViewContainer">
             <div class="card-header">
                 <h5 class="mb-0">Enrollments Grid</h5>
             </div>
@@ -363,8 +362,7 @@
                                         <div class="progress-circle mx-auto mb-2"
                                             style="background: conic-gradient(#007bff {{ $enrollment->progress_percentage }}%, #e9ecef 0deg);">
                                             <span
-                                                class="bg-white rounded-circle d-flex align-items-center justify-content-center"
-                                                style="width: 50px; height: 50px;">
+                                                class="bg-white rounded-circle d-flex align-items-center justify-content-center w-50 h-50">
                                                 {{ round($enrollment->progress_percentage) }}%
                                             </span>
                                         </div>

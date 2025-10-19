@@ -1,4 +1,4 @@
-<div class="recent-activity-section" style="background-color: #EFF7FF; padding: 2rem 0;">
+<div class="recent-activity-section bg-light-blue-section py-5">
     <div class="container">
         <h3 class="fw-bold mb-4">{{ __('Recent Activity') }}</h3>
         <div class="row g-4">

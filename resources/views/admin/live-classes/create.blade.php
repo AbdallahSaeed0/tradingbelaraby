@@ -240,12 +240,12 @@
                                                 placeholder="Enter material URL or description">
                                         </div>
 
-                                        <div class="material-file-input" style="display: none;">
+                                        <div class="material-file-input d-none-initially">
                                             <div class="file-upload-area" data-index="0">
                                                 <i class="fa fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
                                                 <p class="mb-1">Drag and drop files here or click to browse</p>
-                                                <input type="file" class="form-control" name="material_files[]"
-                                                    style="display: none;">
+                                                <input type="file" class="form-control d-none"
+                                                    name="material_files[]">
                                                 <button type="button" class="btn btn-outline-primary btn-sm">Choose
                                                     File</button>
                                             </div>
@@ -302,11 +302,11 @@
                 <input type="text" class="form-control" name="materials[]" placeholder="Enter material URL or description">
             </div>
 
-            <div class="material-file-input" style="display: none;">
+            <div class="material-file-input d-none-initially">
                 <div class="file-upload-area" data-index="${materialIndex}">
                     <i class="fa fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
                     <p class="mb-1">Drag and drop files here or click to browse</p>
-                    <input type="file" class="form-control" name="material_files[]" style="display: none;">
+                    <input type="file" class="form-control d-none" name="material_files[]">
                     <button type="button" class="btn btn-outline-primary btn-sm">Choose File</button>
                 </div>
             </div>

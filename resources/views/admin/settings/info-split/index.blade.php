@@ -110,7 +110,7 @@
                                             <input type="hidden" name="old_image" value="{{ $infoSplit->image }}">
                                             <div class="mt-2">
                                                 <img src="{{ $infoSplit->image_url }}" alt="Info Split"
-                                                    class="img-thumbnail" style="max-width: 200px;">
+                                                    class="img-thumbnail max-w-200">
                                             </div>
                                         @endif
                                     </div>
@@ -160,8 +160,8 @@
                                     <img src="{{ $infoSplit->image_url }}" alt="Info Split"
                                         class="img-fluid rounded-4 w-100">
                                 @else
-                                    <div class="bg-light rounded-4 shadow-sm w-100"
-                                        style="height: 300px; display: flex; align-items: center; justify-content: center;">
+                                    <div
+                                        class="bg-light rounded-4 shadow-sm w-100 h-300 d-flex align-items-center justify-content-center">
                                         <i class="fas fa-image fa-3x text-muted"></i>
                                     </div>
                                 @endif

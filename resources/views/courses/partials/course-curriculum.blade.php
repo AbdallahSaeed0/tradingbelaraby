@@ -1,4 +1,4 @@
-<div class="course-content-section" style="background-color: #EFF7FF; padding: 2rem 0;">
+<div class="course-content-section bg-light-blue-section py-5">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="fw-bold">{{ __('Course Content') }}</h3>
@@ -64,10 +64,10 @@
                                         <!-- Completion status indicator -->
                                         <div class="me-3">
                                             @if ($isCompleted)
-                                                <i class="fa fa-check-circle text-success" style="font-size: 1.2rem;"
+                                                <i class="fa fa-check-circle text-success fs-1-2rem"
                                                     title="{{ __('Completed') }}"></i>
                                             @else
-                                                <i class="fa fa-circle text-muted" style="font-size: 1.2rem;"
+                                                <i class="fa fa-circle text-muted fs-1-2rem"
                                                     title="{{ __('Not Completed') }}"></i>
                                             @endif
                                         </div>
@@ -79,7 +79,7 @@
                                         <div class="flex-grow-1">
                                             <div class="d-flex justify-content-between align-items-start">
                                                 <div>
-                                                    <h6 class="mb-1 fw-bold class-title" style="cursor: pointer;"
+                                                    <h6 class="mb-1 fw-bold class-title cursor-pointer"
                                                         data-bs-toggle="collapse"
                                                         data-bs-target="#class{{ $lecture->id }}-desc"
                                                         @if (\App\Helpers\TranslationHelper::getFrontendLanguage()->code === 'ar') dir="rtl" @endif>

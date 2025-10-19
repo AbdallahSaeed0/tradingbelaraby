@@ -575,7 +575,7 @@
                                 </div>
                                 <div class="card-body">
                                     <!-- Question Form Container -->
-                                    <div id="questionFormContainer" class="question-form" style="display: none;">
+                                    <div id="questionFormContainer" class="question-form d-none-initially">
                                         <h6 class="mb-3">Add New Question</h6>
 
                                         <!-- Question Type Selection -->
@@ -763,7 +763,7 @@
         </form>
 
         <!-- Question Form (Outside main form to prevent conflicts) -->
-        <form id="addQuestionForm" onsubmit="return false;" style="display: none;">
+        <form id="addQuestionForm" onsubmit="return false;" class="d-none-initially">
             <input type="hidden" id="questionType" name="question_type">
 
             <div class="row g-3">
@@ -790,7 +790,7 @@
                 </div>
 
                 <!-- Multiple Choice Options -->
-                <div id="multipleChoiceOptions" class="col-12" style="display: none;">
+                <div id="multipleChoiceOptions" class="col-12 d-none-initially">
                     <label class="form-label">Options *</label>
                     <div id="optionsContainer">
                         <div class="option-item mb-3">
@@ -844,7 +844,7 @@
                 </div>
 
                 <!-- True/False Options -->
-                <div id="trueFalseOptions" class="col-12" style="display: none;">
+                <div id="trueFalseOptions" class="col-12 d-none-initially">
                     <label class="form-label">Correct Answer *</label>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="correct_answer_boolean" id="true"
@@ -859,7 +859,7 @@
                 </div>
 
                 <!-- Fill in the Blank Options -->
-                <div id="fillBlankOptions" class="col-12" style="display: none;">
+                <div id="fillBlankOptions" class="col-12 d-none-initially">
                     <label class="form-label">Correct Answers *</label>
                     <div id="fillBlankContainer">
                         <div class="fill-blank-answer mb-3">
@@ -1775,10 +1775,10 @@
                     <h6>${question.question_text}</h6>
                     ${optionsHtml ? `<div class="mt-3">${optionsHtml}</div>` : ''}
                     ${question.explanation ? `
-                                                                                                                                                                    <div class="mt-3">
-                                                                                                                                                                        <small class="text-muted"><strong>Explanation:</strong> ${question.explanation}</small>
-                                                                                                                                                                    </div>
-                                                                                                                                                                ` : ''}
+                                                                                                                                                                            <div class="mt-3">
+                                                                                                                                                                                <small class="text-muted"><strong>Explanation:</strong> ${question.explanation}</small>
+                                                                                                                                                                            </div>
+                                                                                                                                                                        ` : ''}
                 </div>
             `;
 

@@ -541,8 +541,7 @@
     <div class="modal fade" id="startQuizModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg">
-                <div class="modal-header bg-gradient text-white"
-                    style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="modal-header bg-gradient text-white bg-gradient-primary">
                     <h5 class="modal-title fw-bold">
                         <i class="fas fa-play-circle me-2"></i>Confirm Quiz Start
                     </h5>
@@ -550,7 +549,8 @@
                 </div>
                 <div class="modal-body p-4">
                     <p class="mb-3">Are you sure you want to start the quiz
-                        <strong>"{{ $quiz->localized_name }}"</strong>?</p>
+                        <strong>"{{ $quiz->localized_name }}"</strong>?
+                    </p>
                     <div class="alert alert-info border-0 rounded-3">
                         <i class="fas fa-info-circle me-2"></i>
                         <strong>Important:</strong> Once you start, the timer will begin and you cannot pause the quiz.

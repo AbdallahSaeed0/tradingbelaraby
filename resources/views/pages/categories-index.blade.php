@@ -31,15 +31,15 @@
                             <div class="position-relative">
                                 @if ($category->image)
                                     <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}"
-                                        class="card-img-top" style="height: 200px; object-fit: cover;">
+                                        class="card-img-top img-h-200">
                                 @else
-                                    <div class="card-img-top d-flex align-items-center justify-content-center bg-primary"
-                                        style="height: 200px;">
+                                    <div
+                                        class="card-img-top d-flex align-items-center justify-content-center bg-primary h-200">
                                         <i class="fas fa-graduation-cap fa-3x text-white"></i>
                                     </div>
                                 @endif
-                                <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-dark bg-opacity-75 opacity-0 transition-opacity"
-                                    style="transition: opacity 0.3s ease;">
+                                <div
+                                    class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-dark bg-opacity-75 opacity-0 transition-opacity">
                                     <div class="text-center text-white">
                                         <h4 class="fw-bold mb-2">{{ $category->name }}</h4>
                                     </div>
@@ -104,8 +104,8 @@
                             <div class="card text-center h-100 shadow-sm border-0">
                                 <div class="card-body d-flex flex-column">
                                     <div class="mb-3">
-                                        <div class="mx-auto d-flex align-items-center justify-content-center bg-primary rounded-circle"
-                                            style="width: 80px; height: 80px;">
+                                        <div
+                                            class="mx-auto d-flex align-items-center justify-content-center bg-primary rounded-circle w-80 h-80">
                                             <i class="fas fa-graduation-cap fa-2x text-white"></i>
                                         </div>
                                     </div>

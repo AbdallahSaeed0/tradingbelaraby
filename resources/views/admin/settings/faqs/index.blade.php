@@ -30,7 +30,7 @@
         <div class="card faqs-card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">{{ __('Frequently Asked Questions') }}</h5>
-                <div class="bulk-actions" style="display: none;">
+                <div class="bulk-actions d-none-initially">
                     <div class="btn-group" role="group">
                         <button type="button" class="btn btn-success btn-sm" id="bulk_activate">
                             <i class="fas fa-check me-1"></i>{{ __('Activate') }}
@@ -556,7 +556,7 @@
                     error: function() {
                         toastr.error(
                             '{{ __('An error occurred while updating the FAQ expanded state') }}'
-                            );
+                        );
                         // Revert the checkbox
                         $(this).prop('checked', !isChecked);
                     }
@@ -653,7 +653,7 @@
                 $('#view_faq_content_ar').text(faq.content_ar || '-');
                 $('#view_faq_order').text(faq.order);
                 $('#view_faq_status').text(faq.is_active ? '{{ __('Active') }}' :
-                '{{ __('Inactive') }}');
+                    '{{ __('Inactive') }}');
                 $('#view_faq_expanded').text(faq.is_expanded ? '{{ __('Yes') }}' :
                     '{{ __('No') }}');
 
@@ -717,7 +717,7 @@
                         error: function() {
                             toastr.error(
                                 '{{ __('An error occurred while updating the order') }}'
-                                );
+                            );
                         }
                     });
                 }

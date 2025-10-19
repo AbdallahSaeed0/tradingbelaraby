@@ -339,7 +339,7 @@
                                             <label for="connection_section" class="fw-bold">Section Level</label>
                                             <p class="text-muted mb-0">Quiz available after completing a specific section
                                             </p>
-                                            <div id="section_selection" class="mt-3" style="display: none;"
+                                            <div id="section_selection" class="mt-3 d-none-initially"
                                                 onclick="event.stopPropagation()">
                                                 <select class="form-select" id="section_id" name="section_id">
                                                     <option value="">Select Section</option>
@@ -354,7 +354,7 @@
                                             <label for="connection_lecture" class="fw-bold">Lecture Level</label>
                                             <p class="text-muted mb-0">Quiz available after completing a specific lecture
                                             </p>
-                                            <div id="lecture_selection" class="mt-3" style="display: none;"
+                                            <div id="lecture_selection" class="mt-3 d-none-initially"
                                                 onclick="event.stopPropagation()">
                                                 <select class="form-select" id="lecture_id" name="lecture_id">
                                                     <option value="">Select Lecture</option>
@@ -502,7 +502,7 @@
                                 </div>
                                 <div class="card-body">
                                     <!-- Question Form (Hidden by default) -->
-                                    <div id="questionForm" class="question-form" style="display: none;">
+                                    <div id="questionForm" class="question-form d-none-initially">
                                         <h6 class="mb-3">Add New Question</h6>
 
                                         <!-- Question Type Selection -->
@@ -558,7 +558,7 @@
                                                 </div>
 
                                                 <!-- Multiple Choice Options -->
-                                                <div id="multipleChoiceOptions" class="col-12" style="display: none;">
+                                                <div id="multipleChoiceOptions" class="col-12 d-none-initially">
                                                     <label class="form-label">Options *</label>
                                                     <div id="optionsContainer">
                                                         <div class="option-item mb-3">
@@ -621,7 +621,7 @@
                                                 </div>
 
                                                 <!-- True/False Options -->
-                                                <div id="trueFalseOptions" class="col-12" style="display: none;">
+                                                <div id="trueFalseOptions" class="col-12 d-none-initially">
                                                     <label class="form-label">Correct Answer *</label>
                                                     <div class="form-check">
                                                         <input class="form-check-input" type="radio"
@@ -636,7 +636,7 @@
                                                 </div>
 
                                                 <!-- Fill in the Blank Options -->
-                                                <div id="fillBlankOptions" class="col-12" style="display: none;">
+                                                <div id="fillBlankOptions" class="col-12 d-none-initially">
                                                     <label class="form-label">Correct Answers *</label>
                                                     <div id="fillBlankContainer">
                                                         <div class="fill-blank-answer mb-3">
@@ -1133,20 +1133,20 @@
                     <div class="question-body">
                         <h6>${question.text}</h6>
                         ${question.options ? `
-                                                                                                                                        <div class="mt-3">
-                                                                                                                                            ${question.options.map((option, optIndex) => `
+                                                                                                                                            <div class="mt-3">
+                                                                                                                                                ${question.options.map((option, optIndex) => `
                                     <div class="option-item ${question.correctAnswers.includes(optIndex) ? 'correct' : ''}">
                                         <i class="fa fa-${question.correctAnswers.includes(optIndex) ? 'check-circle text-success' : 'circle text-muted'} me-2"></i>
                                         ${option}
                                     </div>
                                 `).join('')}
-                                                                                                                                        </div>
-                                                                                                                                    ` : ''}
+                                                                                                                                            </div>
+                                                                                                                                        ` : ''}
                         ${question.explanation ? `
-                                                                                                                                        <div class="mt-3">
-                                                                                                                                            <small class="text-muted"><strong>Explanation:</strong> ${question.explanation}</small>
-                                                                                                                                        </div>
-                                                                                                                                    ` : ''}
+                                                                                                                                            <div class="mt-3">
+                                                                                                                                                <small class="text-muted"><strong>Explanation:</strong> ${question.explanation}</small>
+                                                                                                                                            </div>
+                                                                                                                                        ` : ''}
                     </div>
                 </div>
             `).join('');

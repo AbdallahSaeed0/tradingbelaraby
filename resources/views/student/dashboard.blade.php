@@ -91,11 +91,11 @@
                                             <div class="course-thumbnail me-3">
                                                 @if ($enrollment->course->thumbnail)
                                                     <img src="{{ asset('storage/' . $enrollment->course->thumbnail) }}"
-                                                        alt="{{ $enrollment->course->name }}" class="rounded"
-                                                        style="width: 60px; height: 60px; object-fit: cover;">
+                                                        alt="{{ $enrollment->course->name }}"
+                                                        class="rounded w-60 h-60 img-h-60">
                                                 @else
-                                                    <div class="bg-light rounded d-flex align-items-center justify-content-center"
-                                                        style="width: 60px; height: 60px;">
+                                                    <div
+                                                        class="bg-light rounded d-flex align-items-center justify-content-center w-60 h-60">
                                                         <i class="fas fa-graduation-cap text-muted"></i>
                                                     </div>
                                                 @endif
@@ -107,7 +107,7 @@
                                                         {{ $enrollment->course->name }}
                                                     </a>
                                                 </h6>
-                                                <div class="progress mb-2" style="height: 6px;">
+                                                <div class="progress mb-2 progress-h-6">
                                                     <div class="progress-bar bg-primary"
                                                         style="width: {{ $enrollment->progress_percentage }}%"></div>
                                                 </div>

@@ -192,7 +192,7 @@
                                             <input type="file" class="d-none" id="avatar" name="avatar"
                                                 accept="image/*">
                                         </div>
-                                        <div id="avatarPreview" class="mt-3 text-center" style="display: none;">
+                                        <div id="avatarPreview" class="mt-3 text-center d-none-initially">
                                             <img id="previewImg" class="avatar-preview mb-2">
                                             <br>
                                             <button type="button" class="btn btn-sm btn-outline-danger"
@@ -218,7 +218,7 @@
                                             <input type="file" class="d-none" id="cover" name="cover"
                                                 accept="image/*">
                                         </div>
-                                        <div id="coverPreview" class="mt-3 text-center" style="display: none;">
+                                        <div id="coverPreview" class="mt-3 text-center d-none-initially">
                                             <img id="previewCoverImg" class="cover-preview mb-2">
                                             <br>
                                             <button type="button" class="btn btn-sm btn-outline-danger"

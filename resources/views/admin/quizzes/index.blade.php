@@ -210,10 +210,10 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Quizzes</h5>
                     <div class="d-flex align-items-center">
-                        <button class="btn btn-sm btn-outline-danger me-2" id="bulkDelete" style="display: none;">
+                        <button class="btn btn-sm btn-outline-danger me-2 d-none-initially" id="bulkDelete">
                             <i class="fa fa-trash me-1"></i>Delete Selected
                         </button>
-                        <div class="dropdown me-2" id="bulkStatusDropdown" style="display: none;">
+                        <div class="dropdown me-2 d-none-initially" id="bulkStatusDropdown">
                             <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button"
                                 data-bs-toggle="dropdown">
                                 <i class="fa fa-toggle-on me-1"></i>Change Status
@@ -294,7 +294,7 @@
                                         <td>
                                             <span
                                                 class="badge bg-{{ $quiz->is_published ? 'success' : 'warning' }} status-badge"
-                                                data-quiz-id="{{ $quiz->id }}" style="cursor: pointer;">
+                                                data-quiz-id="{{ $quiz->id }}" class="cursor-pointer">
                                                 {{ $quiz->is_published ? 'Published' : 'Draft' }}
                                             </span>
                                         </td>
@@ -386,7 +386,7 @@
             </div>
 
             <!-- Grid View -->
-            <div class="card" id="gridViewContainer" style="display: none;">
+            <div class="card d-none-initially" id="gridViewContainer">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Quizzes Grid</h5>
                     <div class="d-flex align-items-center">

@@ -550,6 +550,50 @@
                 </div>
             </div>
 
+            <!-- Terms and Conditions Management -->
+            <div class="col-xl-4 col-lg-6 col-md-10">
+                <div class="card settings-card">
+                    <div class="card-body text-center p-5">
+                        <div class="settings-icon mb-4">
+                            <div class="icon-wrapper">
+                                <i class="fas fa-file-contract fa-4x text-secondary"></i>
+                            </div>
+                        </div>
+                        <h3 class="card-title mb-3">{{ __('Terms and Conditions') }}</h3>
+                        <p class="card-text text-muted mb-4">
+                            {{ __('Manage your website\'s terms and conditions page with bilingual support for English and Arabic.') }}
+                        </p>
+                        <div class="features-list mb-4">
+                            <div class="row text-start">
+                                <div class="col-md-6">
+                                    <div class="feature-item">
+                                        <i class="fas fa-language text-primary me-2"></i>
+                                        <span>{{ __('Bilingual Content') }}</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-edit text-info me-2"></i>
+                                        <span>{{ __('Rich Text Editor') }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="feature-item">
+                                        <i class="fas fa-link text-warning me-2"></i>
+                                        <span>{{ __('SEO-Friendly URLs') }}</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-toggle-on text-success me-2"></i>
+                                        <span>{{ __('Active/Inactive') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="{{ route('admin.settings.terms-conditions.index') }}" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-file-contract me-2"></i>{{ __('Manage Terms & Conditions') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+
             <!-- Contact Management -->
             <div class="col-xl-4 col-lg-6 col-md-10">
                 <div class="card settings-card">

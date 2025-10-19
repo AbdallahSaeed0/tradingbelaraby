@@ -325,7 +325,7 @@
                                             <td>{{ \Carbon\Carbon::parse($date)->format('M d, Y') }}</td>
                                             <td>{{ $count }}</td>
                                             <td>
-                                                <div class="progress" style="height: 6px;">
+                                                <div class="progress progress-h-6">
                                                     <div class="progress-bar" style="width: {{ $percentage }}%"></div>
                                                 </div>
                                                 <small class="text-muted">{{ number_format($percentage, 1) }}%</small>

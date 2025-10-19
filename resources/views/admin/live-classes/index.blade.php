@@ -337,7 +337,7 @@
                                                     <div class="d-flex align-items-center">
                                                         <span
                                                             class="me-2">{{ $liveClass->current_participants }}/{{ $liveClass->max_participants }}</span>
-                                                        <div class="progress flex-grow-1" style="height: 6px;">
+                                                        <div class="progress flex-grow-1 progress-h-6">
                                                             <div class="progress-bar"
                                                                 style="width: {{ $liveClass->participant_percentage }}%">
                                                             </div>

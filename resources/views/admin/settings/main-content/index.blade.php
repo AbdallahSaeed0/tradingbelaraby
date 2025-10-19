@@ -47,7 +47,7 @@
                         </h5>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('admin.settings.main-content.update') }}" method="POST"
+                        <form id="mainContentForm" action="{{ route('admin.settings.main-content.update') }}" method="POST"
                             enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
@@ -62,10 +62,12 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="logo" class="form-label">Upload Logo</label>
+                                        <label for="logo" class="form-label">Upload Logo <span
+                                                class="text-muted small">(Optional)</span></label>
                                         <input type="file" class="form-control @error('logo') is-invalid @enderror"
                                             id="logo" name="logo" accept="image/*">
                                         <div class="form-text">Recommended size: 200x60px. Max file size: 2MB.</div>
+                                        <div id="logoFileInfo" class="mt-1"></div>
                                         @error('logo')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -73,7 +75,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="logo_alt_text" class="form-label">Logo Alt Text</label>
+                                        <label for="logo_alt_text" class="form-label">Logo Alt Text <span
+                                                class="text-muted small">(Optional)</span></label>
                                         <input type="text"
                                             class="form-control @error('logo_alt_text') is-invalid @enderror"
                                             id="logo_alt_text" name="logo_alt_text"
@@ -90,7 +93,7 @@
                                             <label class="form-label">Current Logo</label>
                                             <div class="d-flex align-items-center">
                                                 <img src="{{ $settings->logo_url }}" alt="Current Logo"
-                                                    class="img-thumbnail me-3" style="max-height: 60px;">
+                                                    class="img-thumbnail me-3 logo-preview-sm">
                                                 <button type="button" class="btn btn-danger btn-sm" onclick="removeLogo()">
                                                     <i class="fas fa-trash me-1"></i>
                                                     Remove Logo
@@ -111,13 +114,16 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="favicon" class="form-label">Upload Favicon</label>
+                                        <label for="favicon" class="form-label">Upload Favicon <span
+                                                class="text-muted small">(Optional)</span></label>
                                         <input type="file" class="form-control @error('favicon') is-invalid @enderror"
-                                            id="favicon" name="favicon" accept="image/x-icon,image/png">
-                                        <div class="form-text">Recommended size: 32x32px or 48x48px. Format: .ico or .png.
+                                            id="favicon" name="favicon" accept=".ico,.png,.jpg">
+                                        <div class="form-text">Recommended size: 32x32px or 48x48px. Format: .ico, .png, or
+                                            .jpg.
                                             Max file size: 512KB.</div>
+                                        <div id="faviconFileInfo" class="mt-1"></div>
                                         @error('favicon')
-                                            <div class="invalid-feedback">{{ $message }}</div>
+                                            <div class="invalid-feedback d-block">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
@@ -127,7 +133,7 @@
                                             <label class="form-label">Current Favicon</label>
                                             <div class="d-flex align-items-center">
                                                 <img src="{{ $settings->favicon_url }}" alt="Current Favicon"
-                                                    style="height:32px;width:32px;" class="me-3">
+                                                    class="favicon-preview me-3">
                                                 <button type="button" class="btn btn-danger btn-sm"
                                                     onclick="removeFavicon()">
                                                     <i class="fas fa-trash me-1"></i>
@@ -154,7 +160,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="site_name" class="form-label">Site Name</label>
+                                        <label for="site_name" class="form-label">Site Name <span
+                                                class="text-muted small">(Optional)</span></label>
                                         <input type="text"
                                             class="form-control @error('site_name') is-invalid @enderror" id="site_name"
                                             name="site_name" value="{{ old('site_name', $settings->site_name) }}"
@@ -166,7 +173,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="site_author" class="form-label">Site Author</label>
+                                        <label for="site_author" class="form-label">Site Author <span
+                                                class="text-muted small">(Optional)</span></label>
                                         <input type="text"
                                             class="form-control @error('site_author') is-invalid @enderror"
                                             id="site_author" name="site_author"
@@ -179,7 +187,8 @@
                                 </div>
                                 <div class="col-12">
                                     <div class="mb-3">
-                                        <label for="site_description" class="form-label">Site Description</label>
+                                        <label for="site_description" class="form-label">Site Description <span
+                                                class="text-muted small">(Optional)</span></label>
                                         <textarea class="form-control @error('site_description') is-invalid @enderror" id="site_description"
                                             name="site_description" rows="3" placeholder="Enter a brief description of your site">{{ old('site_description', $settings->site_description) }}</textarea>
                                         @error('site_description')
@@ -189,7 +198,8 @@
                                 </div>
                                 <div class="col-12">
                                     <div class="mb-3">
-                                        <label for="site_keywords" class="form-label">Site Keywords</label>
+                                        <label for="site_keywords" class="form-label">Site Keywords <span
+                                                class="text-muted small">(Optional)</span></label>
                                         <input type="text"
                                             class="form-control @error('site_keywords') is-invalid @enderror"
                                             id="site_keywords" name="site_keywords"
@@ -223,7 +233,7 @@
                                                     </p>
                                                 </div>
                                                 <div class="col-md-4 text-end">
-                                                    <div class="coming-soon-status mb-3" style="justify-items: center;">
+                                                    <div class="coming-soon-status mb-3 justify-center">
                                                         @php
                                                             $settings = \App\Models\MainContentSettings::getActive();
                                                             $comingSoonEnabled = $settings
@@ -231,7 +241,7 @@
                                                                 : false;
                                                         @endphp
                                                         <div
-                                                            class="alert {{ $comingSoonEnabled ? 'alert-warning' : 'alert-success' }} mb-0" style="width:fit-content">
+                                                            class="alert {{ $comingSoonEnabled ? 'alert-warning' : 'alert-success' }} mb-0 status-box-fit">
                                                             <i
                                                                 class="fas {{ $comingSoonEnabled ? 'fa-exclamation-triangle' : 'fa-check-circle' }} me-2"></i>
                                                             <strong>{{ $comingSoonEnabled ? 'ACTIVE' : 'DISABLED' }}</strong>
@@ -265,9 +275,14 @@
                                             <i class="fas fa-arrow-left me-2"></i>
                                             Back to Settings
                                         </a>
-                                        <button type="submit" class="btn btn-primary">
+                                        <button type="submit" class="btn btn-primary" id="saveSettingsBtn">
                                             <i class="fas fa-save me-2"></i>
-                                            Save Settings
+                                            <span id="btnText">Save Settings</span>
+                                            <span id="btnLoading" class="d-none">
+                                                <span class="spinner-border spinner-border-sm me-2" role="status"
+                                                    aria-hidden="true"></span>
+                                                Saving...
+                                            </span>
                                         </button>
                                     </div>
                                 </div>
@@ -282,6 +297,186 @@
 
 @push('scripts')
     <script>
+        // Client-side file validation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add form submit debugging and loading state
+            const mainForm = document.getElementById('mainContentForm');
+            const saveBtn = document.getElementById('saveSettingsBtn');
+            const btnText = document.getElementById('btnText');
+            const btnLoading = document.getElementById('btnLoading');
+
+            console.log('Main form found:', mainForm !== null);
+            console.log('Save button found:', saveBtn !== null);
+
+            // Add click handler to button for debugging
+            if (saveBtn) {
+                saveBtn.addEventListener('click', function(e) {
+                    console.log('🖱️ Save button clicked!');
+                    console.log('Button type:', saveBtn.type);
+                    console.log('Button form:', saveBtn.form);
+                });
+            }
+
+            if (mainForm) {
+                // Check if form has any validation issues
+                console.log('Form validation state:', mainForm.checkValidity ? mainForm.checkValidity() : 'N/A');
+
+                // Add invalid event listener to catch validation errors
+                mainForm.addEventListener('invalid', function(e) {
+                    console.error('❌ Form validation failed on field:', e.target.name, e.target
+                        .validationMessage);
+                }, true);
+
+                mainForm.addEventListener('submit', function(e) {
+                    console.log('✅ Form is being submitted...');
+
+                    // Show loading state
+                    if (saveBtn && btnText && btnLoading) {
+                        saveBtn.disabled = true;
+                        btnText.classList.add('d-none');
+                        btnLoading.classList.remove('d-none');
+                    }
+
+                    // Log form data for debugging
+                    const formData = new FormData(this);
+                    console.log('📋 Form fields:');
+                    for (let [key, value] of formData.entries()) {
+                        if (value instanceof File) {
+                            console.log('  📎 ' + key + ':', value.name, value.size + ' bytes', 'Type:',
+                                value.type);
+                        } else if (value) {
+                            console.log('  ✏️ ' + key + ':', value);
+                        }
+                    }
+
+                    // Allow form to submit normally (don't prevent default)
+                    console.log('🚀 Form will now submit to server...');
+                });
+            } else {
+                console.error('❌ Main form NOT found! Check if form ID is correct.');
+            }
+
+            // Logo file validation
+            const logoInput = document.getElementById('logo');
+            const logoFileInfo = document.getElementById('logoFileInfo');
+
+            if (logoInput) {
+                logoInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const fileSize = (file.size / 1024).toFixed(2);
+                        const maxSize = 2 * 1024 * 1024; // 2MB in bytes
+
+                        // Display file info
+                        if (logoFileInfo) {
+                            logoFileInfo.innerHTML = `<div class="alert alert-info py-2 mb-0">
+                                <i class="fas fa-check-circle me-1"></i>
+                                <strong>Selected:</strong> ${file.name} (${fileSize} KB)
+                            </div>`;
+                        }
+
+                        // Check file size
+                        if (file.size > maxSize) {
+                            alert('Logo file is too large. Maximum size is 2MB. Your file is ' + fileSize +
+                                'KB.');
+                            e.target.value = '';
+                            if (logoFileInfo) {
+                                logoFileInfo.innerHTML = `<div class="alert alert-danger py-2 mb-0">
+                                    <i class="fas fa-exclamation-triangle me-1"></i> File too large!
+                                </div>`;
+                            }
+                            return;
+                        }
+
+                        // Check file type
+                        const fileName = file.name.toLowerCase();
+                        const validExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.svg'];
+                        const hasValidExtension = validExtensions.some(ext => fileName.endsWith(ext));
+
+                        if (!hasValidExtension) {
+                            alert(
+                                'Invalid file type. Please upload an image file (JPEG, PNG, GIF, or SVG).'
+                                );
+                            e.target.value = '';
+                            if (logoFileInfo) {
+                                logoFileInfo.innerHTML = `<div class="alert alert-danger py-2 mb-0">
+                                    <i class="fas fa-exclamation-triangle me-1"></i> Invalid file type!
+                                </div>`;
+                            }
+                            return;
+                        }
+
+                        console.log('Logo file selected:', file.name, 'Size:', fileSize + ' KB');
+                    } else {
+                        if (logoFileInfo) {
+                            logoFileInfo.innerHTML = '';
+                        }
+                    }
+                });
+            }
+
+            // Favicon file validation
+            const faviconInput = document.getElementById('favicon');
+            const faviconFileInfo = document.getElementById('faviconFileInfo');
+
+            if (faviconInput) {
+                faviconInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        // Check file size (512KB max)
+                        const maxSize = 512 * 1024; // 512KB in bytes
+                        const fileSize = (file.size / 1024).toFixed(2);
+
+                        // Display file info
+                        if (faviconFileInfo) {
+                            faviconFileInfo.innerHTML = `<div class="alert alert-info py-2 mb-0">
+                                <i class="fas fa-check-circle me-1"></i>
+                                <strong>Selected:</strong> ${file.name} (${fileSize} KB)
+                            </div>`;
+                        }
+
+                        if (file.size > maxSize) {
+                            alert('Favicon file is too large. Maximum size is 512KB. Your file is ' +
+                                fileSize + 'KB.');
+                            e.target.value = '';
+                            if (faviconFileInfo) {
+                                faviconFileInfo.innerHTML = `<div class="alert alert-danger py-2 mb-0">
+                                    <i class="fas fa-exclamation-triangle me-1"></i> File too large!
+                                </div>`;
+                            }
+                            return;
+                        }
+
+                        // Check file type
+                        const allowedTypes = ['image/x-icon', 'image/vnd.microsoft.icon', 'image/png',
+                            'image/jpeg', 'image/jpg'
+                        ];
+                        const allowedExtensions = ['.ico', '.png', '.jpg', '.jpeg'];
+                        const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+
+                        if (!allowedTypes.includes(file.type) && !allowedExtensions.includes(
+                                fileExtension)) {
+                            alert('Invalid file type. Please upload a favicon file (.ico, .png, or .jpg).');
+                            e.target.value = '';
+                            if (faviconFileInfo) {
+                                faviconFileInfo.innerHTML = `<div class="alert alert-danger py-2 mb-0">
+                                    <i class="fas fa-exclamation-triangle me-1"></i> Invalid file type!
+                                </div>`;
+                            }
+                            return;
+                        }
+
+                        console.log('Favicon file selected:', file.name, 'Type:', file.type, 'Size:',
+                            fileSize + ' KB');
+                    } else {
+                        if (faviconFileInfo) {
+                            faviconFileInfo.innerHTML = '';
+                        }
+                    }
+                });
+            }
+        });
+
         function removeLogo() {
             if (confirm('Are you sure you want to remove the current logo?')) {
                 fetch('{{ route('admin.settings.main-content.remove-logo') }}', {

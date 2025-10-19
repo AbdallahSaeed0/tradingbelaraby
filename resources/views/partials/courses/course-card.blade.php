@@ -2,8 +2,7 @@
 <div class="course-card bg-white rounded-4 shadow-sm h-100 overflow-hidden">
     <!-- Course Image -->
     <div class="course-image position-relative">
-        <img src="{{ $course->image_url }}" alt="{{ $course->name }}" class="w-100"
-            style="height: 200px; object-fit: cover;">
+        <img src="{{ $course->image_url }}" alt="{{ $course->name }}" class="w-100 img-h-200">
 
         <!-- Course Badge -->
         @if ($course->is_featured ?? false)

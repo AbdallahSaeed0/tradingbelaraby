@@ -102,7 +102,7 @@
                 @else
                     <tr>
                         <td>{{ $index + 1 }}</td>
-                        <td style="color: red;">Student Deleted</td>
+                        <td class="text-danger">Student Deleted</td>
                         <td>N/A</td>
                         <td>{{ $registration->created_at->format('M j, Y g:i A') }}</td>
                         <td class="status-{{ $registration->status ?? 'pending' }}">
@@ -115,7 +115,7 @@
                 @endif
             @empty
                 <tr>
-                    <td colspan="6" style="text-align: center; padding: 20px;">
+                    <td colspan="6" class="pdf-empty-state">
                         No registrations found
                     </td>
                 </tr>
@@ -123,7 +123,7 @@
         </tbody>
     </table>
 
-    <div style="margin-top: 30px; text-align: center; color: #666; font-size: 12px;">
+    <div class="pdf-footer">
         <p>Total Registrations: {{ $registrations->count() }}</p>
         <p>Attended: {{ $registrations->where('attended', true)->count() }}</p>
         <p>Not Attended: {{ $registrations->where('attended', false)->count() }}</p>

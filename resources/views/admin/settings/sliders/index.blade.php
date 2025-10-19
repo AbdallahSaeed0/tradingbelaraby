@@ -152,8 +152,7 @@
                                             </td>
                                             <td>
                                                 <img src="{{ $slider->background_image_url }}"
-                                                    alt="{{ $slider->title }}" class="rounded"
-                                                    style="width: 80px; height: 50px; object-fit: cover;">
+                                                    alt="{{ $slider->title }}" class="rounded slider-thumb">
                                             </td>
                                             <td>{{ $slider->title }}</td>
                                             <td>{{ $slider->title_ar ?: '-' }}</td>
@@ -624,8 +623,7 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">{{ __('Background Image') }}</label>
                         <div id="view_background_image" class="text-center">
-                            <img src="" alt="Slider Image" class="img-fluid rounded"
-                                style="max-width: 100%; max-height: 300px;">
+                            <img src="" alt="Slider Image" class="img-fluid rounded img-modal-preview">
                         </div>
                     </div>
                 </div>
@@ -1045,7 +1043,7 @@
 
                 // Show current image preview
                 $('#current_image_preview').html(`
-                    <img src="${slider.background_image_url}" alt="Current Image" class="img-thumbnail" style="max-width: 200px;">
+                    <img src="${slider.background_image_url}" alt="Current Image" class="img-thumbnail max-w-200">
                 `);
 
                 $('#editSliderModal').modal('show');

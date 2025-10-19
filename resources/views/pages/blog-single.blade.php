@@ -122,8 +122,8 @@
                                                 <img src="{{ $relatedBlog->image_url }}" class="card-img-top"
                                                     alt="{{ $relatedBlog->title }}">
                                             @else
-                                                <div class="card-img-top bg-light d-flex align-items-center justify-content-center"
-                                                    style="height: 200px;">
+                                                <div
+                                                    class="card-img-top bg-light d-flex align-items-center justify-content-center h-200">
                                                     <i class="fas fa-newspaper fa-3x text-muted"></i>
                                                 </div>
                                             @endif
@@ -193,12 +193,11 @@
                                     @foreach ($recentBlogs as $recentBlog)
                                         <div class="d-flex mb-3">
                                             @if ($recentBlog->image)
-                                                <img src="{{ $recentBlog->image_url }}" class="rounded me-3"
-                                                    style="width: 60px; height: 60px; object-fit: cover;"
-                                                    alt="{{ $recentBlog->title }}">
+                                                <img src="{{ $recentBlog->image_url }}"
+                                                    class="rounded me-3 w-60 h-60 img-h-60" alt="{{ $recentBlog->title }}">
                                             @else
-                                                <div class="rounded me-3 bg-light d-flex align-items-center justify-content-center"
-                                                    style="width: 60px; height: 60px;">
+                                                <div
+                                                    class="rounded me-3 bg-light d-flex align-items-center justify-content-center w-60 h-60">
                                                     <i class="fas fa-newspaper text-muted"></i>
                                                 </div>
                                             @endif

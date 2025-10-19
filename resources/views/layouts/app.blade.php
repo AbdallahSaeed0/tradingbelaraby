@@ -28,405 +28,26 @@
     <link rel="stylesheet" href="{{ asset('css/main.css') }}">
     <link rel="stylesheet" href="{{ asset('css/layout.css') }}">
     <link rel="stylesheet" href="{{ asset('css/utilities.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/utilities-extended.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Toastr CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    <style>
-        /* RTL Support for Frontend */
-        [dir="rtl"] .me-1 {
-            margin-left: 0 !important;
-            margin-right: 0.25rem !important;
-        }
 
-        [dir="rtl"] .me-2 {
-            margin-left: 0 !important;
-            margin-right: 0.5rem !important;
-        }
+    <!-- Layout Styles -->
+    <link rel="stylesheet" href="{{ asset('css/layout/rtl.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/layout/language-switcher.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/layout/header-nav.css') }}">
+
+    <!-- Component Styles -->
+    <link rel="stylesheet" href="{{ asset('css/components/buttons.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/components/cards.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/components/alerts.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/components/badges.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/components/dropdowns.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/components/forms.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/components/whatsapp-float.css') }}">
 
-        [dir="rtl"] .me-3 {
-            margin-left: 0 !important;
-            margin-right: 1rem !important;
-        }
-
-        [dir="rtl"] .ms-1 {
-            margin-right: 0 !important;
-            margin-left: 0.25rem !important;
-        }
-
-        [dir="rtl"] .ms-2 {
-            margin-right: 0 !important;
-            margin-left: 0.5rem !important;
-        }
-
-        /* Language Switcher Styling */
-        .language-switcher .dropdown-item.active {
-            background-color: var(--bs-primary) !important;
-            color: white !important;
-        }
-
-        /* Global Title Styling - Make all titles clickable with hover effect */
-        .course-title a,
-        .quiz-title a,
-        .blog-title a,
-        .category-title a,
-        .instructor-section .course-title a,
-        .course-instructor h4 a {
-            color: inherit;
-            text-decoration: none;
-            transition: color 0.3s ease, transform 0.2s ease;
-            display: inline-block;
-        }
-
-        .course-title a:hover,
-        .quiz-title a:hover,
-        .blog-title a:hover,
-        .category-title a:hover,
-        .instructor-section .course-title a:hover,
-        .course-instructor h4 a:hover {
-            color: #f15a29 !important;
-            transform: translateX(2px);
-        }
-
-        .course-title,
-        .quiz-title,
-        .blog-title,
-        .category-title {
-            cursor: pointer;
-        }
-
-        /* Instructor name hover effects */
-        .course-instructor h4 {
-            cursor: pointer;
-        }
-
-        /* RTL specific adjustments for frontend */
-        [dir="rtl"] .nav-links {
-            flex-direction: row-reverse;
-        }
-
-        [dir="rtl"] .auth-buttons {
-            flex-direction: row-reverse;
-        }
-
-        [dir="rtl"] .nav-flex {
-            flex-direction: row-reverse;
-        }
-
-        [dir="rtl"] .footer-contact-item {
-            text-align: right;
-        }
-
-        [dir="rtl"] .footer-post {
-            flex-direction: row-reverse;
-        }
-
-        /* Search and User Actions Styling */
-        .search-container {
-            min-width: 250px;
-        }
-
-        .search-input {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(0, 0, 0, 0.3);
-
-        }
-
-        .search-input::placeholder {
-            color: rgba(0, 0, 0, 0.7);
-        }
-
-        .search-input:focus {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(58, 58, 58, 0.5);
-            color: black;
-            box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
-        }
-
-        .user-actions {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-        }
-
-        .user-actions .btn {
-            padding: 0.375rem 0.75rem;
-            font-size: 0.9rem;
-        }
-
-        /* RTL support for search and actions */
-        [dir="rtl"] .search-container {
-            margin-left: 0;
-            margin-right: 1rem;
-        }
-
-        [dir="rtl"] .user-actions {
-            margin-left: 0;
-            margin-right: 1rem;
-        }
-
-        /* Enhanced Notification Dropdown Styles */
-        .notification-dropdown {
-            border: none;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            border-radius: 12px;
-            padding: 0;
-            margin-top: 8px;
-        }
-
-        .notification-dropdown .dropdown-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 12px 12px 0 0;
-            border-bottom: none;
-        }
-
-        .notification-dropdown .dropdown-header h6 {
-            color: white !important;
-        }
-
-        .notification-item {
-            border: none;
-            border-bottom: 1px solid #f0f0f0;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .notification-item:hover {
-            background-color: #f8f9fa;
-            transform: translateX(2px);
-        }
-
-        .notification-item.unread {
-            background-color: #fff3cd;
-            border-left: 3px solid #ffc107;
-        }
-
-        .notification-item.unread:hover {
-            background-color: #ffeaa7;
-        }
-
-        .notification-icon {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #f8f9fa;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-
-        .notification-item.unread .notification-icon {
-            background: #fff3cd;
-        }
-
-        .notification-content {
-            min-width: 0;
-        }
-
-        .notification-message {
-            font-size: 0.9rem;
-            line-height: 1.4;
-            word-wrap: break-word;
-        }
-
-        .notification-time {
-            font-size: 0.75rem;
-        }
-
-        .notification-status .badge {
-            margin-top: 8px;
-        }
-
-        .notification-badge {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.1);
-            }
-
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        .notification-btn {
-            transition: all 0.3s ease;
-        }
-
-        .notification-btn:hover {
-            background-color: #f8f9fa;
-            border-color: #6c757d;
-        }
-
-        /* User Dropdown Styles */
-        .user-dropdown {
-            position: relative;
-        }
-
-        .user-dropdown-btn {
-            transition: all 0.3s ease;
-            border-radius: 25px;
-            padding: 8px 16px;
-            min-width: 120px;
-            justify-content: space-between;
-        }
-
-        .user-dropdown-btn:hover {
-            background-color: #f8f9fa;
-            border-color: #6c757d;
-            transform: translateY(-1px);
-        }
-
-        .user-name {
-            font-weight: 500;
-            max-width: 80px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .user-dropdown-menu {
-            border: none;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            border-radius: 12px;
-            padding: 0;
-            margin-top: 8px;
-            min-width: 250px;
-        }
-
-        .user-dropdown-menu .dropdown-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 12px 12px 0 0;
-            border-bottom: none;
-            padding: 15px;
-        }
-
-        .user-dropdown-menu .dropdown-item {
-            padding: 12px 20px;
-            border: none;
-            transition: all 0.3s ease;
-        }
-
-        .user-dropdown-menu .dropdown-item:hover {
-            background-color: #f8f9fa;
-            transform: translateX(5px);
-        }
-
-        .user-dropdown-menu .dropdown-item i {
-            width: 20px;
-            text-align: center;
-        }
-
-        /* Like Button Styles */
-        .like-btn {
-            transition: all 0.3s ease;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-        }
-
-        .like-btn:hover {
-            background-color: #f8f9fa;
-            border-color: #6c757d;
-            transform: scale(1.1);
-        }
-
-        .like-btn.liked {
-            background-color: #28a745;
-            border-color: #28a745;
-            color: white;
-        }
-
-        .like-btn.liked:hover {
-            background-color: #218838;
-            border-color: #1e7e34;
-        }
-
-        /* RTL Support for User Dropdown */
-        [dir="rtl"] .user-dropdown-menu .dropdown-item:hover {
-            transform: translateX(-5px);
-        }
-
-        [dir="rtl"] .user-dropdown-btn {
-            flex-direction: row-reverse;
-        }
-
-        [dir="rtl"] .user-name {
-            margin-left: 0;
-            margin-right: 8px;
-        }
-
-        .notification-btn:hover {
-            transform: scale(1.05);
-        }
-
-        .notification-list {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .notification-list::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .notification-list::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 2px;
-        }
-
-        .notification-list::-webkit-scrollbar-thumb {
-            background: #c1c1c1;
-            border-radius: 2px;
-        }
-
-        .notification-list::-webkit-scrollbar-thumb:hover {
-            background: #a8a8a8;
-        }
-
-        /* Empty state styling */
-        .notification-dropdown .dropdown-item.text-center {
-            border: none;
-            padding: 2rem 1rem;
-        }
-
-        .notification-dropdown .dropdown-item.text-center i {
-            opacity: 0.5;
-        }
-
-        /* Logo Link Styling */
-        .logo-link {
-            text-decoration: none;
-            display: block;
-            transition: opacity 0.3s ease;
-        }
-
-        .logo-link:hover {
-            opacity: 0.8;
-        }
-
-        .footer-logo-link {
-            text-decoration: none;
-            display: block;
-            transition: opacity 0.3s ease;
-        }
-
-        .footer-logo-link:hover {
-            opacity: 0.8;
-        }
-    </style>
     @stack('styles')
 </head>
 
@@ -599,8 +220,7 @@
                                     </span>
                                 @endif
                             </button>
-                            <div class="dropdown-menu dropdown-menu-end notification-dropdown"
-                                style="width: 350px; max-height: 400px; overflow-y: auto;">
+                            <div class="dropdown-menu dropdown-menu-end notification-dropdown">
                                 <div
                                     class="dropdown-header d-flex justify-content-between align-items-center p-3 border-bottom">
                                     <h6 class="mb-0 fw-bold text-dark">
@@ -641,8 +261,7 @@
                                                 </div>
                                                 @if (!$notification->read_at)
                                                     <div class="notification-status ms-2">
-                                                        <span class="badge bg-danger rounded-circle"
-                                                            style="width: 8px; height: 8px;"></span>
+                                                        <span class="badge bg-danger rounded-circle w-8 h-8"></span>
                                                     </div>
                                                 @endif
                                             </div>
@@ -806,14 +425,14 @@
                             @endif
                         </div>
                         <div>
-                            <h2 class="fw-bold mb-1" style="font-size:2.5rem;">
+                            <h2 class="fw-bold mb-1 fs-2-5rem">
                                 {{ $newsletterSettings->getDisplayTitle() }}</h2>
-                            <p class="mb-0" style="font-size:1.1rem; color: #e0f7fa;">
+                            <p class="mb-0 fs-1-1rem text-light">
                                 {{ $newsletterSettings->getDisplayDescription() }}</p>
                         </div>
                     </div>
                     <div class="col-lg-5 d-flex justify-content-center align-items-center">
-                        <form id="newsletterForm" class="w-100" style="max-width: 520px;">
+                        <form id="newsletterForm" class="w-100 max-w-520">
                             @csrf
                             <div class="input-group input-group-lg">
                                 <input type="email" name="email" id="newsletterEmail"
@@ -823,7 +442,7 @@
                                 <button class="btn btn-outline-light rounded-0 rounded-end px-4 fw-bold newsletter-btn"
                                     type="submit" id="newsletterSubmitBtn">
                                     <span class="btn-text">{{ $newsletterSettings->getDisplayButtonText() }}</span>
-                                    <span class="btn-loading" style="display: none;">
+                                    <span class="btn-loading d-none-initially">
                                         <i class="fas fa-spinner fa-spin"></i>
                                     </span>
                                 </button>
@@ -891,6 +510,14 @@
                         <li><a href="{{ route('categories.index') }}">{{ custom_trans('courses') }}</a></li>
                         <li><a href="{{ route('contact') }}">{{ custom_trans('contact_us') }}</a></li>
                         <li><a href="{{ route('blog.index') }}">{{ custom_trans('blog') }}</a></li>
+                        @php
+                            $termsPage = \App\Models\TermsConditions::where('is_active', true)->first();
+                        @endphp
+                        @if ($termsPage)
+                            <li><a
+                                    href="{{ route('terms-conditions', $termsPage->slug) }}">{{ custom_trans('terms_and_conditions') }}</a>
+                            </li>
+                        @endif
                     </ul>
                 </div>
                 <!-- Latest Post -->
@@ -984,7 +611,7 @@
                 <a href="{{ route('home') }}" class="footer-logo-link">
                     <img src="{{ $mainContentSettings ? $mainContentSettings->logo_url : asset('images/default-logo.svg') }}"
                         alt="{{ $mainContentSettings ? $mainContentSettings->logo_alt_text : 'Site Logo' }}"
-                        style="height:32px; margin-right:10px;">
+                        class="footer-logo-img">
                 </a>
             </div>
             <div class="footer-copyright text-center flex-grow-1">Copyright © {{ date('Y') }} Tadawul Bel Araby.
@@ -1366,75 +993,6 @@
             title="Chat with us on WhatsApp" aria-label="Chat with us on WhatsApp">
             <i class="fab fa-whatsapp"></i>
         </a>
-
-        <style>
-            .whatsapp-float {
-                position: fixed;
-                width: 60px;
-                height: 60px;
-                bottom: 80px;
-                right: 25px;
-                background-color: #25d366;
-                color: #FFF;
-                border-radius: 50px;
-                text-align: center;
-                font-size: 30px;
-                box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
-                z-index: 9999;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                transition: all 0.3s ease;
-                animation: pulse 2s infinite;
-            }
-
-            .whatsapp-float:hover {
-                background-color: #128c7e;
-                color: #FFF;
-                transform: scale(1.1);
-                box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.4);
-            }
-
-            .whatsapp-float i {
-                margin-top: 3px;
-            }
-
-            @keyframes pulse {
-                0% {
-                    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
-                }
-
-                50% {
-                    box-shadow: 0 0 0 15px rgba(37, 211, 102, 0);
-                }
-
-                100% {
-                    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
-                }
-            }
-
-            /* RTL Support */
-            [dir="rtl"] .whatsapp-float {
-                right: auto;
-                left: 40px;
-            }
-
-            /* Mobile Responsive */
-            @media screen and (max-width: 768px) {
-                .whatsapp-float {
-                    width: 50px;
-                    height: 50px;
-                    bottom: 20px;
-                    right: 20px;
-                    font-size: 26px;
-                }
-
-                [dir="rtl"] .whatsapp-float {
-                    right: auto;
-                    left: 20px;
-                }
-            }
-        </style>
     @endif
 
 </body>

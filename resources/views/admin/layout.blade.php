@@ -12,57 +12,23 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="{{ asset('admin/pages-ltr/blog.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/pages-ltr/admin.css') }}">
-    <style>
-        /* RTL Support */
-        [dir="rtl"] .me-1 {
-            margin-left: 0 !important;
-            margin-right: 0.25rem !important;
-        }
 
-        [dir="rtl"] .me-2 {
-            margin-left: 0 !important;
-            margin-right: 0.5rem !important;
-        }
+    <!-- Admin Styles -->
+    <link rel="stylesheet" href="{{ asset('css/admin/admin-common.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/admin-dashboard.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/admin-forms.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/admin-tables.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/admin-settings.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/admin-analytics.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/admin-content-management.css') }}">
 
-        [dir="rtl"] .me-3 {
-            margin-left: 0 !important;
-            margin-right: 1rem !important;
-        }
+    <!-- Shared Component Styles -->
+    <link rel="stylesheet" href="{{ asset('css/components/cards.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/components/alerts.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/components/badges.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/layout/language-switcher.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/utilities-extended.css') }}">
 
-        [dir="rtl"] .ms-1 {
-            margin-right: 0 !important;
-            margin-left: 0.25rem !important;
-        }
-
-        [dir="rtl"] .ms-2 {
-            margin-right: 0 !important;
-            margin-left: 0.5rem !important;
-        }
-
-        /* Language Switcher Styling */
-        .language-switcher .dropdown-item.active {
-            background-color: var(--bs-primary) !important;
-            color: white !important;
-        }
-
-        .language-switcher .dropdown-item:hover {
-            background-color: var(--bs-light);
-        }
-
-        .language-switcher .dropdown-item.active:hover {
-            background-color: var(--bs-primary) !important;
-        }
-
-        /* RTL specific adjustments */
-        [dir="rtl"] .navbar-nav {
-            flex-direction: row-reverse;
-        }
-
-        [dir="rtl"] .dropdown-menu-end {
-            right: auto !important;
-            left: 0 !important;
-        }
-    </style>
     @stack('styles')
 </head>
 
@@ -100,8 +66,7 @@
                                 class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle p-1 small">{{ $totalNotifications }}</span>
                         @endif
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notifDropdown"
-                        style="min-width: 250px;">
+                    <ul class="dropdown-menu dropdown-menu-end min-w-250" aria-labelledby="notifDropdown">
                         <li class="dropdown-header">Notifications</li>
                         @if ($totalNotifications > 0)
                             @if ($pendingQuestions > 0)
@@ -140,8 +105,8 @@
                         <span class="d-none d-md-inline">{{ $currentLanguage->code }}</span>
                         <i class="fa fa-chevron-down ms-1 small"></i>
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end language-switcher" aria-labelledby="langDropdown"
-                        style="min-width: 200px;">
+                    <ul class="dropdown-menu dropdown-menu-end language-switcher min-w-200"
+                        aria-labelledby="langDropdown">
                         <li class="dropdown-header">
                             <i class="fa fa-language me-2"></i>{{ custom_trans('select_language') }}
                         </li>
@@ -177,8 +142,8 @@
 
                 <!-- Profile -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link d-flex align-items-center profile-dropdown" href="#" id="profileDropdown"
-                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="nav-link d-flex align-items-center profile-dropdown" href="#"
+                        id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         @if (auth('admin')->user()->avatar)
                             <img src="{{ auth('admin')->user()->avatar_url }}?v={{ auth('admin')->user()->updated_at->timestamp }}"
                                 class="rounded-circle me-2" width="32" height="32" alt="avatar">

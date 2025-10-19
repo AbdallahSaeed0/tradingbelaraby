@@ -33,8 +33,7 @@
                     };
                 @endphp
                 <!-- Slide {{ $loop->iteration }} -->
-                <div class="swiper-slide hero-slide"
-                    style="background-image: url('{{ $slider->background_image_url }}');">
+                <div class="swiper-slide hero-slide hero-slide-bg" data-bg-image="{{ $slider->background_image_url }}">
                     <div class="hero-slide-overlay"></div>
                     <div class="container-fluid h-100">
                         <div class="row {{ $alignClass }} min-vh-75 min-h-520 {{ $justifyClass }} h-100">
@@ -61,8 +60,8 @@
                 </div>
             @empty
                 <!-- Default Slide (if no sliders in database) -->
-                <div class="swiper-slide hero-slide"
-                    style="background-image: url('https://eclass.mediacity.co.in/demo2/public/images/slider/slider_img02.png');">
+                <div class="swiper-slide hero-slide hero-slide-bg"
+                    data-bg-image="https://eclass.mediacity.co.in/demo2/public/images/slider/slider_img02.png">
                     <div class="hero-slide-overlay"></div>
                     <div class="row align-items-center min-vh-75 min-h-520">
                         <div class="col-lg-12 container col-md-10 mx-auto text-center text-lg-start">

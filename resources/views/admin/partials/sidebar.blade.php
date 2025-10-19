@@ -1,6 +1,6 @@
 <!-- Admin Sidebar -->
-<div class="offcanvas offcanvas-start offcanvas-lg-show bg-white" data-bs-backdrop="false" tabindex="-1" id="adminSidebar"
-    aria-labelledby="adminSidebarLabel" style="--bs-offcanvas-width:15%;">
+<div class="offcanvas offcanvas-start offcanvas-lg-show bg-white offcanvas-sidebar-width" data-bs-backdrop="false"
+    tabindex="-1" id="adminSidebar" aria-labelledby="adminSidebarLabel">
     <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="adminSidebarLabel">Admin Panel</h5>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>

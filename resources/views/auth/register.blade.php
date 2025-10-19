@@ -3,7 +3,7 @@
 @section('title', 'Register - ' . (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site Name'))
 
 @section('content')
-    <div class="container py-5" style="max-width: 560px;">
+    <div class="container py-5 max-w-560">
         <h2 class="text-center mb-4">Create an Account</h2>
 
         <form method="POST" action="{{ route('register.attempt') }}" class="card p-4 shadow-sm">

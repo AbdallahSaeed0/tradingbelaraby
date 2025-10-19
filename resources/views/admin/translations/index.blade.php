@@ -111,7 +111,7 @@
                                         <code>{{ $translation->translation_key }}</code>
                                     </td>
                                     <td>
-                                        <div class="text-truncate" style="max-width: 300px;"
+                                        <div class="text-truncate text-truncate-300"
                                             title="{{ $translation->translation_value }}">
                                             {{ $translation->translation_value }}
                                         </div>

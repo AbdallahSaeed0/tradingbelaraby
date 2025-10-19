@@ -12,14 +12,14 @@
     <!-- Background image on the left behind the cards -->
     <img src="https://eclass.mediacity.co.in/demo2/public/frontcss/img/bg/an-img-03.png" alt="an-img-01"
         class="courses-bg-img d-none d-md-block">
-    <div class="container position-relative" style="z-index:2;">
+    <div class="container position-relative z-2">
         <!-- Slider controls -->
         <div class="d-flex justify-content-between mb-3">
             <div class="text-start mb-4">
-                <span class="text-warning fw-bold mb-2 d-block" style="font-size:1.1rem;">
+                <span class="text-warning fw-bold mb-2 d-block fs-1-1rem">
                     <i class="fas fa-graduation-cap"></i> {{ __('Instructor') }}
                 </span>
-                <h2 class="fw-bold mb-3" style="font-size:2.5rem;"> {{ __('Instructor') }}</h2>
+                <h2 class="fw-bold mb-3 fs-2-5rem"> {{ __('Instructor') }}</h2>
             </div>
             <div class="buts d-flex align-items-center">
                 <button class="btn btn-danger me-2 px-4 py-2 rounded-3 swiper-button-prev"></button>

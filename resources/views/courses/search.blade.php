@@ -51,7 +51,7 @@
                             <small class="text-muted">{{ $courses->total() }} {{ custom_trans('courses_found') }}</small>
                         </div>
                         <div class="d-flex gap-2">
-                            <select class="form-select sort-dropdown" style="max-width:120px;">
+                            <select class="form-select sort-dropdown max-w-120">
                                 <option>{{ custom_trans('sort') }}</option>
                                 <option value="newest">{{ custom_trans('newest') }}</option>
                                 <option value="popular">{{ custom_trans('popular') }}</option>

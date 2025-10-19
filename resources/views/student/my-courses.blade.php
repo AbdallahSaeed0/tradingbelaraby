@@ -190,7 +190,7 @@
                                         <small class="text-muted">Progress</small>
                                         <small class="text-muted">{{ $enrollment->progress_percentage }}%</small>
                                     </div>
-                                    <div class="progress" style="height: 8px;">
+                                    <div class="progress progress-h-8">
                                         <div class="progress-bar bg-primary"
                                             style="width: {{ $enrollment->progress_percentage }}%"></div>
                                     </div>

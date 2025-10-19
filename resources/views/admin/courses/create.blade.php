@@ -4,173 +4,6 @@
 
 @push('styles')
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <style>
-        .form-section {
-            background: #ffffff;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-
-        .section-header {
-            border-bottom: 2px solid #f8f9fa;
-            padding-bottom: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .section-header h5 {
-            color: #495057;
-            font-weight: 600;
-        }
-
-        .image-upload-area {
-            border: 2px dashed #dee2e6;
-            border-radius: 0.5rem;
-            padding: 2rem;
-            text-align: center;
-            transition: border-color 0.3s ease;
-            cursor: pointer;
-        }
-
-        .image-upload-area:hover {
-            border-color: #007bff;
-        }
-
-        .image-upload-area.dragover {
-            border-color: #007bff;
-            background-color: #f8f9fa;
-        }
-
-        .section-item {
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 0.375rem;
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .lecture-item {
-            background: #ffffff;
-            border: 1px solid #e9ecef;
-            border-radius: 0.25rem;
-            padding: 0.75rem;
-            margin-bottom: 0.5rem;
-            margin-left: 1rem;
-        }
-
-        .drag-handle {
-            cursor: move;
-            color: #6c757d;
-        }
-
-        .content-builder {
-            min-height: 400px;
-            border: 1px solid #dee2e6;
-            border-radius: 0.375rem;
-            padding: 1rem;
-        }
-
-        .multilingual-field .nav-tabs .nav-link {
-            border: 1px solid transparent;
-            border-top-left-radius: 0.375rem;
-            border-top-right-radius: 0.375rem;
-        }
-
-        .multilingual-field .nav-tabs .nav-link:hover {
-            border-color: #e9ecef #e9ecef #dee2e6;
-        }
-
-        .multilingual-field .nav-tabs .nav-link.active {
-            color: #495057;
-            background-color: #fff;
-            border-color: #dee2e6 #dee2e6 #fff;
-        }
-
-        .multilingual-field .tab-content {
-            border: 1px solid #dee2e6;
-            border-top: none;
-            border-radius: 0 0 0.375rem 0.375rem;
-            padding: 1rem;
-        }
-
-        .multilingual-field textarea[dir="rtl"] {
-            text-align: right;
-        }
-
-        .multilingual-field input[dir="rtl"] {
-            text-align: right;
-        }
-
-        /* Instructor Selector Styles */
-        .instructor-selector .selected-instructors {
-            display: none;
-        }
-
-        .instructor-selector .selected-instructors.has-instructors {
-            display: block;
-            margin-bottom: 0.5rem;
-            padding: 0.75rem;
-            background: #f8f9fa;
-            border-radius: 0.375rem;
-            border: 1px solid #dee2e6;
-        }
-
-        .instructor-tag {
-            display: inline-flex;
-            align-items: center;
-            background: #007bff;
-            color: white;
-            padding: 0.375rem 0.75rem;
-            border-radius: 1.5rem;
-            margin-right: 0.5rem;
-            margin-bottom: 0.5rem;
-            font-size: 0.875rem;
-            transition: all 0.2s;
-        }
-
-        .instructor-tag:hover {
-            background: #0056b3;
-        }
-
-        .instructor-tag .remove-instructor {
-            margin-left: 0.5rem;
-            cursor: pointer;
-            opacity: 0.8;
-            transition: opacity 0.2s;
-        }
-
-        .instructor-tag .remove-instructor:hover {
-            opacity: 1;
-        }
-
-        .instructor-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: #007bff;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .instructor-option {
-            cursor: pointer;
-        }
-
-        .instructor-option:hover {
-            background-color: #f8f9fa;
-        }
-
-        .instructor-option.selected {
-            background-color: #e3f2fd;
-            pointer-events: none;
-            opacity: 0.6;
-        }
-    </style>
 @endpush
 
 @section('content')
@@ -267,8 +100,8 @@
                                             aria-expanded="false">
                                             <i class="fa fa-plus me-2"></i>Add Instructor
                                         </button>
-                                        <ul class="dropdown-menu w-100" aria-labelledby="instructorDropdown"
-                                            style="max-height: 300px; overflow-y: auto;">
+                                        <ul class="dropdown-menu w-100 max-h-300 overflow-auto"
+                                            aria-labelledby="instructorDropdown">
                                             <li class="px-3 py-2">
                                                 <input type="text" class="form-control form-control-sm"
                                                     id="instructorSearch" placeholder="Search instructors..."
@@ -388,8 +221,8 @@
                             <p class="text-muted small">Recommended size: 800x600px</p>
                             <input type="file" class="d-none" id="courseImage" name="image" accept="image/*">
                         </div>
-                        <div id="imagePreview" class="mt-3" style="display: none;">
-                            <img id="previewImg" class="img-fluid rounded" style="max-height: 200px;">
+                        <div id="imagePreview" class="mt-3 d-none-initially">
+                            <img id="previewImg" class="img-fluid rounded max-h-200">
                             <button type="button" class="btn btn-sm btn-outline-danger mt-2" id="removeImage">
                                 <i class="fa fa-trash me-1"></i>Remove
                             </button>
@@ -579,7 +412,7 @@
                             <input type="url" class="form-control form-control-sm lecture-link"
                                 placeholder="Video URL (YouTube, Vimeo, etc.)" required>
                         </div>
-                        <div class="lecture-upload-input" style="display: none;">
+                        <div class="lecture-upload-input d-none-initially">
                             <input type="file" class="form-control form-control-sm lecture-file"
                                 accept="video/*,audio/*,.pdf,.doc,.docx,.ppt,.pptx">
                         </div>
@@ -609,37 +442,6 @@
     </template>
 @endsection
 
-@push('styles')
-    <style>
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideOut {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-
-            to {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-        }
-
-        .toast {
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-    </style>
-@endpush
 
 @push('scripts')
     <script>

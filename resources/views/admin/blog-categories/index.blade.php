@@ -258,11 +258,11 @@
                                                     <div class="me-3">
                                                         @if ($category->image)
                                                             <img src="{{ $category->image_url }}"
-                                                                alt="{{ $category->name }}" class="rounded"
-                                                                style="width: 40px; height: 40px; object-fit: cover;">
+                                                                alt="{{ $category->name }}"
+                                                                class="rounded w-40 h-40 img-h-60">
                                                         @else
-                                                            <div class="bg-secondary rounded d-flex align-items-center justify-content-center"
-                                                                style="width: 40px; height: 40px;">
+                                                            <div
+                                                                class="bg-secondary rounded d-flex align-items-center justify-content-center w-40 h-40">
                                                                 <i class="fa fa-tag text-white"></i>
                                                             </div>
                                                         @endif

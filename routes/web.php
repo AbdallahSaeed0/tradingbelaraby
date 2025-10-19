@@ -43,6 +43,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
 Route::post('/contact', [App\Http\Controllers\ContactController::class, 'store'])->name('contact.store');
+Route::get('/page/{slug}', [PageController::class, 'termsConditions'])->name('terms-conditions');
 
 // Newsletter routes
 Route::post('/newsletter/subscribe', [App\Http\Controllers\NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
@@ -429,6 +430,11 @@ Route::resource('quizzes.questions', App\Http\Controllers\Admin\QuizQuestionMana
     Route::put('/settings/main-content', [App\Http\Controllers\Admin\MainContentSettingsController::class, 'update'])->name('settings.main-content.update');
     Route::post('/settings/main-content/remove-logo', [App\Http\Controllers\Admin\MainContentSettingsController::class, 'removeLogo'])->name('settings.main-content.remove-logo');
     Route::post('/settings/main-content/remove-favicon', [App\Http\Controllers\Admin\MainContentSettingsController::class, 'removeFavicon'])->name('settings.main-content.remove-favicon');
+
+    // Terms and Conditions Management
+    Route::get('/settings/terms-conditions', [App\Http\Controllers\Admin\TermsConditionsController::class, 'index'])->name('settings.terms-conditions.index');
+    Route::put('/settings/terms-conditions', [App\Http\Controllers\Admin\TermsConditionsController::class, 'update'])->name('settings.terms-conditions.update');
+    Route::post('/settings/terms-conditions/generate-slug', [App\Http\Controllers\Admin\TermsConditionsController::class, 'generateSlug'])->name('settings.terms-conditions.generate-slug');
 
     Route::get('/enrollments/export', [App\Http\Controllers\Admin\EnrollmentsController::class, 'export'])->name('enrollments.export');
     Route::get('/homework/export/{format?}', [App\Http\Controllers\Admin\HomeworkManagementController::class, 'export'])->name('homework.export');

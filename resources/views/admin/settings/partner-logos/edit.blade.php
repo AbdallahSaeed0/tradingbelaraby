@@ -43,7 +43,7 @@
                                 <label for="logo" class="form-label">Logo Image</label>
                                 <div class="mb-2">
                                     <img src="{{ $partnerLogo->logo_url }}" alt="{{ $partnerLogo->name }}"
-                                        style="max-height: 100px; border: 1px solid #ddd; padding: 5px;">
+                                        class="logo-preview-md img-preview-bordered">
                                 </div>
                                 <input type="file" class="form-control @error('logo') is-invalid @enderror"
                                     id="logo" name="logo" accept="image/*" onchange="previewImage(event)">
@@ -53,9 +53,9 @@
                                 <small class="text-muted">Leave empty to keep current logo. Recommended size: 200x100px. Max
                                     file size: 2MB</small>
 
-                                <div id="imagePreview" class="mt-3" style="display: none;">
+                                <div id="imagePreview" class="mt-3 d-none-initially">
                                     <img id="preview" src="" alt="Preview"
-                                        style="max-height: 150px; border: 1px solid #ddd; padding: 5px;">
+                                        class="logo-preview-lg img-preview-bordered">
                                 </div>
                             </div>
 
