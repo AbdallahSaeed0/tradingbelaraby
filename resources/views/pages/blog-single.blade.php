@@ -225,55 +225,6 @@
     </section>
 @endsection
 
-@push('styles')
-    <style>
-        .blog-single-banner {
-            min-height: 400px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            background-attachment: fixed;
-            background-size: cover;
-            background-position: center;
-        }
-
-        .blog-single-banner-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            background-attachment: fixed;
-            background-size: cover;
-            background-position: center;
-        }
-
-        .blog-single-banner-overlay {
-            background: rgba(0, 0, 0, 0.5);
-        }
-
-        .blog-content {
-            line-height: 1.8;
-            font-size: 1.1rem;
-        }
-
-        .blog-excerpt {
-            border-left: 4px solid #007bff;
-        }
-
-        .blog-meta {
-            border-top: 1px solid #e9ecef;
-            padding-top: 1rem;
-        }
-
-        .related-blogs .card {
-            transition: transform 0.3s ease;
-        }
-
-        .related-blogs .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .blog-sidebar .list-group-item:hover {
-            background-color: #f8f9fa;
-        }
-    </style>
-@endpush
-
 @push('scripts')
     <script>
         function shareBlog() {
@@ -292,3 +243,4 @@
         }
     </script>
 @endpush
+

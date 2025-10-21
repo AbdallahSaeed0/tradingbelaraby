@@ -3,68 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Live Class Registrations - {{ $liveClass->name }}</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .title {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .subtitle {
-            font-size: 16px;
-            color: #666;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th,
-        td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-        }
-
-        .status-confirmed {
-            color: green;
-        }
-
-        .status-pending {
-            color: orange;
-        }
-
-        .status-cancelled {
-            color: red;
-        }
-
-        .attended-yes {
-            color: green;
-        }
-
-        .attended-no {
-            color: red;
-        }
-    </style>
-</head>
+    <title>Live Class Registrations - {{ $liveClass->name }}</title></head>
 
 <body>
     <div class="header">
@@ -131,3 +70,4 @@
 </body>
 
 </html>
+

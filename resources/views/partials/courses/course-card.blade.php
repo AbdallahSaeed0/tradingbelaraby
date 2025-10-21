@@ -122,31 +122,3 @@
         </div>
     </div>
 </div>
-
-<style>
-    .course-card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .course-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
-    }
-
-    .course-image {
-        overflow: hidden;
-    }
-
-    .course-overlay {
-        background: rgba(0, 0, 0, 0.7);
-        transition: opacity 0.3s ease;
-    }
-
-    .course-card:hover .course-overlay {
-        opacity: 1;
-    }
-
-    .transition-opacity {
-        transition: opacity 0.3s ease;
-    }
-</style>

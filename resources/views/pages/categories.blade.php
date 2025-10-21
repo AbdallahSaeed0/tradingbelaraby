@@ -219,10 +219,6 @@
     </section>
 @endsection
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/pages/categories.css') }}">
-@endpush
-
 @push('scripts')
     <script>
         // Simple toggle between list/grid view
@@ -312,3 +308,4 @@
         });
     </script>
 @endpush
+

@@ -2,10 +2,6 @@
 
 @section('title', 'My Wishlist - ' . (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site Name'))
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/pages/categories.css') }}">
-@endpush
-
 @section('content')
     <!-- Hero Section -->
     <section class="hero-section py-5 bg-gradient-primary text-white">
@@ -101,3 +97,4 @@
         });
     </script>
 @endpush
+

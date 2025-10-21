@@ -2,87 +2,6 @@
 
 @section('title', 'Create Blog Post')
 
-@push('styles')
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        .language-tabs {
-            border-bottom: 1px solid #dee2e6;
-            margin-bottom: 20px;
-        }
-
-        .language-tab {
-            background: none;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            transition: all 0.3s;
-        }
-
-        .language-tab.active {
-            border-bottom-color: #007bff;
-            color: #007bff;
-        }
-
-        .language-content {
-            display: none;
-        }
-
-        .language-content.active {
-            display: block;
-        }
-
-        .seo-section {
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-
-        .tags-input {
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            padding: 8px;
-            min-height: 38px;
-        }
-
-        .tag-item {
-            display: inline-block;
-            background: #007bff;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            margin: 2px;
-            cursor: pointer;
-        }
-
-        .tag-item:hover {
-            background: #0056b3;
-        }
-
-        .image-preview {
-            max-width: 200px;
-            max-height: 150px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin-top: 10px;
-        }
-
-        .ck-editor__editable {
-            min-height: 300px;
-            max-height: 500px;
-            overflow-y: auto;
-        }
-
-        .ck-editor {
-            max-width: 1000px;
-            overflow: hidden;
-        }
-    </style>
-@endpush
-
 @section('content')
     <div class="container-fluid">
         <!-- Page Header -->
@@ -717,3 +636,4 @@
         });
     </script>
 @endpush
+

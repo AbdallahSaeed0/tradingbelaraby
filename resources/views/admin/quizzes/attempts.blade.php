@@ -2,52 +2,6 @@
 
 @section('title', 'Quiz Attempts - ' . $quiz->name)
 
-@push('styles')
-    <style>
-        .attempt-card {
-            border: 1px solid #dee2e6;
-            border-radius: 0.5rem;
-            margin-bottom: 1rem;
-            transition: all 0.2s ease;
-        }
-
-        .attempt-card:hover {
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .attempt-header {
-            background-color: #f8f9fa;
-            padding: 1rem;
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        .attempt-content {
-            padding: 1rem;
-        }
-
-        .score-badge {
-            font-size: 0.875rem;
-            padding: 0.5rem 1rem;
-        }
-
-        .status-badge {
-            font-size: 0.75rem;
-            padding: 0.25rem 0.5rem;
-        }
-
-        .progress-circle {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: white;
-        }
-    </style>
-@endpush
-
 @section('content')
     <div class="container-fluid py-4">
         <!-- Page Header -->
@@ -412,3 +366,4 @@
         }
     </script>
 @endpush
+

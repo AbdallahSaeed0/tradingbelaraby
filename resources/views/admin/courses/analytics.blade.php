@@ -2,75 +2,6 @@
 
 @section('title', 'Course Analytics - ' . $course->name)
 
-@push('styles')
-    <style>
-        .analytics-card {
-            background: white;
-            border-radius: 0.5rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s;
-        }
-
-        .analytics-card:hover {
-            transform: translateY(-2px);
-        }
-
-        .metric-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .metric-value {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-
-        .metric-label {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-
-        .chart-container {
-            position: relative;
-            height: 300px;
-            margin-bottom: 2rem;
-        }
-
-        .progress-bar-custom {
-            height: 8px;
-            border-radius: 4px;
-        }
-
-        .student-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .completion-badge {
-            font-size: 0.75rem;
-            padding: 0.25rem 0.5rem;
-        }
-
-        .trend-up {
-            color: #28a745;
-        }
-
-        .trend-down {
-            color: #dc3545;
-        }
-
-        .trend-neutral {
-            color: #6c757d;
-        }
-    </style>
-@endpush
-
 @section('content')
     <div class="container-fluid py-4">
         <!-- Page Header -->
@@ -557,3 +488,4 @@
         });
     </script>
 @endpush
+

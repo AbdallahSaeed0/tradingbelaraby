@@ -243,15 +243,5 @@
     </div>
 @endsection
 
-@push('styles')
-    <style>
-        .blog-content {
-            line-height: 1.8;
-            font-size: 1.1rem;
-        }
 
-        .blog-content p {
-            margin-bottom: 1rem;
-        }
-    </style>
-@endpush
+

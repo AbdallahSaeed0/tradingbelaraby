@@ -2,69 +2,6 @@
 
 @section('title', 'Quiz Analytics - ' . $quiz->name)
 
-@push('styles')
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        .analytics-card {
-            border: 1px solid #dee2e6;
-            border-radius: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .metric-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-        }
-
-        .metric-card.success {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-        }
-
-        .metric-card.warning {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-
-        .metric-card.info {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        }
-
-        .chart-container {
-            position: relative;
-            height: 300px;
-            margin: 1rem 0;
-        }
-
-        .question-analysis {
-            border: 1px solid #dee2e6;
-            border-radius: 0.375rem;
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .difficulty-indicator {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 0.5rem;
-        }
-
-        .difficulty-easy {
-            background-color: #28a745;
-        }
-
-        .difficulty-medium {
-            background-color: #ffc107;
-        }
-
-        .difficulty-hard {
-            background-color: #dc3545;
-        }
-    </style>
-@endpush
-
 @section('content')
     <div class="container-fluid py-4">
         <!-- Page Header -->
@@ -451,3 +388,4 @@
         }
     </script>
 @endpush
+

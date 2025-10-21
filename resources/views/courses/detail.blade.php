@@ -3,11 +3,7 @@
 @section('title', ($course->name ?? 'Course') . ' - ' . (\App\Models\MainContentSettings::getActive()?->site_name ??
     'Site Name'))
 
-    @push('styles')
-        <link rel="stylesheet" href="{{ asset('css/pages/course-detail.css') }}">
-    @endpush
-
-@section('content')
+    @section('content')
     <!-- Banner Section -->
     <section class="course-banner position-relative d-flex align-items-center justify-content-center">
         <img src="https://eclass.mediacity.co.in/demo2/public/images/breadcum/16953680301690548224bdrc-bg.png" alt="Banner"
@@ -576,3 +572,4 @@
         });
     </script>
 @endpush
+

@@ -604,44 +604,5 @@
                 });
             }
         });
-    </script>
+    </script>@endpush
 
-    <style>
-        .timeline {
-            position: relative;
-            padding-left: 30px;
-        }
-
-        .timeline-item {
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        .timeline-marker {
-            position: absolute;
-            left: -35px;
-            top: 5px;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-
-        .timeline-content {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-        }
-
-        .avatar-sm {
-            width: 40px;
-            height: 40px;
-        }
-
-        .avatar-title {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-        }
-    </style>
-@endpush

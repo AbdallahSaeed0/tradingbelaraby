@@ -2,53 +2,6 @@
 
 @section('title', 'Order Successful - ' . (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site Name'))
 
-@push('styles')
-    <style>
-        .success-section {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            color: white;
-            border-radius: 20px;
-            padding: 40px;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .order-details {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .course-item {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-left: 4px solid #28a745;
-        }
-
-        .success-icon {
-            font-size: 4rem;
-            margin-bottom: 20px;
-        }
-
-        .btn-primary {
-            background: #667eea;
-            border: none;
-            border-radius: 25px;
-            padding: 12px 30px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary:hover {
-            background: #5a6fd8;
-            transform: translateY(-2px);
-        }
-    </style>
-@endpush
-
 @section('content')
     <!-- Success Section -->
     <section class="success-section py-5">
@@ -155,3 +108,4 @@
         </div>
     </section>
 @endsection
+

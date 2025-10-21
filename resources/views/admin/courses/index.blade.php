@@ -2,33 +2,6 @@
 
 @section('title', 'Course Management')
 
-@push('styles')
-    <style>
-        .course-thumbnail {
-            width: 60px;
-            height: 40px;
-            object-fit: cover;
-            border-radius: 0.375rem;
-        }
-
-        .status-badge {
-            font-size: 0.75rem;
-            padding: 0.25rem 0.5rem;
-        }
-
-        .course-stats {
-            font-size: 0.875rem;
-            color: #6c757d;
-        }
-
-        .action-buttons .btn {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.75rem;
-            margin-right: 0.25rem;
-        }
-    </style>
-@endpush
-
 @section('content')
     <div class="container-fluid py-4">
         <!-- Page Header -->
@@ -714,3 +687,4 @@
         }
     </script>
 @endpush
+

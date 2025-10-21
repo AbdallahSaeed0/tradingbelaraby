@@ -133,38 +133,5 @@
     @endif
 @endsection
 
-@push('styles')
-    <style>
-        .category-banner {
-            min-height: 300px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
 
-        .category-banner-bg {
-            object-fit: cover;
-            opacity: 0.1;
-        }
 
-        .category-banner-overlay {
-            background: rgba(0, 0, 0, 0.4);
-        }
-
-        /* Hover effects for cards */
-        .card {
-            transition: all 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
-        }
-
-        .card:hover .position-absolute {
-            opacity: 1 !important;
-        }
-
-        .empty-state {
-            padding: 3rem 1rem;
-        }
-    </style>
-@endpush

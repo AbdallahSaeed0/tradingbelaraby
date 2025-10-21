@@ -129,10 +129,6 @@
     </section>
 @endsection
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/pages/contact.css') }}">
-@endpush
-
 @push('scripts')
     <script>
         $(document).ready(function() {
@@ -187,3 +183,4 @@
         });
     </script>
 @endpush
+

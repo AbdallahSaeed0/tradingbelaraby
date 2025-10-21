@@ -145,25 +145,5 @@
                 }
             }
         }
-    </script>
+    </script>@endif
 
-    <style>
-        .read-more-btn {
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-        }
-
-        .read-more-btn:hover {
-            transform: translateX(5px);
-            color: #f89d28 !important;
-        }
-
-        [dir="rtl"] .read-more-btn:hover {
-            transform: translateX(-5px);
-        }
-
-        .about-description {
-            line-height: 1.8;
-        }
-    </style>
-@endif

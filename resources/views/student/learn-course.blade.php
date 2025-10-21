@@ -2,37 +2,6 @@
 
 @section('title', $course->name . ' - Learn')
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/pages/course-content.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
-
-    <style>
-        .btn-orange {
-            background-color: #FF6B35;
-            border-color: #FF6B35;
-            color: white;
-        }
-
-        .btn-orange:hover {
-            background-color: #e55a2b;
-            border-color: #e55a2b;
-            color: white;
-        }
-
-        .completed-lecture {
-            background-color: #e8f5e8 !important;
-            border-left: 4px solid #28a745 !important;
-        }
-
-        .completed-lecture .class-title {
-            color: #28a745;
-        }
-    </style>
-@endpush
-
 @section('content')
     <!-- Course Header -->
     @include('courses.partials.course-header', ['course' => $course])
@@ -1483,3 +1452,4 @@
         }
     </script>
 @endpush
+

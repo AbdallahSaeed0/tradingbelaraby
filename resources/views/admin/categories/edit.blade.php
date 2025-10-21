@@ -107,41 +107,6 @@
     </div>
 @endsection
 
-@push('styles')
-    <style>
-        .image-upload-container {
-            border: 2px dashed #dee2e6;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            background: #f8f9fa;
-            transition: all 0.3s ease;
-        }
-
-        .image-upload-container:hover {
-            border-color: #007bff;
-            background: #f0f8ff;
-        }
-
-        .image-preview {
-            max-width: 100%;
-            height: 200px;
-            overflow: hidden;
-            border-radius: 8px;
-            background: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .image-preview img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: cover;
-        }
-    </style>
-@endpush
-
 @push('scripts')
     <script>
         // Image preview functionality
@@ -159,3 +124,4 @@
         });
     </script>
 @endpush
+

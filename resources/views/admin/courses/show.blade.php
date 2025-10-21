@@ -2,74 +2,6 @@
 
 @section('title', 'Course Details - ' . $course->name)
 
-@push('styles')
-    <style>
-        .course-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 0.5rem;
-            padding: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .course-thumbnail {
-            width: 150px;
-            height: 100px;
-            object-fit: cover;
-            border-radius: 0.5rem;
-            border: 3px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .stat-card {
-            background: white;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            border-left: 4px solid #007bff;
-            transition: transform 0.2s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-2px);
-        }
-
-        .section-card {
-            background: white;
-            border-radius: 0.5rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 1rem;
-        }
-
-        .section-header {
-            background: #f8f9fa;
-            border-radius: 0.5rem 0.5rem 0 0;
-            padding: 1rem;
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        .lecture-item {
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid #f1f3f4;
-            display: flex;
-            align-items: center;
-            justify-content: between;
-        }
-
-        .lecture-item:last-child {
-            border-bottom: none;
-        }
-
-        .content-type-badge {
-            font-size: 0.7rem;
-            padding: 0.2rem 0.5rem;
-        }
-
-        .enrollment-chart {
-            height: 300px;
-        }
-    </style>
-@endpush
-
 @section('content')
     <div class="container-fluid py-4">
         <!-- Course Header -->
@@ -559,3 +491,4 @@
         }
     </script>
 @endpush
+

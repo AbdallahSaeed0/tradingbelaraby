@@ -96,36 +96,3 @@
         </div>
     </div>
 </div>
-
-<style>
-    .multilingual-field .nav-tabs .nav-link {
-        border: 1px solid transparent;
-        border-top-left-radius: 0.375rem;
-        border-top-right-radius: 0.375rem;
-    }
-
-    .multilingual-field .nav-tabs .nav-link:hover {
-        border-color: #e9ecef #e9ecef #dee2e6;
-    }
-
-    .multilingual-field .nav-tabs .nav-link.active {
-        color: #495057;
-        background-color: #fff;
-        border-color: #dee2e6 #dee2e6 #fff;
-    }
-
-    .multilingual-field .tab-content {
-        border: 1px solid #dee2e6;
-        border-top: none;
-        border-radius: 0 0 0.375rem 0.375rem;
-        padding: 1rem;
-    }
-
-    .multilingual-field textarea[dir="rtl"] {
-        text-align: right;
-    }
-
-    .multilingual-field input[dir="rtl"] {
-        text-align: right;
-    }
-</style>

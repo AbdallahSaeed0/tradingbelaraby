@@ -2,50 +2,6 @@
 
 @section('title', $quiz->name)
 
-@push('styles')
-    <style>
-        .stats-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            text-align: center;
-        }
-
-        .question-preview {
-            border: 1px solid #dee2e6;
-            border-radius: 0.375rem;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            background-color: #f8f9fa;
-        }
-
-        .option-item {
-            border: 1px solid #dee2e6;
-            border-radius: 0.375rem;
-            padding: 0.75rem;
-            margin-bottom: 0.5rem;
-            background-color: white;
-        }
-
-        .option-item.correct {
-            border-color: #28a745;
-            background-color: #d4edda;
-        }
-
-        .question-type-badge {
-            font-size: 0.75rem;
-            padding: 0.25rem 0.5rem;
-        }
-
-        .points-badge {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            font-weight: bold;
-        }
-    </style>
-@endpush
-
 @section('content')
     <div class="container-fluid py-4">
         <!-- Page Header -->
@@ -374,3 +330,4 @@
         }
     </script>
 @endpush
+

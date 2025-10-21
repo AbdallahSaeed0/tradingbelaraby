@@ -2,67 +2,6 @@
 
 @section('title', 'Shopping Cart - ' . (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site Name'))
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/pages/categories.css') }}">
-    <style>
-        .cart-item {
-            transition: all 0.3s ease;
-        }
-
-        .cart-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
-        }
-
-        .coupon-section {
-            border: 2px dashed #dee2e6;
-            border-radius: 10px;
-            padding: 20px;
-            background: #f8f9fa;
-        }
-
-        .total-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 15px;
-            padding: 25px;
-        }
-
-        .checkout-btn {
-            background: #28a745;
-            border: none;
-            border-radius: 25px;
-            padding: 12px 30px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .checkout-btn:hover {
-            background: #218838;
-            transform: translateY(-2px);
-        }
-
-        .free-course-badge {
-            background: #28a745;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .price-display {
-            font-size: 1.2rem;
-            font-weight: 700;
-        }
-
-        .discount-applied {
-            color: #28a745;
-            font-weight: 600;
-        }
-    </style>
-@endpush
-
 @section('content')
     <!-- Hero Section -->
     <section class="hero-section py-5 bg-gradient-primary text-white">
@@ -325,3 +264,4 @@
         });
     </script>
 @endpush
+

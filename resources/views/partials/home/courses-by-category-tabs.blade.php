@@ -139,62 +139,7 @@
                 </div>
             @endif
         </div>
-    </section>
-
-    <style>
-        .courses-by-category-section {
-            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-        }
-
-        .category-tabs {
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .category-tabs .nav-link {
-            border-radius: 50px;
-            padding: 12px 24px;
-            font-weight: 500;
-            color: #6c757d;
-            background: white;
-            border: 2px solid #e0e0e0;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-        }
-
-        .category-tabs .nav-link:hover {
-            background: #f8f9fa;
-            border-color: #156481;
-            color: #156481;
-            transform: translateY(-2px);
-        }
-
-        .category-tabs .nav-link.active {
-            background: linear-gradient(135deg, #156481 0%, #1a7a9e 100%);
-            border-color: #156481;
-            color: white;
-            box-shadow: 0 4px 15px rgba(21, 100, 129, 0.3);
-        }
-
-        .category-tabs .nav-link .badge {
-            font-size: 0.7rem;
-            padding: 0.25em 0.5em;
-        }
-
-        .category-tabs .nav-link.active .badge {
-            background: white !important;
-            color: #156481;
-        }
-
-        @media (max-width: 768px) {
-            .category-tabs .nav-link {
-                padding: 8px 16px;
-                font-size: 0.9rem;
-            }
-        }
-    </style>
-
-    <script>
+    </section><script>
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize Swiper for each category
             @foreach ($allCategories->take(6) as $category)
@@ -235,3 +180,4 @@
         });
     </script>
 @endif
+

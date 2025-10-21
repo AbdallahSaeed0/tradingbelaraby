@@ -2,55 +2,6 @@
 
 @section('title', 'Create Live Class')
 
-@push('styles')
-    <style>
-        .form-section {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .form-section h5 {
-            color: #495057;
-            border-bottom: 2px solid #dee2e6;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-
-        .material-item {
-            background: white;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 10px;
-        }
-
-        .material-type-selector {
-            margin-bottom: 10px;
-        }
-
-        .file-upload-area {
-            border: 2px dashed #dee2e6;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            background: #f8f9fa;
-            transition: all 0.3s ease;
-        }
-
-        .file-upload-area:hover {
-            border-color: #007bff;
-            background: #e3f2fd;
-        }
-
-        .file-upload-area.dragover {
-            border-color: #007bff;
-            background: #e3f2fd;
-        }
-    </style>
-@endpush
-
 @section('content')
     <div class="container-fluid py-4">
         <!-- Page Header -->
@@ -393,3 +344,4 @@
         </script>
     @endpush
 @endsection
+

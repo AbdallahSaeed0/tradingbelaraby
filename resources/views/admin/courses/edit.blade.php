@@ -2,10 +2,6 @@
 
 @section('title', 'Edit Course - ' . $course->name)
 
-@push('styles')
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-@endpush
-
 @section('content')
     <div class="container-fluid py-4">
         <!-- Page Header -->
@@ -1273,3 +1269,4 @@
         });
     </script>
 @endpush
+

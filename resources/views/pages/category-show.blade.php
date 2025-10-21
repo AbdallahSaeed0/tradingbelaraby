@@ -301,52 +301,6 @@
     </section>
 @endsection
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/pages/categories.css') }}">
-    <style>
-        .category-banner {
-            min-height: 300px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        .category-banner-bg {
-            object-fit: cover;
-            opacity: 0.3;
-        }
-
-        .category-banner-overlay {
-            background: rgba(0, 0, 0, 0.5);
-        }
-
-        .filter-section {
-            border: 1px solid #f0f0f0;
-        }
-
-        .course-card-list {
-            transition: all 0.3s ease;
-        }
-
-        .course-card-list:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
-        }
-
-        .empty-state {
-            padding: 3rem 1rem;
-        }
-
-        .price-badge .discounted {
-            font-weight: bold;
-            color: #28a745;
-        }
-
-        .price-badge .original {
-            color: #6c757d;
-            font-size: 0.9em;
-        }
-    </style>
-@endpush
-
 @push('scripts')
     <script>
         // View toggle functionality
@@ -589,3 +543,4 @@
         });
     </script>
 @endpush
+

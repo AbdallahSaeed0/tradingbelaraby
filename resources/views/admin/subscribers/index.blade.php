@@ -235,17 +235,7 @@
             </div>
         </div>
 
-    </div>
-
-    <style>
-        .avatar-sm {
-            width: 32px;
-            height: 32px;
-            font-size: 14px;
-        }
-    </style>
-
-    <script>
+    </div><script>
         // Auto-submit form when filters change
         document.addEventListener('DOMContentLoaded', function() {
             const filterForm = document.getElementById('filterForm');
@@ -347,3 +337,4 @@
         });
     </script>
 @endsection
+

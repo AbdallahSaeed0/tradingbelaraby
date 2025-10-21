@@ -2,10 +2,6 @@
 
 @section('title', 'Quiz Attempts - ' . $quiz->localized_name)
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/pages/quiz.css') }}">
-@endpush
-
 @section('content')
     <!-- Banner Section -->
     <section class="quiz-banner position-relative d-flex align-items-center justify-content-center">
@@ -157,3 +153,4 @@
         </div>
     </section>
 @endsection
+

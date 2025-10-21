@@ -316,11 +316,5 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>@endsection
 
-    <style>
-        .bg-purple {
-            background-color: #6f42c1 !important;
-        }
-    </style>
-@endsection

@@ -2,57 +2,6 @@
 
 @section('title', 'Quiz Management')
 
-@push('styles')
-    <style>
-        .quiz-card {
-            transition: transform 0.2s ease;
-            border: 1px solid #dee2e6;
-        }
-
-        .quiz-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .quiz-stats {
-            font-size: 0.875rem;
-            color: #6c757d;
-        }
-
-        .question-type-badge {
-            font-size: 0.75rem;
-            padding: 0.25rem 0.5rem;
-        }
-
-        .difficulty-badge {
-            font-size: 0.75rem;
-            padding: 0.25rem 0.5rem;
-        }
-
-        .quiz-actions .btn {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.75rem;
-            margin-right: 0.25rem;
-        }
-
-        .quiz-thumbnail {
-            width: 80px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 0.375rem;
-        }
-
-        .status-badge {
-            transition: all 0.2s ease;
-        }
-
-        .status-badge:hover {
-            transform: scale(1.05);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-    </style>
-@endpush
-
 @section('content')
     <div class="container-fluid py-4">
         <!-- Page Header -->
@@ -763,3 +712,4 @@
         });
     </script>
 @endpush
+

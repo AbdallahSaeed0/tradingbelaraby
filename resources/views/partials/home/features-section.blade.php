@@ -1,5 +1,5 @@
 <!-- Features Section -->
-<section class="features py-5 bg-white">
+<section class="features bg-white">
     <div class="container">
         <div class="row g-4 justify-content-center">
             @php

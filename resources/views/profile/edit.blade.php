@@ -264,100 +264,7 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <style>
-        .card {
-            border: none;
-            border-radius: 15px;
-        }
-
-        .card-header {
-            border-radius: 15px 15px 0 0 !important;
-            border-bottom: none;
-        }
-
-        .bg-gradient-primary {
-            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-        }
-
-        .avatar-container {
-            position: relative;
-            display: inline-block;
-        }
-
-        .avatar-preview {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .avatar-placeholder {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 4px solid #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            color: #6c757d;
-        }
-
-        .form-control:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-        }
-
-        .form-select:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-        }
-
-        .btn {
-            border-radius: 8px;
-            padding: 10px 20px;
-        }
-
-        .btn-lg {
-            padding: 12px 24px;
-            font-size: 1.1rem;
-        }
-
-        .alert {
-            border-radius: 10px;
-            border: none;
-        }
-
-        .border-bottom {
-            border-color: #e9ecef !important;
-        }
-
-        .input-group-text {
-            background-color: #f8f9fa;
-            border-color: #ced4da;
-        }
-
-        @media (max-width: 768px) {
-
-            .avatar-preview,
-            .avatar-placeholder {
-                width: 100px;
-                height: 100px;
-            }
-
-            .btn-lg {
-                padding: 10px 20px;
-                font-size: 1rem;
-            }
-        }
-    </style>
-
-    <script>
+    </div><script>
         document.addEventListener('DOMContentLoaded', function() {
             // Avatar preview
             const avatarInput = document.getElementById('avatar');
@@ -406,3 +313,4 @@
         });
     </script>
 @endsection
+

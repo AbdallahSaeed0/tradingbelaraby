@@ -61,35 +61,3 @@
         </ol>
     </div>
 </nav>
-
-<style>
-    .breadcrumb-section {
-        border-bottom: 1px solid #e9ecef;
-    }
-
-    .breadcrumb {
-        background: transparent;
-        padding: 0;
-        margin: 0;
-    }
-
-    .breadcrumb-item+.breadcrumb-item::before {
-        content: ">";
-        color: #6c757d;
-        font-weight: bold;
-    }
-
-    .breadcrumb-item a {
-        color: #6c757d;
-        transition: color 0.3s ease;
-    }
-
-    .breadcrumb-item a:hover {
-        color: #ff6b35;
-    }
-
-    .breadcrumb-item.active {
-        color: #495057;
-        font-weight: 600;
-    }
-</style>

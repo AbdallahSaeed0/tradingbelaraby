@@ -2,92 +2,6 @@
 
 @section('title', 'Homework Analytics')
 
-@push('styles')
-    <style>
-        .analytics-card {
-            border: none;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s ease;
-        }
-
-        .analytics-card:hover {
-            transform: translateY(-2px);
-        }
-
-        .stat-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 20px;
-        }
-
-        .bg-primary-soft {
-            background-color: rgba(13, 110, 253, 0.1);
-        }
-
-        .bg-success-soft {
-            background-color: rgba(25, 135, 84, 0.1);
-        }
-
-        .bg-warning-soft {
-            background-color: rgba(255, 193, 7, 0.1);
-        }
-
-        .bg-info-soft {
-            background-color: rgba(13, 202, 240, 0.1);
-        }
-
-        .bg-danger-soft {
-            background-color: rgba(220, 53, 69, 0.1);
-        }
-
-        .chart-container {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
-
-        .score-distribution-bar {
-            height: 30px;
-            border-radius: 15px;
-            margin-bottom: 10px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .score-distribution-bar .bar-fill {
-            height: 100%;
-            border-radius: 15px;
-            transition: width 0.3s ease;
-        }
-
-        .score-distribution-bar .bar-label {
-            position: absolute;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: white;
-            font-weight: bold;
-            font-size: 0.875rem;
-        }
-
-        .score-distribution-bar .bar-count {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: white;
-            font-weight: bold;
-            font-size: 0.875rem;
-        }
-    </style>
-@endpush
-
 @section('content')
     <div class="container-fluid py-4">
         <!-- Page Header -->
@@ -441,3 +355,4 @@
         </div>
     </div>
 @endsection
+

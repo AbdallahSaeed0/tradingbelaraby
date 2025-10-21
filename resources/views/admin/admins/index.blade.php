@@ -2,75 +2,6 @@
 
 @section('title', 'Admins Management')
 
-@push('styles')
-    <style>
-        .stat-card {
-            border: none;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-2px);
-        }
-
-        .stat-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 15px;
-        }
-
-        .bg-primary-soft {
-            background-color: rgba(13, 110, 253, 0.1);
-        }
-
-        .bg-success-soft {
-            background-color: rgba(25, 135, 84, 0.1);
-        }
-
-        .bg-warning-soft {
-            background-color: rgba(255, 193, 7, 0.1);
-        }
-
-        .bg-info-soft {
-            background-color: rgba(13, 202, 240, 0.1);
-        }
-
-        .table th {
-            background-color: #f8f9fa;
-            border-bottom: 2px solid #dee2e6;
-            font-weight: 600;
-        }
-
-        .table td {
-            vertical-align: middle;
-        }
-
-        .admin-actions .btn {
-            margin: 0 2px;
-        }
-
-        @media (max-width: 768px) {
-            .table-responsive {
-                font-size: 0.875rem;
-            }
-
-            .admin-actions .btn {
-                padding: 0.25rem 0.5rem;
-                font-size: 0.75rem;
-            }
-
-            .stat-card {
-                margin-bottom: 1rem;
-            }
-        }
-    </style>
-@endpush
-
 @section('content')
     <div class="container-fluid py-4">
         <!-- Page Header -->
@@ -395,3 +326,4 @@
         </script>
     @endpush
 @endsection
+

@@ -2,64 +2,6 @@
 
 @section('title', 'Add Admin')
 
-@push('styles')
-    <style>
-        .avatar-preview {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #dee2e6;
-        }
-
-        .avatar-upload-area {
-            border: 2px dashed #dee2e6;
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: border-color 0.3s ease;
-        }
-
-        .avatar-upload-area:hover {
-            border-color: #007bff;
-        }
-
-        .avatar-upload-area.dragover {
-            border-color: #007bff;
-            background-color: #f8f9fa;
-        }
-
-        /* Cover Image Styles */
-        .cover-preview {
-            width: 100%;
-            max-width: 300px;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 8px;
-            border: 2px solid #dee2e6;
-        }
-
-        .cover-upload-area {
-            border: 2px dashed #dee2e6;
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: border-color 0.3s ease;
-        }
-
-        .cover-upload-area:hover {
-            border-color: #007bff;
-        }
-
-        .cover-upload-area.dragover {
-            border-color: #007bff;
-            background-color: #f8f9fa;
-        }
-    </style>
-@endpush
-
 @section('content')
     <div class="container-fluid py-4">
         <!-- Page Header -->
@@ -371,3 +313,4 @@
         });
     </script>
 @endpush
+

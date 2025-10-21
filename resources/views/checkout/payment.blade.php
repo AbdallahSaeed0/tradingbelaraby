@@ -2,74 +2,6 @@
 
 @section('title', 'Payment - ' . (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site Name'))
 
-@push('styles')
-    <style>
-        .payment-section {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-        }
-
-        .order-summary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 15px;
-            padding: 25px;
-            position: sticky;
-            top: 20px;
-        }
-
-        .payment-form {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .card-input {
-            border: 2px solid #dee2e6;
-            border-radius: 10px;
-            padding: 15px;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-        }
-
-        .card-input:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-        }
-
-        .btn-pay {
-            background: #28a745;
-            border: none;
-            border-radius: 25px;
-            padding: 15px 40px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-        }
-
-        .btn-pay:hover {
-            background: #218838;
-            transform: translateY(-2px);
-        }
-
-        .course-item {
-            background: white;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-left: 4px solid #667eea;
-        }
-
-        .price-display {
-            font-size: 1.2rem;
-            font-weight: 700;
-        }
-    </style>
-@endpush
-
 @section('content')
     <!-- Hero Section -->
     <section class="hero-section py-5 bg-gradient-primary text-white">
@@ -247,3 +179,4 @@
         });
     </script>
 @endpush
+

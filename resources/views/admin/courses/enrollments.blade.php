@@ -2,43 +2,6 @@
 
 @section('title', 'Course Enrollments')
 
-@push('styles')
-    <style>
-        .enrollment-card {
-            transition: transform 0.2s ease;
-            border: 1px solid #dee2e6;
-        }
-
-        .enrollment-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .progress-circle {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 0.875rem;
-        }
-
-        .status-badge {
-            font-size: 0.75rem;
-            padding: 0.25rem 0.5rem;
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-    </style>
-@endpush
-
 @section('content')
     <div class="container-fluid py-4">
         <!-- Page Header -->
@@ -481,3 +444,4 @@
         });
     </script>
 @endpush
+
