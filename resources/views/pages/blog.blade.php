@@ -193,7 +193,12 @@
     </section>
 @endsection
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/pages/blog.css') }}">
-@endpush
-
+@if (\App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl')
+    @push('rtl-styles')
+        <link rel="stylesheet" href="{{ asset('css/rtl/pages/blog.css') }}">
+    @endpush
+@else
+    @push('styles')
+        <link rel="stylesheet" href="{{ asset('css/pages/blog.css') }}">
+    @endpush
+@endif

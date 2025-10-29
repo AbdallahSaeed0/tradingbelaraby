@@ -138,7 +138,12 @@
     </section>
 @endsection
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/pages/instructor.css') }}">
-@endpush
-
+@if (\App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl')
+    @push('rtl-styles')
+        <link rel="stylesheet" href="{{ asset('css/rtl/pages/instructor.css') }}">
+    @endpush
+@else
+    @push('styles')
+        <link rel="stylesheet" href="{{ asset('css/pages/instructor.css') }}">
+    @endpush
+@endif

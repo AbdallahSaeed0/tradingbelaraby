@@ -165,7 +165,7 @@ class QuestionsAnswersController extends Controller
             'question_type' => $request->question_type,
             'is_anonymous' => $request->boolean('is_anonymous'),
             'status' => 'pending', // Requires moderation
-            'is_public' => false, // Not public until approved
+            'is_public' => true, // Make public immediately so students can see their questions
             'views_count' => 0,
             'helpful_votes' => 0,
             'total_votes' => 0
@@ -173,7 +173,7 @@ class QuestionsAnswersController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => __('Question submitted successfully and is pending approval!'),
+            'message' => __('Question submitted successfully!'),
             'redirect_url' => route('qa.index')
         ]);
     }
@@ -205,12 +205,12 @@ class QuestionsAnswersController extends Controller
             'answer_content' => $request->answer_content,
             'instructor_id' => $user->id,
             'answered_at' => now(),
-            'status' => 'pending' // Requires admin approval
+            'status' => 'answered' // Make answer visible immediately
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Answer submitted successfully and is pending approval'
+            'message' => 'Answer submitted successfully!'
         ]);
     }
 

@@ -1,0 +1,96 @@
+/* Student Dashboard and Learning Pages */
+
+/* Course Progress */
+.course-progress-card {
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.course-progress-card:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    transform: translateY(-4px);
+}
+
+.course-progress-image {
+    position: relative;
+    overflow: hidden;
+    height: 180px;
+}
+
+.course-progress-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.course-progress-card:hover .course-progress-image img {
+    transform: scale(1.05);
+}
+
+.course-progress-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+    padding: 1rem;
+    color: white;
+}
+
+.progress-bar-custom {
+    height: 8px;
+    border-radius: 4px;
+    background-color: #e9ecef;
+}
+
+.progress-bar-custom .progress-bar {
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Learning Interface */
+.video-player-container {
+    background: #000;
+    border-radius: 8px;
+    overflow: hidden;
+    aspect-ratio: 16/9;
+}
+
+.lecture-sidebar {
+    max-height: 600px;
+    overflow-y: auto;
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.lecture-item {
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+    border: 1px solid #dee2e6;
+}
+
+.lecture-item:hover {
+    background: #e9ecef;
+    transform: translateX(5px);
+}
+
+.lecture-item.active {
+    background: #0d6efd;
+    color: white;
+    border-color: #0d6efd;
+}
+
+.lecture-item.completed {
+    background: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.lecture-item.completed .lecture-status {
+    color: #155724;
+}

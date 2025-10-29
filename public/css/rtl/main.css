@@ -1,0 +1,14 @@
+@import url("vendors/all.min.css");
+@import url("vendors/bootstrap.min.css");
+@import url("vendors/fontawesome.min.css");
+
+@import url("webfonts/main.css");
+@import url("fonts/main.css");
+@import url("base/main.css");
+@import url("layout/main.css");
+@import url("components/main.css");
+@import url("components/footer.css");
+@import url("pages/categories.css");
+@import url("pages/course-sections.css");
+@import url("responsive/main.css");
+@import url("./pages/home.css");

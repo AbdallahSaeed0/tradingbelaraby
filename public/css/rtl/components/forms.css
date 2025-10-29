@@ -1,0 +1,46 @@
+/* Form Styles */
+
+/* Search Container and Input */
+.search-container {
+    min-width: 250px;
+}
+
+.search-input {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.search-input::placeholder {
+    color: rgba(0, 0, 0, 0.7);
+}
+
+.search-input:focus {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(58, 58, 58, 0.5);
+    color: black;
+    box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+}
+
+/* Form Control Enhancements */
+.form-control:focus,
+.form-select:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.form-check-input:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+/* Invalid Feedback */
+.invalid-feedback {
+    display: block;
+    margin-top: 0.25rem;
+}
+
+/* Form Text */
+.form-text {
+    color: #6c757d;
+    font-size: 0.875rem;
+}

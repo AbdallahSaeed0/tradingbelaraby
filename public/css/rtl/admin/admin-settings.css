@@ -1,0 +1,43 @@
+/* Admin Settings Pages */
+
+/* Settings Card */
+.card.settings-card {
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Section Headers */
+.settings-section-header {
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.text-primary {
+    color: #0d6efd !important;
+}
+
+/* Logo Preview */
+.current-logo {
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    display: inline-block;
+}
+
+/* Settings Icons */
+.settings-icon {
+    width: 24px;
+    text-align: center;
+    display: inline-block;
+}
+
+/* Preview Buttons */
+.btn-info {
+    background-color: #0dcaf0;
+    border-color: #0dcaf0;
+}
+
+.btn-info:hover {
+    background-color: #31d2f2;
+    border-color: #25cff2;
+}

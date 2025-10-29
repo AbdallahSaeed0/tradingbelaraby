@@ -61,7 +61,12 @@
     </section>
 @endsection
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/pages/terms-conditions.css') }}">
-@endpush
-
+@if (\App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl')
+    @push('rtl-styles')
+        <link rel="stylesheet" href="{{ asset('css/rtl/pages/terms-conditions.css') }}">
+    @endpush
+@else
+    @push('styles')
+        <link rel="stylesheet" href="{{ asset('css/pages/terms-conditions.css') }}">
+    @endpush
+@endif

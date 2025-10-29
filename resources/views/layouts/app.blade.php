@@ -25,28 +25,67 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
     <link rel="stylesheet" type="text/css"
         href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
-    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/layout.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/utilities.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/utilities-extended.css') }}">
+    <!-- External Libraries - Always loaded -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Toastr CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
-    <!-- Layout Styles -->
-    <link rel="stylesheet" href="{{ asset('css/layout/rtl.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/layout/language-switcher.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/layout/header-nav.css') }}">
+    <!-- Language-specific Styles -->
+    @if (\App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl')
+        <!-- RTL Base Styles -->
+        <link rel="stylesheet" href="{{ asset('css/rtl/main.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/rtl/utilities.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/rtl/utilities-extended.css') }}">
 
-    <!-- Component Styles -->
-    <link rel="stylesheet" href="{{ asset('css/components/buttons.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/components/cards.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/components/alerts.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/components/badges.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/components/dropdowns.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/components/forms.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/components/whatsapp-float.css') }}">
+        <!-- RTL Layout Styles -->
+        <link rel="stylesheet" href="{{ asset('css/rtl/layout.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/rtl/layout/main.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/rtl/layout/rtl.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/rtl/layout/header-nav.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/rtl/layout/language-switcher.css') }}">
+
+        <!-- RTL Component Styles -->
+        <link rel="stylesheet" href="{{ asset('css/rtl/components/main.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/rtl/components/buttons.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/rtl/components/cards.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/rtl/components/alerts.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/rtl/components/badges.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/rtl/components/dropdowns.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/rtl/components/forms.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/rtl/components/whatsapp-float.css') }}">
+
+        <!-- RTL Additional Styles -->
+        <link rel="stylesheet" href="{{ asset('css/rtl/responsive/main.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/rtl/base/main.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/rtl/fonts/main.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/rtl/webfonts/main.css') }}">
+    @else
+        <!-- LTR Base Styles -->
+        <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/utilities.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/utilities-extended.css') }}">
+
+        <!-- LTR Layout Styles -->
+        <link rel="stylesheet" href="{{ asset('css/layout.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/layout/rtl.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/layout/language-switcher.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/layout/header-nav.css') }}">
+
+        <!-- LTR Component Styles -->
+        <link rel="stylesheet" href="{{ asset('css/components/buttons.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/components/cards.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/components/alerts.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/components/badges.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/components/dropdowns.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/components/forms.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/components/whatsapp-float.css') }}">
+    @endif
+
+    <!-- Page-specific RTL Styles -->
+    @if (\App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl')
+        @stack('rtl-styles')
+    @endif
 
     @stack('styles')
 </head>

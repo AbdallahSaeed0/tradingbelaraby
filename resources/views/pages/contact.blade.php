@@ -129,6 +129,16 @@
     </section>
 @endsection
 
+@if (\App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl')
+    @push('rtl-styles')
+        <link rel="stylesheet" href="{{ asset('css/rtl/pages/contact.css') }}">
+    @endpush
+@else
+    @push('styles')
+        <link rel="stylesheet" href="{{ asset('css/pages/contact.css') }}">
+    @endpush
+@endif
+
 @push('scripts')
     <script>
         $(document).ready(function() {
@@ -183,4 +193,3 @@
         });
     </script>
 @endpush
-

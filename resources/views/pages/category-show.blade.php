@@ -301,6 +301,16 @@
     </section>
 @endsection
 
+@if (\App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl')
+    @push('rtl-styles')
+        <link rel="stylesheet" href="{{ asset('css/rtl/pages/categories.css') }}">
+    @endpush
+@else
+    @push('styles')
+        <link rel="stylesheet" href="{{ asset('css/pages/categories.css') }}">
+    @endpush
+@endif
+
 @push('scripts')
     <script>
         // View toggle functionality
@@ -543,4 +553,3 @@
         });
     </script>
 @endpush
-

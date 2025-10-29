@@ -100,6 +100,16 @@
 
 @endsection
 
+@if (\App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl')
+    @push('rtl-styles')
+        <link rel="stylesheet" href="{{ asset('css/rtl/pages/home.css') }}">
+    @endpush
+@else
+    @push('styles')
+        <link rel="stylesheet" href="{{ asset('css/pages/home.css') }}">
+    @endpush
+@endif
+
 @push('scripts')
     <script>
         const swiper = new Swiper('.mySwiper', {

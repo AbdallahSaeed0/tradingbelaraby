@@ -2,6 +2,16 @@
 
 @section('title', $course->name . ' - Learn')
 
+@push('styles')
+    @if (\App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl')
+        <link rel="stylesheet" href="{{ asset('css/rtl/pages/course-content.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/rtl/pages/student-dashboard.css') }}">
+    @else
+        <link rel="stylesheet" href="{{ asset('css/pages/course-content.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/pages/student-dashboard.css') }}">
+    @endif
+@endpush
+
 @section('content')
     <!-- Course Header -->
     @include('courses.partials.course-header', ['course' => $course])
@@ -1452,4 +1462,3 @@
         }
     </script>
 @endpush
-

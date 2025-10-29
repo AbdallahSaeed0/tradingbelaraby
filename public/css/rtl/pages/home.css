@@ -976,6 +976,15 @@ footer {
     font-size: 20px;
 }
 
+/* Reverse hero swiper button icons for RTL layout */
+.hero-swiper-button-next::after {
+    transform: scaleX(-1) !important; /* Flip the arrow horizontally */
+}
+
+.hero-swiper-button-prev::after {
+    transform: scaleX(-1) !important; /* Flip the arrow horizontally */
+}
+
 /* Hero Swiper Pagination */
 .hero-swiper-pagination {
     bottom: 20px;
@@ -1363,7 +1372,10 @@ footer {
     width: 32px;
     position: absolute;
     bottom: 16px;
-    right: 16px;
+    left: 16px;
+}
+.slick-list {
+    direction: ltr !important;
 }
 .swiper-button-next,
 .swiper-button-prev {
@@ -1405,6 +1417,15 @@ footer {
 .swiper-button-prev:after {
     font-size: 0.8em !important;
     font-weight: 800;
+}
+
+/* Reverse swiper button icons for RTL layout */
+.swiper-button-next:after {
+    transform: scaleX(-1) !important; /* Flip the arrow horizontally */
+}
+
+.swiper-button-prev:after {
+    transform: scaleX(-1) !important; /* Flip the arrow horizontally */
 }
 /* Swiper Container Positioning */
 .swiper {

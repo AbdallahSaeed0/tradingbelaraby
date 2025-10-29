@@ -1,0 +1,33 @@
+/* Alert Styles */
+
+.alert {
+    border-radius: 8px;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.alert-success {
+    border-left: 4px solid #198754;
+}
+
+.alert-danger {
+    border-left: 4px solid #dc3545;
+}
+
+.alert-warning {
+    border-left: 4px solid #ffc107;
+}
+
+.alert-info {
+    border-left: 4px solid #0dcaf0;
+}

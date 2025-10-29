@@ -26,14 +26,12 @@
     margin-left: 0.5rem !important;
 }
 
-/* RTL Navigation */
-[dir="rtl"] .nav-links {
-    flex-direction: row-reverse;
-}
+
 
 [dir="rtl"] .auth-buttons {
     flex-direction: row-reverse;
 }
+
 
 /* RTL Footer */
 [dir="rtl"] .footer-contact-item {

@@ -1,9 +1,25 @@
+@php
+    $user = auth()->user();
+    $allQuestions = $course
+        ->questionsAnswers()
+        ->with(['user', 'instructor']) // Eager load relationships
+        ->where(function ($query) use ($user) {
+            $query->where('is_public', true)->whereIn('status', ['pending', 'answered']);
+            // Show user's own questions even if not public yet
+        if ($user) {
+            $query->orWhere('user_id', $user->id);
+        }
+    })
+    ->orderBy('created_at', 'desc')
+        ->get();
+@endphp
+
 <div class="qa-section bg-light-blue-section py-5">
     <div class="container">
         <!-- Header with title and add question button -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="fw-bold">{{ custom_trans('Questions & Answers') }} <span
-                    class="text-muted">({{ $course->publishedQuestionsAnswers->count() ?? 0 }})</span></h3>
+                    class="text-muted">({{ $allQuestions->count() ?? 0 }})</span></h3>
             <button class="btn btn-orange" data-bs-toggle="modal" data-bs-target="#addQuestionModal">
                 <i class="fa fa-plus me-2"></i>{{ custom_trans('Add New Question') }}
             </button>
@@ -11,10 +27,10 @@
 
         <!-- Q&A Accordion -->
         <div class="accordion" id="qaAccordion">
-            @forelse($course->publishedQuestionsAnswers ?? [] as $question)
+            @forelse($allQuestions as $question)
                 <div class="accordion-item border-0 mb-3 bg-white rounded-4 shadow-sm">
                     <div class="d-flex align-items-start p-3">
-                        <button class="btn p-0 me-3 qa-toggle-btn" type="button" data-bs-toggle="collapse"
+                        <button class="btn me-3 qa-toggle-btn" type="button" data-bs-toggle="collapse"
                             data-bs-target="#qa{{ $question->id }}" aria-expanded="false"
                             aria-controls="qa{{ $question->id }}">
                             <div class="qa-toggle-icon">
@@ -30,7 +46,12 @@
                                 <div>
                                     <div class="qa-user-info text-muted mb-1">
                                         {{ $question->user->name ?? custom_trans('User') }}
-                                        • {{ $question->created_at->format('jS F Y') }}</div>
+                                        • {{ $question->created_at->format('jS F Y') }}
+                                        @if ($question->user_id === $user?->id && !$question->is_public)
+                                            <span
+                                                class="badge bg-warning text-dark ms-2">{{ custom_trans('Pending Approval') }}</span>
+                                        @endif
+                                    </div>
                                     <h6 class="qa-question-title mb-0">{{ $question->question_title }}</h6>
                                 </div>
                                 <div class="qa-actions d-flex flex-column align-items-end">
@@ -349,13 +370,31 @@
                             // Reset form
                             form.reset();
 
-                            // Close modal
-                            bootstrap.Modal.getInstance(document.getElementById('addQuestionModal'))
-                                .hide();
+                            // Close modal and clean up backdrop
+                            const modal = bootstrap.Modal.getInstance(document.getElementById(
+                                'addQuestionModal'));
+                            if (modal) {
+                                modal.hide();
+                            }
 
-                            // Don't reload page since question needs approval
+                            // Remove modal backdrop if it exists
+                            setTimeout(() => {
+                                const backdrop = document.querySelector('.modal-backdrop');
+                                if (backdrop) {
+                                    backdrop.remove();
+                                }
+                                // Remove modal-open class from body
+                                document.body.classList.remove('modal-open');
+                                document.body.style.overflow = '';
+                                document.body.style.paddingRight = '';
+
+                                // Refresh the page to show the new question
+                                window.location.reload();
+                            }, 300);
+
+                            // Question is now visible immediately
                             showToast(
-                                '{{ custom_trans('Question submitted successfully and is pending approval') }}',
+                                '{{ custom_trans('Question submitted successfully!') }}',
                                 'success');
                         } else {
                             showToast(data.message ||
@@ -444,14 +483,27 @@
                             // Reset form
                             document.getElementById('answerContent').value = '';
 
-                            // Close modal
-                            bootstrap.Modal.getInstance(document.getElementById('addAnswerModal'))
-                                .hide();
+                            // Close modal and clean up backdrop
+                            const modal = bootstrap.Modal.getInstance(document.getElementById(
+                                'addAnswerModal'));
+                            if (modal) {
+                                modal.hide();
+                            }
 
-                            // Don't reload page since answer needs approval
-                            showToast(
-                                '{{ custom_trans('Answer submitted successfully and is pending approval') }}',
-                                'success');
+                            // Remove modal backdrop if it exists
+                            setTimeout(() => {
+                                const backdrop = document.querySelector('.modal-backdrop');
+                                if (backdrop) {
+                                    backdrop.remove();
+                                }
+                                // Remove modal-open class from body
+                                document.body.classList.remove('modal-open');
+                                document.body.style.overflow = '';
+                                document.body.style.paddingRight = '';
+
+                                // Refresh the page to show the new answer
+                                window.location.reload();
+                            }, 300);
                         } else {
                             showToast(data.message ||
                                 '{{ custom_trans('Error submitting answer') }}', 'error');
@@ -536,6 +588,81 @@
                     toast.remove();
                 }, 300);
             }, 3000);
+        }
+
+        // Modal cleanup function
+        function cleanupModal(modalId) {
+            const modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
+            if (modal) {
+                modal.hide();
+            }
+
+            // Remove modal backdrop and clean up body classes
+            setTimeout(() => {
+                const backdrop = document.querySelector('.modal-backdrop');
+                if (backdrop) {
+                    backdrop.remove();
+                }
+                document.body.classList.remove('modal-open');
+                document.body.style.overflow = '';
+                document.body.style.paddingRight = '';
+            }, 300);
+        }
+
+        // Add event listeners for modal cleanup on hidden event
+        const addQuestionModal = document.getElementById('addQuestionModal');
+        if (addQuestionModal) {
+            addQuestionModal.addEventListener('hidden.bs.modal', function() {
+                cleanupModal('addQuestionModal');
+            });
+        }
+
+        const addAnswerModal = document.getElementById('addAnswerModal');
+        if (addAnswerModal) {
+            addAnswerModal.addEventListener('hidden.bs.modal', function() {
+                cleanupModal('addAnswerModal');
+            });
+        }
+
+        // Handle accordion toggle buttons for proper open/close functionality
+        const accordionElement = document.getElementById('qaAccordion');
+        if (accordionElement) {
+            // Listen for Bootstrap collapse events
+            accordionElement.addEventListener('show.bs.collapse', function(event) {
+                // Find the button that controls this collapse
+                const collapseId = event.target.id;
+                const button = document.querySelector(`[data-bs-target="#${collapseId}"]`);
+                if (button) {
+                    button.setAttribute('aria-expanded', 'true');
+                }
+            });
+
+            accordionElement.addEventListener('hide.bs.collapse', function(event) {
+                // Find the button that controls this collapse
+                const collapseId = event.target.id;
+                const button = document.querySelector(`[data-bs-target="#${collapseId}"]`);
+                if (button) {
+                    button.setAttribute('aria-expanded', 'false');
+                }
+            });
+
+            // Ensure buttons work properly on click
+            const toggleButtons = document.querySelectorAll('.qa-toggle-btn');
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const targetId = this.getAttribute('data-bs-target');
+                    const target = document.querySelector(targetId);
+
+                    if (target) {
+                        const bsCollapse = new bootstrap.Collapse(target, {
+                            toggle: true
+                        });
+                    }
+                });
+            });
         }
     });
 </script>
