@@ -20,6 +20,7 @@ class QuestionsAnswer extends Model
         'question_content',
         'question_type',
         'answer_content',
+        'answer_audio',
         'answered_at',
         'status',
         'is_public',
@@ -51,6 +52,7 @@ class QuestionsAnswer extends Model
         'is_urgent',
         'formatted_question_date',
         'formatted_answer_date',
+        'audio_url',
     ];
 
     /**
@@ -351,5 +353,25 @@ class QuestionsAnswer extends Model
     {
         return $admin->type === 'admin' ||
                $this->course->instructor_id === $admin->id;
+    }
+
+    /**
+     * Get audio URL attribute
+     */
+    public function getAudioUrlAttribute(): ?string
+    {
+        if (!$this->answer_audio) {
+            return null;
+        }
+
+        return asset('storage/' . $this->answer_audio);
+    }
+
+    /**
+     * Check if answer has audio
+     */
+    public function hasAudio(): bool
+    {
+        return !empty($this->answer_audio);
     }
 }

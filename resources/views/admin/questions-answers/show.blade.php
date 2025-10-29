@@ -161,6 +161,29 @@
                                 <h6>Answer:</h6>
                                 <div class="content-box answer-box">
                                     {!! nl2br(e($questionsAnswer->answer_content)) !!}
+
+                                    <!-- Audio Answer -->
+                                    @if ($questionsAnswer->hasAudio())
+                                        <div class="audio-answer mt-3">
+                                            <h6 class="mb-2">
+                                                <i class="fas fa-microphone"></i> Audio Reply:
+                                            </h6>
+                                            <div class="audio-player-container">
+                                                <audio controls style="width: 100%;">
+                                                    <source src="{{ $questionsAnswer->audio_url }}" type="audio/webm">
+                                                    <source src="{{ $questionsAnswer->audio_url }}" type="audio/mp3">
+                                                    Your browser does not support the audio element.
+                                                </audio>
+                                                <div class="mt-2">
+                                                    <a href="{{ $questionsAnswer->audio_url }}" download
+                                                        class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-download"></i> Download Audio
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+
                                     <div class="answer-meta mt-3">
                                         <small class="text-muted">
                                             Answered by {{ $questionsAnswer->instructor->name ?? 'Unknown Instructor' }}
@@ -389,6 +412,3 @@
     </div>
 
 @endsection
-
-
-

@@ -182,6 +182,73 @@
                                 @enderror
                             </div>
 
+                            <!-- Audio Recording Section -->
+                            <div class="form-group">
+                                <label>Audio Reply (Optional)</label>
+                                <div class="audio-recording-section">
+                                    <!-- Recording Controls -->
+                                    <div class="recording-controls mb-3">
+                                        <button type="button" id="startRecording" class="btn btn-outline-primary">
+                                            <i class="fas fa-microphone"></i> Start Recording
+                                        </button>
+                                        <button type="button" id="stopRecording" class="btn btn-outline-danger"
+                                            style="display: none;">
+                                            <i class="fas fa-stop"></i> Stop Recording
+                                        </button>
+                                        <button type="button" id="playRecording" class="btn btn-outline-success"
+                                            style="display: none;">
+                                            <i class="fas fa-play"></i> Play
+                                        </button>
+                                        <button type="button" id="deleteRecording" class="btn btn-outline-secondary"
+                                            style="display: none;">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </div>
+
+                                    <!-- Recording Status -->
+                                    <div id="recordingStatus" class="recording-status" style="display: none;">
+                                        <div class="recording-indicator">
+                                            <span class="recording-dot"></span>
+                                            <span id="recordingDuration">00:00</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Audio Preview -->
+                                    <div id="audioPreview" class="audio-preview" style="display: none;">
+                                        <audio id="audioPlayer" controls style="width: 100%;">
+                                            Your browser does not support the audio element.
+                                        </audio>
+                                    </div>
+
+                                    <!-- Existing Audio -->
+                                    @if ($questionsAnswer->hasAudio())
+                                        <div class="existing-audio mb-3">
+                                            <label class="form-label">Current Audio:</label>
+                                            <audio controls style="width: 100%;">
+                                                <source src="{{ $questionsAnswer->audio_url }}" type="audio/webm">
+                                                <source src="{{ $questionsAnswer->audio_url }}" type="audio/mp3">
+                                                Your browser does not support the audio element.
+                                            </audio>
+                                            <div class="mt-2">
+                                                <a href="{{ $questionsAnswer->audio_url }}" download
+                                                    class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-download"></i> Download Audio
+                                                </a>
+                                            </div>
+                                        </div>
+                                    @endif
+
+                                    <!-- Hidden input for audio data -->
+                                    <input type="hidden" name="audio_data" id="audioData">
+                                </div>
+                                <small class="form-text text-muted">
+                                    Record an audio reply to supplement your text answer. Maximum 10MB.
+                                </small>
+                                @error('audio_data')
+                                    <div class="text-danger mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+
                             <div class="form-group">
                                 <label for="moderation_notes">Moderation Notes (Optional)</label>
                                 <textarea name="moderation_notes" id="moderation_notes" class="form-control" rows="3"
@@ -196,8 +263,9 @@
 
                             <div class="form-group">
                                 <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="mark_urgent" name="mark_urgent"
-                                        value="1" {{ $questionsAnswer->priority === 'urgent' ? 'checked' : '' }}>
+                                    <input type="checkbox" class="custom-control-input" id="mark_urgent"
+                                        name="mark_urgent" value="1"
+                                        {{ $questionsAnswer->priority === 'urgent' ? 'checked' : '' }}>
                                     <label class="custom-control-label" for="mark_urgent">
                                         Mark as urgent priority
                                     </label>
@@ -277,9 +345,148 @@
 
             answerContent.addEventListener('input', updateCharCounter);
             updateCharCounter();
+
+            // Audio Recording Functionality
+            let mediaRecorder;
+            let audioChunks = [];
+            let recordingStartTime;
+            let recordingInterval;
+            let isRecording = false;
+
+            const startRecordingBtn = document.getElementById('startRecording');
+            const stopRecordingBtn = document.getElementById('stopRecording');
+            const playRecordingBtn = document.getElementById('playRecording');
+            const deleteRecordingBtn = document.getElementById('deleteRecording');
+            const recordingStatus = document.getElementById('recordingStatus');
+            const audioPreview = document.getElementById('audioPreview');
+            const audioPlayer = document.getElementById('audioPlayer');
+            const audioData = document.getElementById('audioData');
+            const recordingDuration = document.getElementById('recordingDuration');
+
+            // Check for MediaRecorder support
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                startRecordingBtn.disabled = true;
+                startRecordingBtn.innerHTML = '<i class="fas fa-microphone-slash"></i> Recording Not Supported';
+                startRecordingBtn.title = 'Your browser does not support audio recording';
+            }
+
+            // Start recording
+            startRecordingBtn.addEventListener('click', async () => {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({
+                        audio: true
+                    });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+
+                    mediaRecorder.ondataavailable = (event) => {
+                        audioChunks.push(event.data);
+                    };
+
+                    mediaRecorder.onstop = () => {
+                        const audioBlob = new Blob(audioChunks, {
+                            type: 'audio/webm'
+                        });
+                        const audioUrl = URL.createObjectURL(audioBlob);
+
+                        // Convert to base64 for form submission
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                            audioData.value = reader.result;
+                        };
+                        reader.readAsDataURL(audioBlob);
+
+                        // Update UI
+                        audioPlayer.src = audioUrl;
+                        audioPreview.style.display = 'block';
+                        playRecordingBtn.style.display = 'inline-block';
+                        deleteRecordingBtn.style.display = 'inline-block';
+                        startRecordingBtn.style.display = 'none';
+                        stopRecordingBtn.style.display = 'none';
+                        recordingStatus.style.display = 'none';
+
+                        // Stop all tracks
+                        stream.getTracks().forEach(track => track.stop());
+                    };
+
+                    mediaRecorder.start();
+                    isRecording = true;
+                    recordingStartTime = Date.now();
+
+                    // Update UI
+                    startRecordingBtn.style.display = 'none';
+                    stopRecordingBtn.style.display = 'inline-block';
+                    recordingStatus.style.display = 'block';
+
+                    // Start duration timer
+                    recordingInterval = setInterval(updateRecordingDuration, 1000);
+
+                } catch (error) {
+                    console.error('Error accessing microphone:', error);
+                    alert('Error accessing microphone. Please check your permissions.');
+                }
+            });
+
+            // Stop recording
+            stopRecordingBtn.addEventListener('click', () => {
+                if (mediaRecorder && isRecording) {
+                    mediaRecorder.stop();
+                    isRecording = false;
+                    clearInterval(recordingInterval);
+                }
+            });
+
+            // Play recording
+            playRecordingBtn.addEventListener('click', () => {
+                if (audioPlayer.paused) {
+                    audioPlayer.play();
+                    playRecordingBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+                } else {
+                    audioPlayer.pause();
+                    playRecordingBtn.innerHTML = '<i class="fas fa-play"></i> Play';
+                }
+            });
+
+            // Delete recording
+            deleteRecordingBtn.addEventListener('click', () => {
+                if (confirm('Are you sure you want to delete this recording?')) {
+                    audioData.value = '';
+                    audioPreview.style.display = 'none';
+                    playRecordingBtn.style.display = 'none';
+                    deleteRecordingBtn.style.display = 'none';
+                    startRecordingBtn.style.display = 'inline-block';
+                    stopRecordingBtn.style.display = 'none';
+                    recordingStatus.style.display = 'none';
+
+                    // Reset audio player
+                    audioPlayer.src = '';
+                    playRecordingBtn.innerHTML = '<i class="fas fa-play"></i> Play';
+                }
+            });
+
+            // Update recording duration
+            function updateRecordingDuration() {
+                if (isRecording && recordingStartTime) {
+                    const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
+                    const minutes = Math.floor(elapsed / 60);
+                    const seconds = elapsed % 60;
+                    recordingDuration.textContent =
+                        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }
+            }
+
+            // Handle audio player events
+            audioPlayer.addEventListener('ended', () => {
+                playRecordingBtn.innerHTML = '<i class="fas fa-play"></i> Play';
+            });
+
+            audioPlayer.addEventListener('pause', () => {
+                playRecordingBtn.innerHTML = '<i class="fas fa-play"></i> Play';
+            });
+
+            audioPlayer.addEventListener('play', () => {
+                playRecordingBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+            });
         });
     </script>
 @endpush
-
-
-

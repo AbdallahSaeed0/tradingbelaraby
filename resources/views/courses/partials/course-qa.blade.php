@@ -104,6 +104,21 @@
                                             </div>
                                             <div class="qa-answer-content">
                                                 {!! nl2br(e($question->answer_content)) !!}
+
+                                                <!-- Audio Answer -->
+                                                @if ($question->hasAudio())
+                                                    <div class="audio-answer mt-3">
+                                                        <div class="audio-player-container">
+                                                            <audio controls style="width: 100%;">
+                                                                <source src="{{ $question->audio_url }}"
+                                                                    type="audio/webm">
+                                                                <source src="{{ $question->audio_url }}"
+                                                                    type="audio/mp3">
+                                                                {{ custom_trans('Your browser does not support the audio element.') }}
+                                                            </audio>
+                                                        </div>
+                                                    </div>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
@@ -162,7 +177,8 @@
                         <div class="form-text">{{ custom_trans('Minimum 3 characters required') }}</div>
                     </div>
                     <div class="mb-3">
-                        <label for="questionContent" class="form-label">{{ custom_trans('Question Details') }}</label>
+                        <label for="questionContent"
+                            class="form-label">{{ custom_trans('Question Details') }}</label>
                         <textarea class="form-control" id="questionContent" name="question_content" rows="4"
                             placeholder="{{ custom_trans('Provide more details about your question...') }}"></textarea>
                     </div>

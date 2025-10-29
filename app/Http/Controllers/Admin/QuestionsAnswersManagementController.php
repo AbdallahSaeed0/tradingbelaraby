@@ -167,18 +167,33 @@ class QuestionsAnswersManagementController extends Controller
         $request->validate([
             'answer_content' => 'required|string|min:10|max:5000',
             'moderation_notes' => 'nullable|string|max:1000',
+            'audio_data' => 'nullable|string',
         ]);
 
         $admin = Auth::guard('admin')->user();
 
-        $questionsAnswer->update([
+        $updateData = [
             'answer_content' => $request->answer_content,
             'instructor_id' => $admin->id,
             'answered_at' => now(),
             'status' => 'answered',
             'is_public' => true,
             'moderation_notes' => $request->moderation_notes,
-        ]);
+        ];
+
+        // Handle audio upload if provided
+        if ($request->audio_data) {
+            try {
+                $audioPath = $this->saveAudioFile($request->audio_data, $questionsAnswer->id);
+                $updateData['answer_audio'] = $audioPath;
+            } catch (\Exception $e) {
+                return redirect()->back()
+                    ->with('error', 'Error saving audio file: ' . $e->getMessage())
+                    ->withInput();
+            }
+        }
+
+        $questionsAnswer->update($updateData);
 
         return redirect()->route('admin.questions-answers.show', $questionsAnswer)
             ->with('success', 'Reply added successfully!');
@@ -192,14 +207,34 @@ class QuestionsAnswersManagementController extends Controller
         $request->validate([
             'answer_content' => 'required|string|min:10|max:5000',
             'moderation_notes' => 'nullable|string|max:1000',
+            'audio_data' => 'nullable|string',
         ]);
 
         $admin = Auth::guard('admin')->user();
 
-        $questionsAnswer->update([
+        $updateData = [
             'answer_content' => $request->answer_content,
             'moderation_notes' => $request->moderation_notes,
-        ]);
+        ];
+
+        // Handle audio upload if provided
+        if ($request->audio_data) {
+            try {
+                // Delete old audio file if exists
+                if ($questionsAnswer->answer_audio) {
+                    $this->deleteAudioFile($questionsAnswer->answer_audio);
+                }
+
+                $audioPath = $this->saveAudioFile($request->audio_data, $questionsAnswer->id);
+                $updateData['answer_audio'] = $audioPath;
+            } catch (\Exception $e) {
+                return redirect()->back()
+                    ->with('error', 'Error saving audio file: ' . $e->getMessage())
+                    ->withInput();
+            }
+        }
+
+        $questionsAnswer->update($updateData);
 
         return redirect()->route('admin.questions-answers.show', $questionsAnswer)
             ->with('success', 'Reply updated successfully!');
@@ -210,8 +245,14 @@ class QuestionsAnswersManagementController extends Controller
      */
     public function deleteReply(QuestionsAnswer $questionsAnswer)
     {
+        // Delete audio file if exists
+        if ($questionsAnswer->answer_audio) {
+            $this->deleteAudioFile($questionsAnswer->answer_audio);
+        }
+
         $questionsAnswer->update([
             'answer_content' => null,
+            'answer_audio' => null,
             'instructor_id' => null,
             'answered_at' => null,
             'status' => 'pending',
@@ -520,6 +561,71 @@ class QuestionsAnswersManagementController extends Controller
 
         return redirect()->back()
             ->with('success', 'Question deleted successfully.');
+    }
+
+    /**
+     * Save audio file from base64 data
+     */
+    private function saveAudioFile(string $audioData, int $questionId): string
+    {
+        // Validate audio data format
+        if (empty($audioData)) {
+            throw new \Exception('No audio data provided');
+        }
+
+        // Extract base64 data
+        if (strpos($audioData, 'data:audio/webm;base64,') === 0) {
+            $audioData = substr($audioData, 22); // Remove data:audio/webm;base64, prefix
+        } elseif (strpos($audioData, 'data:audio/mp3;base64,') === 0) {
+            $audioData = substr($audioData, 20); // Remove data:audio/mp3;base64, prefix
+        }
+
+        $audioBinary = base64_decode($audioData);
+
+        if ($audioBinary === false) {
+            throw new \Exception('Invalid audio data format');
+        }
+
+        // Validate file size (10MB max)
+        if (strlen($audioBinary) > 10 * 1024 * 1024) {
+            throw new \Exception('Audio file too large. Maximum size is 10MB.');
+        }
+
+        // Validate minimum file size (1KB)
+        if (strlen($audioBinary) < 1024) {
+            throw new \Exception('Audio file too small. Please record for at least a few seconds.');
+        }
+
+        // Generate filename with proper extension
+        $extension = 'webm'; // Default to webm for MediaRecorder
+        $filename = 'question_' . $questionId . '_' . time() . '.' . $extension;
+        $path = 'question-answers/audio/' . $filename;
+
+        // Save file
+        $fullPath = storage_path('app/public/' . $path);
+        $directory = dirname($fullPath);
+
+        if (!is_dir($directory)) {
+            mkdir($directory, 0755, true);
+        }
+
+        if (file_put_contents($fullPath, $audioBinary) === false) {
+            throw new \Exception('Failed to save audio file to storage');
+        }
+
+        return $path;
+    }
+
+    /**
+     * Delete audio file
+     */
+    private function deleteAudioFile(string $audioPath): void
+    {
+        $fullPath = storage_path('app/public/' . $audioPath);
+
+        if (file_exists($fullPath)) {
+            unlink($fullPath);
+        }
     }
 
 }
