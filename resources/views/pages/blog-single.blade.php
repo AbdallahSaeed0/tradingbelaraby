@@ -1,11 +1,7 @@
 @extends('layouts.app')
 
-@section('title',
-    ($blog->title ?? 'Blog') .
-    ' - ' .
-    (\App\Models\MainContentSettings::getActive()?->site_name ??
-    'Site
-    Name'))
+@section('title', ($blog->getLocalizedTitle() ?? 'Blog') . ' - ' .
+    (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site Name'))
 
 @section('content')
     <!-- Blog Single Banner -->
@@ -120,7 +116,7 @@
                                         <div class="card h-100 shadow-sm">
                                             @if ($relatedBlog->image)
                                                 <img src="{{ $relatedBlog->image_url }}" class="card-img-top"
-                                                    alt="{{ $relatedBlog->title }}">
+                                                    alt="{{ $relatedBlog->getLocalizedTitle() }}">
                                             @else
                                                 <div
                                                     class="card-img-top bg-light d-flex align-items-center justify-content-center h-200">
@@ -128,9 +124,10 @@
                                                 </div>
                                             @endif
                                             <div class="card-body">
-                                                <h6 class="card-title">{{ Str::limit($relatedBlog->title, 60) }}</h6>
+                                                <h6 class="card-title">
+                                                    {{ Str::limit($relatedBlog->getLocalizedTitle(), 60) }}</h6>
                                                 <p class="card-text text-muted small">
-                                                    {{ Str::limit($relatedBlog->excerpt ?: $relatedBlog->description, 100) }}
+                                                    {{ Str::limit($relatedBlog->getLocalizedExcerpt() ?: strip_tags($relatedBlog->getLocalizedDescription()), 100) }}
                                                 </p>
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <small class="text-muted">
@@ -194,7 +191,8 @@
                                         <div class="d-flex mb-3">
                                             @if ($recentBlog->image)
                                                 <img src="{{ $recentBlog->image_url }}"
-                                                    class="rounded me-3 w-60 h-60 img-h-60" alt="{{ $recentBlog->title }}">
+                                                    class="rounded me-3 w-60 h-60 img-h-60"
+                                                    alt="{{ $recentBlog->getLocalizedTitle() }}">
                                             @else
                                                 <div
                                                     class="rounded me-3 bg-light d-flex align-items-center justify-content-center w-60 h-60">
@@ -205,7 +203,7 @@
                                                 <h6 class="mb-1">
                                                     <a href="{{ route('blog.show', $recentBlog->slug) }}"
                                                         class="text-decoration-none">
-                                                        {{ Str::limit($recentBlog->title, 40) }}
+                                                        {{ Str::limit($recentBlog->getLocalizedTitle(), 40) }}
                                                     </a>
                                                 </h6>
                                                 <small
@@ -240,8 +238,8 @@
         function shareBlog() {
             if (navigator.share) {
                 navigator.share({
-                    title: '{{ $blog->title }}',
-                    text: '{{ Str::limit($blog->excerpt ?: $blog->description, 150) }}',
+                    title: '{{ $blog->getLocalizedTitle() }}',
+                    text: '{{ Str::limit($blog->getLocalizedExcerpt() ?: strip_tags($blog->getLocalizedDescription()), 150) }}',
                     url: window.location.href
                 });
             } else {

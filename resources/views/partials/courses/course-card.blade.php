@@ -2,7 +2,7 @@
 <div class="course-card bg-white rounded-4 shadow-sm h-100 overflow-hidden">
     <!-- Course Image -->
     <div class="course-image position-relative">
-        <img src="{{ $course->image_url }}" alt="{{ $course->name }}" class="w-100 img-h-200">
+        <img src="{{ $course->image_url }}" alt="{{ $course->localized_name }}" class="w-100 img-h-200">
 
         <!-- Course Badge -->
         @if ($course->is_featured ?? false)
@@ -41,13 +41,13 @@
         <!-- Course Title -->
         <h5 class="course-title fw-bold mb-2">
             <a href="{{ route('courses.show', $course->id) }}" class="text-dark text-decoration-none">
-                {{ Str::limit($course->name, 50) }}
+                {{ Str::limit($course->localized_name, 50) }}
             </a>
         </h5>
 
         <!-- Course Description -->
         <p class="course-description text-muted mb-3">
-            {{ Str::limit($course->description ?? 'Not Found', 100) }}
+            {{ Str::limit($course->localized_description ?? 'Not Found', 100) }}
         </p>
 
         <!-- Course Meta -->

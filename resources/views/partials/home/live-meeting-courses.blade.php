@@ -7,7 +7,7 @@
         <div class="container position-relative z-2">
             <!-- Slider controls -->
             <div class="d-flex justify-content-between mb-3">
-                <div class="text-start mb-4">
+                <div class="mb-4">
                     <span class="text-warning fw-bold mb-2 d-block fs-11">
                         <i class="fas fa-video"></i> {{ __('Live Sessions') }}
                     </span>
@@ -25,7 +25,8 @@
                         <div class="swiper-slide">
                             <div class="course-card-custom">
                                 <div class="course-img-wrap">
-                                    <img src="{{ $course->image_url }}" class="course-img" alt="{{ $course->name }}">
+                                    <img src="{{ $course->image_url }}" class="course-img"
+                                        alt="{{ $course->localized_name }}">
 
                                     @if ($course->is_featured)
                                         <span class="badge badge-green">{{ __('Featured') }}</span>
@@ -61,10 +62,10 @@
                                     <h5 class="course-title">
                                         <a href="{{ route('courses.show', $course) }}"
                                             class="text-decoration-none text-dark">
-                                            {{ $course->name }}
+                                            {{ $course->localized_name }}
                                         </a>
                                     </h5>
-                                    <p class="course-desc">{{ Str::limit($course->description, 80) }}</p>
+                                    <p class="course-desc">{{ Str::limit($course->localized_description, 80) }}</p>
                                     <a href="{{ route('courses.show', $course) }}"
                                         class="read-more">{{ __('Read More') }}
                                         &rarr;</a>

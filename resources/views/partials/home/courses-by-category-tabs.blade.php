@@ -23,8 +23,8 @@
                             @if ($category->icon)
                                 <i class="{{ $category->icon }} me-2"></i>
                             @endif
-                            {{ $category->name }}
-                            <span class="badge bg-primary ms-2">{{ $category->courses_count }}</span>
+                            {{ $category->localized_name }}
+                            <span class="badge ms-2">{{ $category->courses_count }}</span>
                         </button>
                     </li>
                 @endforeach
@@ -56,7 +56,7 @@
                                             <div class="course-card-custom">
                                                 <div class="course-img-wrap">
                                                     <img src="{{ $course->image_url }}" class="course-img"
-                                                        alt="{{ $course->name }}">
+                                                        alt="{{ $course->localized_name }}">
 
                                                     @if ($course->is_featured)
                                                         <span class="badge badge-green">{{ __('Featured') }}</span>
@@ -97,10 +97,11 @@
                                                     <h5 class="course-title">
                                                         <a href="{{ route('courses.show', $course) }}"
                                                             class="text-decoration-none text-dark">
-                                                            {{ $course->name }}
+                                                            {{ $course->localized_name }}
                                                         </a>
                                                     </h5>
-                                                    <p class="course-desc">{{ Str::limit($course->description, 80) }}
+                                                    <p class="course-desc">
+                                                        {{ Str::limit($course->localized_description, 80) }}
                                                     </p>
                                                     <a href="{{ route('courses.show', $course) }}"
                                                         class="read-more">{{ __('Read More') }} &rarr;</a>
@@ -115,7 +116,7 @@
 
                             <div class="text-center mt-4">
                                 <a href="{{ route('categories.show', $category) }}" class="btn btn-outline-primary">
-                                    {{ __('View All') }} {{ $category->name }} {{ __('Courses') }}
+                                    {{ __('View All') }} {{ $category->localized_name }} {{ __('Courses') }}
                                     <i class="fas fa-arrow-right ms-2"></i>
                                 </a>
                             </div>
@@ -139,7 +140,8 @@
                 </div>
             @endif
         </div>
-    </section><script>
+    </section>
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize Swiper for each category
             @foreach ($allCategories->take(6) as $category)
@@ -180,4 +182,3 @@
         });
     </script>
 @endif
-

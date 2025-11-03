@@ -129,7 +129,7 @@
                         <div class="card course-card h-100">
                             <div class="course-thumbnail">
                                 @if ($enrollment->course->image)
-                                    <img src="{{ $enrollment->course->image_url }}" alt="{{ $enrollment->course->name }}"
+                                    <img src="{{ $enrollment->course->image_url }}" alt="{{ $enrollment->course->localized_name }}"
                                         class="card-img-top">
                                 @else
                                     <div class="course-placeholder">
@@ -156,19 +156,19 @@
                             <div class="card-body">
                                 <div class="course-category mb-2">
                                     <span class="badge bg-light text-dark">
-                                        {{ $enrollment->course->category->name ?? 'Uncategorized' }}
+                                        {{ $enrollment->course->category->localized_name ?? 'Uncategorized' }}
                                     </span>
                                 </div>
 
                                 <h5 class="card-title course-title">
                                     <a href="{{ route('courses.show', $enrollment->course->slug ?? $enrollment->course->id) }}"
                                         class="text-decoration-none">
-                                        {{ $enrollment->course->name }}
+                                        {{ $enrollment->course->localized_name }}
                                     </a>
                                 </h5>
 
                                 <p class="card-text course-description">
-                                    {{ Str::limit($enrollment->course->description, 100) }}
+                                    {{ Str::limit($enrollment->course->localized_description, 100) }}
                                 </p>
 
                                 <div class="course-instructor mb-3">

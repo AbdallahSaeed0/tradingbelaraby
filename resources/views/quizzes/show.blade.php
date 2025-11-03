@@ -10,7 +10,7 @@
                 <div class="col-lg-10">
                     <div class="text-center text-white mb-5">
                         <div class="course-badge mb-3">
-                            <i class="fas fa-graduation-cap me-2"></i>{{ $course->name }}
+                            <i class="fas fa-graduation-cap me-2"></i>{{ $course->localized_name }}
                         </div>
                         <h1 class="display-4 fw-bold mb-3">{{ $quiz->localized_name }}</h1>
                         <p class="lead mb-4 opacity-90">{{ $quiz->localized_description }}</p>

@@ -40,12 +40,12 @@
                                 class="text-decoration-none">{{ \App\Helpers\TranslationHelper::getLocalizedContent($course->category->name, $course->category->name_ar) }}</a>
                         </li>
                     @endif
-                    <li class="breadcrumb-item active" aria-current="page">{{ $course->name }}</li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ $course->localized_name }}</li>
                 @elseif(isset($blog))
                     <li class="breadcrumb-item">
                         <a href="{{ route('blog.index') }}" class="text-decoration-none">Blog</a>
                     </li>
-                    <li class="breadcrumb-item active" aria-current="page">{{ $blog->title }}</li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ $blog->getLocalizedTitle() }}</li>
                 @elseif(request()->routeIs('blog'))
                     <li class="breadcrumb-item active" aria-current="page">Blog</li>
                 @elseif(request()->routeIs('categories'))

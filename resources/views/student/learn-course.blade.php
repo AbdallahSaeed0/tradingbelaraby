@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $course->name . ' - Learn')
+@section('title', $course->localized_name . ' - Learn')
 
 @push('styles')
     @if (\App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl')

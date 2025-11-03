@@ -134,7 +134,7 @@
                                 <div class="card h-100 shadow-sm border-0">
                                     <div class="position-relative">
                                         <img src="{{ $course->image_url }}" class="card-img-top img-h-200"
-                                            alt="{{ $course->name }}">
+                                            alt="{{ $course->localized_name }}">
                                         @if ($course->is_featured)
                                             <span class="badge bg-success position-absolute top-0 start-0 m-2">
                                                 {{ custom_trans('featured') }}
@@ -159,7 +159,7 @@
                                             <h5 class="card-title course-title fw-bold mb-0 flex-grow-1">
                                                 <a href="{{ route('courses.show', $course->id) }}"
                                                     class="text-decoration-none text-dark">
-                                                    {{ $course->name }}
+                                                    {{ $course->localized_name }}
                                                 </a>
                                             </h5>
                                             <div class="d-flex align-items-center gap-2 ms-2">
@@ -185,7 +185,7 @@
                                             </div>
                                         </div>
                                         <p class="card-text text-muted mb-3 flex-grow-1">
-                                            {{ Str::limit($course->description, 100) }}
+                                            {{ Str::limit($course->localized_description, 100) }}
                                         </p>
                                         <div class="d-flex justify-content-end">
                                             <a href="{{ route('courses.show', $course->id) }}"

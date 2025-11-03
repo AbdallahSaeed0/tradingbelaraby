@@ -93,7 +93,7 @@
                                     @if (request('category'))
                                         @php $selectedCategory = $categories->where('slug', request('category'))->first() @endphp
                                         <span class="badge bg-primary">
-                                            Category: {{ $selectedCategory->name ?? request('category') }}
+                                            Category: {{ $selectedCategory ? \App\Helpers\TranslationHelper::getLocalizedContent($selectedCategory->name, $selectedCategory->name_ar) : request('category') }}
                                             <a href="{{ route('blog.index', ['search' => request('search')]) }}"
                                                 class="text-white ms-1">×</a>
                                         </span>

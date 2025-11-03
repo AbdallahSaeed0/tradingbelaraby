@@ -65,7 +65,7 @@
                         <div class="col-lg-4 col-md-6 mb-4">
                             <div class="course-card h-100 shadow-sm rounded">
                                 <div class="course-image-wrapper position-relative">
-                                    <img src="{{ $course->image_url }}" alt="{{ $course->name }}"
+                                    <img src="{{ $course->image_url }}" alt="{{ $course->localized_name }}"
                                         class="course-image w-100 img-h-200">
                                     @if ($course->is_featured)
                                         <span class="badge bg-warning position-absolute top-0 start-0 m-2">
@@ -82,11 +82,11 @@
                                     <h5 class="course-title fw-bold mb-2">
                                         <a href="{{ route('courses.show', $course) }}"
                                             class="text-decoration-none text-dark">
-                                            {{ $course->name }}
+                                            {{ $course->localized_name }}
                                         </a>
                                     </h5>
                                     <p class="course-description text-muted mb-3">
-                                        {{ Str::limit($course->description, 100) }}
+                                        {{ Str::limit($course->localized_description, 100) }}
                                     </p>
                                     <div class="course-meta d-flex justify-content-between align-items-center mb-3">
                                         <div class="course-rating">

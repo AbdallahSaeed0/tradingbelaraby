@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', ($course->name ?? 'Course') . ' - ' . (\App\Models\MainContentSettings::getActive()?->site_name ??
+@section('title', ($course->localized_name ?? 'Course') . ' - ' . (\App\Models\MainContentSettings::getActive()?->site_name ??
     'Site Name'))
 
     @section('content')
@@ -32,7 +32,7 @@
                 <div class="col-lg-8 mb-4 mb-lg-0">
                     <h2 class="fw-bold mb-4">
                         {{ \App\Helpers\TranslationHelper::getLocalizedContent($course->name, $course->name_ar) }}</h2>
-                    <img src="{{ $course->image_url }}" class="img-fluid rounded-4 mb-4" alt="{{ $course->name }}">
+                    <img src="{{ $course->image_url }}" class="img-fluid rounded-4 mb-4" alt="{{ $course->localized_name }}">
                     <div class="what-learn-box p-4 rounded-4 border">
                         <h5 class="fw-bold mb-3">What learn</h5>
                         @php

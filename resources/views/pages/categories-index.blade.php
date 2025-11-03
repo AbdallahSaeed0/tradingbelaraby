@@ -30,7 +30,7 @@
                         <div class="card h-100 shadow-sm border-0">
                             <div class="position-relative">
                                 @if ($category->image)
-                                    <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}"
+                                    <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->localized_name }}"
                                         class="card-img-top img-h-200">
                                 @else
                                     <div
@@ -41,7 +41,7 @@
                                 <div
                                     class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-dark bg-opacity-75 opacity-0 transition-opacity">
                                     <div class="text-center text-white">
-                                        <h4 class="fw-bold mb-2">{{ $category->name }}</h4>
+                                        <h4 class="fw-bold mb-2">{{ $category->localized_name }}</h4>
                                     </div>
                                 </div>
                             </div>
@@ -112,11 +112,11 @@
                                     <h5 class="card-title category-title fw-bold mb-2">
                                         <a href="{{ route('categories.show', $category->slug) }}"
                                             class="text-decoration-none text-dark">
-                                            {{ $category->name }}
+                                            {{ $category->localized_name }}
                                         </a>
                                     </h5>
                                     <p class="card-text text-muted small mb-3 flex-grow-1">
-                                        {{ Str::limit($category->description, 80) }}</p>
+                                        {{ Str::limit($category->localized_description ?? '', 80) }}</p>
                                     <div class="d-flex justify-content-end">
                                         <a href="{{ route('categories.show', $category->slug) }}"
                                             class="btn btn-outline-primary btn-sm">

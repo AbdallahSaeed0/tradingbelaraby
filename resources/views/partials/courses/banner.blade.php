@@ -16,7 +16,7 @@
                         @endif
                         <li class="breadcrumb-item active" aria-current="page">
                             @if (isset($course))
-                                {{ $course->name }}
+                                {{ $course->localized_name }}
                             @else
                                 {{ $title ?? 'Course Details' }}
                             @endif
@@ -25,13 +25,13 @@
                 </nav>
                 <h1 class="display-4 fw-bold mb-3">
                     @if (isset($course))
-                        {{ $course->name }}
+                        {{ $course->localized_name }}
                     @else
                         {{ $title ?? 'Course Details' }}
                     @endif
                 </h1>
-                @if (isset($course) && $course->description)
-                    <p class="lead mb-0">{{ Str::limit($course->description, 200) }}</p>
+                @if (isset($course) && $course->localized_description)
+                    <p class="lead mb-0">{{ Str::limit($course->localized_description, 200) }}</p>
                 @endif
             </div>
             <div class="col-lg-4 text-center">

@@ -15,7 +15,7 @@
     <div class="container position-relative z-2">
         <!-- Slider controls -->
         <div class="d-flex justify-content-between mb-3">
-            <div class="text-start mb-4">
+            <div class="mb-4">
                 <span class="text-warning fw-bold mb-2 d-block fs-1-1rem">
                     <i class="fas fa-graduation-cap"></i> {{ __('Instructor') }}
                 </span>

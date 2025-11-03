@@ -122,4 +122,28 @@ class BlogCategory extends Model
     {
         return $this->getAttribute($this->getRouteKeyName());
     }
+
+    /**
+     * Get localized name based on current locale
+     */
+    public function getLocalizedNameAttribute(): string
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'ar' && $this->name_ar) {
+            return $this->name_ar;
+        }
+        return $this->name;
+    }
+
+    /**
+     * Get localized description based on current locale
+     */
+    public function getLocalizedDescriptionAttribute(): ?string
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'ar' && $this->description_ar) {
+            return $this->description_ar;
+        }
+        return $this->description;
+    }
 }

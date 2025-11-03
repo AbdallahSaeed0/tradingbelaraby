@@ -62,9 +62,9 @@
                 <!-- Default Quiz Cards -->
                 <div class="col-lg-6">
                     <div class="quiz-card bg-white p-4 rounded-4 shadow-sm h-100">
-                        <h4 class="quiz-title fw-bold mb-3">{{ $course->name }}</h4>
+                        <h4 class="quiz-title fw-bold mb-3">{{ $course->localized_name }}</h4>
                         <p class="quiz-description text-muted mb-4">
-                            {{ __('Test your knowledge of') }} {{ $course->name }}
+                            {{ __('Test your knowledge of') }} {{ $course->localized_name }}
                             {{ __('fundamentals and concepts.') }}
                         </p>
 
