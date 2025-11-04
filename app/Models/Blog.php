@@ -195,8 +195,8 @@ class Blog extends Model
      */
     public function getLocalizedTitle(): string
     {
-        $currentLang = app()->getLocale();
-        if ($currentLang === 'ar' && $this->title_ar) {
+        $currentLanguage = \App\Helpers\TranslationHelper::getCurrentLanguage();
+        if ($currentLanguage && $currentLanguage->code === 'ar' && $this->title_ar) {
             return $this->title_ar;
         }
         return $this->title;
@@ -207,8 +207,8 @@ class Blog extends Model
      */
     public function getLocalizedDescription(): string
     {
-        $currentLang = app()->getLocale();
-        if ($currentLang === 'ar' && $this->description_ar) {
+        $currentLanguage = \App\Helpers\TranslationHelper::getCurrentLanguage();
+        if ($currentLanguage && $currentLanguage->code === 'ar' && $this->description_ar) {
             return $this->description_ar;
         }
         return $this->description;
@@ -219,8 +219,8 @@ class Blog extends Model
      */
     public function getLocalizedExcerpt(): string
     {
-        $currentLang = app()->getLocale();
-        if ($currentLang === 'ar') {
+        $currentLanguage = \App\Helpers\TranslationHelper::getCurrentLanguage();
+        if ($currentLanguage && $currentLanguage->code === 'ar') {
             return $this->getExcerptArOrGenerated();
         }
         return $this->getExcerptOrGenerated();
@@ -231,8 +231,8 @@ class Blog extends Model
      */
     public function getLocalizedImageUrl(): ?string
     {
-        $currentLang = app()->getLocale();
-        if ($currentLang === 'ar' && $this->image_ar_url) {
+        $currentLanguage = \App\Helpers\TranslationHelper::getCurrentLanguage();
+        if ($currentLanguage && $currentLanguage->code === 'ar' && $this->image_ar_url) {
             return $this->image_ar_url;
         }
         return $this->image_url;
@@ -247,8 +247,8 @@ class Blog extends Model
             return $this->custom_slug;
         }
 
-        $currentLang = app()->getLocale();
-        if ($currentLang === 'ar' && $this->slug_ar) {
+        $currentLanguage = \App\Helpers\TranslationHelper::getCurrentLanguage();
+        if ($currentLanguage && $currentLanguage->code === 'ar' && $this->slug_ar) {
             return $this->slug_ar;
         }
 

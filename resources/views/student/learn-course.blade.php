@@ -16,12 +16,7 @@
     <!-- Course Header -->
     @include('courses.partials.course-header', ['course' => $course])
 
-    <!-- Language Switcher -->
-    <div class="container mt-3">
-        <div class="d-flex justify-content-end">
-            @include('partials.language-switcher')
-        </div>
-    </div>
+
 
     <!-- Course Progress Hero -->
     @include('courses.partials.course-progress', [

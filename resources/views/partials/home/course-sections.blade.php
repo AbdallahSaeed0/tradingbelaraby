@@ -22,7 +22,7 @@
                             <div class="course-card h-100 shadow-sm">
                                 <div class="course-image">
                                     @if ($course->image)
-                                        <img src="{{ $course->image_url }}" alt="{{ $course->name }}" class="img-fluid">
+                                        <img src="{{ $course->image_url }}" alt="{{ $course->localized_name }}" class="img-fluid">
                                     @else
                                         <div class="course-placeholder">
                                             <i class="fas fa-graduation-cap"></i>
@@ -53,12 +53,12 @@
                                     <h5 class="course-title mb-2">
                                         <a href="{{ route('courses.show', $course) }}"
                                             class="text-decoration-none text-dark">
-                                            {{ Str::limit($course->name, 50) }}
+                                            {{ Str::limit($course->localized_name, 50) }}
                                         </a>
                                     </h5>
 
                                     <p class="course-description text-muted small mb-3">
-                                        {{ Str::limit($course->description, 80) }}
+                                        {{ Str::limit($course->localized_description, 80) }}
                                     </p>
 
                                     <div class="course-meta d-flex justify-content-between align-items-center">
@@ -139,7 +139,7 @@
                             <div class="course-card h-100 shadow-sm">
                                 <div class="course-image">
                                     @if ($course->image)
-                                        <img src="{{ $course->image_url }}" alt="{{ $course->name }}"
+                                        <img src="{{ $course->image_url }}" alt="{{ $course->localized_name }}"
                                             class="img-fluid">
                                     @else
                                         <div class="course-placeholder">
@@ -169,12 +169,12 @@
                                     <h5 class="course-title mb-2">
                                         <a href="{{ route('courses.show', $course) }}"
                                             class="text-decoration-none text-dark">
-                                            {{ Str::limit($course->name, 50) }}
+                                            {{ Str::limit($course->localized_name, 50) }}
                                         </a>
                                     </h5>
 
                                     <p class="course-description text-muted small mb-3">
-                                        {{ Str::limit($course->description, 80) }}
+                                        {{ Str::limit($course->localized_description, 80) }}
                                     </p>
 
                                     <div class="course-meta d-flex justify-content-between align-items-center">

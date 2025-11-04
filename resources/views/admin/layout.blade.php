@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="{{ asset('css/admin/admin-settings.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/admin-analytics.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/admin-content-management.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/admin-quiz.css') }}">
 
     <!-- Shared Component Styles -->
     <link rel="stylesheet" href="{{ asset('css/components/cards.css') }}">

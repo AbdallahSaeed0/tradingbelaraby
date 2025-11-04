@@ -25,7 +25,7 @@
                                 </div>
                                 <div>
                                     <h6 class="mb-1">{{ __('What are') }}
-                                        {{ \App\Helpers\TranslationHelper::getLocalizedContent($course->name, $course->name_ar) }}?
+                                        {{ $course->localized_name }}?
                                     </h6>
                                 </div>
                             </div>

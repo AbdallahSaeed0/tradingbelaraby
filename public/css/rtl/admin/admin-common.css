@@ -1,8 +1,47 @@
 /* Admin Common Styles */
 
-/* Sidebar Width */
-.offcanvas-sidebar-width {
-    --bs-offcanvas-width: 15%;
+/* Sidebar Width - Ensure consistent width across all pages */
+#adminSidebar,
+.offcanvas-sidebar-width,
+.offcanvas-sidebar-width.offcanvas-start,
+.offcanvas-sidebar-width.offcanvas-lg-show,
+.offcanvas-sidebar-width.offcanvas-start.offcanvas-lg-show,
+#adminSidebar.offcanvas-sidebar-width,
+#adminSidebar.offcanvas-sidebar-width.offcanvas-start,
+#adminSidebar.offcanvas-sidebar-width.offcanvas-lg-show {
+    --bs-offcanvas-width: 15% !important;
+    width: 15% !important;
+    max-width: 15% !important;
+    min-width: 15% !important;
+}
+
+/* Ensure sidebar width is consistent on large screens */
+@media (min-width: 992px) {
+    #adminSidebar,
+    #adminSidebar.offcanvas-sidebar-width,
+    #adminSidebar.offcanvas-sidebar-width.offcanvas-start,
+    #adminSidebar.offcanvas-sidebar-width.offcanvas-lg-show,
+    #adminSidebar.offcanvas-sidebar-width.offcanvas-start.offcanvas-lg-show,
+    #adminSidebar.offcanvas-sidebar-width.offcanvas-lg-show.offcanvas-start.bg-white,
+    .offcanvas-sidebar-width,
+    .offcanvas-sidebar-width.offcanvas-start,
+    .offcanvas-sidebar-width.offcanvas-lg-show,
+    .offcanvas-sidebar-width.offcanvas-start.offcanvas-lg-show,
+    .offcanvas-sidebar-width.offcanvas-lg-show.offcanvas-start.bg-white {
+        width: 15% !important;
+        --bs-offcanvas-width: 15% !important;
+        max-width: 15% !important;
+        min-width: 15% !important;
+    }
+}
+
+/* Override any conflicting styles - Highest priority */
+#adminSidebar.offcanvas-sidebar-width.offcanvas-lg-show,
+#adminSidebar.offcanvas-lg-show.offcanvas-sidebar-width {
+    width: 15% !important;
+    --bs-offcanvas-width: 15% !important;
+    max-width: 15% !important;
+    min-width: 15% !important;
 }
 
 /* Page Title Box */
@@ -35,29 +74,86 @@
 }
 
 /* RTL Support for Admin */
+/* In RTL: me (margin-end) = left, ms (margin-start) = right */
 [dir="rtl"] .me-1 {
-    margin-left: 0 !important;
-    margin-right: 0.25rem !important;
-}
-
-[dir="rtl"] .me-2 {
-    margin-left: 0 !important;
-    margin-right: 0.5rem !important;
-}
-
-[dir="rtl"] .me-3 {
-    margin-left: 0 !important;
-    margin-right: 1rem !important;
-}
-
-[dir="rtl"] .ms-1 {
     margin-right: 0 !important;
     margin-left: 0.25rem !important;
 }
 
-[dir="rtl"] .ms-2 {
+[dir="rtl"] .me-2 {
     margin-right: 0 !important;
     margin-left: 0.5rem !important;
+}
+
+[dir="rtl"] .me-3 {
+    margin-right: 0 !important;
+    margin-left: 1rem !important;
+}
+
+[dir="rtl"] .me-4 {
+    margin-right: 0 !important;
+    margin-left: 1.5rem !important;
+}
+
+[dir="rtl"] .me-5 {
+    margin-right: 0 !important;
+    margin-left: 3rem !important;
+}
+
+[dir="rtl"] .ms-1 {
+    margin-left: 0 !important;
+    margin-right: 0.25rem !important;
+}
+
+[dir="rtl"] .ms-2 {
+    margin-left: 0 !important;
+    margin-right: 0.5rem !important;
+}
+
+[dir="rtl"] .ms-3 {
+    margin-left: 0 !important;
+    margin-right: 1rem !important;
+}
+
+[dir="rtl"] .ms-4 {
+    margin-left: 0 !important;
+    margin-right: 1.5rem !important;
+}
+
+[dir="rtl"] .ms-5 {
+    margin-left: 0 !important;
+    margin-right: 3rem !important;
+}
+
+/* RTL Padding Utilities */
+[dir="rtl"] .pe-1 {
+    padding-right: 0 !important;
+    padding-left: 0.25rem !important;
+}
+
+[dir="rtl"] .pe-2 {
+    padding-right: 0 !important;
+    padding-left: 0.5rem !important;
+}
+
+[dir="rtl"] .pe-3 {
+    padding-right: 0 !important;
+    padding-left: 1rem !important;
+}
+
+[dir="rtl"] .ps-1 {
+    padding-left: 0 !important;
+    padding-right: 0.25rem !important;
+}
+
+[dir="rtl"] .ps-2 {
+    padding-left: 0 !important;
+    padding-right: 0.5rem !important;
+}
+
+[dir="rtl"] .ps-3 {
+    padding-left: 0 !important;
+    padding-right: 1rem !important;
 }
 
 [dir="rtl"] .navbar-nav {

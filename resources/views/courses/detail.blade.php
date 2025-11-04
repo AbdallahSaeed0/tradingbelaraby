@@ -31,7 +31,7 @@
                 <!-- Left Side -->
                 <div class="col-lg-8 mb-4 mb-lg-0">
                     <h2 class="fw-bold mb-4">
-                        {{ \App\Helpers\TranslationHelper::getLocalizedContent($course->name, $course->name_ar) }}</h2>
+                        {{ $course->localized_name }}</h2>
                     <img src="{{ $course->image_url }}" class="img-fluid rounded-4 mb-4" alt="{{ $course->localized_name }}">
                     <div class="what-learn-box p-4 rounded-4 border">
                         <h5 class="fw-bold mb-3">What learn</h5>
@@ -74,15 +74,9 @@
                             </div>
                         @endif
                         <h4 class="fw-bold mb-3">Description</h4>
-                        @php
-                            $localizedDescription = \App\Helpers\TranslationHelper::getLocalizedContent(
-                                $course->description,
-                                $course->description_ar,
-                            );
-                        @endphp
-                        @if (!empty($localizedDescription))
+                        @if (!empty($course->localized_description))
                             <div class="mb-4" @if (\App\Helpers\TranslationHelper::getFrontendLanguage()->code === 'ar') dir="rtl" @endif>
-                                {!! nl2br(e($localizedDescription)) !!}
+                                {!! $course->localized_description !!}
                             </div>
                         @else
                             <div class="mb-4 text-muted">

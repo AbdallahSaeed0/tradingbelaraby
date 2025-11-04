@@ -127,8 +127,8 @@ class CourseCategory extends Model
      */
     public function getLocalizedNameAttribute(): string
     {
-        $locale = app()->getLocale();
-        if ($locale === 'ar' && $this->name_ar) {
+        $currentLanguage = \App\Helpers\TranslationHelper::getCurrentLanguage();
+        if ($currentLanguage && $currentLanguage->code === 'ar' && $this->name_ar) {
             return $this->name_ar;
         }
         return $this->name;
@@ -139,8 +139,8 @@ class CourseCategory extends Model
      */
     public function getLocalizedDescriptionAttribute(): ?string
     {
-        $locale = app()->getLocale();
-        if ($locale === 'ar' && $this->description_ar) {
+        $currentLanguage = \App\Helpers\TranslationHelper::getCurrentLanguage();
+        if ($currentLanguage && $currentLanguage->code === 'ar' && $this->description_ar) {
             return $this->description_ar;
         }
         return $this->description;

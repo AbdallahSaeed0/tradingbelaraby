@@ -68,7 +68,6 @@
 
         <!-- LTR Layout Styles -->
         <link rel="stylesheet" href="{{ asset('css/layout.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/layout/rtl.css') }}">
         <link rel="stylesheet" href="{{ asset('css/layout/language-switcher.css') }}">
         <link rel="stylesheet" href="{{ asset('css/layout/header-nav.css') }}">
 

@@ -580,8 +580,8 @@ class Course extends Model
      */
     public function getLocalizedNameAttribute(): string
     {
-        $locale = app()->getLocale();
-        if ($locale === 'ar' && $this->name_ar) {
+        $currentLanguage = \App\Helpers\TranslationHelper::getCurrentLanguage();
+        if ($currentLanguage && $currentLanguage->code === 'ar' && $this->name_ar) {
             return $this->name_ar;
         }
         return $this->name;
@@ -592,8 +592,8 @@ class Course extends Model
      */
     public function getLocalizedDescriptionAttribute(): string
     {
-        $locale = app()->getLocale();
-        if ($locale === 'ar' && $this->description_ar) {
+        $currentLanguage = \App\Helpers\TranslationHelper::getCurrentLanguage();
+        if ($currentLanguage && $currentLanguage->code === 'ar' && $this->description_ar) {
             return $this->description_ar;
         }
         return $this->description;
@@ -604,8 +604,8 @@ class Course extends Model
      */
     public function getLocalizedRequirementsAttribute(): ?string
     {
-        $locale = app()->getLocale();
-        if ($locale === 'ar' && $this->requirements_ar) {
+        $currentLanguage = \App\Helpers\TranslationHelper::getCurrentLanguage();
+        if ($currentLanguage && $currentLanguage->code === 'ar' && $this->requirements_ar) {
             return $this->requirements_ar;
         }
         return $this->requirements;
@@ -616,8 +616,8 @@ class Course extends Model
      */
     public function getLocalizedWhatToLearnAttribute(): ?array
     {
-        $locale = app()->getLocale();
-        if ($locale === 'ar' && $this->what_to_learn_ar) {
+        $currentLanguage = \App\Helpers\TranslationHelper::getCurrentLanguage();
+        if ($currentLanguage && $currentLanguage->code === 'ar' && $this->what_to_learn_ar) {
             return $this->what_to_learn_ar;
         }
         return $this->what_to_learn;
@@ -628,8 +628,8 @@ class Course extends Model
      */
     public function getLocalizedFaqCourseAttribute(): ?array
     {
-        $locale = app()->getLocale();
-        if ($locale === 'ar' && $this->faq_course_ar) {
+        $currentLanguage = \App\Helpers\TranslationHelper::getCurrentLanguage();
+        if ($currentLanguage && $currentLanguage->code === 'ar' && $this->faq_course_ar) {
             return $this->faq_course_ar;
         }
         return $this->faq_course;
@@ -640,8 +640,8 @@ class Course extends Model
      */
     public function getLocalizedMetaTitleAttribute(): ?string
     {
-        $locale = app()->getLocale();
-        if ($locale === 'ar' && $this->meta_title_ar) {
+        $currentLanguage = \App\Helpers\TranslationHelper::getCurrentLanguage();
+        if ($currentLanguage && $currentLanguage->code === 'ar' && $this->meta_title_ar) {
             return $this->meta_title_ar;
         }
         return $this->meta_title;
@@ -652,8 +652,8 @@ class Course extends Model
      */
     public function getLocalizedMetaDescriptionAttribute(): ?string
     {
-        $locale = app()->getLocale();
-        if ($locale === 'ar' && $this->meta_description_ar) {
+        $currentLanguage = \App\Helpers\TranslationHelper::getCurrentLanguage();
+        if ($currentLanguage && $currentLanguage->code === 'ar' && $this->meta_description_ar) {
             return $this->meta_description_ar;
         }
         return $this->meta_description;
@@ -664,8 +664,8 @@ class Course extends Model
      */
     public function getLocalizedMetaKeywordsAttribute(): ?string
     {
-        $locale = app()->getLocale();
-        if ($locale === 'ar' && $this->meta_keywords_ar) {
+        $currentLanguage = \App\Helpers\TranslationHelper::getCurrentLanguage();
+        if ($currentLanguage && $currentLanguage->code === 'ar' && $this->meta_keywords_ar) {
             return $this->meta_keywords_ar;
         }
         return $this->meta_keywords;

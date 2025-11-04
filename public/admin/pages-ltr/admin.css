@@ -28,10 +28,33 @@ body {
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background: #2559ff;
-    color: #4e73df;
     font-size: 22px;
     margin-right: 12px;
+    flex-shrink: 0;
+}
+
+.stat-icon.bg-primary-soft {
+    background: #4e73df;
+}
+
+.stat-icon.bg-success-soft {
+    background: #1cc88a;
+}
+
+.stat-icon.bg-warning-soft {
+    background: #f6c23e;
+}
+
+.stat-icon.bg-danger-soft {
+    background: #e74a3b;
+}
+
+.stat-icon.bg-info-soft {
+    background: #36b9cc;
+}
+
+.stat-icon.bg-secondary-soft {
+    background: #858796;
 }
 
 .profile-dropdown img {
@@ -68,12 +91,22 @@ body {
 
 /* Sidebar fixed on large screens */
 @media (min-width: 992px) {
-    .offcanvas-lg-show {
+    #adminSidebar.offcanvas-lg-show.offcanvas-sidebar-width,
+    #adminSidebar.offcanvas-lg-show.offcanvas-sidebar-width.offcanvas-start,
+    #adminSidebar.offcanvas-lg-show.offcanvas-sidebar-width.bg-white,
+    #adminSidebar.offcanvas-lg-show.offcanvas-sidebar-width.offcanvas-start.bg-white,
+    .offcanvas-lg-show.offcanvas-sidebar-width,
+    .offcanvas-lg-show.offcanvas-sidebar-width.offcanvas-start,
+    .offcanvas-lg-show.offcanvas-sidebar-width.bg-white,
+    .offcanvas-lg-show.offcanvas-sidebar-width.offcanvas-start.bg-white {
         position: static !important;
         transform: none !important;
         visibility: visible !important;
         border-right: 1px solid rgba(0, 0, 0, 0.1);
-        width: 15%;
+        width: 15% !important;
+        --bs-offcanvas-width: 15% !important;
+        max-width: 15% !important;
+        min-width: 15% !important;
     }
     .offcanvas-lg-show .offcanvas-header .btn-close {
         display: none;

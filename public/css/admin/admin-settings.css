@@ -41,3 +41,26 @@
     background-color: #31d2f2;
     border-color: #25cff2;
 }
+
+/* Ensure sidebar width is consistent on settings page */
+#adminSidebar,
+#adminSidebar.offcanvas-sidebar-width,
+#adminSidebar.offcanvas-lg-show,
+#adminSidebar.offcanvas-sidebar-width.offcanvas-lg-show {
+    width: 15% !important;
+    --bs-offcanvas-width: 15% !important;
+    max-width: 15% !important;
+    min-width: 15% !important;
+}
+
+@media (min-width: 992px) {
+    #adminSidebar,
+    #adminSidebar.offcanvas-sidebar-width,
+    #adminSidebar.offcanvas-lg-show,
+    #adminSidebar.offcanvas-sidebar-width.offcanvas-lg-show {
+        width: 15% !important;
+        --bs-offcanvas-width: 15% !important;
+        max-width: 15% !important;
+        min-width: 15% !important;
+    }
+}

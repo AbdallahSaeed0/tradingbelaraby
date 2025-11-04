@@ -29,23 +29,28 @@
                             enctype="multipart/form-data">
                             @csrf
 
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="mb-3">
-                                        @include('admin.courses.partials.multilingual-fields', [
-                                            'fieldName' => 'name',
-                                            'label' => 'Category Name',
-                                            'type' => 'input',
-                                            'required' => true,
-                                            'placeholder' => 'Enter category name',
-                                            'value' => old('name'),
-                                            'valueAr' => old('name_ar'),
-                                        ])
-                                        <div class="form-text">This will be used to generate the URL slug automatically.
+                            <!-- Basic Information Section -->
+                            <div class="mb-4">
+                                <h6 class="mb-3 text-primary">
+                                    <i class="fas fa-info-circle me-2"></i>Basic Information
+                                </h6>
+
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="mb-3">
+                                            @include('admin.courses.partials.multilingual-fields', [
+                                                'fieldName' => 'name',
+                                                'label' => 'Category Name',
+                                                'type' => 'input',
+                                                'required' => true,
+                                                'placeholder' => 'Enter category name',
+                                                'value' => old('name'),
+                                                'valueAr' => old('name_ar'),
+                                            ])
+                                            <div class="form-text">This will be used to generate the URL slug automatically.
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-8">
                                     <div class="col-md-4">
                                         <div class="mb-3">
                                             <label for="order" class="form-label">Display Order</label>
@@ -60,19 +65,32 @@
                                     </div>
                                 </div>
 
-                                <div class="mb-3">
-                                    @include('admin.courses.partials.multilingual-fields', [
-                                        'fieldName' => 'description',
-                                        'label' => 'Description',
-                                        'type' => 'textarea',
-                                        'required' => false,
-                                        'rows' => 4,
-                                        'placeholder' => 'Enter category description',
-                                        'value' => old('description'),
-                                        'valueAr' => old('description_ar'),
-                                    ])
-                                    <div class="form-text">A brief description of what this category is about.</div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="mb-3">
+                                            @include('admin.courses.partials.multilingual-fields', [
+                                                'fieldName' => 'description',
+                                                'label' => 'Description',
+                                                'type' => 'textarea',
+                                                'required' => false,
+                                                'rows' => 4,
+                                                'placeholder' => 'Enter category description',
+                                                'value' => old('description'),
+                                                'valueAr' => old('description_ar'),
+                                            ])
+                                            <div class="form-text">A brief description of what this category is about.</div>
+                                        </div>
+                                    </div>
                                 </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <!-- Settings Section -->
+                            <div class="mb-4">
+                                <h6 class="mb-3 text-primary">
+                                    <i class="fas fa-cog me-2"></i>Settings
+                                </h6>
 
                                 <div class="row">
                                     <div class="col-md-6">
@@ -94,9 +112,21 @@
                                             @enderror
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <!-- Image Section -->
+                            <div class="mb-4">
+                                <h6 class="mb-3 text-primary">
+                                    <i class="fas fa-image me-2"></i>Category Image
+                                </h6>
+
+                                <div class="row">
                                     <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label for="image" class="form-label">Category Image</label>
+                                            <label for="image" class="form-label">Upload Image</label>
                                             <input type="file" class="form-control @error('image') is-invalid @enderror"
                                                 id="image" name="image" accept="image/*">
                                             @error('image')
@@ -115,15 +145,19 @@
                                         </button>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="d-flex gap-2">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="fas fa-save me-1"></i> Create Category
-                                    </button>
-                                    <a href="{{ route('admin.blog-categories.index') }}" class="btn btn-secondary">
-                                        <i class="fas fa-times me-1"></i> Cancel
-                                    </a>
-                                </div>
+                            <hr class="my-4">
+
+                            <!-- Form Actions -->
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-1"></i> Create Category
+                                </button>
+                                <a href="{{ route('admin.blog-categories.index') }}" class="btn btn-secondary">
+                                    <i class="fas fa-times me-1"></i> Cancel
+                                </a>
+                            </div>
                         </form>
                     </div>
                 </div>

@@ -236,7 +236,7 @@
                                         <hr>
 
                                         <div class="row g-3">
-                                            <div class="col-md-3">
+                                            <div class="col-md-6">
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="checkbox" id="is_randomized"
                                                         name="is_randomized" value="1"
@@ -247,7 +247,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-3">
+                                            <div class="col-md-6">
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="checkbox"
                                                         id="show_results_immediately" name="show_results_immediately"
@@ -589,6 +589,10 @@
         </form>
     </div>
 @endsection
+
+@push('styles')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+@endpush
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
