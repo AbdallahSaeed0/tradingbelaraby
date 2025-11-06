@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', __('Contact Form Submissions'))
+@section('title', custom_trans('Contact Form Submissions', 'admin'))
 
 @section('content')
     <div class="container-fluid py-4">
@@ -8,37 +8,37 @@
         <div class="page-title-box">
             <div class="row align-items-center">
                 <div class="col-sm-6">
-                    <h4 class="page-title">{{ __('Contact Form Submissions') }}</h4>
+                    <h4 class="page-title">{{ custom_trans('Contact Form Submissions', 'admin') }}</h4>
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ __('Settings') }}</a>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ custom_trans('Dashboard', 'admin') }}</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ custom_trans('Settings', 'admin') }}</a>
                         </li>
                         <li class="breadcrumb-item"><a
-                                href="{{ route('admin.settings.content-management.index') }}">{{ __('Content Management') }}</a>
+                                href="{{ route('admin.settings.content-management.index') }}">{{ custom_trans('Content Management', 'admin') }}</a>
                         </li>
-                        <li class="breadcrumb-item active">{{ __('Contact Forms') }}</li>
+                        <li class="breadcrumb-item active">{{ custom_trans('Contact Forms', 'admin') }}</li>
                     </ol>
                 </div>
                 <div class="col-sm-6">
                     <div class="float-end">
                         <div class="btn-group" role="group">
                             <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown">
-                                <i class="fas fa-download me-2"></i>{{ __('Export') }}
+                                <i class="fas fa-download me-2"></i>{{ custom_trans('Export', 'admin') }}
                             </button>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item"
-                                        href="{{ route('admin.settings.contact-forms.export') }}?format=csv">{{ __('Export All (CSV)') }}</a>
+                                        href="{{ route('admin.settings.contact-forms.export') }}?format=csv">{{ custom_trans('Export All (CSV)', 'admin') }}</a>
                                 </li>
                                 <li><a class="dropdown-item"
-                                        href="{{ route('admin.settings.contact-forms.export') }}?format=csv&status=new">{{ __('Export New Only (CSV)') }}</a>
+                                        href="{{ route('admin.settings.contact-forms.export') }}?format=csv&status=new">{{ custom_trans('Export New Only (CSV)', 'admin') }}</a>
                                 </li>
                                 <li><a class="dropdown-item"
-                                        href="{{ route('admin.settings.contact-forms.export') }}?format=csv&status=replied">{{ __('Export Replied Only (CSV)') }}</a>
+                                        href="{{ route('admin.settings.contact-forms.export') }}?format=csv&status=replied">{{ custom_trans('Export Replied Only (CSV)', 'admin') }}</a>
                                 </li>
                             </ul>
                         </div>
                         <a href="{{ route('admin.settings.content-management.index') }}" class="btn btn-secondary ms-2">
-                            <i class="fas fa-arrow-left me-2"></i>{{ __('Back to Content Management') }}
+                            <i class="fas fa-arrow-left me-2"></i>{{ custom_trans('Back to Content Management', 'admin') }}
                         </a>
                     </div>
                 </div>
@@ -51,7 +51,7 @@
                 <div class="card stats-card bg-danger text-white">
                     <div class="card-body text-center">
                         <h3 class="mb-0">{{ $contactForms->where('status', 'new')->count() }}</h3>
-                        <p class="mb-0">{{ __('New') }}</p>
+                        <p class="mb-0">{{ custom_trans('New', 'admin') }}</p>
                     </div>
                 </div>
             </div>
@@ -59,7 +59,7 @@
                 <div class="card stats-card bg-warning text-white">
                     <div class="card-body text-center">
                         <h3 class="mb-0">{{ $contactForms->where('status', 'read')->count() }}</h3>
-                        <p class="mb-0">{{ __('Read') }}</p>
+                        <p class="mb-0">{{ custom_trans('Read', 'admin') }}</p>
                     </div>
                 </div>
             </div>
@@ -67,7 +67,7 @@
                 <div class="card stats-card bg-success text-white">
                     <div class="card-body text-center">
                         <h3 class="mb-0">{{ $contactForms->where('status', 'replied')->count() }}</h3>
-                        <p class="mb-0">{{ __('Replied') }}</p>
+                        <p class="mb-0">{{ custom_trans('Replied', 'admin') }}</p>
                     </div>
                 </div>
             </div>
@@ -75,7 +75,7 @@
                 <div class="card stats-card bg-secondary text-white">
                     <div class="card-body text-center">
                         <h3 class="mb-0">{{ $contactForms->where('status', 'closed')->count() }}</h3>
-                        <p class="mb-0">{{ __('Closed') }}</p>
+                        <p class="mb-0">{{ custom_trans('Closed', 'admin') }}</p>
                     </div>
                 </div>
             </div>
@@ -85,7 +85,7 @@
         <div class="card content-card">
             <div class="card-header">
                 <h5 class="mb-0">
-                    <i class="fas fa-envelope text-primary me-2"></i>{{ __('All Contact Form Submissions') }}
+                    <i class="fas fa-envelope text-primary me-2"></i>{{ custom_trans('All Contact Form Submissions', 'admin') }}
                 </h5>
             </div>
             <div class="card-body">
@@ -93,13 +93,13 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th>{{ __('Name') }}</th>
-                                <th>{{ __('Email') }}</th>
-                                <th>{{ __('Phone') }}</th>
-                                <th>{{ __('Message') }}</th>
-                                <th>{{ __('Status') }}</th>
-                                <th>{{ __('Date') }}</th>
-                                <th>{{ __('Actions') }}</th>
+                                <th>{{ custom_trans('Name', 'admin') }}</th>
+                                <th>{{ custom_trans('Email', 'admin') }}</th>
+                                <th>{{ custom_trans('Phone', 'admin') }}</th>
+                                <th>{{ custom_trans('Message', 'admin') }}</th>
+                                <th>{{ custom_trans('Status', 'admin') }}</th>
+                                <th>{{ custom_trans('Date', 'admin') }}</th>
+                                <th>{{ custom_trans('Actions', 'admin') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -108,7 +108,7 @@
                                     <td>
                                         <strong>{{ $form->name }}</strong>
                                         @if ($form->status === 'new')
-                                            <span class="badge bg-danger ms-2">{{ __('NEW') }}</span>
+                                            <span class="badge bg-danger ms-2">{{ custom_trans('NEW', 'admin') }}</span>
                                         @endif
                                     </td>
                                     <td>{{ $form->email }}</td>
@@ -120,7 +120,7 @@
                                             {{ ucfirst($form->status) }}
                                         </span>
                                     </td>
-                                    <td>{{ $form->created_at->format('M d, Y H:i') }}</td>
+                                    <td>{{ $form->created_at->format('M d, Y H:i', 'admin') }}</td>
                                     <td>
                                         <div class="btn-group" role="group">
                                             <a href="{{ route('admin.settings.contact-forms.show', $form) }}"
@@ -139,7 +139,7 @@
                                     <td colspan="7" class="text-center py-4">
                                         <div class="text-muted">
                                             <i class="fas fa-inbox fa-3x mb-3"></i>
-                                            <p>{{ __('No contact form submissions yet') }}</p>
+                                            <p>{{ custom_trans('No contact form submissions yet', 'admin') }}</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -166,7 +166,7 @@
             $('.delete-form-btn').on('click', function() {
                 const formId = $(this).data('id');
 
-                if (confirm('{{ __('Are you sure you want to delete this contact form submission?') }}')) {
+                if (confirm('{{ custom_trans('Are you sure you want to delete this contact form submission?', 'admin') }}')) {
                     $.ajax({
                         url: `/admin/settings/contact-forms/${formId}`,
                         method: 'DELETE',
@@ -185,7 +185,7 @@
                         },
                         error: function() {
                             toastr.error(
-                                '{{ __('An error occurred while deleting the submission') }}'
+                                '{{ custom_trans('An error occurred while deleting the submission', 'admin') }}'
                                 );
                         }
                     });

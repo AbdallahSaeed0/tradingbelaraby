@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $instructor->name . ' - ' . __('Instructor Profile'))
+@section('title', $instructor->name . ' - ' . custom_trans('Instructor Profile', 'front'))
 
 @section('content')
     <!-- Instructor Profile Header -->
@@ -24,22 +24,22 @@
                     <div class="instructor-info text-white">
                         <h1 class="display-4 fw-bold mb-3">{{ $instructor->name }}</h1>
                         <p class="lead mb-3">
-                            <i class="fas fa-graduation-cap me-2"></i>{{ __('Instructor') }}
+                            <i class="fas fa-graduation-cap me-2"></i>{{ custom_trans('Instructor', 'front') }}
                         </p>
                         <div class="instructor-stats d-flex flex-wrap gap-4 mb-4">
                             <div class="stat-item text-center">
                                 <h3 class="fw-bold mb-1">{{ $instructor->courses->count() }}</h3>
-                                <p class="mb-0">{{ __('Courses') }}</p>
+                                <p class="mb-0">{{ custom_trans('Courses', 'front') }}</p>
                             </div>
                             <div class="stat-item text-center">
-                                <h3 class="fw-bold mb-1">{{ $instructor->courses->sum('enrolled_students') }}</h3>
-                                <p class="mb-0">{{ __('Students') }}</p>
+                                <h3 class="fw-bold mb-1">{{ $instructor->courses->sum('enrolled_students', 'front') }}</h3>
+                                <p class="mb-0">{{ custom_trans('Students', 'front') }}</p>
                             </div>
                             <div class="stat-item text-center">
                                 <h3 class="fw-bold mb-1">
                                     {{ $instructor->courses->avg('average_rating') ? number_format($instructor->courses->avg('average_rating'), 1) : 'N/A' }}
                                 </h3>
-                                <p class="mb-0">{{ __('Rating') }}</p>
+                                <p class="mb-0">{{ custom_trans('Rating', 'front') }}</p>
                             </div>
                         </div>
                     </div>
@@ -54,7 +54,7 @@
             <div class="row">
                 <div class="col-12">
                     <h2 class="section-title text-center mb-5">
-                        <span class="text-warning fw-bold">{{ __('Courses by') }}</span> {{ $instructor->name }}
+                        <span class="text-warning fw-bold">{{ custom_trans('Courses by', 'front') }}</span> {{ $instructor->name }}
                     </h2>
                 </div>
             </div>
@@ -69,12 +69,12 @@
                                         class="course-image w-100 img-h-200">
                                     @if ($course->is_featured)
                                         <span class="badge bg-warning position-absolute top-0 start-0 m-2">
-                                            {{ __('Featured') }}
+                                            {{ custom_trans('Featured', 'front') }}
                                         </span>
                                     @endif
                                     @if ($course->is_free)
                                         <span class="badge bg-success position-absolute top-0 end-0 m-2">
-                                            {{ __('Free') }}
+                                            {{ custom_trans('Free', 'front') }}
                                         </span>
                                     @endif
                                 </div>
@@ -101,12 +101,12 @@
                                                     <small class="text-muted">({{ $course->total_ratings }})</small>
                                                 </div>
                                             @else
-                                                <small class="text-muted">{{ __('No ratings yet') }}</small>
+                                                <small class="text-muted">{{ custom_trans('No ratings yet', 'front') }}</small>
                                             @endif
                                         </div>
                                         <div class="course-price">
                                             @if ($course->is_free)
-                                                <span class="text-success fw-bold">{{ __('Free') }}</span>
+                                                <span class="text-success fw-bold">{{ custom_trans('Free', 'front') }}</span>
                                             @else
                                                 <span class="text-primary fw-bold">{{ $course->formatted_price }}</span>
                                             @endif
@@ -114,11 +114,11 @@
                                     </div>
                                     <div class="course-stats d-flex justify-content-between text-muted small mb-3">
                                         <span><i class="fas fa-users me-1"></i>{{ $course->enrolled_students }}
-                                            {{ __('students') }}</span>
+                                            {{ custom_trans('students', 'front') }}</span>
                                         <span><i class="fas fa-clock me-1"></i>{{ $course->duration }}</span>
                                     </div>
                                     <a href="{{ route('courses.show', $course->id) }}" class="btn btn-primary w-100">
-                                        {{ __('View Course') }}
+                                        {{ custom_trans('View Course', 'front') }}
                                     </a>
                                 </div>
                             </div>
@@ -129,8 +129,8 @@
                 <div class="text-center py-5">
                     <div class="empty-state">
                         <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
-                        <h4 class="text-muted">{{ __('No courses yet') }}</h4>
-                        <p class="text-muted">{{ __('This instructor hasn\'t published any courses yet.') }}</p>
+                        <h4 class="text-muted">{{ custom_trans('No courses yet', 'front') }}</h4>
+                        <p class="text-muted">{{ custom_trans('This instructor hasn\'t published any courses yet.', 'front') }}</p>
                     </div>
                 </div>
             @endif
@@ -140,10 +140,10 @@
 
 @if (\App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl')
     @push('rtl-styles')
-        <link rel="stylesheet" href="{{ asset('css/rtl/pages/instructor.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/rtl/pages/instructor.css', 'front') }}">
     @endpush
 @else
     @push('styles')
-        <link rel="stylesheet" href="{{ asset('css/pages/instructor.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/pages/instructor.css', 'front') }}">
     @endpush
 @endif

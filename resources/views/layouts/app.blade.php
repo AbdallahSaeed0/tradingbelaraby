@@ -182,9 +182,9 @@
                     </a>
                 </div>
                 <ul class="nav-links">
-                    <li><a href="{{ route('home') }}">{{ custom_trans('home') }}</a></li>
+                    <li><a href="{{ route('home') }}">{{ custom_trans('home', 'front') }}</a></li>
                     <li class="dropdown">
-                        <a href="{{ route('categories.index') }}">{{ custom_trans('categories') }}</a>
+                        <a href="{{ route('categories.index') }}">{{ custom_trans('categories', 'front') }}</a>
                         <ul class="dropdown-menu">
                             @forelse($navigationCategories as $category)
                                 <li><a
@@ -192,13 +192,13 @@
                                 </li>
                             @empty
                                 <li><a
-                                        href="{{ route('categories.index') }}">{{ custom_trans('no_category_found') }}</a>
+                                        href="{{ route('categories.index') }}">{{ custom_trans('no_category_found', 'front') }}</a>
                                 </li>
                             @endforelse
                         </ul>
                     </li>
-                    <li><a href="{{ route('blog.index') }}">{{ custom_trans('blog') }}</a></li>
-                    <li><a href="{{ route('contact') }}">{{ custom_trans('contact') }}</a></li>
+                    <li><a href="{{ route('blog.index') }}">{{ custom_trans('blog', 'front') }}</a></li>
+                    <li><a href="{{ route('contact') }}">{{ custom_trans('contact', 'front') }}</a></li>
                 </ul>
                 <!-- Language Switcher -->
                 @php
@@ -235,7 +235,7 @@
                 <!-- Search Bar -->
                 <div class="search-container me-3">
                     <form action="{{ route('courses.search') }}" method="GET" class="d-flex">
-                        <input type="text" name="q" placeholder="{{ custom_trans('search_courses') }}"
+                        <input type="text" name="q" placeholder="{{ custom_trans('search_courses', 'front') }}"
                             class="form-control search-input" value="{{ request('q') }}">
                         <button type="submit" class="btn btn-outline-dark ms-2">
                             <i class="fas fa-search"></i>
@@ -263,12 +263,12 @@
                                     class="dropdown-header d-flex justify-content-between align-items-center p-3 border-bottom">
                                     <h6 class="mb-0 fw-bold text-dark">
                                         <i class="fas fa-bell me-2 text-primary"></i>
-                                        {{ custom_trans('notifications') }}
+                                        {{ custom_trans('notifications', 'front') }}
                                     </h6>
                                     @if (auth()->check() && auth()->user()->notifications && auth()->user()->notifications->count() > 0)
                                         <span
                                             class="badge bg-warning text-dark rounded-pill">{{ auth()->user()->unreadNotifications->count() }}
-                                            {{ custom_trans('new') }}</span>
+                                            {{ custom_trans('new', 'front') }}</span>
                                     @endif
                                 </div>
 
@@ -308,9 +308,9 @@
                                         <div class="dropdown-item text-center py-4">
                                             <div class="text-muted">
                                                 <i class="far fa-bell-slash fa-2x mb-2"></i>
-                                                <div>{{ custom_trans('no_notifications') }}</div>
+                                                <div>{{ custom_trans('no_notifications', 'front') }}</div>
                                                 <small
-                                                    class="text-muted">{{ custom_trans('you_will_see_notifications_here') }}</small>
+                                                    class="text-muted">{{ custom_trans('you_will_see_notifications_here', 'front') }}</small>
                                             </div>
                                         </div>
                                     @endforelse
@@ -322,7 +322,7 @@
                                         <a href="{{ route('notifications.index') }}"
                                             class="btn btn-outline-primary btn-sm">
                                             <i class="fas fa-eye me-1"></i>
-                                            {{ custom_trans('view_all_notifications') }}
+                                            {{ custom_trans('view_all_notifications', 'front') }}
                                         </a>
                                     </div>
                                 @endif
@@ -382,25 +382,25 @@
                                 <li>
                                     <a class="dropdown-item" href="{{ route('student.my-courses') }}">
                                         <i class="fas fa-graduation-cap me-2 text-primary"></i>
-                                        {{ custom_trans('my_courses') }}
+                                        {{ custom_trans('my_courses', 'front') }}
                                     </a>
                                 </li>
                                 <li>
                                     <a class="dropdown-item" href="{{ route('wishlist.index') }}">
                                         <i class="fas fa-heart me-2 text-danger"></i>
-                                        {{ custom_trans('wishlist') }}
+                                        {{ custom_trans('wishlist', 'front') }}
                                     </a>
                                 </li>
                                 <li>
                                     <a class="dropdown-item" href="{{ route('purchase.history') }}">
                                         <i class="fas fa-history me-2 text-info"></i>
-                                        {{ custom_trans('purchase_history') }}
+                                        {{ custom_trans('purchase_history', 'front') }}
                                     </a>
                                 </li>
                                 <li>
                                     <a class="dropdown-item" href="{{ route('profile.edit') }}">
                                         <i class="fas fa-user-edit me-2 text-success"></i>
-                                        {{ custom_trans('profile') }}
+                                        {{ custom_trans('profile', 'front') }}
                                     </a>
                                 </li>
                                 <li>
@@ -411,7 +411,7 @@
                                         @csrf
                                         <button type="submit" class="dropdown-item text-danger">
                                             <i class="fas fa-sign-out-alt me-2"></i>
-                                            {{ custom_trans('logout') }}
+                                            {{ custom_trans('logout', 'front') }}
                                         </button>
                                     </form>
                                 </li>
@@ -422,14 +422,14 @@
 
                 <div class="auth-buttons">
                     @guest
-                        <a href="{{ route('login') }}" class="btn btn-login-colored">{{ custom_trans('login') }}</a>
+                        <a href="{{ route('login') }}" class="btn btn-login-colored">{{ custom_trans('login', 'front') }}</a>
                     @else
                         <!-- User dropdown is now handled above -->
                     @endguest
 
                     @guest
                         <a href="{{ route('register') }}"
-                            class="btn btn-register-colored">{{ custom_trans('register') }}</a>
+                            class="btn btn-register-colored">{{ custom_trans('register', 'front') }}</a>
                     @endguest
                 </div>
                 <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
@@ -498,7 +498,7 @@
             <div class="row text-white pb-4">
                 <!-- About Us + Social -->
                 <div class="col-md-3 mb-4 mb-md-0">
-                    <h4 class="footer-title mb-2">{{ custom_trans('about_us') }}</h4>
+                    <h4 class="footer-title mb-2">{{ custom_trans('about_us', 'front') }}</h4>
                     <div class="footer-title-underline mb-3"></div>
                     @php
                         $hasFooterSocialLinks =
@@ -541,26 +541,26 @@
                 </div>
                 <!-- Links -->
                 <div class="col-md-2 mb-4 mb-md-0">
-                    <h4 class="footer-title mb-2">{{ custom_trans('our_links') }}</h4>
+                    <h4 class="footer-title mb-2">{{ custom_trans('our_links', 'front') }}</h4>
                     <div class="footer-title-underline mb-3"></div>
                     <ul class="footer-links list-unstyled">
-                        <li><a href="{{ route('home') }}">{{ custom_trans('home') }}</a></li>
-                        <li><a href="{{ route('categories.index') }}">{{ custom_trans('courses') }}</a></li>
-                        <li><a href="{{ route('contact') }}">{{ custom_trans('contact_us') }}</a></li>
-                        <li><a href="{{ route('blog.index') }}">{{ custom_trans('blog') }}</a></li>
+                        <li><a href="{{ route('home') }}">{{ custom_trans('home', 'front') }}</a></li>
+                        <li><a href="{{ route('categories.index') }}">{{ custom_trans('courses', 'front') }}</a></li>
+                        <li><a href="{{ route('contact') }}">{{ custom_trans('contact_us', 'front') }}</a></li>
+                        <li><a href="{{ route('blog.index') }}">{{ custom_trans('blog', 'front') }}</a></li>
                         @php
                             $termsPage = \App\Models\TermsConditions::where('is_active', true)->first();
                         @endphp
                         @if ($termsPage)
                             <li><a
-                                    href="{{ route('terms-conditions', $termsPage->slug) }}">{{ custom_trans('terms_and_conditions') }}</a>
+                                    href="{{ route('terms-conditions', $termsPage->slug) }}">{{ custom_trans('terms_and_conditions', 'front') }}</a>
                             </li>
                         @endif
                     </ul>
                 </div>
                 <!-- Latest Post -->
                 <div class="col-md-4 mb-4 mb-md-0">
-                    <h4 class="footer-title mb-2">{{ custom_trans('latest_posts') }}</h4>
+                    <h4 class="footer-title mb-2">{{ custom_trans('latest_posts', 'front') }}</h4>
                     <div class="footer-title-underline mb-3"></div>
                     @php
                         $latestBlogs = \App\Models\Blog::published()
@@ -588,15 +588,15 @@
                             <img src="{{ asset('images/placeholder-image.png') }}" class="footer-post-img me-3"
                                 alt="No posts">
                             <div>
-                                <div class="footer-post-title text-muted">{{ custom_trans('no_blog_posts') }}</div>
-                                <div class="footer-post-date text-muted">{{ custom_trans('coming_soon') }}</div>
+                                <div class="footer-post-title text-muted">{{ custom_trans('no_blog_posts', 'front') }}</div>
+                                <div class="footer-post-date text-muted">{{ custom_trans('coming_soon', 'front') }}</div>
                             </div>
                         </div>
                     @endforelse
                 </div>
                 <!-- Contact + Language -->
                 <div class="col-md-3">
-                    <h4 class="footer-title mb-2">{{ custom_trans('contact_us') }}</h4>
+                    <h4 class="footer-title mb-2">{{ custom_trans('contact_us', 'front') }}</h4>
                     <div class="footer-title-underline mb-3"></div>
                     <div class="footer-contact mb-3">
                         @if ($contactSettings && $contactSettings->phone)
@@ -668,17 +668,17 @@
         <a href="{{ route('categories.index') }}"
             class="mobile-nav-item {{ request()->routeIs('categories.*') ? 'active' : '' }}">
             <i class="fas fa-th-large"></i>
-            <span>{{ custom_trans('categories') }}</span>
+            <span>{{ custom_trans('categories', 'front') }}</span>
         </a>
         <a href="{{ route('blog.index') }}"
             class="mobile-nav-item {{ request()->routeIs('blog.index') ? 'active' : '' }}">
             <i class="fas fa-newspaper"></i>
-            <span>{{ custom_trans('blog') }}</span>
+            <span>{{ custom_trans('blog', 'front') }}</span>
         </a>
         <a href="{{ route('contact') }}"
             class="mobile-nav-item {{ request()->routeIs('contact') ? 'active' : '' }}">
             <i class="fas fa-envelope"></i>
-            <span>{{ custom_trans('contact_us') }}</span>
+            <span>{{ custom_trans('contact_us', 'front') }}</span>
         </a>
     </div>
 

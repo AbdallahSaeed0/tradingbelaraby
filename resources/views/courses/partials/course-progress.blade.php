@@ -15,7 +15,7 @@
                 <h2 class="fw-bold mb-2" @if (\App\Helpers\TranslationHelper::getFrontendLanguage()->code === 'ar') dir="rtl" @endif>
                     {{ $course->localized_name }}
                 </h2>
-                <div class="text-muted mb-2">{{ $course->instructor->name ?? __('Instructor') }}</div>
+                <div class="text-muted mb-2">{{ $course->instructor->name ?? custom_trans('Instructor', 'front') }}</div>
                 <div class="mb-3" @if (\App\Helpers\TranslationHelper::getFrontendLanguage()->code === 'ar') dir="rtl" @endif>
                     {{ $course->localized_description }}
                 </div>
@@ -30,7 +30,7 @@
                     </div>
                     <i class="fa fa-award ms-3 text-warning fs-1-5rem"></i>
                 </div>
-                <button class="btn btn-orange px-4 py-2 fw-bold">{{ __('Continue To Lecture') }}</button>
+                <button class="btn btn-orange px-4 py-2 fw-bold">{{ custom_trans('Continue To Lecture', 'front') }}</button>
             </div>
         </div>
     </div>

@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', __('Newsletter Subscriptions Management'))
+@section('title', custom_trans('Newsletter Subscriptions Management', 'admin'))
 
 @section('content')
     <div class="container-fluid py-4">
@@ -8,18 +8,18 @@
         <div class="page-title-box">
             <div class="row align-items-center">
                 <div class="col-sm-6">
-                    <h4 class="page-title">{{ __('Newsletter Subscriptions Management') }}</h4>
+                    <h4 class="page-title">{{ custom_trans('Newsletter Subscriptions Management', 'admin') }}</h4>
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ __('Settings') }}</a>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ custom_trans('Dashboard', 'admin') }}</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ custom_trans('Settings', 'admin') }}</a>
                         </li>
-                        <li class="breadcrumb-item active">{{ __('Newsletter Subscriptions') }}</li>
+                        <li class="breadcrumb-item active">{{ custom_trans('Newsletter Subscriptions', 'admin') }}</li>
                     </ol>
                 </div>
                 <div class="col-sm-6">
                     <div class="float-end">
                         <button type="button" class="btn btn-success" id="exportSubscribers">
-                            <i class="fas fa-download me-2"></i>{{ __('Export CSV') }}
+                            <i class="fas fa-download me-2"></i>{{ custom_trans('Export CSV', 'admin') }}
                         </button>
                     </div>
                 </div>
@@ -41,7 +41,7 @@
                             </div>
                             <div class="flex-grow-1 ms-3">
                                 <h3 class="mb-1">{{ $totalSubscribers }}</h3>
-                                <p class="text-muted mb-0">{{ __('Total Subscribers') }}</p>
+                                <p class="text-muted mb-0">{{ custom_trans('Total Subscribers', 'admin') }}</p>
                             </div>
                         </div>
                     </div>
@@ -60,7 +60,7 @@
                             </div>
                             <div class="flex-grow-1 ms-3">
                                 <h3 class="mb-1">{{ $activeSubscribers }}</h3>
-                                <p class="text-muted mb-0">{{ __('Active Subscribers') }}</p>
+                                <p class="text-muted mb-0">{{ custom_trans('Active Subscribers', 'admin') }}</p>
                             </div>
                         </div>
                     </div>
@@ -79,7 +79,7 @@
                             </div>
                             <div class="flex-grow-1 ms-3">
                                 <h3 class="mb-1">{{ $inactiveSubscribers }}</h3>
-                                <p class="text-muted mb-0">{{ __('Inactive Subscribers') }}</p>
+                                <p class="text-muted mb-0">{{ custom_trans('Inactive Subscribers', 'admin') }}</p>
                             </div>
                         </div>
                     </div>
@@ -98,7 +98,7 @@
                             </div>
                             <div class="flex-grow-1 ms-3">
                                 <h3 class="mb-1">{{ $thisMonthSubscribers }}</h3>
-                                <p class="text-muted mb-0">{{ __('This Month') }}</p>
+                                <p class="text-muted mb-0">{{ custom_trans('This Month', 'admin') }}</p>
                             </div>
                         </div>
                     </div>
@@ -112,28 +112,28 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="mb-3">
-                            <label for="search" class="form-label">{{ __('Search') }}</label>
+                            <label for="search" class="form-label">{{ custom_trans('Search', 'admin') }}</label>
                             <input type="text" class="form-control" id="search"
-                                placeholder="{{ __('Search by email...') }}">
+                                placeholder="{{ custom_trans('Search by email...', 'admin') }}">
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="mb-3">
-                            <label for="status" class="form-label">{{ __('Status') }}</label>
+                            <label for="status" class="form-label">{{ custom_trans('Status', 'admin') }}</label>
                             <select class="form-select" id="status">
-                                <option value="">{{ __('All') }}</option>
-                                <option value="active">{{ __('Active') }}</option>
-                                <option value="inactive">{{ __('Inactive') }}</option>
+                                <option value="">{{ custom_trans('All', 'admin') }}</option>
+                                <option value="active">{{ custom_trans('Active', 'admin') }}</option>
+                                <option value="inactive">{{ custom_trans('Inactive', 'admin') }}</option>
                             </select>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="mb-3">
-                            <label for="sort" class="form-label">{{ __('Sort By') }}</label>
+                            <label for="sort" class="form-label">{{ custom_trans('Sort By', 'admin') }}</label>
                             <select class="form-select" id="sort">
-                                <option value="subscribed_at">{{ __('Subscribed Date') }}</option>
-                                <option value="email">{{ __('Email') }}</option>
-                                <option value="status">{{ __('Status') }}</option>
+                                <option value="subscribed_at">{{ custom_trans('Subscribed Date', 'admin') }}</option>
+                                <option value="email">{{ custom_trans('Email', 'admin') }}</option>
+                                <option value="status">{{ custom_trans('Status', 'admin') }}</option>
                             </select>
                         </div>
                     </div>
@@ -141,7 +141,7 @@
                         <div class="mb-3">
                             <label class="form-label">&nbsp;</label>
                             <button type="button" class="btn btn-outline-secondary w-100" id="clear_filters">
-                                <i class="fas fa-times me-1"></i>{{ __('Clear') }}
+                                <i class="fas fa-times me-1"></i>{{ custom_trans('Clear', 'admin') }}
                             </button>
                         </div>
                     </div>
@@ -155,22 +155,22 @@
                 <div class="row align-items-center">
                     <div class="col">
                         <h5 class="mb-0">
-                            <i class="fas fa-envelope text-primary me-2"></i>{{ __('All Subscribers') }}
+                            <i class="fas fa-envelope text-primary me-2"></i>{{ custom_trans('All Subscribers', 'admin') }}
                         </h5>
                     </div>
                     <div class="col-auto">
                         <div class="btn-group" role="group">
                             <button type="button" class="btn btn-outline-success bulk-action-btn" data-action="activate"
                                 disabled>
-                                <i class="fas fa-check me-1"></i>{{ __('Activate') }}
+                                <i class="fas fa-check me-1"></i>{{ custom_trans('Activate', 'admin') }}
                             </button>
                             <button type="button" class="btn btn-outline-warning bulk-action-btn"
                                 data-action="deactivate" disabled>
-                                <i class="fas fa-pause me-1"></i>{{ __('Deactivate') }}
+                                <i class="fas fa-pause me-1"></i>{{ custom_trans('Deactivate', 'admin') }}
                             </button>
                             <button type="button" class="btn btn-outline-danger bulk-action-btn" data-action="delete"
                                 disabled>
-                                <i class="fas fa-trash me-1"></i>{{ __('Delete') }}
+                                <i class="fas fa-trash me-1"></i>{{ custom_trans('Delete', 'admin') }}
                             </button>
                         </div>
                     </div>
@@ -186,11 +186,11 @@
                                         <input class="form-check-input" type="checkbox" id="select_all">
                                     </div>
                                 </th>
-                                <th>{{ __('Email') }}</th>
-                                <th width="100">{{ __('Status') }}</th>
-                                <th width="150">{{ __('Subscribed Date') }}</th>
-                                <th width="150">{{ __('Last Updated') }}</th>
-                                <th width="120">{{ __('Actions') }}</th>
+                                <th>{{ custom_trans('Email', 'admin') }}</th>
+                                <th width="100">{{ custom_trans('Status', 'admin') }}</th>
+                                <th width="150">{{ custom_trans('Subscribed Date', 'admin') }}</th>
+                                <th width="150">{{ custom_trans('Last Updated', 'admin') }}</th>
+                                <th width="120">{{ custom_trans('Actions', 'admin') }}</th>
                             </tr>
                         </thead>
                         <tbody id="subscribers-tbody">
@@ -211,16 +211,16 @@
                                             </div>
                                             <div>
                                                 <h6 class="mb-0">{{ $subscriber->email }}</h6>
-                                                <small class="text-muted">{{ __('ID:') }}
+                                                <small class="text-muted">{{ custom_trans('ID:', 'admin') }}
                                                     {{ $subscriber->id }}</small>
                                             </div>
                                         </div>
                                     </td>
                                     <td>
                                         @if ($subscriber->status === 'active')
-                                            <span class="badge bg-success">{{ __('Active') }}</span>
+                                            <span class="badge bg-success">{{ custom_trans('Active', 'admin') }}</span>
                                         @else
-                                            <span class="badge bg-warning">{{ __('Inactive') }}</span>
+                                            <span class="badge bg-warning">{{ custom_trans('Inactive', 'admin') }}</span>
                                         @endif
                                     </td>
                                     <td>
@@ -230,33 +230,33 @@
                                     </td>
                                     <td>
                                         <small class="text-muted">
-                                            {{ $subscriber->updated_at->format('M d, Y H:i') }}
+                                            {{ $subscriber->updated_at->format('M d, Y H:i', 'admin') }}
                                         </small>
                                     </td>
                                     <td>
                                         <div class="btn-group" role="group">
                                             <button type="button" class="btn btn-sm btn-outline-info view-subscriber"
                                                 data-subscriber="{{ json_encode($subscriber->toArray()) }}"
-                                                title="{{ __('View') }}">
+                                                title="{{ custom_trans('View', 'admin') }}">
                                                 <i class="fas fa-eye"></i>
                                             </button>
                                             @if ($subscriber->status === 'active')
                                                 <button type="button"
                                                     class="btn btn-sm btn-outline-warning toggle-status"
                                                     data-subscriber-id="{{ $subscriber->id }}"
-                                                    title="{{ __('Deactivate') }}">
+                                                    title="{{ custom_trans('Deactivate', 'admin') }}">
                                                     <i class="fas fa-pause"></i>
                                                 </button>
                                             @else
                                                 <button type="button"
                                                     class="btn btn-sm btn-outline-success toggle-status"
                                                     data-subscriber-id="{{ $subscriber->id }}"
-                                                    title="{{ __('Activate') }}">
+                                                    title="{{ custom_trans('Activate', 'admin') }}">
                                                     <i class="fas fa-play"></i>
                                                 </button>
                                             @endif
                                             <button type="button" class="btn btn-sm btn-outline-danger delete-subscriber"
-                                                data-subscriber-id="{{ $subscriber->id }}" title="{{ __('Delete') }}">
+                                                data-subscriber-id="{{ $subscriber->id }}" title="{{ custom_trans('Delete', 'admin') }}">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </div>
@@ -267,8 +267,8 @@
                                     <td colspan="6" class="text-center py-4">
                                         <div class="text-muted">
                                             <i class="fas fa-inbox fa-3x mb-3"></i>
-                                            <h5>{{ __('No subscribers found') }}</h5>
-                                            <p>{{ __('No newsletter subscribers match your current filters.') }}</p>
+                                            <h5>{{ custom_trans('No subscribers found', 'admin') }}</h5>
+                                            <p>{{ custom_trans('No newsletter subscribers match your current filters.', 'admin') }}</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -282,9 +282,9 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <p class="text-muted mb-0">
-                                {{ __('Showing') }} {{ $newsletters->firstItem() }} {{ __('to') }}
-                                {{ $newsletters->lastItem() }} {{ __('of') }} {{ $newsletters->total() }}
-                                {{ __('subscribers') }}
+                                {{ custom_trans('Showing', 'admin') }} {{ $newsletters->firstItem() }} {{ custom_trans('to', 'admin') }}
+                                {{ $newsletters->lastItem() }} {{ custom_trans('of', 'admin') }} {{ $newsletters->total() }}
+                                {{ custom_trans('subscribers', 'admin') }}
                             </p>
                         </div>
                         <div>
@@ -301,20 +301,20 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{ __('Subscriber Details') }}</h5>
+                    <h5 class="modal-title">{{ custom_trans('Subscriber Details', 'admin') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Email Address') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Email Address', 'admin') }}</label>
                                 <p class="form-control-plaintext" id="view_subscriber_email"></p>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Status') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Status', 'admin') }}</label>
                                 <p class="form-control-plaintext" id="view_subscriber_status"></p>
                             </div>
                         </div>
@@ -322,13 +322,13 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Subscribed Date') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Subscribed Date', 'admin') }}</label>
                                 <p class="form-control-plaintext" id="view_subscriber_subscribed_at"></p>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Unsubscribed Date') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Unsubscribed Date', 'admin') }}</label>
                                 <p class="form-control-plaintext" id="view_subscriber_unsubscribed_at"></p>
                             </div>
                         </div>
@@ -336,19 +336,19 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Duration') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Duration', 'admin') }}</label>
                                 <p class="form-control-plaintext" id="view_subscriber_duration"></p>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Last Updated') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Last Updated', 'admin') }}</label>
                                 <p class="form-control-plaintext" id="view_subscriber_updated_at"></p>
                             </div>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">{{ __('Activity Timeline') }}</label>
+                        <label class="form-label fw-bold">{{ custom_trans('Activity Timeline', 'admin') }}</label>
                         <div class="timeline" id="view_subscriber_timeline">
                             <!-- Timeline will be populated by JavaScript -->
                         </div>
@@ -356,11 +356,11 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary"
-                        data-bs-dismiss="modal">{{ __('Close') }}</button>
+                        data-bs-dismiss="modal">{{ custom_trans('Close', 'admin') }}</button>
                     <button type="button" class="btn btn-primary"
-                        id="view_subscriber_toggle_status">{{ __('Toggle Status') }}</button>
+                        id="view_subscriber_toggle_status">{{ custom_trans('Toggle Status', 'admin') }}</button>
                     <button type="button" class="btn btn-danger"
-                        id="view_subscriber_delete">{{ __('Delete') }}</button>
+                        id="view_subscriber_delete">{{ custom_trans('Delete', 'admin') }}</button>
                 </div>
             </div>
         </div>
@@ -371,16 +371,16 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{ __('Delete Subscriber') }}</h5>
+                    <h5 class="modal-title">{{ custom_trans('Delete Subscriber', 'admin') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>{{ __('Are you sure you want to delete this subscriber? This action cannot be undone.') }}</p>
+                    <p>{{ custom_trans('Are you sure you want to delete this subscriber? This action cannot be undone.', 'admin') }}</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary"
-                        data-bs-dismiss="modal">{{ __('Cancel') }}</button>
-                    <button type="button" class="btn btn-danger" id="confirmDelete">{{ __('Delete') }}</button>
+                        data-bs-dismiss="modal">{{ custom_trans('Cancel', 'admin') }}</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">{{ custom_trans('Delete', 'admin') }}</button>
                 </div>
             </div>
         </div>
@@ -416,12 +416,12 @@
                 }).get();
 
                 if (selectedSubscribers.length === 0) {
-                    toastr.warning('{{ __('Please select at least one subscriber.') }}');
+                    toastr.warning('{{ custom_trans('Please select at least one subscriber.', 'admin') }}');
                     return;
                 }
 
                 if (action === 'delete' && !confirm(
-                        '{{ __('Are you sure you want to delete the selected subscribers?') }}')) {
+                        '{{ custom_trans('Are you sure you want to delete the selected subscribers?', 'admin') }}')) {
                     return;
                 }
 
@@ -440,7 +440,7 @@
                         }
                     },
                     error: function() {
-                        toastr.error('{{ __('An error occurred. Please try again.') }}');
+                        toastr.error('{{ custom_trans('An error occurred. Please try again.', 'admin') }}');
                     }
                 });
             });
@@ -451,7 +451,7 @@
                 const $btn = $(this);
 
                 $.ajax({
-                    url: `{{ url('admin/settings/newsletters') }}/${subscriberId}/status`,
+                    url: `{{ url('admin/settings/newsletters', 'admin') }}/${subscriberId}/status`,
                     type: 'POST',
                     data: {
                         _token: '{{ csrf_token() }}'
@@ -463,7 +463,7 @@
                         }
                     },
                     error: function() {
-                        toastr.error('{{ __('An error occurred. Please try again.') }}');
+                        toastr.error('{{ custom_trans('An error occurred. Please try again.', 'admin') }}');
                     }
                 });
             });
@@ -475,8 +475,8 @@
 
                 $('#view_subscriber_email').text(subscriber.email);
                 $('#view_subscriber_status').html(subscriber.status === 'active' ?
-                    '<span class="badge bg-success">{{ __('Active') }}</span>' :
-                    '<span class="badge bg-warning">{{ __('Inactive') }}</span>');
+                    '<span class="badge bg-success">{{ custom_trans('Active', 'admin') }}</span>' :
+                    '<span class="badge bg-warning">{{ custom_trans('Inactive', 'admin') }}</span>');
                 $('#view_subscriber_subscribed_at').text(subscriber.subscribed_at ?
                     new Date(subscriber.subscribed_at).toLocaleDateString() : '-');
                 $('#view_subscriber_unsubscribed_at').text(subscriber.unsubscribed_at ?
@@ -489,7 +489,7 @@
                     const now = new Date();
                     const diffTime = Math.abs(now - subscribed);
                     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                    $('#view_subscriber_duration').text(`${diffDays} {{ __('days') }}`);
+                    $('#view_subscriber_duration').text(`${diffDays} {{ custom_trans('days', 'admin') }}`);
                 } else {
                     $('#view_subscriber_duration').text('-');
                 }
@@ -500,7 +500,7 @@
                     timeline += `<div class="timeline-item">
                         <div class="timeline-marker bg-success"></div>
                         <div class="timeline-content">
-                            <h6 class="mb-1">{{ __('Subscribed') }}</h6>
+                            <h6 class="mb-1">{{ custom_trans('Subscribed', 'admin') }}</h6>
                             <small class="text-muted">${new Date(subscriber.subscribed_at).toLocaleString()}</small>
                         </div>
                     </div>`;
@@ -509,7 +509,7 @@
                     timeline += `<div class="timeline-item">
                         <div class="timeline-marker bg-warning"></div>
                         <div class="timeline-content">
-                            <h6 class="mb-1">{{ __('Unsubscribed') }}</h6>
+                            <h6 class="mb-1">{{ custom_trans('Unsubscribed', 'admin') }}</h6>
                             <small class="text-muted">${new Date(subscriber.unsubscribed_at).toLocaleString()}</small>
                         </div>
                     </div>`;
@@ -529,7 +529,7 @@
                 if (!currentSubscriberId) return;
 
                 $.ajax({
-                    url: `{{ url('admin/settings/newsletters') }}/${currentSubscriberId}`,
+                    url: `{{ url('admin/settings/newsletters', 'admin') }}/${currentSubscriberId}`,
                     type: 'DELETE',
                     data: {
                         _token: '{{ csrf_token() }}'
@@ -542,7 +542,7 @@
                         }
                     },
                     error: function() {
-                        toastr.error('{{ __('An error occurred. Please try again.') }}');
+                        toastr.error('{{ custom_trans('An error occurred. Please try again.', 'admin') }}');
                     }
                 });
             });

@@ -8,8 +8,8 @@
         <div class="container">
             <div class="row justify-content-center text-center">
                 <div class="col-lg-8">
-                    <h1 class="fw-bold mb-3">{{ custom_trans('my_wishlist') }}</h1>
-                    <p class="lead mb-0">{{ custom_trans('wishlist_description') }}</p>
+                    <h1 class="fw-bold mb-3">{{ custom_trans('my_wishlist', 'front') }}</h1>
+                    <p class="lead mb-0">{{ custom_trans('wishlist_description', 'front') }}</p>
                 </div>
             </div>
         </div>
@@ -42,10 +42,10 @@
                     <div class="col-lg-6 text-center">
                         <div class="empty-wishlist py-5">
                             <i class="fa fa-heart fa-4x text-muted mb-4"></i>
-                            <h3 class="fw-bold mb-3">{{ custom_trans('empty_wishlist') }}</h3>
-                            <p class="text-muted mb-4">{{ custom_trans('empty_wishlist_message') }}</p>
+                            <h3 class="fw-bold mb-3">{{ custom_trans('empty_wishlist', 'front') }}</h3>
+                            <p class="text-muted mb-4">{{ custom_trans('empty_wishlist_message', 'front') }}</p>
                             <a href="{{ route('categories') }}" class="btn btn-primary">
-                                <i class="fa fa-search me-2"></i>{{ custom_trans('browse_courses') }}
+                                <i class="fa fa-search me-2"></i>{{ custom_trans('browse_courses', 'front') }}
                             </a>
                         </div>
                     </div>
@@ -63,7 +63,7 @@
 
             removeButtons.forEach(button => {
                 button.addEventListener('click', function() {
-                    if (confirm('{{ custom_trans('remove_from_wishlist_confirm') }}')) {
+                    if (confirm('{{ custom_trans('remove_from_wishlist_confirm', 'front') }}')) {
                         const courseId = this.dataset.courseId;
 
                         fetch(`/wishlist/${courseId}/remove`, {

@@ -17,7 +17,7 @@
                 <!-- Text and Features -->
                 <div class="col-lg-6">
                     <span class="text-warning fw-bold mb-2 d-block fs-11">
-                        <i class="fas fa-graduation-cap"></i> {{ __('About Our University') }}
+                        <i class="fas fa-graduation-cap"></i> {{ custom_trans('About Our University', 'front') }}
                     </span>
                     <h2 class="fw-bold mb-3 fs-25">
                         {{ get_current_language_code() === 'ar' && $aboutUniversity->title_ar ? $aboutUniversity->title_ar : $aboutUniversity->title }}
@@ -42,7 +42,7 @@
                         </p>
                         <button class="btn btn-link text-warning p-0 fw-semibold text-decoration-none read-more-btn"
                             onclick="toggleDescription()" id="readMoreBtn">
-                            <i class="fas fa-arrow-right me-1"></i> {{ __('Read More') }}
+                            <i class="fas fa-arrow-right me-1"></i> {{ custom_trans('Read More', 'front') }}
                         </button>
                     </div>
                     <div class="row g-3">
@@ -136,14 +136,14 @@
                     // Show full text
                     shortText.classList.add('d-none');
                     fullText.classList.remove('d-none');
-                    btn.innerHTML = '<i class="fas fa-arrow-up me-1"></i> {{ __('Read Less') }}';
+                    btn.innerHTML = '<i class="fas fa-arrow-up me-1"></i> {{ custom_trans('Read Less', 'front') }}';
                 } else {
                     // Show short text
                     shortText.classList.remove('d-none');
                     fullText.classList.add('d-none');
-                    btn.innerHTML = '<i class="fas fa-arrow-right me-1"></i> {{ __('Read More') }}';
+                    btn.innerHTML = '<i class="fas fa-arrow-right me-1"></i> {{ custom_trans('Read More', 'front') }}';
                 }
             }
         }
-    </script>@endif
-
+    </script>
+@endif

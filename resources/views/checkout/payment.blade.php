@@ -8,8 +8,8 @@
         <div class="container">
             <div class="row justify-content-center text-center">
                 <div class="col-lg-8">
-                    <h1 class="fw-bold mb-3">{{ custom_trans('payment') }}</h1>
-                    <p class="lead mb-0">{{ custom_trans('complete_your_payment') }}</p>
+                    <h1 class="fw-bold mb-3">{{ custom_trans('payment', 'front') }}</h1>
+                    <p class="lead mb-0">{{ custom_trans('complete_your_payment', 'front') }}</p>
                 </div>
             </div>
         </div>
@@ -22,46 +22,46 @@
                 <!-- Payment Form -->
                 <div class="col-lg-8">
                     <div class="payment-section">
-                        <h4 class="fw-bold mb-4">{{ custom_trans('credit_card_payment') }}</h4>
+                        <h4 class="fw-bold mb-4">{{ custom_trans('credit_card_payment', 'front') }}</h4>
 
                         <div class="payment-form">
                             <div class="alert alert-info">
                                 <i class="fas fa-info-circle me-2"></i>
-                                {{ custom_trans('payment_placeholder_message') }}
+                                {{ custom_trans('payment_placeholder_message', 'front') }}
                             </div>
 
                             <form id="paymentForm">
                                 <div class="mb-3">
-                                    <label for="card_number" class="form-label">{{ custom_trans('card_number') }} *</label>
+                                    <label for="card_number" class="form-label">{{ custom_trans('card_number', 'front') }} *</label>
                                     <input type="text" class="form-control card-input" id="card_number"
                                         placeholder="1234 5678 9012 3456" required>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label for="expiry_date" class="form-label">{{ custom_trans('expiry_date') }}
+                                        <label for="expiry_date" class="form-label">{{ custom_trans('expiry_date', 'front') }}
                                             *</label>
                                         <input type="text" class="form-control card-input" id="expiry_date"
                                             placeholder="MM/YY" required>
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                        <label for="cvv" class="form-label">{{ custom_trans('cvv') }} *</label>
+                                        <label for="cvv" class="form-label">{{ custom_trans('cvv', 'front') }} *</label>
                                         <input type="text" class="form-control card-input" id="cvv"
                                             placeholder="123" required>
                                     </div>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="card_holder" class="form-label">{{ custom_trans('card_holder_name') }}
+                                    <label for="card_holder" class="form-label">{{ custom_trans('card_holder_name', 'front') }}
                                         *</label>
                                     <input type="text" class="form-control card-input" id="card_holder"
-                                        placeholder="{{ custom_trans('card_holder_placeholder') }}" required>
+                                        placeholder="{{ custom_trans('card_holder_placeholder', 'front') }}" required>
                                 </div>
 
                                 <div class="d-grid">
                                     <button type="submit" class="btn btn-pay">
                                         <i class="fas fa-lock me-2"></i>
-                                        {{ custom_trans('pay_now') }} ₹{{ number_format($order->total, 2) }}
+                                        {{ custom_trans('pay_now', 'front') }} ₹{{ number_format($order->total, 2) }}
                                     </button>
                                 </div>
                             </form>
@@ -69,7 +69,7 @@
                             <div class="text-center mt-4">
                                 <small class="text-muted">
                                     <i class="fas fa-shield-alt me-1"></i>
-                                    {{ custom_trans('secure_payment_message') }}
+                                    {{ custom_trans('secure_payment_message', 'front') }}
                                 </small>
                             </div>
                         </div>
@@ -79,11 +79,11 @@
                 <!-- Order Summary -->
                 <div class="col-lg-4">
                     <div class="order-summary">
-                        <h4 class="fw-bold mb-3">{{ custom_trans('order_summary') }}</h4>
+                        <h4 class="fw-bold mb-3">{{ custom_trans('order_summary', 'front') }}</h4>
 
                         <!-- Order Information -->
                         <div class="mb-3">
-                            <p class="mb-1"><strong>{{ custom_trans('order_number') }}:</strong></p>
+                            <p class="mb-1"><strong>{{ custom_trans('order_number', 'front') }}:</strong></p>
                             <p class="mb-0">{{ $order->order_number }}</p>
                         </div>
 
@@ -109,19 +109,19 @@
 
                         <!-- Totals -->
                         <div class="d-flex justify-content-between mb-2">
-                            <span>{{ custom_trans('subtotal') }}</span>
+                            <span>{{ custom_trans('subtotal', 'front') }}</span>
                             <span class="fw-bold">₹{{ number_format($order->subtotal, 2) }}</span>
                         </div>
 
                         <div class="d-flex justify-content-between mb-3">
-                            <span class="fw-bold">{{ custom_trans('total') }}</span>
+                            <span class="fw-bold">{{ custom_trans('total', 'front') }}</span>
                             <span class="fw-bold total-amount">₹{{ number_format($order->total, 2) }}</span>
                         </div>
 
                         <!-- Back to Checkout -->
                         <a href="{{ route('checkout.index') }}" class="btn btn-outline-light w-100">
                             <i class="fas fa-arrow-left me-2"></i>
-                            {{ custom_trans('back_to_checkout') }}
+                            {{ custom_trans('back_to_checkout', 'front') }}
                         </a>
                     </div>
                 </div>

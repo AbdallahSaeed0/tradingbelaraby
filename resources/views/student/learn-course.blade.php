@@ -4,11 +4,11 @@
 
 @push('styles')
     @if (\App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl')
-        <link rel="stylesheet" href="{{ asset('css/rtl/pages/course-content.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/rtl/pages/student-dashboard.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/rtl/pages/course-content.css', 'front') }}">
+        <link rel="stylesheet" href="{{ asset('css/rtl/pages/student-dashboard.css', 'front') }}">
     @else
-        <link rel="stylesheet" href="{{ asset('css/pages/course-content.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/pages/student-dashboard.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/pages/course-content.css', 'front') }}">
+        <link rel="stylesheet" href="{{ asset('css/pages/student-dashboard.css', 'front') }}">
     @endif
 @endpush
 
@@ -31,28 +31,28 @@
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview"
                         type="button" role="tab" aria-controls="overview"
-                        aria-selected="true">{{ __('Overview') }}</button>
+                        aria-selected="true">{{ custom_trans('Overview', 'front') }}</button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="content-tab" data-bs-toggle="tab" data-bs-target="#content" type="button"
-                        role="tab" aria-controls="content" aria-selected="false">{{ __('Course Content') }}</button>
+                        role="tab" aria-controls="content" aria-selected="false">{{ custom_trans('Course Content', 'front') }}</button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="live-tab" data-bs-toggle="tab" data-bs-target="#live" type="button"
-                        role="tab" aria-controls="live" aria-selected="false">{{ __('Live Class') }}</button>
+                        role="tab" aria-controls="live" aria-selected="false">{{ custom_trans('Live Class', 'front') }}</button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="qa-tab" data-bs-toggle="tab" data-bs-target="#qa" type="button"
-                        role="tab" aria-controls="qa" aria-selected="false">{{ __('Q & A') }}</button>
+                        role="tab" aria-controls="qa" aria-selected="false">{{ custom_trans('Q & A', 'front') }}</button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="quiz-tab" data-bs-toggle="tab" data-bs-target="#quiz" type="button"
-                        role="tab" aria-controls="quiz" aria-selected="false">{{ __('Quiz') }}</button>
+                        role="tab" aria-controls="quiz" aria-selected="false">{{ custom_trans('Quiz', 'front') }}</button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="homework-tab" data-bs-toggle="tab" data-bs-target="#homework"
                         type="button" role="tab" aria-controls="homework"
-                        aria-selected="false">{{ __('Homework') }}</button>
+                        aria-selected="false">{{ custom_trans('Homework', 'front') }}</button>
                 </li>
             </ul>
 
@@ -75,7 +75,7 @@
                     <div class="live-class-section bg-light-blue-section py-5">
                         <div class="container">
                             <div class="d-flex justify-content-between align-items-center mb-4">
-                                <h3 class="fw-bold">{{ __('Live Classes') }}</h3>
+                                <h3 class="fw-bold">{{ custom_trans('Live Classes', 'front') }}</h3>
                             </div>
 
                             @if ($course->liveClasses && $course->liveClasses->count() > 0)
@@ -90,7 +90,7 @@
                                                 <div class="d-flex justify-content-between align-items-start mb-3">
                                                     <h5 class="fw-bold mb-0">{{ $liveClass->title }}</h5>
                                                     <span
-                                                        class="badge bg-{{ $liveClass->status === 'scheduled' ? 'primary' : ($liveClass->status === 'live' ? 'success' : 'secondary') }}">
+                                                        class="badge bg-{{ $liveClass->status === 'scheduled' ? 'primary' : ($liveClass->status === 'live' ? 'success' : 'secondary', 'front') }}">
                                                         {{ ucfirst($liveClass->status) }}
                                                     </span>
                                                 </div>
@@ -100,14 +100,14 @@
                                                     <div class="alert alert-success mb-3">
                                                         <div class="d-flex align-items-center">
                                                             <i class="fa fa-check-circle me-2"></i>
-                                                            <strong>{{ __('You are registered for this class!') }}</strong>
+                                                            <strong>{{ custom_trans('You are registered for this class!', 'front') }}</strong>
                                                         </div>
                                                         @if ($liveClass->link)
                                                             <div class="mt-2">
                                                                 <a href="{{ $liveClass->link }}" target="_blank"
                                                                     class="btn btn-success btn-sm">
                                                                     <i
-                                                                        class="fa fa-external-link-alt me-1"></i>{{ __('Join Meeting') }}
+                                                                        class="fa fa-external-link-alt me-1"></i>{{ custom_trans('Join Meeting', 'front') }}
                                                                 </a>
                                                             </div>
                                                         @endif
@@ -117,24 +117,24 @@
                                                 <div class="live-class-details mb-3">
                                                     <div class="row g-2">
                                                         <div class="col-6">
-                                                            <small class="text-muted">{{ __('Date') }}:</small>
+                                                            <small class="text-muted">{{ custom_trans('Date', 'front') }}:</small>
                                                             <div class="fw-bold">
-                                                                {{ $liveClass->scheduled_at ? $liveClass->scheduled_at->format('M d, Y') : __('TBD') }}
+                                                                {{ $liveClass->scheduled_at ? $liveClass->scheduled_at->format('M d, Y') : custom_trans('TBD', 'front') }}
                                                             </div>
                                                         </div>
                                                         <div class="col-6">
-                                                            <small class="text-muted">{{ __('Time') }}:</small>
+                                                            <small class="text-muted">{{ custom_trans('Time', 'front') }}:</small>
                                                             <div class="fw-bold">
-                                                                {{ $liveClass->scheduled_at ? $liveClass->scheduled_at->format('g:i A') : __('TBD') }}
+                                                                {{ $liveClass->scheduled_at ? $liveClass->scheduled_at->format('g:i A') : custom_trans('TBD', 'front') }}
                                                             </div>
                                                         </div>
                                                         <div class="col-6">
-                                                            <small class="text-muted">{{ __('Duration') }}:</small>
+                                                            <small class="text-muted">{{ custom_trans('Duration', 'front') }}:</small>
                                                             <div class="fw-bold">{{ $liveClass->duration ?? '60' }}
-                                                                {{ __('minutes') }}</div>
+                                                                {{ custom_trans('minutes', 'front') }}</div>
                                                         </div>
                                                         <div class="col-6">
-                                                            <small class="text-muted">{{ __('Capacity') }}:</small>
+                                                            <small class="text-muted">{{ custom_trans('Capacity', 'front') }}:</small>
                                                             <div class="fw-bold">
                                                                 {{ $liveClass->max_participants ?? 'Unlimited' }}</div>
                                                         </div>
@@ -145,12 +145,12 @@
                                                     @if (!$isRegistered)
                                                         <button class="btn btn-outline-primary flex-fill"
                                                             onclick="joinLiveClass({{ $liveClass->id }})">
-                                                            <i class="fa fa-video me-2"></i>{{ __('Join Live Class') }}
+                                                            <i class="fa fa-video me-2"></i>{{ custom_trans('Join Live Class', 'front') }}
                                                         </button>
                                                     @else
                                                         <div class="text-center flex-fill">
                                                             <span class="badge bg-success">
-                                                                <i class="fa fa-check me-1"></i>{{ __('Registered') }}
+                                                                <i class="fa fa-check me-1"></i>{{ custom_trans('Registered', 'front') }}
                                                             </span>
                                                         </div>
                                                     @endif
@@ -158,7 +158,7 @@
                                                     @if ($liveClass->materials && count($liveClass->materials) > 0)
                                                         <button class="btn btn-outline-secondary"
                                                             onclick="downloadMaterials({{ $liveClass->id }})"
-                                                            title="{{ __('Download Materials') }}">
+                                                            title="{{ custom_trans('Download Materials', 'front') }}">
                                                             <i class="fa fa-download"></i>
                                                         </button>
                                                     @endif
@@ -170,11 +170,11 @@
                             @else
                                 <div class="text-center py-5">
                                     <i class="fa fa-video fa-3x text-muted mb-3"></i>
-                                    <h4 class="fw-bold mb-2">{{ __('No Live Classes Scheduled') }}</h4>
-                                    <p class="text-muted mb-4">{{ __('Live classes will be scheduled and appear here.') }}
+                                    <h4 class="fw-bold mb-2">{{ custom_trans('No Live Classes Scheduled', 'front') }}</h4>
+                                    <p class="text-muted mb-4">{{ custom_trans('Live classes will be scheduled and appear here.', 'front') }}
                                     </p>
                                     <button class="btn btn-orange" onclick="getNotified()">
-                                        <i class="fa fa-bell me-2"></i>{{ __('Get Notified') }}
+                                        <i class="fa fa-bell me-2"></i>{{ custom_trans('Get Notified', 'front') }}
                                     </button>
                                 </div>
                             @endif
@@ -197,7 +197,7 @@
                     <div class="homework-section bg-light-blue-section py-5">
                         <div class="container">
                             <div class="d-flex justify-content-between align-items-center mb-4">
-                                <h3 class="fw-bold">{{ __('Homework Assignments') }}</h3>
+                                <h3 class="fw-bold">{{ custom_trans('Homework Assignments', 'front') }}</h3>
                             </div>
 
                             @if ($course->homework && $course->homework->count() > 0)
@@ -214,43 +214,43 @@
                                                     <h5 class="fw-bold mb-0">{{ $assignment->name }}</h5>
                                                     <span
                                                         class="badge bg-{{ $hasSubmitted ? ($isGraded ? 'success' : 'warning') : 'secondary' }}">
-                                                        {{ $hasSubmitted ? ($isGraded ? __('Graded') : __('Submitted')) : __('Not Started') }}
+                                                        {{ $hasSubmitted ? ($isGraded ? custom_trans('Graded', 'front') : custom_trans('Submitted', 'front')) : custom_trans('Not Started', 'front') }}
                                                     </span>
                                                 </div>
                                                 <p class="text-muted mb-3">{{ $assignment->description }}</p>
                                                 <div class="homework-details mb-3">
                                                     <div class="row g-2">
                                                         <div class="col-6">
-                                                            <small class="text-muted">{{ __('Due Date') }}:</small>
+                                                            <small class="text-muted">{{ custom_trans('Due Date', 'front') }}:</small>
                                                             <div class="fw-bold">
-                                                                {{ $assignment->due_date ? $assignment->due_date->format('M d, Y') : __('No due date') }}
+                                                                {{ $assignment->due_date ? $assignment->due_date->format('M d, Y') : custom_trans('No due date', 'front') }}
                                                             </div>
                                                         </div>
                                                         <div class="col-6">
-                                                            <small class="text-muted">{{ __('Points') }}:</small>
+                                                            <small class="text-muted">{{ custom_trans('Points', 'front') }}:</small>
                                                             <div class="fw-bold">{{ $assignment->max_score ?? '0' }}
-                                                                {{ __('points') }}</div>
+                                                                {{ custom_trans('points', 'front') }}</div>
                                                         </div>
                                                         <div class="col-6">
-                                                            <small class="text-muted">{{ __('Type') }}:</small>
+                                                            <small class="text-muted">{{ custom_trans('Type', 'front') }}:</small>
                                                             <div class="fw-bold">
-                                                                {{ ucfirst($assignment->type ?? 'Assignment') }}</div>
+                                                                {{ ucfirst($assignment->type ?? 'Assignment', 'front') }}</div>
                                                         </div>
                                                         <div class="col-6">
-                                                            <small class="text-muted">{{ __('Status') }}:</small>
+                                                            <small class="text-muted">{{ custom_trans('Status', 'front') }}:</small>
                                                             <div class="fw-bold">
-                                                                {{ $hasSubmitted ? ($isGraded ? __('Graded') : __('Submitted')) : __('Not Started') }}
+                                                                {{ $hasSubmitted ? ($isGraded ? custom_trans('Graded', 'front') : custom_trans('Submitted', 'front')) : custom_trans('Not Started', 'front') }}
                                                             </div>
                                                         </div>
                                                         @if ($isGraded)
                                                             <div class="col-12">
                                                                 <div class="alert alert-success mb-0">
-                                                                    <strong>{{ __('Your Grade:') }}</strong>
+                                                                    <strong>{{ custom_trans('Your Grade:', 'front') }}</strong>
                                                                     {{ $userSubmission->score_earned }}/{{ $userSubmission->max_score }}
                                                                     ({{ number_format($userSubmission->percentage_score, 1) }}%)
                                                                     @if ($userSubmission->feedback)
                                                                         <br><small
-                                                                            class="text-muted">{{ __('Feedback:') }}
+                                                                            class="text-muted">{{ custom_trans('Feedback:', 'front') }}
                                                                             {{ $userSubmission->feedback }}</small>
                                                                     @endif
                                                                 </div>
@@ -261,16 +261,16 @@
                                                 <div class="d-flex gap-2">
                                                     <button class="btn btn-outline-primary flex-fill"
                                                         onclick="viewHomeworkDetails({{ $assignment->id }})">
-                                                        <i class="fa fa-eye me-2"></i>{{ __('View Details') }}
+                                                        <i class="fa fa-eye me-2"></i>{{ custom_trans('View Details', 'front') }}
                                                     </button>
                                                     @if (!$hasSubmitted)
                                                         <button class="btn btn-orange flex-fill"
                                                             onclick="submitHomeworkAssignment({{ $assignment->id }})">
-                                                            <i class="fa fa-upload me-2"></i>{{ __('Submit') }}
+                                                            <i class="fa fa-upload me-2"></i>{{ custom_trans('Submit', 'front') }}
                                                         </button>
                                                     @else
                                                         <button class="btn btn-secondary flex-fill" disabled>
-                                                            <i class="fa fa-check me-2"></i>{{ __('Already Submitted') }}
+                                                            <i class="fa fa-check me-2"></i>{{ custom_trans('Already Submitted', 'front') }}
                                                         </button>
                                                     @endif
                                                 </div>
@@ -281,11 +281,11 @@
                             @else
                                 <div class="text-center py-5">
                                     <i class="fa fa-book fa-3x text-muted mb-3"></i>
-                                    <h4 class="fw-bold mb-2">{{ __('No Homework Assignments') }}</h4>
+                                    <h4 class="fw-bold mb-2">{{ custom_trans('No Homework Assignments', 'front') }}</h4>
                                     <p class="text-muted mb-4">
-                                        {{ __('Homework assignments will be posted here by your instructor.') }}</p>
+                                        {{ custom_trans('Homework assignments will be posted here by your instructor.', 'front') }}</p>
                                     <button class="btn btn-orange" onclick="getHomeworkNotified()">
-                                        <i class="fa fa-bell me-2"></i>{{ __('Get Notified') }}
+                                        <i class="fa fa-bell me-2"></i>{{ custom_trans('Get Notified', 'front') }}
                                     </button>
                                 </div>
                             @endif
@@ -301,7 +301,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="videoModalLabel">{{ __('Course Video') }}</h5>
+                    <h5 class="modal-title" id="videoModalLabel">{{ custom_trans('Course Video', 'front') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -311,7 +311,7 @@
                         <div class="ratio ratio-16x9 d-none-initially" id="html5VideoContainer">
                             <video controls id="courseVideo">
                                 <source src="" type="video/mp4">
-                                {{ __('Your browser does not support the video tag.') }}
+                                {{ custom_trans('Your browser does not support the video tag.', 'front') }}
                             </video>
                         </div>
 
@@ -328,10 +328,10 @@
                         <!-- File Download for other file types -->
                         <div id="fileDownload" class="file-download-section d-none-initially">
                             <i class="fa fa-file fa-3x text-primary mb-3"></i>
-                            <h5>{{ __('File Available for Download') }}</h5>
-                            <p class="text-muted">{{ __('This content is available as a downloadable file.') }}</p>
+                            <h5>{{ custom_trans('File Available for Download', 'front') }}</h5>
+                            <p class="text-muted">{{ custom_trans('This content is available as a downloadable file.', 'front') }}</p>
                             <a id="downloadLink" href="" class="btn btn-primary" target="_blank">
-                                <i class="fa fa-download me-2"></i>{{ __('Download File') }}
+                                <i class="fa fa-download me-2"></i>{{ custom_trans('Download File', 'front') }}
                             </a>
                         </div>
                     </div>
@@ -346,27 +346,27 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addQuestionModalLabel">{{ __('Add New Question') }}</h5>
+                    <h5 class="modal-title" id="addQuestionModalLabel">{{ custom_trans('Add New Question', 'front') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="addQuestionForm">
                         <div class="mb-3">
-                            <label for="questionTitle" class="form-label">{{ __('Question Title') }}</label>
+                            <label for="questionTitle" class="form-label">{{ custom_trans('Question Title', 'front') }}</label>
                             <input type="text" class="form-control" id="questionTitle"
-                                placeholder="{{ __('Enter your question title') }}" required>
+                                placeholder="{{ custom_trans('Enter your question title', 'front') }}" required>
                         </div>
                         <div class="mb-3">
-                            <label for="questionContent" class="form-label">{{ __('Question Details') }}</label>
+                            <label for="questionContent" class="form-label">{{ custom_trans('Question Details', 'front') }}</label>
                             <div id="questionEditor"></div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary"
-                        data-bs-dismiss="modal">{{ __('Cancel') }}</button>
+                        data-bs-dismiss="modal">{{ custom_trans('Cancel', 'front') }}</button>
                     <button type="button" class="btn btn-orange"
-                        id="submitQuestion">{{ __('Submit Question') }}</button>
+                        id="submitQuestion">{{ custom_trans('Submit Question', 'front') }}</button>
                 </div>
             </div>
         </div>
@@ -378,25 +378,25 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addAnswerModalLabel">{{ __('Add Answer') }}</h5>
+                    <h5 class="modal-title" id="addAnswerModalLabel">{{ custom_trans('Add Answer', 'front') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <h6 class="text-muted">{{ __('Question:') }}</h6>
+                        <h6 class="text-muted">{{ custom_trans('Question:', 'front') }}</h6>
                         <p id="answerQuestionTitle" class="fw-bold"></p>
                     </div>
                     <form id="addAnswerForm">
                         <div class="mb-3">
-                            <label for="answerContent" class="form-label">{{ __('Your Answer') }}</label>
+                            <label for="answerContent" class="form-label">{{ custom_trans('Your Answer', 'front') }}</label>
                             <div id="answerEditor"></div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary"
-                        data-bs-dismiss="modal">{{ __('Cancel') }}</button>
-                    <button type="button" class="btn btn-orange" id="submitAnswer">{{ __('Submit Answer') }}</button>
+                        data-bs-dismiss="modal">{{ custom_trans('Cancel', 'front') }}</button>
+                    <button type="button" class="btn btn-orange" id="submitAnswer">{{ custom_trans('Submit Answer', 'front') }}</button>
                 </div>
             </div>
         </div>
@@ -407,31 +407,31 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="reportModalLabel">{{ __('Report Content') }}</h5>
+                    <h5 class="modal-title" id="reportModalLabel">{{ custom_trans('Report Content', 'front') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="reportForm">
                         <div class="mb-3">
-                            <label for="reportTitle" class="form-label">{{ __('Report Title') }}</label>
+                            <label for="reportTitle" class="form-label">{{ custom_trans('Report Title', 'front') }}</label>
                             <input type="text" class="form-control" id="reportTitle"
-                                placeholder="{{ __('Brief description of the issue') }}" required>
+                                placeholder="{{ custom_trans('Brief description of the issue', 'front') }}" required>
                         </div>
                         <div class="mb-3">
-                            <label for="reportEmail" class="form-label">{{ __('Your Email') }}</label>
+                            <label for="reportEmail" class="form-label">{{ custom_trans('Your Email', 'front') }}</label>
                             <input type="email" class="form-control" id="reportEmail"
                                 placeholder="your.email@example.com" required>
                         </div>
                         <div class="mb-3">
-                            <label for="reportDetails" class="form-label">{{ __('Details') }}</label>
+                            <label for="reportDetails" class="form-label">{{ custom_trans('Details', 'front') }}</label>
                             <div id="reportEditor"></div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary"
-                        data-bs-dismiss="modal">{{ __('Cancel') }}</button>
-                    <button type="button" class="btn btn-danger" id="submitReport">{{ __('Submit Report') }}</button>
+                        data-bs-dismiss="modal">{{ custom_trans('Cancel', 'front') }}</button>
+                    <button type="button" class="btn btn-danger" id="submitReport">{{ custom_trans('Submit Report', 'front') }}</button>
                 </div>
             </div>
         </div>
@@ -443,32 +443,32 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="scheduleLiveClassModalLabel">{{ __('Schedule Live Class') }}</h5>
+                    <h5 class="modal-title" id="scheduleLiveClassModalLabel">{{ custom_trans('Schedule Live Class', 'front') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="scheduleLiveClassForm">
                         <div class="mb-3">
-                            <label for="liveClassTitle" class="form-label">{{ __('Class Title') }}</label>
+                            <label for="liveClassTitle" class="form-label">{{ custom_trans('Class Title', 'front') }}</label>
                             <input type="text" class="form-control" id="liveClassTitle" name="title"
-                                placeholder="{{ __('Enter class title') }}" required>
+                                placeholder="{{ custom_trans('Enter class title', 'front') }}" required>
                         </div>
                         <div class="mb-3">
-                            <label for="liveClassDescription" class="form-label">{{ __('Description') }}</label>
+                            <label for="liveClassDescription" class="form-label">{{ custom_trans('Description', 'front') }}</label>
                             <textarea class="form-control" id="liveClassDescription" name="description" rows="3"
-                                placeholder="{{ __('Enter class description') }}"></textarea>
+                                placeholder="{{ custom_trans('Enter class description', 'front') }}"></textarea>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="liveClassDate" class="form-label">{{ __('Date') }}</label>
+                                    <label for="liveClassDate" class="form-label">{{ custom_trans('Date', 'front') }}</label>
                                     <input type="date" class="form-control" id="liveClassDate" name="scheduled_date"
                                         required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="liveClassTime" class="form-label">{{ __('Time') }}</label>
+                                    <label for="liveClassTime" class="form-label">{{ custom_trans('Time', 'front') }}</label>
                                     <input type="time" class="form-control" id="liveClassTime" name="scheduled_time"
                                         required>
                                 </div>
@@ -478,7 +478,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="liveClassDuration"
-                                        class="form-label">{{ __('Duration (minutes)') }}</label>
+                                        class="form-label">{{ custom_trans('Duration (minutes)', 'front') }}</label>
                                     <input type="number" class="form-control" id="liveClassDuration" name="duration"
                                         value="60" min="15" max="180">
                                 </div>
@@ -486,7 +486,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="liveClassCapacity"
-                                        class="form-label">{{ __('Max Participants') }}</label>
+                                        class="form-label">{{ custom_trans('Max Participants', 'front') }}</label>
                                     <input type="number" class="form-control" id="liveClassCapacity"
                                         name="max_participants" value="50" min="1">
                                 </div>
@@ -496,9 +496,9 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary"
-                        data-bs-dismiss="modal">{{ __('Cancel') }}</button>
+                        data-bs-dismiss="modal">{{ custom_trans('Cancel', 'front') }}</button>
                     <button type="submit" form="scheduleLiveClassForm"
-                        class="btn btn-orange">{{ __('Schedule Class') }}</button>
+                        class="btn btn-orange">{{ custom_trans('Schedule Class', 'front') }}</button>
                 </div>
             </div>
         </div>
@@ -510,23 +510,23 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="joinLiveClassModalLabel">{{ __('Join Live Class') }}</h5>
+                    <h5 class="modal-title" id="joinLiveClassModalLabel">{{ custom_trans('Join Live Class', 'front') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="joinLiveClassForm">
                         <div class="mb-3">
-                            <label for="joinReason" class="form-label">{{ __('Reason for joining') }}</label>
+                            <label for="joinReason" class="form-label">{{ custom_trans('Reason for joining', 'front') }}</label>
                             <textarea class="form-control" id="joinReason" name="reason" rows="3"
-                                placeholder="{{ __('Why do you want to join this live class?') }}"></textarea>
+                                placeholder="{{ custom_trans('Why do you want to join this live class?', 'front') }}"></textarea>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary"
-                        data-bs-dismiss="modal">{{ __('Cancel') }}</button>
+                        data-bs-dismiss="modal">{{ custom_trans('Cancel', 'front') }}</button>
                     <button type="submit" form="joinLiveClassForm"
-                        class="btn btn-primary">{{ __('Join Class') }}</button>
+                        class="btn btn-primary">{{ custom_trans('Join Class', 'front') }}</button>
                 </div>
             </div>
         </div>
@@ -538,39 +538,39 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="submitHomeworkModalLabel">{{ __('Submit Homework') }}</h5>
+                    <h5 class="modal-title" id="submitHomeworkModalLabel">{{ custom_trans('Submit Homework', 'front') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="submitHomeworkForm">
                         <div class="mb-3">
-                            <label for="homeworkTitle" class="form-label">{{ __('Homework Title') }}</label>
+                            <label for="homeworkTitle" class="form-label">{{ custom_trans('Homework Title', 'front') }}</label>
                             <input type="text" class="form-control" id="homeworkTitle" name="title"
-                                placeholder="{{ __('Enter homework title') }}" required>
+                                placeholder="{{ custom_trans('Enter homework title', 'front') }}" required>
                         </div>
                         <div class="mb-3">
-                            <label for="homeworkDescription" class="form-label">{{ __('Description') }}</label>
+                            <label for="homeworkDescription" class="form-label">{{ custom_trans('Description', 'front') }}</label>
                             <textarea class="form-control" id="homeworkDescription" name="description" rows="3"
-                                placeholder="{{ __('Enter homework description') }}"></textarea>
+                                placeholder="{{ custom_trans('Enter homework description', 'front') }}"></textarea>
                         </div>
                         <div class="mb-3">
-                            <label for="homeworkFile" class="form-label">{{ __('Upload File') }}</label>
+                            <label for="homeworkFile" class="form-label">{{ custom_trans('Upload File', 'front') }}</label>
                             <input type="file" class="form-control" id="homeworkFile" name="file"
                                 accept=".pdf,.doc,.docx,.txt,.zip,.rar">
-                            <div class="form-text">{{ __('Accepted formats: PDF, DOC, DOCX, TXT, ZIP, RAR') }}</div>
+                            <div class="form-text">{{ custom_trans('Accepted formats: PDF, DOC, DOCX, TXT, ZIP, RAR', 'front') }}</div>
                         </div>
                         <div class="mb-3">
-                            <label for="homeworkContent" class="form-label">{{ __('Content') }}</label>
+                            <label for="homeworkContent" class="form-label">{{ custom_trans('Content', 'front') }}</label>
                             <textarea class="form-control" id="homeworkContent" name="content" rows="5"
-                                placeholder="{{ __('Enter your homework content here...') }}"></textarea>
+                                placeholder="{{ custom_trans('Enter your homework content here...', 'front') }}"></textarea>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary"
-                        data-bs-dismiss="modal">{{ __('Cancel') }}</button>
+                        data-bs-dismiss="modal">{{ custom_trans('Cancel', 'front') }}</button>
                     <button type="submit" form="submitHomeworkForm"
-                        class="btn btn-orange">{{ __('Submit Homework') }}</button>
+                        class="btn btn-orange">{{ custom_trans('Submit Homework', 'front') }}</button>
                 </div>
             </div>
         </div>
@@ -582,49 +582,49 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="viewHomeworkDetailsModalLabel">{{ __('Homework Details') }}</h5>
+                    <h5 class="modal-title" id="viewHomeworkDetailsModalLabel">{{ custom_trans('Homework Details', 'front') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <input type="hidden" id="homeworkDetailsId">
                     <div class="row">
                         <div class="col-md-6">
-                            <h6 class="fw-bold">{{ __('Title') }}</h6>
+                            <h6 class="fw-bold">{{ custom_trans('Title', 'front') }}</h6>
                             <p id="homeworkDetailsTitle"></p>
                         </div>
                         <div class="col-md-6">
-                            <h6 class="fw-bold">{{ __('Status') }}</h6>
+                            <h6 class="fw-bold">{{ custom_trans('Status', 'front') }}</h6>
                             <p id="homeworkDetailsStatus"></p>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
-                            <h6 class="fw-bold">{{ __('Due Date') }}</h6>
+                            <h6 class="fw-bold">{{ custom_trans('Due Date', 'front') }}</h6>
                             <p id="homeworkDetailsDueDate"></p>
                         </div>
                         <div class="col-md-6">
-                            <h6 class="fw-bold">{{ __('Points') }}</h6>
+                            <h6 class="fw-bold">{{ custom_trans('Points', 'front') }}</h6>
                             <p id="homeworkDetailsPoints"></p>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
-                            <h6 class="fw-bold">{{ __('Type') }}</h6>
+                            <h6 class="fw-bold">{{ custom_trans('Type', 'front') }}</h6>
                             <p id="homeworkDetailsType"></p>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-12">
-                            <h6 class="fw-bold">{{ __('Description') }}</h6>
+                            <h6 class="fw-bold">{{ custom_trans('Description', 'front') }}</h6>
                             <div id="homeworkDetailsDescription"></div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary"
-                        data-bs-dismiss="modal">{{ __('Close') }}</button>
+                        data-bs-dismiss="modal">{{ custom_trans('Close', 'front') }}</button>
                     <button type="button" class="btn btn-orange"
-                        onclick="submitHomeworkAssignment(document.getElementById('homeworkDetailsId').value)">{{ __('Submit Assignment') }}</button>
+                        onclick="submitHomeworkAssignment(document.getElementById('homeworkDetailsId').value)">{{ custom_trans('Submit Assignment', 'front') }}</button>
                 </div>
             </div>
         </div>
@@ -636,34 +636,34 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="submitHomeworkAssignmentModalLabel">{{ __('Submit Assignment') }}</h5>
+                    <h5 class="modal-title" id="submitHomeworkAssignmentModalLabel">{{ custom_trans('Submit Assignment', 'front') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="submitHomeworkAssignmentForm">
                         <div class="mb-3">
-                            <label for="assignmentFile" class="form-label">{{ __('Upload Assignment File') }}</label>
+                            <label for="assignmentFile" class="form-label">{{ custom_trans('Upload Assignment File', 'front') }}</label>
                             <input type="file" class="form-control" id="assignmentFile" name="file"
                                 accept=".pdf,.doc,.docx,.txt,.zip,.rar" required>
-                            <div class="form-text">{{ __('Accepted formats: PDF, DOC, DOCX, TXT, ZIP, RAR') }}</div>
+                            <div class="form-text">{{ custom_trans('Accepted formats: PDF, DOC, DOCX, TXT, ZIP, RAR', 'front') }}</div>
                         </div>
                         <div class="mb-3">
-                            <label for="assignmentContent" class="form-label">{{ __('Assignment Content') }}</label>
+                            <label for="assignmentContent" class="form-label">{{ custom_trans('Assignment Content', 'front') }}</label>
                             <textarea class="form-control" id="assignmentContent" name="content" rows="5"
-                                placeholder="{{ __('Enter your assignment content here...') }}"></textarea>
+                                placeholder="{{ custom_trans('Enter your assignment content here...', 'front') }}"></textarea>
                         </div>
                         <div class="mb-3">
-                            <label for="assignmentNotes" class="form-label">{{ __('Notes (Optional)') }}</label>
+                            <label for="assignmentNotes" class="form-label">{{ custom_trans('Notes (Optional)', 'front') }}</label>
                             <textarea class="form-control" id="assignmentNotes" name="notes" rows="3"
-                                placeholder="{{ __('Any additional notes for your instructor...') }}"></textarea>
+                                placeholder="{{ custom_trans('Any additional notes for your instructor...', 'front') }}"></textarea>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary"
-                        data-bs-dismiss="modal">{{ __('Cancel') }}</button>
+                        data-bs-dismiss="modal">{{ custom_trans('Cancel', 'front') }}</button>
                     <button type="submit" form="submitHomeworkAssignmentForm"
-                        class="btn btn-orange">{{ __('Submit Assignment') }}</button>
+                        class="btn btn-orange">{{ custom_trans('Submit Assignment', 'front') }}</button>
                 </div>
             </div>
         </div>
@@ -696,18 +696,18 @@
                     markCompleteBtn.disabled = false;
                     markIncompleteBtn.disabled = false;
                     markCompleteBtn.innerHTML =
-                        '<i class="fa fa-check me-2"></i>{{ __('Mark Selected as Complete') }} (' + totalChecked +
+                        '<i class="fa fa-check me-2"></i>{{ custom_trans('Mark Selected as Complete', 'front') }} (' + totalChecked +
                         ')';
                     markIncompleteBtn.innerHTML =
-                        '<i class="fa fa-times me-2"></i>{{ __('Mark Selected as Incomplete') }} (' +
+                        '<i class="fa fa-times me-2"></i>{{ custom_trans('Mark Selected as Incomplete', 'front') }} (' +
                         totalChecked + ')';
                 } else {
                     markCompleteBtn.disabled = true;
                     markIncompleteBtn.disabled = true;
                     markCompleteBtn.innerHTML =
-                        '<i class="fa fa-check me-2"></i>{{ __('Mark Selected as Complete') }}';
+                        '<i class="fa fa-check me-2"></i>{{ custom_trans('Mark Selected as Complete', 'front') }}';
                     markIncompleteBtn.innerHTML =
-                        '<i class="fa fa-times me-2"></i>{{ __('Mark Selected as Incomplete') }}';
+                        '<i class="fa fa-times me-2"></i>{{ custom_trans('Mark Selected as Incomplete', 'front') }}';
                 }
             }
 
@@ -777,7 +777,7 @@
                                                 statusIndicator.className =
                                                     'fa fa-check-circle text-success';
                                                 statusIndicator.title =
-                                                    '{{ __('Completed') }}';
+                                                    '{{ custom_trans('Completed', 'front') }}';
                                             }
 
                                             // Add completion badge if not exists
@@ -785,7 +785,7 @@
                                                 '.class-title');
                                             if (title && !title.querySelector('.badge')) {
                                                 title.innerHTML +=
-                                                    '<span class="badge bg-success ms-2"><i class="fa fa-check"></i> {{ __('Completed') }}</span>';
+                                                    '<span class="badge bg-success ms-2"><i class="fa fa-check"></i> {{ custom_trans('Completed', 'front') }}</span>';
                                             }
                                         }
                                     });
@@ -795,7 +795,7 @@
                     }
 
                     // Show success message
-                    showToast(`${totalChecked} {{ __('item(s) marked as complete!') }}`, 'success');
+                    showToast(`${totalChecked} {{ custom_trans('item(s) marked as complete!', 'front') }}`, 'success');
 
                     // Uncheck all checkboxes and update button
                     clearAllSelections();
@@ -847,7 +847,7 @@
                                                 statusIndicator.className =
                                                     'fa fa-circle text-muted';
                                                 statusIndicator.title =
-                                                    '{{ __('Not Completed') }}';
+                                                    '{{ custom_trans('Not Completed', 'front') }}';
                                             }
 
                                             // Remove completion badge
@@ -865,7 +865,7 @@
                     }
 
                     // Show success message
-                    showToast(`${totalChecked} {{ __('item(s) marked as incomplete!') }}`, 'warning');
+                    showToast(`${totalChecked} {{ custom_trans('item(s) marked as incomplete!', 'front') }}`, 'warning');
 
                     // Uncheck all checkboxes and update button
                     clearAllSelections();
@@ -958,13 +958,13 @@
 
                         // Update modal title
                         document.getElementById('videoModalLabel').textContent =
-                            '{{ __('Playing:') }} ' + lectureTitle;
+                            '{{ custom_trans('Playing:', 'front') }} ' + lectureTitle;
 
                         // Show the modal
                         videoModal.show();
                     } else {
                         // Show error message if no video URL
-                        showToast('{{ __('No video available for this lecture') }}', 'warning');
+                        showToast('{{ custom_trans('No video available for this lecture', 'front') }}', 'warning');
                     }
                 });
             });
@@ -1070,21 +1070,21 @@
                             const statusIndicator = lectureCard.querySelector('.fa-circle, .fa-check-circle');
                             if (statusIndicator) {
                                 statusIndicator.className = 'fa fa-check-circle text-success';
-                                statusIndicator.title = '{{ __('Completed') }}';
+                                statusIndicator.title = '{{ custom_trans('Completed', 'front') }}';
                             }
 
                             // Add completion badge if not exists
                             const title = lectureCard.querySelector('.class-title');
                             if (title && !title.querySelector('.badge')) {
                                 title.innerHTML +=
-                                    '<span class="badge bg-success ms-2"><i class="fa fa-check"></i> {{ __('Completed') }}</span>';
+                                    '<span class="badge bg-success ms-2"><i class="fa fa-check"></i> {{ custom_trans('Completed', 'front') }}</span>';
                             }
 
                             // Update progress bar
                             updateProgressBar(data.progress);
 
                             // Show success message
-                            showToast('{{ __('Lecture completed automatically!') }}', 'success');
+                            showToast('{{ custom_trans('Lecture completed automatically!', 'front') }}', 'success');
                         }
                     })
                     .catch(error => console.error('Error:', error));
@@ -1187,12 +1187,12 @@
             const content = questionEditor ? questionEditor.getData() : '';
 
             if (title.trim() === '') {
-                alert('{{ __('Please enter a question title.') }}');
+                alert('{{ custom_trans('Please enter a question title.', 'front') }}');
                 return;
             }
 
             // Show success message
-            showToast('{{ __('Question submitted successfully!') }}', 'success');
+            showToast('{{ custom_trans('Question submitted successfully!', 'front') }}', 'success');
 
             // Reset form
             document.getElementById('questionTitle').value = '';
@@ -1206,12 +1206,12 @@
             const content = answerEditor ? answerEditor.getData() : '';
 
             if (content.trim() === '') {
-                alert('{{ __('Please enter your answer.') }}');
+                alert('{{ custom_trans('Please enter your answer.', 'front') }}');
                 return;
             }
 
             // Show success message
-            showToast('{{ __('Answer submitted successfully!') }}', 'success');
+            showToast('{{ custom_trans('Answer submitted successfully!', 'front') }}', 'success');
 
             // Reset form
             if (answerEditor) answerEditor.setData('');
@@ -1226,12 +1226,12 @@
             const details = reportEditor ? reportEditor.getData() : '';
 
             if (title.trim() === '' || email.trim() === '') {
-                alert('{{ __('Please fill in all required fields.') }}');
+                alert('{{ custom_trans('Please fill in all required fields.', 'front') }}');
                 return;
             }
 
             // Show success message
-            showToast('{{ __('Report submitted successfully!') }}', 'success');
+            showToast('{{ custom_trans('Report submitted successfully!', 'front') }}', 'success');
 
             // Reset form
             document.getElementById('reportTitle').value = '';
@@ -1289,24 +1289,24 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            showToast('{{ __('You have joined the live class!') }}', 'success');
+                            showToast('{{ custom_trans('You have joined the live class!', 'front') }}', 'success');
                             modal.hide();
                             // Optionally, update the live class status or UI
                             location.reload(); // Simple refresh to show updated live class
                         } else {
-                            showToast('{{ __('Failed to join live class.') }}', 'danger');
+                            showToast('{{ custom_trans('Failed to join live class.', 'front') }}', 'danger');
                             console.error(data.message);
                         }
                     })
                     .catch(error => {
-                        showToast('{{ __('Error joining live class.') }}', 'danger');
+                        showToast('{{ custom_trans('Error joining live class.', 'front') }}', 'danger');
                         console.error(error);
                     });
             });
         }
 
         function getNotified() {
-            showToast('{{ __('You will be notified when a live class is scheduled.') }}', 'info');
+            showToast('{{ custom_trans('You will be notified when a live class is scheduled.', 'front') }}', 'info');
         }
 
         function downloadMaterials(liveClassId) {
@@ -1339,7 +1339,7 @@
                 form.submit();
             } catch (error) {
                 console.error('Download error:', error);
-                showToast('{{ __('Error downloading materials.') }}', 'danger');
+                showToast('{{ custom_trans('Error downloading materials.', 'front') }}', 'danger');
                 button.innerHTML = originalText;
                 button.disabled = false;
             }
@@ -1368,33 +1368,33 @@
                         document.getElementById('homeworkDetailsTitle').textContent = data.assignment.title;
                         document.getElementById('homeworkDetailsDescription').innerHTML = data.assignment.description;
                         document.getElementById('homeworkDetailsDueDate').textContent = data.assignment.due_date ? data
-                            .assignment.due_date.format('M d, Y') : '{{ __('No due date') }}';
+                            .assignment.due_date.format('M d, Y') : '{{ custom_trans('No due date', 'front') }}';
                         document.getElementById('homeworkDetailsPoints').textContent = data.assignment.max_score ?? '0';
                         document.getElementById('homeworkDetailsType').textContent = data.assignment.type ??
-                            '{{ __('Assignment') }}';
+                            '{{ custom_trans('Assignment', 'front') }}';
                         document.getElementById('homeworkDetailsStatus').textContent = data.assignment.status ??
-                            '{{ __('Not Started') }}';
+                            '{{ custom_trans('Not Started', 'front') }}';
                         document.getElementById('homeworkDetailsId').value = data.assignment.id;
 
                         // Show grade information if available
                         if (data.assignment.grade) {
                             const gradeInfo = `
                                 <div class="alert alert-success mt-3">
-                                    <strong>{{ __('Your Grade:') }}</strong>
+                                    <strong>{{ custom_trans('Your Grade:', 'front') }}</strong>
                                     ${data.assignment.grade.score_earned}/${data.assignment.grade.max_score}
                                     (${data.assignment.grade.percentage_score}%)
-                                    ${data.assignment.grade.feedback ? `<br><small class="text-muted">{{ __('Feedback:') }} ${data.assignment.grade.feedback}</small>` : ''}
+                                    ${data.assignment.grade.feedback ? `<br><small class="text-muted">{{ custom_trans('Feedback:', 'front') }} ${data.assignment.grade.feedback}</small>` : ''}
                                 </div>
                             `;
                             document.getElementById('homeworkDetailsDescription').innerHTML += gradeInfo;
                         }
                     } else {
-                        showToast('{{ __('Failed to load homework details.') }}', 'danger');
+                        showToast('{{ custom_trans('Failed to load homework details.', 'front') }}', 'danger');
                         console.error(data.message);
                     }
                 })
                 .catch(error => {
-                    showToast('{{ __('Error loading homework details.') }}', 'danger');
+                    showToast('{{ custom_trans('Error loading homework details.', 'front') }}', 'danger');
                     console.error(error);
                 });
         }
@@ -1409,7 +1409,7 @@
             const alreadySubmittedButton = assignmentCard.querySelector('.btn-secondary[disabled]');
 
             if (alreadySubmittedButton) {
-                showToast('{{ __('You have already submitted this assignment.') }}', 'warning');
+                showToast('{{ custom_trans('You have already submitted this assignment.', 'front') }}', 'warning');
                 return;
             }
 
@@ -1431,29 +1431,29 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            showToast('{{ __('Homework submitted successfully!') }}', 'success');
+                            showToast('{{ custom_trans('Homework submitted successfully!', 'front') }}', 'success');
                             modal.hide();
                             // Update the UI to show as submitted
                             submitButton.disabled = true;
                             submitButton.innerHTML =
-                                '<i class="fa fa-check me-2"></i>{{ __('Already Submitted') }}';
+                                '<i class="fa fa-check me-2"></i>{{ custom_trans('Already Submitted', 'front') }}';
                             submitButton.className = 'btn btn-secondary flex-fill';
                             // Optionally, refresh the page to show updated status
                             location.reload();
                         } else {
-                            showToast('{{ __('Failed to submit homework.') }}', 'danger');
+                            showToast('{{ custom_trans('Failed to submit homework.', 'front') }}', 'danger');
                             console.error(data.message);
                         }
                     })
                     .catch(error => {
-                        showToast('{{ __('Error submitting homework.') }}', 'danger');
+                        showToast('{{ custom_trans('Error submitting homework.', 'front') }}', 'danger');
                         console.error(error);
                     });
             });
         }
 
         function getHomeworkNotified() {
-            showToast('{{ __('You will be notified when a homework assignment is posted.') }}', 'info');
+            showToast('{{ custom_trans('You will be notified when a homework assignment is posted.', 'front') }}', 'info');
         }
     </script>
 @endpush

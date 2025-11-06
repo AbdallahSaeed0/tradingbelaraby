@@ -101,7 +101,7 @@
                 @endphp
                 <li class="nav-item dropdown me-3">
                     <a class="nav-link d-flex align-items-center" href="#" id="langDropdown" role="button"
-                        data-bs-toggle="dropdown" aria-expanded="false" title="{{ custom_trans('switch_language') }}">
+                        data-bs-toggle="dropdown" aria-expanded="false" title="{{ custom_trans('switch_language', 'admin') }}">
                         <i class="fa fa-globe me-1"></i>
                         <span class="d-none d-md-inline">{{ $currentLanguage->code }}</span>
                         <i class="fa fa-chevron-down ms-1 small"></i>
@@ -109,7 +109,7 @@
                     <ul class="dropdown-menu dropdown-menu-end language-switcher min-w-200"
                         aria-labelledby="langDropdown">
                         <li class="dropdown-header">
-                            <i class="fa fa-language me-2"></i>{{ custom_trans('select_language') }}
+                            <i class="fa fa-language me-2"></i>{{ custom_trans('select_language', 'admin') }}
                         </li>
                         @foreach ($availableLanguages as $language)
                             <li>
@@ -135,7 +135,7 @@
                         </li>
                         <li>
                             <a class="dropdown-item" href="{{ route('admin.languages.index') }}">
-                                <i class="fa fa-cog me-2"></i>{{ custom_trans('manage_languages') }}
+                                <i class="fa fa-cog me-2"></i>{{ custom_trans('manage_languages', 'admin') }}
                             </a>
                         </li>
                     </ul>

@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', __('FAQ Management'))
+@section('title', custom_trans('FAQ Management', 'admin'))
 
 @section('content')
     <div class="container-fluid py-4">
@@ -8,18 +8,18 @@
         <div class="page-title-box">
             <div class="row align-items-center">
                 <div class="col-sm-6">
-                    <h4 class="page-title">{{ __('FAQ Management') }}</h4>
+                    <h4 class="page-title">{{ custom_trans('FAQ Management', 'admin') }}</h4>
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ __('Settings') }}</a>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ custom_trans('Dashboard', 'admin') }}</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ custom_trans('Settings', 'admin') }}</a>
                         </li>
-                        <li class="breadcrumb-item active">{{ __('FAQs') }}</li>
+                        <li class="breadcrumb-item active">{{ custom_trans('FAQs', 'admin') }}</li>
                     </ol>
                 </div>
                 <div class="col-sm-6">
                     <div class="float-end">
                         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFAQModal">
-                            <i class="fas fa-plus me-2"></i>{{ __('Add New FAQ') }}
+                            <i class="fas fa-plus me-2"></i>{{ custom_trans('Add New FAQ', 'admin') }}
                         </button>
                     </div>
                 </div>
@@ -29,17 +29,17 @@
         <!-- FAQs Table -->
         <div class="card faqs-card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">{{ __('Frequently Asked Questions') }}</h5>
+                <h5 class="mb-0">{{ custom_trans('Frequently Asked Questions', 'admin') }}</h5>
                 <div class="bulk-actions d-none-initially">
                     <div class="btn-group" role="group">
                         <button type="button" class="btn btn-success btn-sm" id="bulk_activate">
-                            <i class="fas fa-check me-1"></i>{{ __('Activate') }}
+                            <i class="fas fa-check me-1"></i>{{ custom_trans('Activate', 'admin') }}
                         </button>
                         <button type="button" class="btn btn-warning btn-sm" id="bulk_deactivate">
-                            <i class="fas fa-pause me-1"></i>{{ __('Deactivate') }}
+                            <i class="fas fa-pause me-1"></i>{{ custom_trans('Deactivate', 'admin') }}
                         </button>
                         <button type="button" class="btn btn-danger btn-sm" id="bulk_delete">
-                            <i class="fas fa-trash me-1"></i>{{ __('Delete') }}
+                            <i class="fas fa-trash me-1"></i>{{ custom_trans('Delete', 'admin') }}
                         </button>
                     </div>
                 </div>
@@ -54,14 +54,14 @@
                                         <input class="form-check-input" type="checkbox" id="select_all">
                                     </div>
                                 </th>
-                                <th width="80">{{ __('Order') }}</th>
-                                <th>{{ __('Title') }}</th>
-                                <th>{{ __('Title (AR)') }}</th>
-                                <th>{{ __('Content') }}</th>
-                                <th>{{ __('Content (AR)') }}</th>
-                                <th width="120">{{ __('Status') }}</th>
-                                <th width="120">{{ __('Expanded') }}</th>
-                                <th width="120">{{ __('Actions') }}</th>
+                                <th width="80">{{ custom_trans('Order', 'admin') }}</th>
+                                <th>{{ custom_trans('Title', 'admin') }}</th>
+                                <th>{{ custom_trans('Title (AR)', 'admin') }}</th>
+                                <th>{{ custom_trans('Content', 'admin') }}</th>
+                                <th>{{ custom_trans('Content (AR)', 'admin') }}</th>
+                                <th width="120">{{ custom_trans('Status', 'admin') }}</th>
+                                <th width="120">{{ custom_trans('Expanded', 'admin') }}</th>
+                                <th width="120">{{ custom_trans('Actions', 'admin') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -114,7 +114,7 @@
                                     <td colspan="9" class="text-center py-4">
                                         <div class="text-muted">
                                             <i class="fas fa-question-circle fa-3x mb-3"></i>
-                                            <p>{{ __('No FAQs found') }}</p>
+                                            <p>{{ custom_trans('No FAQs found', 'admin') }}</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -131,7 +131,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addFAQModalLabel">{{ __('Add New FAQ') }}</h5>
+                    <h5 class="modal-title" id="addFAQModalLabel">{{ custom_trans('Add New FAQ', 'admin') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="addFAQForm">
@@ -140,13 +140,13 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="faq_title" class="form-label">{{ __('Title') }} *</label>
+                                    <label for="faq_title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
                                     <input type="text" class="form-control" id="faq_title" name="title" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="faq_title_ar" class="form-label">{{ __('Title (Arabic)') }}</label>
+                                    <label for="faq_title_ar" class="form-label">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
                                     <input type="text" class="form-control" id="faq_title_ar" name="title_ar">
                                 </div>
                             </div>
@@ -154,13 +154,13 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="faq_content" class="form-label">{{ __('Content') }} *</label>
+                                    <label for="faq_content" class="form-label">{{ custom_trans('Content', 'admin') }} *</label>
                                     <textarea class="form-control" id="faq_content" name="content" rows="4" required></textarea>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="faq_content_ar" class="form-label">{{ __('Content (Arabic)') }}</label>
+                                    <label for="faq_content_ar" class="form-label">{{ custom_trans('Content (Arabic)', 'admin') }}</label>
                                     <textarea class="form-control" id="faq_content_ar" name="content_ar" rows="4"></textarea>
                                 </div>
                             </div>
@@ -168,7 +168,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="faq_order" class="form-label">{{ __('Order') }}</label>
+                                    <label for="faq_order" class="form-label">{{ custom_trans('Order', 'admin') }}</label>
                                     <input type="number" class="form-control" id="faq_order" name="order"
                                         value="0" min="0">
                                 </div>
@@ -181,7 +181,7 @@
                                         <input class="form-check-input" type="checkbox" id="faq_is_active"
                                             name="is_active" checked>
                                         <label class="form-check-label" for="faq_is_active">
-                                            {{ __('Active') }}
+                                            {{ custom_trans('Active', 'admin') }}
                                         </label>
                                     </div>
                                 </div>
@@ -192,7 +192,7 @@
                                         <input class="form-check-input" type="checkbox" id="faq_is_expanded"
                                             name="is_expanded">
                                         <label class="form-check-label" for="faq_is_expanded">
-                                            {{ __('Expanded by Default') }}
+                                            {{ custom_trans('Expanded by Default', 'admin') }}
                                         </label>
                                     </div>
                                 </div>
@@ -201,8 +201,8 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary"
-                            data-bs-dismiss="modal">{{ __('Cancel') }}</button>
-                        <button type="submit" class="btn btn-primary">{{ __('Create FAQ') }}</button>
+                            data-bs-dismiss="modal">{{ custom_trans('Cancel', 'admin') }}</button>
+                        <button type="submit" class="btn btn-primary">{{ custom_trans('Create FAQ', 'admin') }}</button>
                     </div>
                 </form>
             </div>
@@ -214,7 +214,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editFAQModalLabel">{{ __('Edit FAQ') }}</h5>
+                    <h5 class="modal-title" id="editFAQModalLabel">{{ custom_trans('Edit FAQ', 'admin') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="editFAQForm">
@@ -224,14 +224,14 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="edit_faq_title" class="form-label">{{ __('Title') }} *</label>
+                                    <label for="edit_faq_title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
                                     <input type="text" class="form-control" id="edit_faq_title" name="title"
                                         required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="edit_faq_title_ar" class="form-label">{{ __('Title (Arabic)') }}</label>
+                                    <label for="edit_faq_title_ar" class="form-label">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
                                     <input type="text" class="form-control" id="edit_faq_title_ar" name="title_ar">
                                 </div>
                             </div>
@@ -239,14 +239,14 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="edit_faq_content" class="form-label">{{ __('Content') }} *</label>
+                                    <label for="edit_faq_content" class="form-label">{{ custom_trans('Content', 'admin') }} *</label>
                                     <textarea class="form-control" id="edit_faq_content" name="content" rows="4" required></textarea>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="edit_faq_content_ar"
-                                        class="form-label">{{ __('Content (Arabic)') }}</label>
+                                        class="form-label">{{ custom_trans('Content (Arabic)', 'admin') }}</label>
                                     <textarea class="form-control" id="edit_faq_content_ar" name="content_ar" rows="4"></textarea>
                                 </div>
                             </div>
@@ -254,7 +254,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="edit_faq_order" class="form-label">{{ __('Order') }}</label>
+                                    <label for="edit_faq_order" class="form-label">{{ custom_trans('Order', 'admin') }}</label>
                                     <input type="number" class="form-control" id="edit_faq_order" name="order"
                                         min="0">
                                 </div>
@@ -267,7 +267,7 @@
                                         <input class="form-check-input" type="checkbox" id="edit_faq_is_active"
                                             name="is_active">
                                         <label class="form-check-label" for="edit_faq_is_active">
-                                            {{ __('Active') }}
+                                            {{ custom_trans('Active', 'admin') }}
                                         </label>
                                     </div>
                                 </div>
@@ -278,7 +278,7 @@
                                         <input class="form-check-input" type="checkbox" id="edit_faq_is_expanded"
                                             name="is_expanded">
                                         <label class="form-check-label" for="edit_faq_is_expanded">
-                                            {{ __('Expanded by Default') }}
+                                            {{ custom_trans('Expanded by Default', 'admin') }}
                                         </label>
                                     </div>
                                 </div>
@@ -287,8 +287,8 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary"
-                            data-bs-dismiss="modal">{{ __('Cancel') }}</button>
-                        <button type="submit" class="btn btn-warning">{{ __('Update FAQ') }}</button>
+                            data-bs-dismiss="modal">{{ custom_trans('Cancel', 'admin') }}</button>
+                        <button type="submit" class="btn btn-warning">{{ custom_trans('Update FAQ', 'admin') }}</button>
                     </div>
                 </form>
             </div>
@@ -300,20 +300,20 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="viewFAQModalLabel">{{ __('FAQ Details') }}</h5>
+                    <h5 class="modal-title" id="viewFAQModalLabel">{{ custom_trans('FAQ Details', 'admin') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Title') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Title', 'admin') }}</label>
                                 <p id="view_faq_title" class="form-control-plaintext"></p>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Title (Arabic)') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
                                 <p id="view_faq_title_ar" class="form-control-plaintext"></p>
                             </div>
                         </div>
@@ -321,13 +321,13 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Content') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Content', 'admin') }}</label>
                                 <p id="view_faq_content" class="form-control-plaintext"></p>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Content (Arabic)') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Content (Arabic)', 'admin') }}</label>
                                 <p id="view_faq_content_ar" class="form-control-plaintext"></p>
                             </div>
                         </div>
@@ -335,19 +335,19 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Order') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Order', 'admin') }}</label>
                                 <p id="view_faq_order" class="form-control-plaintext"></p>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Status') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Status', 'admin') }}</label>
                                 <p id="view_faq_status" class="form-control-plaintext"></p>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Expanded') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Expanded', 'admin') }}</label>
                                 <p id="view_faq_expanded" class="form-control-plaintext"></p>
                             </div>
                         </div>
@@ -355,7 +355,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary"
-                        data-bs-dismiss="modal">{{ __('Close') }}</button>
+                        data-bs-dismiss="modal">{{ custom_trans('Close', 'admin') }}</button>
                 </div>
             </div>
         </div>
@@ -419,7 +419,7 @@
                     },
                     error: function() {
                         toastr.error(
-                            '{{ __('An error occurred while updating the FAQ status') }}');
+                            '{{ custom_trans('An error occurred while updating the FAQ status', 'admin') }}');
                         // Revert the checkbox
                         $(this).prop('checked', !isChecked);
                     }
@@ -446,7 +446,7 @@
                     },
                     error: function() {
                         toastr.error(
-                            '{{ __('An error occurred while updating the FAQ expanded state') }}'
+                            '{{ custom_trans('An error occurred while updating the FAQ expanded state', 'admin') }}'
                         );
                         // Revert the checkbox
                         $(this).prop('checked', !isChecked);
@@ -480,7 +480,7 @@
                         }
                     },
                     error: function() {
-                        toastr.error('{{ __('An error occurred while creating the FAQ') }}');
+                        toastr.error('{{ custom_trans('An error occurred while creating the FAQ', 'admin') }}');
                     }
                 });
             });
@@ -513,7 +513,7 @@
                         }
                     },
                     error: function() {
-                        toastr.error('{{ __('An error occurred while updating the FAQ') }}');
+                        toastr.error('{{ custom_trans('An error occurred while updating the FAQ', 'admin') }}');
                     }
                 });
             });
@@ -543,10 +543,10 @@
                 $('#view_faq_content').text(faq.content);
                 $('#view_faq_content_ar').text(faq.content_ar || '-');
                 $('#view_faq_order').text(faq.order);
-                $('#view_faq_status').text(faq.is_active ? '{{ __('Active') }}' :
-                    '{{ __('Inactive') }}');
-                $('#view_faq_expanded').text(faq.is_expanded ? '{{ __('Yes') }}' :
-                    '{{ __('No') }}');
+                $('#view_faq_status').text(faq.is_active ? '{{ custom_trans('Active', 'admin') }}' :
+                    '{{ custom_trans('Inactive', 'admin') }}');
+                $('#view_faq_expanded').text(faq.is_expanded ? '{{ custom_trans('Yes', 'admin') }}' :
+                    '{{ custom_trans('No', 'admin') }}');
 
                 $('#viewFAQModal').modal('show');
             });
@@ -555,7 +555,7 @@
             $('.delete-faq-btn').on('click', function() {
                 const faqId = $(this).data('id');
 
-                if (confirm('{{ __('Are you sure you want to delete this FAQ?') }}')) {
+                if (confirm('{{ custom_trans('Are you sure you want to delete this FAQ?', 'admin') }}')) {
                     $.ajax({
                         url: `/admin/settings/faq/${faqId}`,
                         method: 'DELETE',
@@ -574,7 +574,7 @@
                         },
                         error: function() {
                             toastr.error(
-                                '{{ __('An error occurred while deleting the FAQ') }}');
+                                '{{ custom_trans('An error occurred while deleting the FAQ', 'admin') }}');
                         }
                     });
                 }
@@ -607,7 +607,7 @@
                         },
                         error: function() {
                             toastr.error(
-                                '{{ __('An error occurred while updating the order') }}'
+                                '{{ custom_trans('An error occurred while updating the order', 'admin') }}'
                             );
                         }
                     });

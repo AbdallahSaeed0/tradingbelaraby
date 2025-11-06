@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', __('Contact Form Submissions'))
+@section('title', custom_trans('Contact Form Submissions', 'admin'))
 
 @section('content')
     <div class="container-fluid py-4">
@@ -8,21 +8,21 @@
         <div class="page-title-box">
             <div class="row align-items-center">
                 <div class="col-sm-6">
-                    <h4 class="page-title">{{ __('Contact Form Submissions') }}</h4>
+                    <h4 class="page-title">{{ custom_trans('Contact Form Submissions', 'admin') }}</h4>
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ __('Settings') }}</a>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ custom_trans('Dashboard', 'admin') }}</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ custom_trans('Settings', 'admin') }}</a>
                         </li>
                         <li class="breadcrumb-item"><a
-                                href="{{ route('admin.settings.contact-management.index') }}">{{ __('Contact Management') }}</a>
+                                href="{{ route('admin.settings.contact-management.index') }}">{{ custom_trans('Contact Management', 'admin') }}</a>
                         </li>
-                        <li class="breadcrumb-item active">{{ __('Submissions') }}</li>
+                        <li class="breadcrumb-item active">{{ custom_trans('Submissions', 'admin') }}</li>
                     </ol>
                 </div>
                 <div class="col-sm-6">
                     <div class="float-end">
                         <a href="{{ route('admin.settings.contact-management.export') }}" class="btn btn-success">
-                            <i class="fas fa-download me-2"></i>{{ __('Export CSV') }}
+                            <i class="fas fa-download me-2"></i>{{ custom_trans('Export CSV', 'admin') }}
                         </a>
                     </div>
                 </div>
@@ -37,7 +37,7 @@
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                    {{ __('Total Submissions') }}</div>
+                                    {{ custom_trans('Total Submissions', 'admin') }}</div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalSubmissions }}</div>
                             </div>
                             <div class="col-auto">
@@ -54,7 +54,7 @@
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                    {{ __('Unread') }}</div>
+                                    {{ custom_trans('Unread', 'admin') }}</div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $unreadSubmissions }}</div>
                             </div>
                             <div class="col-auto">
@@ -71,7 +71,7 @@
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                    {{ __('Read') }}</div>
+                                    {{ custom_trans('Read', 'admin') }}</div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $readSubmissions }}</div>
                             </div>
                             <div class="col-auto">
@@ -88,7 +88,7 @@
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                    {{ __('Replied') }}</div>
+                                    {{ custom_trans('Replied', 'admin') }}</div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">
                                     {{ $repliedSubmissions }}</div>
                             </div>
@@ -107,31 +107,31 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="mb-3">
-                            <label for="search" class="form-label">{{ __('Search') }}</label>
+                            <label for="search" class="form-label">{{ custom_trans('Search', 'admin') }}</label>
                             <input type="text" class="form-control" id="search"
-                                placeholder="{{ __('Search by name, email, or subject...') }}">
+                                placeholder="{{ custom_trans('Search by name, email, or subject...', 'admin') }}">
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="mb-3">
-                            <label for="status" class="form-label">{{ __('Status') }}</label>
+                            <label for="status" class="form-label">{{ custom_trans('Status', 'admin') }}</label>
                             <select class="form-select" id="status">
-                                <option value="">{{ __('All') }}</option>
-                                <option value="new">{{ __('New') }}</option>
-                                <option value="read">{{ __('Read') }}</option>
-                                <option value="replied">{{ __('Replied') }}</option>
-                                <option value="closed">{{ __('Closed') }}</option>
+                                <option value="">{{ custom_trans('All', 'admin') }}</option>
+                                <option value="new">{{ custom_trans('New', 'admin') }}</option>
+                                <option value="read">{{ custom_trans('Read', 'admin') }}</option>
+                                <option value="replied">{{ custom_trans('Replied', 'admin') }}</option>
+                                <option value="closed">{{ custom_trans('Closed', 'admin') }}</option>
                             </select>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="mb-3">
-                            <label for="date_range" class="form-label">{{ __('Date Range') }}</label>
+                            <label for="date_range" class="form-label">{{ custom_trans('Date Range', 'admin') }}</label>
                             <select class="form-select" id="date_range">
-                                <option value="">{{ __('All Time') }}</option>
-                                <option value="today">{{ __('Today') }}</option>
-                                <option value="week">{{ __('This Week') }}</option>
-                                <option value="month">{{ __('This Month') }}</option>
+                                <option value="">{{ custom_trans('All Time', 'admin') }}</option>
+                                <option value="today">{{ custom_trans('Today', 'admin') }}</option>
+                                <option value="week">{{ custom_trans('This Week', 'admin') }}</option>
+                                <option value="month">{{ custom_trans('This Month', 'admin') }}</option>
                             </select>
                         </div>
                     </div>
@@ -139,7 +139,7 @@
                         <div class="mb-3">
                             <label class="form-label">&nbsp;</label>
                             <button type="button" class="btn btn-outline-secondary w-100" id="clear_filters">
-                                <i class="fas fa-times me-1"></i>{{ __('Clear') }}
+                                <i class="fas fa-times me-1"></i>{{ custom_trans('Clear', 'admin') }}
                             </button>
                         </div>
                     </div>
@@ -153,22 +153,22 @@
                 <div class="row align-items-center">
                     <div class="col">
                         <h5 class="mb-0">
-                            <i class="fas fa-list text-primary me-2"></i>{{ __('Contact Form Submissions') }}
+                            <i class="fas fa-list text-primary me-2"></i>{{ custom_trans('Contact Form Submissions', 'admin') }}
                         </h5>
                     </div>
                     <div class="col-auto">
                         <div class="btn-group" role="group">
                             <button type="button" class="btn btn-outline-success bulk-action-btn"
                                 data-action="mark_read" disabled>
-                                <i class="fas fa-eye me-1"></i>{{ __('Mark Read') }}
+                                <i class="fas fa-eye me-1"></i>{{ custom_trans('Mark Read', 'admin') }}
                             </button>
                             <button type="button" class="btn btn-outline-info bulk-action-btn"
                                 data-action="mark_replied" disabled>
-                                <i class="fas fa-reply me-1"></i>{{ __('Mark Replied') }}
+                                <i class="fas fa-reply me-1"></i>{{ custom_trans('Mark Replied', 'admin') }}
                             </button>
                             <button type="button" class="btn btn-outline-danger bulk-action-btn" data-action="delete"
                                 disabled>
-                                <i class="fas fa-trash me-1"></i>{{ __('Delete') }}
+                                <i class="fas fa-trash me-1"></i>{{ custom_trans('Delete', 'admin') }}
                             </button>
                         </div>
                     </div>
@@ -182,12 +182,12 @@
                                 <th>
                                     <input type="checkbox" id="selectAll">
                                 </th>
-                                <th>{{ __('Name') }}</th>
-                                <th>{{ __('Email') }}</th>
-                                <th>{{ __('Subject') }}</th>
-                                <th>{{ __('Status') }}</th>
-                                <th>{{ __('Date') }}</th>
-                                <th>{{ __('Actions') }}</th>
+                                <th>{{ custom_trans('Name', 'admin') }}</th>
+                                <th>{{ custom_trans('Email', 'admin') }}</th>
+                                <th>{{ custom_trans('Subject', 'admin') }}</th>
+                                <th>{{ custom_trans('Status', 'admin') }}</th>
+                                <th>{{ custom_trans('Date', 'admin') }}</th>
+                                <th>{{ custom_trans('Actions', 'admin') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -195,7 +195,7 @@
                                 <tr class="submission-row"
                                     data-search="{{ strtolower($form->name . ' ' . $form->email . ' ' . ($form->subject ?? '')) }}"
                                     data-status="{{ $form->status }}"
-                                    data-date="{{ $form->created_at->format('Y-m-d') }}">
+                                    data-date="{{ $form->created_at->format('Y-m-d', 'admin') }}">
                                     <td>
                                         <input type="checkbox" class="submission-checkbox" value="{{ $form->id }}">
                                     </td>
@@ -233,24 +233,24 @@
                                     </td>
                                     <td>
                                         <div>
-                                            <div class="fw-semibold">{{ $form->created_at->format('M d, Y') }}</div>
-                                            <small class="text-muted">{{ $form->created_at->format('H:i') }}</small>
+                                            <div class="fw-semibold">{{ $form->created_at->format('M d, Y', 'admin') }}</div>
+                                            <small class="text-muted">{{ $form->created_at->format('H:i', 'admin') }}</small>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="btn-group" role="group">
                                             <a href="{{ route('admin.settings.contact-management.show', $form->id) }}"
-                                                class="btn btn-sm btn-outline-primary" title="{{ __('View Details') }}">
+                                                class="btn btn-sm btn-outline-primary" title="{{ custom_trans('View Details', 'admin') }}">
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                             <button type="button"
                                                 class="btn btn-sm btn-outline-success toggle-status-btn"
                                                 data-id="{{ $form->id }}" data-status="{{ $form->status }}"
-                                                title="{{ __('Toggle Status') }}">
+                                                title="{{ custom_trans('Toggle Status', 'admin') }}">
                                                 <i class="fas fa-toggle-on"></i>
                                             </button>
                                             <button type="button" class="btn btn-sm btn-outline-danger delete-btn"
-                                                data-id="{{ $form->id }}" title="{{ __('Delete') }}">
+                                                data-id="{{ $form->id }}" title="{{ custom_trans('Delete', 'admin') }}">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </div>
@@ -261,8 +261,8 @@
                                     <td colspan="7" class="text-center py-4">
                                         <div class="text-muted">
                                             <i class="fas fa-inbox fa-3x mb-3"></i>
-                                            <h5>{{ __('No submissions found') }}</h5>
-                                            <p>{{ __('Contact form submissions will appear here.') }}</p>
+                                            <h5>{{ custom_trans('No submissions found', 'admin') }}</h5>
+                                            <p>{{ custom_trans('Contact form submissions will appear here.', 'admin') }}</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -377,13 +377,13 @@
                 }).get();
 
                 if (selectedIds.length === 0) {
-                    toastr.warning('{{ __('Please select at least one submission.') }}');
+                    toastr.warning('{{ custom_trans('Please select at least one submission.', 'admin') }}');
                     return;
                 }
 
                 if (action === 'delete') {
                     if (!confirm(
-                            '{{ __('Are you sure you want to delete the selected submissions?') }}')) {
+                            '{{ custom_trans('Are you sure you want to delete the selected submissions?', 'admin') }}')) {
                         return;
                     }
                 }
@@ -403,12 +403,12 @@
                                 location.reload();
                             }, 1500);
                         } else {
-                            toastr.error(response.message || '{{ __('An error occurred.') }}');
+                            toastr.error(response.message || '{{ custom_trans('An error occurred.', 'admin') }}');
                         }
                     },
                     error: function() {
                         toastr.error(
-                            '{{ __('An error occurred while processing the request.') }}');
+                            '{{ custom_trans('An error occurred while processing the request.', 'admin') }}');
                     }
                 });
             });
@@ -417,12 +417,12 @@
             $('.delete-btn').on('click', function() {
                 const id = $(this).data('id');
 
-                if (!confirm('{{ __('Are you sure you want to delete this submission?') }}')) {
+                if (!confirm('{{ custom_trans('Are you sure you want to delete this submission?', 'admin') }}')) {
                     return;
                 }
 
                 $.ajax({
-                    url: `{{ url('admin/settings/contact-management/contact-forms') }}/${id}`,
+                    url: `{{ url('admin/settings/contact-management/contact-forms', 'admin') }}/${id}`,
                     type: 'DELETE',
                     data: {
                         _token: '{{ csrf_token() }}'
@@ -434,12 +434,12 @@
                                 location.reload();
                             }, 1500);
                         } else {
-                            toastr.error(response.message || '{{ __('An error occurred.') }}');
+                            toastr.error(response.message || '{{ custom_trans('An error occurred.', 'admin') }}');
                         }
                     },
                     error: function() {
                         toastr.error(
-                            '{{ __('An error occurred while deleting the submission.') }}');
+                            '{{ custom_trans('An error occurred while deleting the submission.', 'admin') }}');
                     }
                 });
             });
@@ -452,7 +452,7 @@
                     'new');
 
                 $.ajax({
-                    url: `{{ url('admin/settings/contact-management/contact-forms') }}/${id}/status`,
+                    url: `{{ url('admin/settings/contact-management/contact-forms', 'admin') }}/${id}/status`,
                     type: 'POST',
                     data: {
                         _token: '{{ csrf_token() }}',
@@ -465,12 +465,12 @@
                                 location.reload();
                             }, 1500);
                         } else {
-                            toastr.error(response.message || '{{ __('An error occurred.') }}');
+                            toastr.error(response.message || '{{ custom_trans('An error occurred.', 'admin') }}');
                         }
                     },
                     error: function() {
                         toastr.error(
-                            '{{ __('An error occurred while updating the status.') }}');
+                            '{{ custom_trans('An error occurred while updating the status.', 'admin') }}');
                     }
                 });
             });

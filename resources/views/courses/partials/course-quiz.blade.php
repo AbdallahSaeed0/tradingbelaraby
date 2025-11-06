@@ -1,6 +1,6 @@
 <div class="quiz-section bg-light-blue-section py-5">
     <div class="container">
-        <h3 class="fw-bold mb-4">{{ __('Objective') }}</h3>
+        <h3 class="fw-bold mb-4">{{ custom_trans('Objective', 'front') }}</h3>
 
         <!-- Quiz Cards -->
         <div class="row g-4">
@@ -21,31 +21,31 @@
                             <div class="row g-3">
                                 <div class="col-6">
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <span class="feature-label text-muted">{{ __('Per Question Mark') }}</span>
+                                        <span class="feature-label text-muted">{{ custom_trans('Per Question Mark', 'front') }}</span>
                                         <span
                                             class="feature-value fw-bold text-primary">{{ $quiz->marks_per_question ?? 5 }}</span>
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <span class="feature-label text-muted">{{ __('Total Marks') }}</span>
+                                        <span class="feature-label text-muted">{{ custom_trans('Total Marks', 'front') }}</span>
                                         <span
                                             class="feature-value fw-bold text-primary">{{ $quiz->total_marks ?? 10 }}</span>
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <span class="feature-label text-muted">{{ __('Total Questions') }}</span>
+                                        <span class="feature-label text-muted">{{ custom_trans('Total Questions', 'front') }}</span>
                                         <span
                                             class="feature-value fw-bold text-primary">{{ $quiz->questions->count() ?? 2 }}</span>
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <span class="feature-label text-muted">{{ __('Quiz Price') }}</span>
+                                        <span class="feature-label text-muted">{{ custom_trans('Quiz Price', 'front') }}</span>
                                         <span
                                             class="feature-value fw-bold {{ $quiz->price > 0 ? 'text-warning' : 'text-success' }}">
-                                            {{ $quiz->price > 0 ? number_format($quiz->price, 2) . ' SAR' : __('Free') }}
+                                            {{ $quiz->price > 0 ? number_format($quiz->price, 2) . ' SAR' : custom_trans('Free', 'front') }}
                                         </span>
                                     </div>
                                 </div>
@@ -54,7 +54,7 @@
 
                         <!-- Start Quiz Button -->
                         <a href="{{ route('quizzes.show', $quiz->id) }}" class="btn btn-orange w-100 fw-bold">
-                            <i class="fa fa-play me-2"></i>{{ __('Start Quiz') }}
+                            <i class="fa fa-play me-2"></i>{{ custom_trans('Start Quiz', 'front') }}
                         </a>
                     </div>
                 </div>
@@ -64,8 +64,8 @@
                     <div class="quiz-card bg-white p-4 rounded-4 shadow-sm h-100">
                         <h4 class="quiz-title fw-bold mb-3">{{ $course->localized_name }}</h4>
                         <p class="quiz-description text-muted mb-4">
-                            {{ __('Test your knowledge of') }} {{ $course->localized_name }}
-                            {{ __('fundamentals and concepts.') }}
+                            {{ custom_trans('Test your knowledge of', 'front') }} {{ $course->localized_name }}
+                            {{ custom_trans('fundamentals and concepts.', 'front') }}
                         </p>
 
                         <!-- Quiz Features -->
@@ -73,26 +73,26 @@
                             <div class="row g-3">
                                 <div class="col-6">
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <span class="feature-label text-muted">{{ __('Per Question Mark') }}</span>
+                                        <span class="feature-label text-muted">{{ custom_trans('Per Question Mark', 'front') }}</span>
                                         <span class="feature-value fw-bold text-primary">5</span>
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <span class="feature-label text-muted">{{ __('Total Marks') }}</span>
+                                        <span class="feature-label text-muted">{{ custom_trans('Total Marks', 'front') }}</span>
                                         <span class="feature-value fw-bold text-primary">10</span>
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <span class="feature-label text-muted">{{ __('Total Questions') }}</span>
+                                        <span class="feature-label text-muted">{{ custom_trans('Total Questions', 'front') }}</span>
                                         <span class="feature-value fw-bold text-primary">2</span>
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <span class="feature-label text-muted">{{ __('Quiz Price') }}</span>
-                                        <span class="feature-value fw-bold text-success">{{ __('Free') }}</span>
+                                        <span class="feature-label text-muted">{{ custom_trans('Quiz Price', 'front') }}</span>
+                                        <span class="feature-value fw-bold text-success">{{ custom_trans('Free', 'front') }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -100,16 +100,16 @@
 
                         <!-- Start Quiz Button -->
                         <a href="#" class="btn btn-orange w-100 fw-bold">
-                            <i class="fa fa-play me-2"></i>{{ __('Start Quiz') }}
+                            <i class="fa fa-play me-2"></i>{{ custom_trans('Start Quiz', 'front') }}
                         </a>
                     </div>
                 </div>
 
                 <div class="col-lg-6">
                     <div class="quiz-card bg-white p-4 rounded-4 shadow-sm h-100">
-                        <h4 class="quiz-title fw-bold mb-3">{{ __('Digital Marketing Fundamentals') }}</h4>
+                        <h4 class="quiz-title fw-bold mb-3">{{ custom_trans('Digital Marketing Fundamentals', 'front') }}</h4>
                         <p class="quiz-description text-muted mb-4">
-                            {{ __('Test your knowledge of digital marketing fundamentals including SEO, social media marketing, content marketing, and online advertising strategies.') }}
+                            {{ custom_trans('Test your knowledge of digital marketing fundamentals including SEO, social media marketing, content marketing, and online advertising strategies.', 'front') }}
                         </p>
 
                         <!-- Quiz Features -->
@@ -117,26 +117,26 @@
                             <div class="row g-3">
                                 <div class="col-6">
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <span class="feature-label text-muted">{{ __('Per Question Mark') }}</span>
+                                        <span class="feature-label text-muted">{{ custom_trans('Per Question Mark', 'front') }}</span>
                                         <span class="feature-value fw-bold text-primary">3</span>
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <span class="feature-label text-muted">{{ __('Total Marks') }}</span>
+                                        <span class="feature-label text-muted">{{ custom_trans('Total Marks', 'front') }}</span>
                                         <span class="feature-value fw-bold text-primary">15</span>
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <span class="feature-label text-muted">{{ __('Total Questions') }}</span>
+                                        <span class="feature-label text-muted">{{ custom_trans('Total Questions', 'front') }}</span>
                                         <span class="feature-value fw-bold text-primary">5</span>
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <span class="feature-label text-muted">{{ __('Quiz Price') }}</span>
-                                        <span class="feature-value fw-bold text-success">{{ __('Free') }}</span>
+                                        <span class="feature-label text-muted">{{ custom_trans('Quiz Price', 'front') }}</span>
+                                        <span class="feature-value fw-bold text-success">{{ custom_trans('Free', 'front') }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -144,7 +144,7 @@
 
                         <!-- Start Quiz Button -->
                         <a href="#" class="btn btn-orange w-100 fw-bold">
-                            <i class="fa fa-play me-2"></i>{{ __('Start Quiz') }}
+                            <i class="fa fa-play me-2"></i>{{ custom_trans('Start Quiz', 'front') }}
                         </a>
                     </div>
                 </div>

@@ -9,11 +9,11 @@
             <div class="col-12">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h1 class="h3 mb-0">{{ __('Dashboard') }}</h1>
+                        <h1 class="h3 mb-0">{{ custom_trans('Dashboard', 'admin') }}</h1>
                         <p class="text-muted">Welcome back! Here's what's happening with your platform.</p>
                     </div>
                     <div>
-                        <small class="text-muted">Last updated: {{ now()->format('M d, Y H:i') }}</small>
+                        <small class="text-muted">Last updated: {{ now()->format('M d, Y H:i', 'admin') }}</small>
                     </div>
                 </div>
             </div>
@@ -29,7 +29,7 @@
                             <i class="fa fa-user-tie text-white"></i>
                         </span>
                         <div>
-                            <h6 class="text-muted mb-0">{{ __('Admins') }}</h6>
+                            <h6 class="text-muted mb-0">{{ custom_trans('Admins', 'admin') }}</h6>
                             <h4 class="fw-bold mb-0">{{ $stats['total_admins'] }}</h4>
                         </div>
                     </div>
@@ -43,7 +43,7 @@
                             <i class="fa fa-book text-white"></i>
                         </span>
                         <div>
-                            <h6 class="text-muted mb-0">{{ __('Courses') }}</h6>
+                            <h6 class="text-muted mb-0">{{ custom_trans('Courses', 'admin') }}</h6>
                             <h4 class="fw-bold mb-0">{{ $stats['total_courses'] }}</h4>
                             <small class="text-success">{{ $stats['published_courses'] }} published</small>
                         </div>
@@ -58,7 +58,7 @@
                             <i class="fa fa-newspaper text-white"></i>
                         </span>
                         <div>
-                            <h6 class="text-muted mb-0">{{ __('Blogs') }}</h6>
+                            <h6 class="text-muted mb-0">{{ custom_trans('Blogs', 'admin') }}</h6>
                             <h4 class="fw-bold mb-0">{{ $stats['total_blogs'] }}</h4>
                             <small class="text-info">{{ $stats['published_blogs'] }} published</small>
                         </div>
@@ -73,7 +73,7 @@
                             <i class="fa fa-users text-white"></i>
                         </span>
                         <div>
-                            <h6 class="text-muted mb-0">{{ __('Users') }}</h6>
+                            <h6 class="text-muted mb-0">{{ custom_trans('Users', 'admin') }}</h6>
                             <h4 class="fw-bold mb-0">{{ $stats['total_users'] }}</h4>
                         </div>
                     </div>
@@ -91,7 +91,7 @@
                             <i class="fa fa-graduation-cap text-white"></i>
                         </span>
                         <div>
-                            <h6 class="text-muted mb-0">{{ __('Active Instructors') }}</h6>
+                            <h6 class="text-muted mb-0">{{ custom_trans('Active Instructors', 'admin') }}</h6>
                             <h4 class="fw-bold mb-0">{{ $stats['total_instructors'] }}</h4>
                         </div>
                     </div>
@@ -105,7 +105,7 @@
                             <i class="fa fa-chart-bar text-white"></i>
                         </span>
                         <div>
-                            <h6 class="text-muted mb-0">{{ __('Registered Traders') }}</h6>
+                            <h6 class="text-muted mb-0">{{ custom_trans('Registered Traders', 'admin') }}</h6>
                             <h4 class="fw-bold mb-0">{{ $stats['total_traders'] }}</h4>
                         </div>
                     </div>
@@ -119,7 +119,7 @@
                             <i class="fa fa-chart-line text-white"></i>
                         </span>
                         <div>
-                            <h6 class="text-muted mb-0">{{ __('Total Content') }}</h6>
+                            <h6 class="text-muted mb-0">{{ custom_trans('Total Content', 'admin') }}</h6>
                             <h4 class="fw-bold mb-0">{{ $stats['total_courses'] + $stats['total_blogs'] }}</h4>
                         </div>
                     </div>
@@ -134,7 +134,7 @@
                 <div class="card shadow-sm">
                     <div class="card-header bg-info text-white">
                         <h5 class="mb-0">
-                            <i class="fa fa-newspaper me-2"></i>{{ __('Latest Blogs') }}
+                            <i class="fa fa-newspaper me-2"></i>{{ custom_trans('Latest Blogs', 'admin') }}
                         </h5>
                     </div>
                     <div class="card-body p-0">
@@ -156,7 +156,7 @@
                                                 <h6 class="mb-1">{{ Str::limit($blog->title, 40) }}</h6>
                                                 <small class="text-muted">
                                                     <i
-                                                        class="fa fa-calendar me-1"></i>{{ $blog->created_at->format('M d, Y') }}
+                                                        class="fa fa-calendar me-1"></i>{{ $blog->created_at->format('M d, Y', 'admin') }}
                                                     @if ($blog->category)
                                                         <span class="ms-2">
                                                             <i
@@ -172,13 +172,13 @@
                         @else
                             <div class="text-center py-4">
                                 <i class="fa fa-newspaper fa-3x text-muted mb-3"></i>
-                                <p class="text-muted">{{ __('No blogs found') }}</p>
+                                <p class="text-muted">{{ custom_trans('No blogs found', 'admin') }}</p>
                             </div>
                         @endif
                     </div>
                     <div class="card-footer text-center">
                         <a href="{{ route('admin.blogs.index') }}" class="btn btn-outline-info btn-sm">
-                            {{ __('View All Blogs') }} <i class="fa fa-arrow-right ms-1"></i>
+                            {{ custom_trans('View All Blogs', 'admin') }} <i class="fa fa-arrow-right ms-1"></i>
                         </a>
                     </div>
                 </div>
@@ -189,7 +189,7 @@
                 <div class="card shadow-sm">
                     <div class="card-header bg-success text-white">
                         <h5 class="mb-0">
-                            <i class="fa fa-book me-2"></i>{{ __('Latest Courses') }}
+                            <i class="fa fa-book me-2"></i>{{ custom_trans('Latest Courses', 'admin') }}
                         </h5>
                     </div>
                     <div class="card-body p-0">
@@ -211,7 +211,7 @@
                                                 <h6 class="mb-1">{{ Str::limit($course->name, 40) }}</h6>
                                                 <small class="text-muted">
                                                     <i
-                                                        class="fa fa-calendar me-1"></i>{{ $course->created_at->format('M d, Y') }}
+                                                        class="fa fa-calendar me-1"></i>{{ $course->created_at->format('M d, Y', 'admin') }}
                                                     @if ($course->category)
                                                         <span class="ms-2">
                                                             <i class="fa fa-folder me-1"></i>{{ $course->category->name }}
@@ -232,13 +232,13 @@
                         @else
                             <div class="text-center py-4">
                                 <i class="fa fa-book fa-3x text-muted mb-3"></i>
-                                <p class="text-muted">{{ __('No courses found') }}</p>
+                                <p class="text-muted">{{ custom_trans('No courses found', 'admin') }}</p>
                             </div>
                         @endif
                     </div>
                     <div class="card-footer text-center">
                         <a href="{{ route('admin.courses.index') }}" class="btn btn-outline-success btn-sm">
-                            {{ __('View All Courses') }} <i class="fa fa-arrow-right ms-1"></i>
+                            {{ custom_trans('View All Courses', 'admin') }} <i class="fa fa-arrow-right ms-1"></i>
                         </a>
                     </div>
                 </div>
@@ -249,7 +249,7 @@
                 <div class="card shadow-sm">
                     <div class="card-header bg-primary text-white">
                         <h5 class="mb-0">
-                            <i class="fa fa-graduation-cap me-2"></i>{{ __('Latest Instructors') }}
+                            <i class="fa fa-graduation-cap me-2"></i>{{ custom_trans('Latest Instructors', 'admin') }}
                         </h5>
                     </div>
                     <div class="card-body p-0">
@@ -264,12 +264,12 @@
                                                 <h6 class="mb-1">{{ $instructor->name }}</h6>
                                                 <small class="text-muted">
                                                     <i
-                                                        class="fa fa-calendar me-1"></i>{{ $instructor->created_at->format('M d, Y') }}
+                                                        class="fa fa-calendar me-1"></i>{{ $instructor->created_at->format('M d, Y', 'admin') }}
                                                 </small>
                                                 <div class="mt-1">
                                                     <span
                                                         class="badge bg-{{ $instructor->is_active ? 'success' : 'danger' }}">
-                                                        {{ $instructor->is_active ? __('Active') : __('Inactive') }}
+                                                        {{ $instructor->is_active ? custom_trans('Active', 'admin') : custom_trans('Inactive', 'admin') }}
                                                     </span>
                                                 </div>
                                             </div>
@@ -280,13 +280,13 @@
                         @else
                             <div class="text-center py-4">
                                 <i class="fa fa-graduation-cap fa-3x text-muted mb-3"></i>
-                                <p class="text-muted">{{ __('No instructors found') }}</p>
+                                <p class="text-muted">{{ custom_trans('No instructors found', 'admin') }}</p>
                             </div>
                         @endif
                     </div>
                     <div class="card-footer text-center">
                         <a href="{{ route('admin.admins.index') }}" class="btn btn-outline-primary btn-sm">
-                            {{ __('View All Instructors') }} <i class="fa fa-arrow-right ms-1"></i>
+                            {{ custom_trans('View All Instructors', 'admin') }} <i class="fa fa-arrow-right ms-1"></i>
                         </a>
                     </div>
                 </div>
@@ -297,7 +297,7 @@
                 <div class="card shadow-sm">
                     <div class="card-header bg-warning text-dark">
                         <h5 class="mb-0">
-                            <i class="fa fa-chart-bar me-2"></i>{{ __('Latest Traders') }}
+                            <i class="fa fa-chart-bar me-2"></i>{{ custom_trans('Latest Traders', 'admin') }}
                         </h5>
                     </div>
                     <div class="card-body p-0">
@@ -314,7 +314,7 @@
                                                 <h6 class="mb-1">{{ $trader->name }}</h6>
                                                 <small class="text-muted">
                                                     <i
-                                                        class="fa fa-calendar me-1"></i>{{ $trader->created_at->format('M d, Y') }}
+                                                        class="fa fa-calendar me-1"></i>{{ $trader->created_at->format('M d, Y', 'admin') }}
                                                 </small>
                                                 <div class="mt-1">
                                                     <span class="badge bg-info">{{ ucfirst($trader->sex) }}</span>
@@ -331,13 +331,13 @@
                         @else
                             <div class="text-center py-4">
                                 <i class="fa fa-chart-bar fa-3x text-muted mb-3"></i>
-                                <p class="text-muted">{{ __('No traders found') }}</p>
+                                <p class="text-muted">{{ custom_trans('No traders found', 'admin') }}</p>
                             </div>
                         @endif
                     </div>
                     <div class="card-footer text-center">
                         <a href="{{ route('admin.traders.index') }}" class="btn btn-outline-warning btn-sm">
-                            {{ __('View All Traders') }} <i class="fa fa-arrow-right ms-1"></i>
+                            {{ custom_trans('View All Traders', 'admin') }} <i class="fa fa-arrow-right ms-1"></i>
                         </a>
                     </div>
                 </div>

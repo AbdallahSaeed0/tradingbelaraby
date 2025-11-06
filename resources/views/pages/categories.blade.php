@@ -10,9 +10,9 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0">
                         <li class="breadcrumb-item"><a href="{{ route('home') }}"
-                                class="text-decoration-none">{{ custom_trans('home') }}</a></li>
+                                class="text-decoration-none">{{ custom_trans('home', 'front') }}</a></li>
                         <li class="breadcrumb-item"><a href="{{ route('categories') }}"
-                                class="text-decoration-none">{{ custom_trans('categories') }}</a></li>
+                                class="text-decoration-none">{{ custom_trans('categories', 'front') }}</a></li>
                         <li class="breadcrumb-item active" aria-current="page">
                             {{ \App\Helpers\TranslationHelper::getLocalizedContent($selectedCategory->name, $selectedCategory->name_ar) }}
                         </li>
@@ -32,7 +32,7 @@
                 @if ($selectedCategory)
                     {{ \App\Helpers\TranslationHelper::getLocalizedContent($selectedCategory->name, $selectedCategory->name_ar) }}
                 @else
-                    {{ custom_trans('explore_categories') }}
+                    {{ custom_trans('explore_categories', 'front') }}
                 @endif
             </h1>
             <!-- Course count removed as requested -->
@@ -54,7 +54,7 @@
                     </div>
                 @empty
                     <div class="col-12 text-center">
-                        <p class="text-muted">{{ custom_trans('no_categories_found') }}</p>
+                        <p class="text-muted">{{ custom_trans('no_categories_found', 'front') }}</p>
                     </div>
                 @endforelse
             </div>
@@ -69,19 +69,19 @@
                     <h2 class="fw-bold mb-3 mb-md-0">
                         @if ($selectedCategory)
                             {{ \App\Helpers\TranslationHelper::getLocalizedContent($selectedCategory->name, $selectedCategory->name_ar) }}
-                            {{ custom_trans('courses') }}
+                            {{ custom_trans('courses', 'front') }}
                         @else
-                            {{ custom_trans('featured_courses') }}
+                            {{ custom_trans('featured_courses', 'front') }}
                         @endif
                     </h2>
                     <div class="d-flex gap-2">
                         <select class="form-select sort-dropdown me-2 max-w-120">
-                            <option>{{ custom_trans('sort') }}</option>
-                            <option value="newest">{{ custom_trans('newest') }}</option>
-                            <option value="popular">{{ custom_trans('popular') }}</option>
+                            <option>{{ custom_trans('sort', 'front') }}</option>
+                            <option value="newest">{{ custom_trans('newest', 'front') }}</option>
+                            <option value="popular">{{ custom_trans('popular', 'front') }}</option>
                         </select>
                         <select class="form-select limit-dropdown max-w-120">
-                            <option>{{ custom_trans('limit') }}</option>
+                            <option>{{ custom_trans('limit', 'front') }}</option>
                             <option value="5">5</option>
                             <option value="10">10</option>
                         </select>
@@ -92,10 +92,10 @@
                 <!-- Sidebar Filters -->
                 <div class="col-lg-3 mb-4 mb-lg-0">
                     <div class="filter-section p-3 rounded-3 shadow-sm bg-white mb-4">
-                        <h5 class="fw-bold mb-3">{{ custom_trans('categories') }}</h5>
+                        <h5 class="fw-bold mb-3">{{ custom_trans('categories', 'front') }}</h5>
                         <ul class="list-unstyled mb-0">
                             <li><a href="{{ route('categories') }}"
-                                    class="filter-link {{ !$selectedCategory ? 'fw-bold text-primary' : '' }}">{{ custom_trans('all_categories') }}</a>
+                                    class="filter-link {{ !$selectedCategory ? 'fw-bold text-primary' : '' }}">{{ custom_trans('all_categories', 'front') }}</a>
                             </li>
                             @foreach ($categories as $category)
                                 <li><a href="{{ route('categories') }}?category={{ $category->slug }}"
@@ -105,14 +105,14 @@
                         </ul>
                     </div>
                     <div class="filter-section p-3 rounded-3 shadow-sm bg-white">
-                        <h5 class="fw-bold mb-3">{{ custom_trans('price') }}</h5>
+                        <h5 class="fw-bold mb-3">{{ custom_trans('price', 'front') }}</h5>
                         <div class="form-check mb-2">
                             <input class="form-check-input" type="checkbox" id="priceFree">
-                            <label class="form-check-label" for="priceFree">{{ custom_trans('free') }}</label>
+                            <label class="form-check-label" for="priceFree">{{ custom_trans('free', 'front') }}</label>
                         </div>
                         <div class="form-check mb-2">
                             <input class="form-check-input" type="checkbox" id="pricePaid">
-                            <label class="form-check-label" for="pricePaid">{{ custom_trans('paid') }}</label>
+                            <label class="form-check-label" for="pricePaid">{{ custom_trans('paid', 'front') }}</label>
                         </div>
                     </div>
                 </div>
@@ -137,7 +137,7 @@
                                             alt="{{ $course->localized_name }}">
                                         @if ($course->is_featured)
                                             <span class="badge bg-success position-absolute top-0 start-0 m-2">
-                                                {{ custom_trans('featured') }}
+                                                {{ custom_trans('featured', 'front') }}
                                             </span>
                                         @endif
                                         <div class="position-absolute top-0 end-0 m-2">
@@ -150,7 +150,7 @@
                                                     </small>
                                                 @endif
                                             @else
-                                                <span class="badge bg-success">{{ custom_trans('free') }}</span>
+                                                <span class="badge bg-success">{{ custom_trans('free', 'front') }}</span>
                                             @endif
                                         </div>
                                     </div>
@@ -190,7 +190,7 @@
                                         <div class="d-flex justify-content-end">
                                             <a href="{{ route('courses.show', $course->id) }}"
                                                 class="btn btn-primary btn-sm">
-                                                {{ custom_trans('view_details') }}
+                                                {{ custom_trans('view_details', 'front') }}
                                             </a>
                                         </div>
                                     </div>
@@ -198,7 +198,7 @@
                             </div>
                         @empty
                             <div class="col-12 text-center">
-                                <p class="text-muted">{{ custom_trans('no_courses_found') }}</p>
+                                <p class="text-muted">{{ custom_trans('no_courses_found', 'front') }}</p>
                             </div>
                         @endforelse
                     </div>

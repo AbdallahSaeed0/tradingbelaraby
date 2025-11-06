@@ -9,11 +9,11 @@
             <!-- Section Header -->
             <div class="text-center mb-5">
                 <span class="text-primary fw-bold mb-2 d-block fs-11">
-                    <i class="fas fa-handshake"></i> {{ __('Our Partners') }}
+                    <i class="fas fa-handshake"></i> {{ custom_trans('Our Partners', 'front') }}
                 </span>
-                <h2 class="fw-bold mb-3 fs-25">{{ __('Trusted By Leading Organizations') }}</h2>
+                <h2 class="fw-bold mb-3 fs-25">{{ custom_trans('Trusted By Leading Organizations', 'front') }}</h2>
                 <p class="text-muted">
-                    {{ __('We partner with industry leaders to provide you with the best learning experience') }}</p>
+                    {{ custom_trans('We partner with industry leaders to provide you with the best learning experience', 'front') }}</p>
             </div>
 
             <!-- Logos Slider -->

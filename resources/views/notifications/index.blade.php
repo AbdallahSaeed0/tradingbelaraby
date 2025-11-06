@@ -8,8 +8,8 @@
         <div class="container">
             <div class="row justify-content-center text-center">
                 <div class="col-lg-8">
-                    <h1 class="fw-bold mb-3">{{ custom_trans('notifications') }}</h1>
-                    <p class="lead mb-0">{{ custom_trans('manage_your_notifications') }}</p>
+                    <h1 class="fw-bold mb-3">{{ custom_trans('notifications', 'front') }}</h1>
+                    <p class="lead mb-0">{{ custom_trans('manage_your_notifications', 'front') }}</p>
                 </div>
             </div>
         </div>
@@ -23,13 +23,13 @@
                     <!-- Header Actions -->
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <div>
-                            <h4 class="fw-bold mb-0">{{ custom_trans('all_notifications') }}</h4>
+                            <h4 class="fw-bold mb-0">{{ custom_trans('all_notifications', 'front') }}</h4>
                             <small class="text-muted">{{ $notifications->total() }}
-                                {{ custom_trans('notifications_found') }}</small>
+                                {{ custom_trans('notifications_found', 'front') }}</small>
                         </div>
                         @if (auth()->user()->unreadNotifications->count() > 0)
                             <button class="btn btn-outline-primary mark-all-read-btn">
-                                <i class="fa fa-check-double me-2"></i>{{ custom_trans('mark_all_read') }}
+                                <i class="fa fa-check-double me-2"></i>{{ custom_trans('mark_all_read', 'front') }}
                             </button>
                         @endif
                     </div>
@@ -43,7 +43,7 @@
                                         <div class="flex-grow-1">
                                             <div class="d-flex align-items-center mb-2">
                                                 @if (!$notification->read_at)
-                                                    <span class="badge bg-success me-2">{{ custom_trans('new') }}</span>
+                                                    <span class="badge bg-success me-2">{{ custom_trans('new', 'front') }}</span>
                                                 @endif
                                                 <small
                                                     class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
@@ -54,7 +54,7 @@
                                             @if (isset($notification->data['course_id']))
                                                 <a href="{{ route('courses.show', $notification->data['course_id']) }}"
                                                     class="btn btn-sm btn-outline-primary">
-                                                    <i class="fa fa-eye me-1"></i>{{ custom_trans('view_course') }}
+                                                    <i class="fa fa-eye me-1"></i>{{ custom_trans('view_course', 'front') }}
                                                 </a>
                                             @endif
                                         </div>
@@ -82,10 +82,10 @@
                     @else
                         <div class="text-center py-5">
                             <i class="fa fa-bell fa-4x text-muted mb-4"></i>
-                            <h3 class="fw-bold mb-3">{{ custom_trans('no_notifications') }}</h3>
-                            <p class="text-muted mb-4">{{ custom_trans('no_notifications_message') }}</p>
+                            <h3 class="fw-bold mb-3">{{ custom_trans('no_notifications', 'front') }}</h3>
+                            <p class="text-muted mb-4">{{ custom_trans('no_notifications_message', 'front') }}</p>
                             <a href="{{ route('categories') }}" class="btn btn-primary">
-                                <i class="fa fa-search me-2"></i>{{ custom_trans('browse_courses') }}
+                                <i class="fa fa-search me-2"></i>{{ custom_trans('browse_courses', 'front') }}
                             </a>
                         </div>
                     @endif
@@ -140,7 +140,7 @@
             // Delete notification
             deleteButtons.forEach(button => {
                 button.addEventListener('click', function() {
-                    if (confirm('{{ custom_trans('delete_notification_confirm') }}')) {
+                    if (confirm('{{ custom_trans('delete_notification_confirm', 'front') }}')) {
                         const notificationId = this.dataset.notificationId;
 
                         fetch(`/notifications/${notificationId}`, {

@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', __('Slider Management'))
+@section('title', custom_trans('Slider Management', 'admin'))
 
 @section('content')
     <div class="container-fluid">
@@ -9,14 +9,14 @@
                 <div class="page-title-box">
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a>
+                            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ custom_trans('Dashboard', 'admin') }}</a>
                             </li>
-                            <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ __('Settings') }}</a>
+                            <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ custom_trans('Settings', 'admin') }}</a>
                             </li>
-                            <li class="breadcrumb-item active">{{ __('Sliders') }}</li>
+                            <li class="breadcrumb-item active">{{ custom_trans('Sliders', 'admin') }}</li>
                         </ol>
                     </div>
-                    <h4 class="page-title">{{ __('Slider Management') }}</h4>
+                    <h4 class="page-title">{{ custom_trans('Slider Management', 'admin') }}</h4>
                 </div>
             </div>
         </div>
@@ -32,17 +32,17 @@
                                 <div class="row g-3">
                                     <div class="col-md-3">
                                         <label for="status_filter" class="form-label fw-semibold">
-                                            <i class="fas fa-toggle-on me-1 text-primary"></i>{{ __('Status') }}
+                                            <i class="fas fa-toggle-on me-1 text-primary"></i>{{ custom_trans('Status', 'admin') }}
                                         </label>
                                         <select class="form-select form-select-lg" id="status_filter">
-                                            <option value="">{{ __('All Status') }}</option>
-                                            <option value="1">{{ __('Active') }}</option>
-                                            <option value="0">{{ __('Inactive') }}</option>
+                                            <option value="">{{ custom_trans('All Status', 'admin') }}</option>
+                                            <option value="1">{{ custom_trans('Active', 'admin') }}</option>
+                                            <option value="0">{{ custom_trans('Inactive', 'admin') }}</option>
                                         </select>
                                     </div>
                                     <div class="col-md-4">
                                         <label for="search_filter" class="form-label fw-semibold">
-                                            <i class="fas fa-search me-1 text-info"></i>{{ __('Search') }}
+                                            <i class="fas fa-search me-1 text-info"></i>{{ custom_trans('Search', 'admin') }}
                                         </label>
                                         <div class="input-group">
                                             <span class="input-group-text bg-light border-end-0">
@@ -50,25 +50,25 @@
                                             </span>
                                             <input type="text" class="form-control form-control-lg border-start-0"
                                                 id="search_filter"
-                                                placeholder="{{ __('Search by title, welcome text, or subtitle...') }}"
+                                                placeholder="{{ custom_trans('Search by title, welcome text, or subtitle...', 'admin') }}"
                                                 autocomplete="off">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <label for="order_filter" class="form-label fw-semibold">
-                                            <i class="fas fa-sort me-1 text-warning"></i>{{ __('Sort By') }}
+                                            <i class="fas fa-sort me-1 text-warning"></i>{{ custom_trans('Sort By', 'admin') }}
                                         </label>
                                         <select class="form-select form-select-lg" id="order_filter">
-                                            <option value="order">{{ __('Order') }}</option>
-                                            <option value="title">{{ __('Title') }}</option>
-                                            <option value="created_at">{{ __('Created Date') }}</option>
+                                            <option value="order">{{ custom_trans('Order', 'admin') }}</option>
+                                            <option value="title">{{ custom_trans('Title', 'admin') }}</option>
+                                            <option value="created_at">{{ custom_trans('Created Date', 'admin') }}</option>
                                         </select>
                                     </div>
                                     <div class="col-md-2">
                                         <label class="form-label">&nbsp;</label>
                                         <button type="button" class="btn btn-outline-secondary btn-lg w-100"
                                             id="clear_filters">
-                                            <i class="fas fa-times me-1"></i>{{ __('Clear') }}
+                                            <i class="fas fa-times me-1"></i>{{ custom_trans('Clear', 'admin') }}
                                         </button>
                                     </div>
                                 </div>
@@ -79,19 +79,19 @@
                                 <div class="d-flex justify-content-end align-items-end gap-3">
                                     <div class="flex-grow-1">
                                         <label for="bulk_action" class="form-label fw-semibold">
-                                            <i class="fas fa-tasks me-1 text-success"></i>{{ __('Bulk Actions') }}
+                                            <i class="fas fa-tasks me-1 text-success"></i>{{ custom_trans('Bulk Actions', 'admin') }}
                                         </label>
                                         <select class="form-select form-select-lg" id="bulk_action">
-                                            <option value="">{{ __('Select Action') }}</option>
-                                            <option value="activate">{{ __('Activate') }}</option>
-                                            <option value="deactivate">{{ __('Deactivate') }}</option>
-                                            <option value="delete">{{ __('Delete') }}</option>
+                                            <option value="">{{ custom_trans('Select Action', 'admin') }}</option>
+                                            <option value="activate">{{ custom_trans('Activate', 'admin') }}</option>
+                                            <option value="deactivate">{{ custom_trans('Deactivate', 'admin') }}</option>
+                                            <option value="delete">{{ custom_trans('Delete', 'admin') }}</option>
                                         </select>
                                     </div>
                                     <div>
                                         <button type="button" class="btn btn-warning btn-lg" id="apply_bulk_action"
                                             disabled>
-                                            <i class="fas fa-check me-1"></i>{{ __('Apply') }}
+                                            <i class="fas fa-check me-1"></i>{{ custom_trans('Apply', 'admin') }}
                                         </button>
                                     </div>
                                 </div>
@@ -108,12 +108,12 @@
                 <div class="card table-card">
                     <div class="card-header d-flex justify-content-between align-items-center p-4">
                         <div>
-                            <h4 class="header-title mb-1">{{ __('Sliders') }}</h4>
-                            <p class="text-muted mb-0">{{ __('Manage your homepage sliders and promotional content') }}</p>
+                            <h4 class="header-title mb-1">{{ custom_trans('Sliders', 'admin') }}</h4>
+                            <p class="text-muted mb-0">{{ custom_trans('Manage your homepage sliders and promotional content', 'admin') }}</p>
                         </div>
                         <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal"
                             data-bs-target="#addSliderModal">
-                            <i class="fas fa-plus me-2"></i>{{ __('Add New Slider') }}
+                            <i class="fas fa-plus me-2"></i>{{ custom_trans('Add New Slider', 'admin') }}
                         </button>
                     </div>
                     <div class="card-body p-0">
@@ -126,16 +126,16 @@
                                                 <input class="form-check-input" type="checkbox" id="select_all">
                                             </div>
                                         </th>
-                                        <th width="80">{{ __('Order') }}</th>
-                                        <th width="100">{{ __('Image') }}</th>
-                                        <th>{{ __('Title') }}</th>
-                                        <th>{{ __('Title (AR)') }}</th>
-                                        <th>{{ __('Welcome Text') }}</th>
-                                        <th>{{ __('Welcome Text (AR)') }}</th>
-                                        <th>{{ __('Subtitle') }}</th>
-                                        <th>{{ __('Subtitle (AR)') }}</th>
-                                        <th width="100">{{ __('Status') }}</th>
-                                        <th width="120">{{ __('Actions') }}</th>
+                                        <th width="80">{{ custom_trans('Order', 'admin') }}</th>
+                                        <th width="100">{{ custom_trans('Image', 'admin') }}</th>
+                                        <th>{{ custom_trans('Title', 'admin') }}</th>
+                                        <th>{{ custom_trans('Title (AR)', 'admin') }}</th>
+                                        <th>{{ custom_trans('Welcome Text', 'admin') }}</th>
+                                        <th>{{ custom_trans('Welcome Text (AR)', 'admin') }}</th>
+                                        <th>{{ custom_trans('Subtitle', 'admin') }}</th>
+                                        <th>{{ custom_trans('Subtitle (AR)', 'admin') }}</th>
+                                        <th width="100">{{ custom_trans('Status', 'admin') }}</th>
+                                        <th width="120">{{ custom_trans('Actions', 'admin') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody id="sliders-tbody">
@@ -173,18 +173,18 @@
                                                     <button type="button"
                                                         class="btn btn-sm btn-outline-primary edit-slider"
                                                         data-slider="{{ json_encode($slider->toArray()) }}"
-                                                        title="{{ __('Edit') }}">
+                                                        title="{{ custom_trans('Edit', 'admin') }}">
                                                         <i class="fas fa-edit"></i>
                                                     </button>
                                                     <button type="button" class="btn btn-sm btn-outline-info view-slider"
                                                         data-slider="{{ json_encode($slider->toArray()) }}"
-                                                        title="{{ __('View') }}">
+                                                        title="{{ custom_trans('View', 'admin') }}">
                                                         <i class="fas fa-eye"></i>
                                                     </button>
                                                     <button type="button"
                                                         class="btn btn-sm btn-outline-danger delete-slider"
                                                         data-slider-id="{{ $slider->id }}"
-                                                        title="{{ __('Delete') }}">
+                                                        title="{{ custom_trans('Delete', 'admin') }}">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </div>
@@ -192,7 +192,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="8" class="text-center">{{ __('No sliders found') }}</td>
+                                            <td colspan="8" class="text-center">{{ custom_trans('No sliders found', 'admin') }}</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
@@ -210,7 +210,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addSliderModalLabel">{{ __('Add New Slider') }}</h5>
+                    <h5 class="modal-title" id="addSliderModalLabel">{{ custom_trans('Add New Slider', 'admin') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="addSliderForm" enctype="multipart/form-data">
@@ -219,13 +219,13 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="title" class="form-label">{{ __('Title') }} *</label>
+                                    <label for="title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
                                     <input type="text" class="form-control" id="title" name="title" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="title_ar" class="form-label">{{ __('Title (Arabic)') }}</label>
+                                    <label for="title_ar" class="form-label">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
                                     <input type="text" class="form-control" id="title_ar" name="title_ar">
                                 </div>
                             </div>
@@ -233,7 +233,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="welcome_text" class="form-label">{{ __('Welcome Text') }} *</label>
+                                    <label for="welcome_text" class="form-label">{{ custom_trans('Welcome Text', 'admin') }} *</label>
                                     <input type="text" class="form-control" id="welcome_text" name="welcome_text"
                                         required>
                                 </div>
@@ -241,7 +241,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="welcome_text_ar"
-                                        class="form-label">{{ __('Welcome Text (Arabic)') }}</label>
+                                        class="form-label">{{ custom_trans('Welcome Text (Arabic)', 'admin') }}</label>
                                     <input type="text" class="form-control" id="welcome_text_ar"
                                         name="welcome_text_ar">
                                 </div>
@@ -250,13 +250,13 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="subtitle" class="form-label">{{ __('Subtitle') }} *</label>
+                                    <label for="subtitle" class="form-label">{{ custom_trans('Subtitle', 'admin') }} *</label>
                                     <input type="text" class="form-control" id="subtitle" name="subtitle" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="subtitle_ar" class="form-label">{{ __('Subtitle (Arabic)') }}</label>
+                                    <label for="subtitle_ar" class="form-label">{{ custom_trans('Subtitle (Arabic)', 'admin') }}</label>
                                     <input type="text" class="form-control" id="subtitle_ar" name="subtitle_ar">
                                 </div>
                             </div>
@@ -264,27 +264,27 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="mb-3">
-                                    <label for="text_position" class="form-label">{{ __('Text Position') }} *</label>
+                                    <label for="text_position" class="form-label">{{ custom_trans('Text Position', 'admin') }} *</label>
                                     <select class="form-select" id="text_position" name="text_position" required>
-                                        <option value="top-left">{{ __('Top Left') }}</option>
-                                        <option value="top-center">{{ __('Top Center') }}</option>
-                                        <option value="top-right">{{ __('Top Right') }}</option>
-                                        <option value="center-left" selected>{{ __('Center Left') }}</option>
-                                        <option value="center-center">{{ __('Center Center') }}</option>
-                                        <option value="center-right">{{ __('Center Right') }}</option>
-                                        <option value="bottom-left">{{ __('Bottom Left') }}</option>
-                                        <option value="bottom-center">{{ __('Bottom Center') }}</option>
-                                        <option value="bottom-right">{{ __('Bottom Right') }}</option>
+                                        <option value="top-left">{{ custom_trans('Top Left', 'admin') }}</option>
+                                        <option value="top-center">{{ custom_trans('Top Center', 'admin') }}</option>
+                                        <option value="top-right">{{ custom_trans('Top Right', 'admin') }}</option>
+                                        <option value="center-left" selected>{{ custom_trans('Center Left', 'admin') }}</option>
+                                        <option value="center-center">{{ custom_trans('Center Center', 'admin') }}</option>
+                                        <option value="center-right">{{ custom_trans('Center Right', 'admin') }}</option>
+                                        <option value="bottom-left">{{ custom_trans('Bottom Left', 'admin') }}</option>
+                                        <option value="bottom-center">{{ custom_trans('Bottom Center', 'admin') }}</option>
+                                        <option value="bottom-right">{{ custom_trans('Bottom Right', 'admin') }}</option>
                                     </select>
                                     <small
-                                        class="form-text text-muted">{{ __('Choose where the text will be positioned on the slider') }}</small>
+                                        class="form-text text-muted">{{ custom_trans('Choose where the text will be positioned on the slider', 'admin') }}</small>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="button_text" class="form-label">{{ __('Button Text') }}</label>
+                                    <label for="button_text" class="form-label">{{ custom_trans('Button Text', 'admin') }}</label>
                                     <input type="text" class="form-control" id="button_text" name="button_text"
                                         value="Search">
                                 </div>
@@ -292,7 +292,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="button_text_ar"
-                                        class="form-label">{{ __('Button Text (Arabic)') }}</label>
+                                        class="form-label">{{ custom_trans('Button Text (Arabic)', 'admin') }}</label>
                                     <input type="text" class="form-control" id="button_text_ar"
                                         name="button_text_ar">
                                 </div>
@@ -301,14 +301,14 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="button_url" class="form-label">{{ __('Button URL') }}</label>
+                                    <label for="button_url" class="form-label">{{ custom_trans('Button URL', 'admin') }}</label>
                                     <input type="url" class="form-control" id="button_url" name="button_url">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="search_placeholder"
-                                        class="form-label">{{ __('Search Placeholder') }}</label>
+                                        class="form-label">{{ custom_trans('Search Placeholder', 'admin') }}</label>
                                     <input type="text" class="form-control" id="search_placeholder"
                                         name="search_placeholder" value="Search Courses">
                                 </div>
@@ -316,7 +316,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="search_placeholder_ar"
-                                        class="form-label">{{ __('Search Placeholder (Arabic)') }}</label>
+                                        class="form-label">{{ custom_trans('Search Placeholder (Arabic)', 'admin') }}</label>
                                     <input type="text" class="form-control" id="search_placeholder_ar"
                                         name="search_placeholder_ar">
                                 </div>
@@ -325,19 +325,19 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="order" class="form-label">{{ __('Order') }}</label>
+                                    <label for="order" class="form-label">{{ custom_trans('Order', 'admin') }}</label>
                                     <input type="number" class="form-control" id="order" name="order"
                                         value="0" min="0">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="background_image" class="form-label">{{ __('Background Image') }}
+                                    <label for="background_image" class="form-label">{{ custom_trans('Background Image', 'admin') }}
                                         *</label>
                                     <input type="file" class="form-control" id="background_image"
                                         name="background_image" accept="image/*" required>
                                     <small
-                                        class="form-text text-muted">{{ __('Max size: 2MB. Formats: JPEG, PNG, JPG, GIF') }}</small>
+                                        class="form-text text-muted">{{ custom_trans('Max size: 2MB. Formats: JPEG, PNG, JPG, GIF', 'admin') }}</small>
                                 </div>
                             </div>
                         </div>
@@ -345,15 +345,15 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="is_active" name="is_active" checked>
                                 <label class="form-check-label" for="is_active">
-                                    {{ __('Active') }}
+                                    {{ custom_trans('Active', 'admin') }}
                                 </label>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary"
-                            data-bs-dismiss="modal">{{ __('Cancel') }}</button>
-                        <button type="submit" class="btn btn-primary">{{ __('Create Slider') }}</button>
+                            data-bs-dismiss="modal">{{ custom_trans('Cancel', 'admin') }}</button>
+                        <button type="submit" class="btn btn-primary">{{ custom_trans('Create Slider', 'admin') }}</button>
                     </div>
                 </form>
             </div>
@@ -366,7 +366,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editSliderModalLabel">{{ __('Edit Slider') }}</h5>
+                    <h5 class="modal-title" id="editSliderModalLabel">{{ custom_trans('Edit Slider', 'admin') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="editSliderForm" enctype="multipart/form-data">
@@ -376,13 +376,13 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="edit_title" class="form-label">{{ __('Title') }} *</label>
+                                    <label for="edit_title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
                                     <input type="text" class="form-control" id="edit_title" name="title" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="edit_title_ar" class="form-label">{{ __('Title (Arabic)') }}</label>
+                                    <label for="edit_title_ar" class="form-label">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
                                     <input type="text" class="form-control" id="edit_title_ar" name="title_ar">
                                 </div>
                             </div>
@@ -390,7 +390,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="edit_welcome_text" class="form-label">{{ __('Welcome Text') }} *</label>
+                                    <label for="edit_welcome_text" class="form-label">{{ custom_trans('Welcome Text', 'admin') }} *</label>
                                     <input type="text" class="form-control" id="edit_welcome_text"
                                         name="welcome_text" required>
                                 </div>
@@ -398,7 +398,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="edit_welcome_text_ar"
-                                        class="form-label">{{ __('Welcome Text (Arabic)') }}</label>
+                                        class="form-label">{{ custom_trans('Welcome Text (Arabic)', 'admin') }}</label>
                                     <input type="text" class="form-control" id="edit_welcome_text_ar"
                                         name="welcome_text_ar">
                                 </div>
@@ -407,7 +407,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="edit_subtitle" class="form-label">{{ __('Subtitle') }} *</label>
+                                    <label for="edit_subtitle" class="form-label">{{ custom_trans('Subtitle', 'admin') }} *</label>
                                     <input type="text" class="form-control" id="edit_subtitle" name="subtitle"
                                         required>
                                 </div>
@@ -415,7 +415,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="edit_subtitle_ar"
-                                        class="form-label">{{ __('Subtitle (Arabic)') }}</label>
+                                        class="form-label">{{ custom_trans('Subtitle (Arabic)', 'admin') }}</label>
                                     <input type="text" class="form-control" id="edit_subtitle_ar" name="subtitle_ar">
                                 </div>
                             </div>
@@ -423,35 +423,35 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="mb-3">
-                                    <label for="edit_text_position" class="form-label">{{ __('Text Position') }}
+                                    <label for="edit_text_position" class="form-label">{{ custom_trans('Text Position', 'admin') }}
                                         *</label>
                                     <select class="form-select" id="edit_text_position" name="text_position" required>
-                                        <option value="top-left">{{ __('Top Left') }}</option>
-                                        <option value="top-center">{{ __('Top Center') }}</option>
-                                        <option value="top-right">{{ __('Top Right') }}</option>
-                                        <option value="center-left">{{ __('Center Left') }}</option>
-                                        <option value="center-center">{{ __('Center Center') }}</option>
-                                        <option value="center-right">{{ __('Center Right') }}</option>
-                                        <option value="bottom-left">{{ __('Bottom Left') }}</option>
-                                        <option value="bottom-center">{{ __('Bottom Center') }}</option>
-                                        <option value="bottom-right">{{ __('Bottom Right') }}</option>
+                                        <option value="top-left">{{ custom_trans('Top Left', 'admin') }}</option>
+                                        <option value="top-center">{{ custom_trans('Top Center', 'admin') }}</option>
+                                        <option value="top-right">{{ custom_trans('Top Right', 'admin') }}</option>
+                                        <option value="center-left">{{ custom_trans('Center Left', 'admin') }}</option>
+                                        <option value="center-center">{{ custom_trans('Center Center', 'admin') }}</option>
+                                        <option value="center-right">{{ custom_trans('Center Right', 'admin') }}</option>
+                                        <option value="bottom-left">{{ custom_trans('Bottom Left', 'admin') }}</option>
+                                        <option value="bottom-center">{{ custom_trans('Bottom Center', 'admin') }}</option>
+                                        <option value="bottom-right">{{ custom_trans('Bottom Right', 'admin') }}</option>
                                     </select>
                                     <small
-                                        class="form-text text-muted">{{ __('Choose where the text will be positioned on the slider') }}</small>
+                                        class="form-text text-muted">{{ custom_trans('Choose where the text will be positioned on the slider', 'admin') }}</small>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="edit_button_text" class="form-label">{{ __('Button Text') }}</label>
+                                    <label for="edit_button_text" class="form-label">{{ custom_trans('Button Text', 'admin') }}</label>
                                     <input type="text" class="form-control" id="edit_button_text" name="button_text">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="edit_button_text_ar"
-                                        class="form-label">{{ __('Button Text (Arabic)') }}</label>
+                                        class="form-label">{{ custom_trans('Button Text (Arabic)', 'admin') }}</label>
                                     <input type="text" class="form-control" id="edit_button_text_ar"
                                         name="button_text_ar">
                                 </div>
@@ -460,14 +460,14 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="edit_button_url" class="form-label">{{ __('Button URL') }}</label>
+                                    <label for="edit_button_url" class="form-label">{{ custom_trans('Button URL', 'admin') }}</label>
                                     <input type="url" class="form-control" id="edit_button_url" name="button_url">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="edit_search_placeholder"
-                                        class="form-label">{{ __('Search Placeholder') }}</label>
+                                        class="form-label">{{ custom_trans('Search Placeholder', 'admin') }}</label>
                                     <input type="text" class="form-control" id="edit_search_placeholder"
                                         name="search_placeholder">
                                 </div>
@@ -475,7 +475,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="edit_search_placeholder_ar"
-                                        class="form-label">{{ __('Search Placeholder (Arabic)') }}</label>
+                                        class="form-label">{{ custom_trans('Search Placeholder (Arabic)', 'admin') }}</label>
                                     <input type="text" class="form-control" id="edit_search_placeholder_ar"
                                         name="search_placeholder_ar">
                                 </div>
@@ -484,7 +484,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="edit_order" class="form-label">{{ __('Order') }}</label>
+                                    <label for="edit_order" class="form-label">{{ custom_trans('Order', 'admin') }}</label>
                                     <input type="number" class="form-control" id="edit_order" name="order"
                                         min="0">
                                 </div>
@@ -492,11 +492,11 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="edit_background_image"
-                                        class="form-label">{{ __('Background Image') }}</label>
+                                        class="form-label">{{ custom_trans('Background Image', 'admin') }}</label>
                                     <input type="file" class="form-control" id="edit_background_image"
                                         name="background_image" accept="image/*">
                                     <small
-                                        class="form-text text-muted">{{ __('Max size: 2MB. Formats: JPEG, PNG, JPG, GIF') }}</small>
+                                        class="form-text text-muted">{{ custom_trans('Max size: 2MB. Formats: JPEG, PNG, JPG, GIF', 'admin') }}</small>
                                     <div id="current_image_preview" class="mt-2"></div>
                                 </div>
                             </div>
@@ -505,15 +505,15 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="edit_is_active" name="is_active">
                                 <label class="form-check-label" for="edit_is_active">
-                                    {{ __('Active') }}
+                                    {{ custom_trans('Active', 'admin') }}
                                 </label>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary"
-                            data-bs-dismiss="modal">{{ __('Cancel') }}</button>
-                        <button type="submit" class="btn btn-primary">{{ __('Update Slider') }}</button>
+                            data-bs-dismiss="modal">{{ custom_trans('Cancel', 'admin') }}</button>
+                        <button type="submit" class="btn btn-primary">{{ custom_trans('Update Slider', 'admin') }}</button>
                     </div>
                 </form>
             </div>
@@ -526,20 +526,20 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="viewSliderModalLabel">{{ __('Slider Details') }}</h5>
+                    <h5 class="modal-title" id="viewSliderModalLabel">{{ custom_trans('Slider Details', 'admin') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Title') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Title', 'admin') }}</label>
                                 <p id="view_title" class="form-control-plaintext"></p>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Title (Arabic)') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
                                 <p id="view_title_ar" class="form-control-plaintext"></p>
                             </div>
                         </div>
@@ -547,13 +547,13 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Welcome Text') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Welcome Text', 'admin') }}</label>
                                 <p id="view_welcome_text" class="form-control-plaintext"></p>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Welcome Text (Arabic)') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Welcome Text (Arabic)', 'admin') }}</label>
                                 <p id="view_welcome_text_ar" class="form-control-plaintext"></p>
                             </div>
                         </div>
@@ -561,13 +561,13 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Subtitle') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Subtitle', 'admin') }}</label>
                                 <p id="view_subtitle" class="form-control-plaintext"></p>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Subtitle (Arabic)') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Subtitle (Arabic)', 'admin') }}</label>
                                 <p id="view_subtitle_ar" class="form-control-plaintext"></p>
                             </div>
                         </div>
@@ -575,13 +575,13 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Button Text') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Button Text', 'admin') }}</label>
                                 <p id="view_button_text" class="form-control-plaintext"></p>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Button Text (Arabic)') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Button Text (Arabic)', 'admin') }}</label>
                                 <p id="view_button_text_ar" class="form-control-plaintext"></p>
                             </div>
                         </div>
@@ -589,19 +589,19 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Button URL') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Button URL', 'admin') }}</label>
                                 <p id="view_button_url" class="form-control-plaintext"></p>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Search Placeholder') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Search Placeholder', 'admin') }}</label>
                                 <p id="view_search_placeholder" class="form-control-plaintext"></p>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Search Placeholder (Arabic)') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Search Placeholder (Arabic)', 'admin') }}</label>
                                 <p id="view_search_placeholder_ar" class="form-control-plaintext"></p>
                             </div>
                         </div>
@@ -609,19 +609,19 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Order') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Order', 'admin') }}</label>
                                 <p id="view_order" class="form-control-plaintext"></p>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Status') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Status', 'admin') }}</label>
                                 <p id="view_status" class="form-control-plaintext"></p>
                             </div>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">{{ __('Background Image') }}</label>
+                        <label class="form-label fw-bold">{{ custom_trans('Background Image', 'admin') }}</label>
                         <div id="view_background_image" class="text-center">
                             <img src="" alt="Slider Image" class="img-fluid rounded img-modal-preview">
                         </div>
@@ -629,7 +629,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary"
-                        data-bs-dismiss="modal">{{ __('Close') }}</button>
+                        data-bs-dismiss="modal">{{ custom_trans('Close', 'admin') }}</button>
                 </div>
             </div>
         </div>
@@ -671,12 +671,12 @@
                 }).get();
 
                 if (!action) {
-                    toastr.warning('{{ __('Please select an action') }}');
+                    toastr.warning('{{ custom_trans('Please select an action', 'admin') }}');
                     return;
                 }
 
                 if (selectedIds.length === 0) {
-                    toastr.warning('{{ __('Please select at least one slider') }}');
+                    toastr.warning('{{ custom_trans('Please select at least one slider', 'admin') }}');
                     return;
                 }
 
@@ -684,15 +684,15 @@
                 switch (action) {
                     case 'activate':
                         confirmMessage =
-                            '{{ __('Are you sure you want to activate the selected sliders?') }}';
+                            '{{ custom_trans('Are you sure you want to activate the selected sliders?', 'admin') }}';
                         break;
                     case 'deactivate':
                         confirmMessage =
-                            '{{ __('Are you sure you want to deactivate the selected sliders?') }}';
+                            '{{ custom_trans('Are you sure you want to deactivate the selected sliders?', 'admin') }}';
                         break;
                     case 'delete':
                         confirmMessage =
-                            '{{ __('Are you sure you want to delete the selected sliders? This action cannot be undone.') }}';
+                            '{{ custom_trans('Are you sure you want to delete the selected sliders? This action cannot be undone.', 'admin') }}';
                         break;
                 }
 
@@ -713,7 +713,7 @@
                         },
                         error: function() {
                             toastr.error(
-                                '{{ __('An error occurred while performing bulk action') }}'
+                                '{{ custom_trans('An error occurred while performing bulk action', 'admin') }}'
                             );
                         }
                     });
@@ -798,7 +798,7 @@
                             });
                         } else {
                             toastr.error(
-                                '{{ __('An error occurred while creating the slider') }}');
+                                '{{ custom_trans('An error occurred while creating the slider', 'admin') }}');
                         }
                     }
                 });
@@ -848,8 +848,8 @@
                 $('#view_search_placeholder').text(slider.search_placeholder || '-');
                 $('#view_search_placeholder_ar').text(slider.search_placeholder_ar || '-');
                 $('#view_order').text(slider.order);
-                $('#view_status').text(slider.is_active ? '{{ __('Active') }}' :
-                    '{{ __('Inactive') }}');
+                $('#view_status').text(slider.is_active ? '{{ custom_trans('Active', 'admin') }}' :
+                    '{{ custom_trans('Inactive', 'admin') }}');
                 $('#view_background_image img').attr('src', slider.background_image_url);
 
                 $('#viewSliderModal').modal('show');
@@ -883,7 +883,7 @@
                             });
                         } else {
                             toastr.error(
-                                '{{ __('An error occurred while updating the slider') }}');
+                                '{{ custom_trans('An error occurred while updating the slider', 'admin') }}');
                         }
                     }
                 });
@@ -893,7 +893,7 @@
             $('.delete-slider').on('click', function() {
                 const sliderId = $(this).data('slider-id');
 
-                if (confirm('{{ __('Are you sure you want to delete this slider?') }}')) {
+                if (confirm('{{ custom_trans('Are you sure you want to delete this slider?', 'admin') }}')) {
                     $.ajax({
                         url: `/admin/settings/slider/${sliderId}`,
                         type: 'DELETE',
@@ -908,7 +908,7 @@
                         },
                         error: function() {
                             toastr.error(
-                                '{{ __('An error occurred while deleting the slider') }}');
+                                '{{ custom_trans('An error occurred while deleting the slider', 'admin') }}');
                         }
                     });
                 }
@@ -932,7 +932,7 @@
                     },
                     error: function() {
                         toastr.error(
-                            '{{ __('An error occurred while updating the slider status') }}'
+                            '{{ custom_trans('An error occurred while updating the slider status', 'admin') }}'
                         );
                         // Revert the checkbox
                         $(this).prop('checked', !isChecked);
@@ -976,7 +976,7 @@
                             },
                             error: function() {
                                 toastr.error(
-                                    '{{ __('An error occurred while updating the order') }}'
+                                    '{{ custom_trans('An error occurred while updating the order', 'admin') }}'
                                 );
                             }
                         });

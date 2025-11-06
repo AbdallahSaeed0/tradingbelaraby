@@ -9,12 +9,12 @@
             <div class="col-12">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h1 class="h3 mb-0">{{ __('Trader Details') }}</h1>
+                        <h1 class="h3 mb-0">{{ custom_trans('Trader Details', 'admin') }}</h1>
                         <p class="text-muted">View detailed information about {{ $trader->name }}</p>
                     </div>
                     <div>
                         <a href="{{ route('admin.traders.index') }}" class="btn btn-outline-secondary">
-                            <i class="fas fa-arrow-left me-1"></i>{{ __('Back to List') }}
+                            <i class="fas fa-arrow-left me-1"></i>{{ custom_trans('Back to List', 'admin') }}
                         </a>
                     </div>
                 </div>
@@ -27,30 +27,30 @@
                 <div class="card shadow-sm">
                     <div class="card-header bg-primary text-white">
                         <h5 class="mb-0">
-                            <i class="fas fa-user me-2"></i>{{ __('Personal Information') }}
+                            <i class="fas fa-user me-2"></i>{{ custom_trans('Personal Information', 'admin') }}
                         </h5>
                     </div>
                     <div class="card-body">
                         <div class="row g-3">
                             <div class="col-12">
-                                <label class="form-label fw-bold">{{ __('Full Name') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Full Name', 'admin') }}</label>
                                 <p class="mb-0">{{ $trader->name }}</p>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-bold">{{ __('Gender') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Gender', 'admin') }}</label>
                                 <p class="mb-0">
                                     <span class="badge bg-secondary">{{ ucfirst($trader->sex) }}</span>
                                 </p>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-bold">{{ __('Birth Date') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Birth Date', 'admin') }}</label>
                                 <p class="mb-0">{{ $trader->formatted_birthdate }}</p>
                                 @if ($trader->age)
                                     <small class="text-muted">({{ $trader->age }} years old)</small>
                                 @endif
                             </div>
                             <div class="col-12">
-                                <label class="form-label fw-bold">{{ __('Email Address') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Email Address', 'admin') }}</label>
                                 <p class="mb-0">
                                     <a href="mailto:{{ $trader->email }}" class="text-primary">{{ $trader->email }}</a>
                                 </p>
@@ -65,24 +65,24 @@
                 <div class="card shadow-sm">
                     <div class="card-header bg-info text-white">
                         <h5 class="mb-0">
-                            <i class="fas fa-phone me-2"></i>{{ __('Contact Information') }}
+                            <i class="fas fa-phone me-2"></i>{{ custom_trans('Contact Information', 'admin') }}
                         </h5>
                     </div>
                     <div class="card-body">
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label class="form-label fw-bold">{{ __('Phone Number') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Phone Number', 'admin') }}</label>
                                 <p class="mb-0">
                                     @if ($trader->phone_number)
                                         <a href="tel:{{ $trader->phone_number }}"
                                             class="text-primary">{{ $trader->phone_number }}</a>
                                     @else
-                                        <span class="text-muted">{{ __('Not provided') }}</span>
+                                        <span class="text-muted">{{ custom_trans('Not provided', 'admin') }}</span>
                                     @endif
                                 </p>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-bold">{{ __('WhatsApp Number') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('WhatsApp Number', 'admin') }}</label>
                                 <p class="mb-0">
                                     @if ($trader->whatsapp_number)
                                         <a href="https://wa.me/{{ $trader->whatsapp_number }}" target="_blank"
@@ -91,17 +91,17 @@
                                             <i class="fab fa-whatsapp ms-1"></i>
                                         </a>
                                     @else
-                                        <span class="text-muted">{{ __('Not provided') }}</span>
+                                        <span class="text-muted">{{ custom_trans('Not provided', 'admin') }}</span>
                                     @endif
                                 </p>
                             </div>
                             <div class="col-12">
-                                <label class="form-label fw-bold">{{ __('Trading Community') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Trading Community', 'admin') }}</label>
                                 <p class="mb-0">
                                     @if ($trader->trading_community)
                                         <span class="badge bg-success">{{ $trader->trading_community }}</span>
                                     @else
-                                        <span class="text-muted">{{ __('Not specified') }}</span>
+                                        <span class="text-muted">{{ custom_trans('Not specified', 'admin') }}</span>
                                     @endif
                                 </p>
                             </div>
@@ -115,13 +115,13 @@
                 <div class="card shadow-sm">
                     <div class="card-header bg-success text-white">
                         <h5 class="mb-0">
-                            <i class="fas fa-briefcase me-2"></i>{{ __('Professional Information') }}
+                            <i class="fas fa-briefcase me-2"></i>{{ custom_trans('Professional Information', 'admin') }}
                         </h5>
                     </div>
                     <div class="card-body">
                         <div class="row g-3">
                             <div class="col-12">
-                                <label class="form-label fw-bold">{{ __('LinkedIn Profile') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('LinkedIn Profile', 'admin') }}</label>
                                 <p class="mb-0">
                                     @if ($trader->linkedin)
                                         <a href="{{ $trader->linkedin }}" target="_blank" class="text-primary">
@@ -129,12 +129,12 @@
                                             <i class="fab fa-linkedin ms-1"></i>
                                         </a>
                                     @else
-                                        <span class="text-muted">{{ __('Not provided') }}</span>
+                                        <span class="text-muted">{{ custom_trans('Not provided', 'admin') }}</span>
                                     @endif
                                 </p>
                             </div>
                             <div class="col-12">
-                                <label class="form-label fw-bold">{{ __('Website') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Website', 'admin') }}</label>
                                 <p class="mb-0">
                                     @if ($trader->website)
                                         <a href="{{ $trader->website }}" target="_blank" class="text-primary">
@@ -142,21 +142,21 @@
                                             <i class="fas fa-external-link-alt ms-1"></i>
                                         </a>
                                     @else
-                                        <span class="text-muted">{{ __('Not provided') }}</span>
+                                        <span class="text-muted">{{ custom_trans('Not provided', 'admin') }}</span>
                                     @endif
                                 </p>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-bold">{{ __('Primary Language') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Primary Language', 'admin') }}</label>
                                 <p class="mb-0">{{ $trader->first_language }}</p>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-bold">{{ __('Secondary Language') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Secondary Language', 'admin') }}</label>
                                 <p class="mb-0">
                                     @if ($trader->second_language)
                                         {{ $trader->second_language }}
                                     @else
-                                        <span class="text-muted">{{ __('Not specified') }}</span>
+                                        <span class="text-muted">{{ custom_trans('Not specified', 'admin') }}</span>
                                     @endif
                                 </p>
                             </div>
@@ -170,26 +170,26 @@
                 <div class="card shadow-sm">
                     <div class="card-header bg-warning text-dark">
                         <h5 class="mb-0">
-                            <i class="fas fa-chart-line me-2"></i>{{ __('Experience & Availability') }}
+                            <i class="fas fa-chart-line me-2"></i>{{ custom_trans('Experience & Availability', 'admin') }}
                         </h5>
                     </div>
                     <div class="card-body">
                         <div class="row g-3">
                             <div class="col-12">
-                                <label class="form-label fw-bold">{{ __('Available Appointments') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Available Appointments', 'admin') }}</label>
                                 <p class="mb-0">
                                     @if ($trader->available_appointments)
                                         {{ $trader->available_appointments }}
                                     @else
-                                        <span class="text-muted">{{ __('Not specified') }}</span>
+                                        <span class="text-muted">{{ custom_trans('Not specified', 'admin') }}</span>
                                     @endif
                                 </p>
                             </div>
                             <div class="col-12">
-                                <label class="form-label fw-bold">{{ __('Status') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Status', 'admin') }}</label>
                                 <p class="mb-0">
                                     <span class="badge bg-{{ $trader->is_active ? 'success' : 'danger' }} fs-6">
-                                        {{ $trader->is_active ? __('Active') : __('Inactive') }}
+                                        {{ $trader->is_active ? custom_trans('Active', 'admin') : custom_trans('Inactive', 'admin') }}
                                     </span>
                                 </p>
                             </div>
@@ -204,7 +204,7 @@
                     <div class="card shadow-sm">
                         <div class="card-header bg-secondary text-white">
                             <h5 class="mb-0">
-                                <i class="fas fa-certificate me-2"></i>{{ __('Certificates') }}
+                                <i class="fas fa-certificate me-2"></i>{{ custom_trans('Certificates', 'admin') }}
                             </h5>
                         </div>
                         <div class="card-body">
@@ -220,7 +220,7 @@
                     <div class="card shadow-sm">
                         <div class="card-header bg-dark text-white">
                             <h5 class="mb-0">
-                                <i class="fas fa-chart-bar me-2"></i>{{ __('Trading Experience') }}
+                                <i class="fas fa-chart-bar me-2"></i>{{ custom_trans('Trading Experience', 'admin') }}
                             </h5>
                         </div>
                         <div class="card-body">
@@ -236,7 +236,7 @@
                     <div class="card shadow-sm">
                         <div class="card-header bg-purple text-white">
                             <h5 class="mb-0">
-                                <i class="fas fa-chalkboard-teacher me-2"></i>{{ __('Training Experience') }}
+                                <i class="fas fa-chalkboard-teacher me-2"></i>{{ custom_trans('Training Experience', 'admin') }}
                             </h5>
                         </div>
                         <div class="card-body">
@@ -252,7 +252,7 @@
                     <div class="card shadow-sm">
                         <div class="card-header bg-light text-dark">
                             <h5 class="mb-0">
-                                <i class="fas fa-comments me-2"></i>{{ __('Comments & Questions') }}
+                                <i class="fas fa-comments me-2"></i>{{ custom_trans('Comments & Questions', 'admin') }}
                             </h5>
                         </div>
                         <div class="card-body">
@@ -267,20 +267,20 @@
                 <div class="card shadow-sm">
                     <div class="card-header bg-light text-dark">
                         <h5 class="mb-0">
-                            <i class="fas fa-info-circle me-2"></i>{{ __('Registration Information') }}
+                            <i class="fas fa-info-circle me-2"></i>{{ custom_trans('Registration Information', 'admin') }}
                         </h5>
                     </div>
                     <div class="card-body">
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label class="form-label fw-bold">{{ __('Registration Date') }}</label>
-                                <p class="mb-0">{{ $trader->created_at->format('F d, Y') }} at
-                                    {{ $trader->created_at->format('H:i') }}</p>
+                                <label class="form-label fw-bold">{{ custom_trans('Registration Date', 'admin') }}</label>
+                                <p class="mb-0">{{ $trader->created_at->format('F d, Y', 'admin') }} at
+                                    {{ $trader->created_at->format('H:i', 'admin') }}</p>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-bold">{{ __('Last Updated') }}</label>
-                                <p class="mb-0">{{ $trader->updated_at->format('F d, Y') }} at
-                                    {{ $trader->updated_at->format('H:i') }}</p>
+                                <label class="form-label fw-bold">{{ custom_trans('Last Updated', 'admin') }}</label>
+                                <p class="mb-0">{{ $trader->updated_at->format('F d, Y', 'admin') }} at
+                                    {{ $trader->updated_at->format('H:i', 'admin') }}</p>
                             </div>
                         </div>
                     </div>
@@ -299,17 +299,17 @@
                             @method('PATCH')
                             <button type="submit" class="btn btn-{{ $trader->is_active ? 'warning' : 'success' }}">
                                 <i class="fas fa-{{ $trader->is_active ? 'ban' : 'check' }} me-1"></i>
-                                {{ $trader->is_active ? __('Deactivate') : __('Activate') }}
+                                {{ $trader->is_active ? custom_trans('Deactivate', 'admin') : custom_trans('Activate', 'admin') }}
                             </button>
                         </form>
                     </div>
                     <div>
                         <form action="{{ route('admin.traders.destroy', $trader) }}" method="POST" class="d-inline"
-                            onsubmit="return confirm('{{ __('Are you sure you want to delete this trader?') }}')">
+                            onsubmit="return confirm('{{ custom_trans('Are you sure you want to delete this trader?', 'admin') }}')">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger">
-                                <i class="fas fa-trash me-1"></i>{{ __('Delete Trader') }}
+                                <i class="fas fa-trash me-1"></i>{{ custom_trans('Delete Trader', 'admin') }}
                             </button>
                         </form>
                     </div>

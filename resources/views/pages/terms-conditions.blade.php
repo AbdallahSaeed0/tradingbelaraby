@@ -19,7 +19,7 @@
             <div class="d-flex justify-content-center mb-2">
                 <span class="contact-label px-4 py-2 rounded-pill bg-white text-dark fw-semibold shadow">
                     <a href="{{ route('home') }}" class="text-dark text-decoration-none hover-primary">
-                        {{ custom_trans('home') }}
+                        {{ custom_trans('home', 'front') }}
                     </a> &nbsp;|&nbsp;
                     {{ $pageTitle }}
                 </span>
@@ -52,7 +52,7 @@
                     <div class="text-center mt-4">
                         <a href="{{ route('home') }}" class="btn btn-primary px-5 py-2">
                             <i class="fas fa-arrow-left me-2"></i>
-                            {{ custom_trans('back_to_home') }}
+                            {{ custom_trans('back_to_home', 'front') }}
                         </a>
                     </div>
                 </div>

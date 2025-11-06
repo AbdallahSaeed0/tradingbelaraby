@@ -25,13 +25,13 @@
         <!-- Success/Error Messages -->
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="fa fa-check-circle me-2"></i>{{ session('success') }}
+                <i class="fa fa-check-circle me-2"></i>{{ session('success', 'admin') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         @endif
         @if (session('error'))
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="fa fa-exclamation-circle me-2"></i>{{ session('error') }}
+                <i class="fa fa-exclamation-circle me-2"></i>{{ session('error', 'admin') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         @endif
@@ -92,7 +92,7 @@
                         <div class="col-md-3">
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fa fa-search"></i></span>
-                                <input type="text" class="form-control" name="search" value="{{ request('search') }}"
+                                <input type="text" class="form-control" name="search" value="{{ request('search', 'admin') }}"
                                     placeholder="Search questions, answers, users...">
                             </div>
                         </div>
@@ -152,14 +152,14 @@
                         <div class="d-flex align-items-center justify-content-between">
                             <div>
                                 <span class="fw-bold text-warning" id="selectedCount">0</span>
-                                {{ __('questions selected') }}
+                                {{ custom_trans('questions selected', 'admin') }}
                             </div>
                             <div>
                                 <button type="button" class="btn btn-danger" id="bulkDeleteBtn" disabled>
-                                    <i class="fas fa-trash me-1"></i>{{ __('Delete Selected') }}
+                                    <i class="fas fa-trash me-1"></i>{{ custom_trans('Delete Selected', 'admin') }}
                                 </button>
                                 <button type="button" class="btn btn-outline-secondary ms-2" id="clearSelection">
-                                    <i class="fas fa-times me-1"></i>{{ __('Clear Selection') }}
+                                    <i class="fas fa-times me-1"></i>{{ custom_trans('Clear Selection', 'admin') }}
                                 </button>
                             </div>
                         </div>
@@ -259,8 +259,8 @@
                                     <td>
                                         @if ($question->created_at)
                                             <small
-                                                class="text-muted">{{ $question->created_at->format('M d, Y') }}</small><br>
-                                            <small class="text-muted">{{ $question->created_at->format('g:i A') }}</small>
+                                                class="text-muted">{{ $question->created_at->format('M d, Y', 'admin') }}</small><br>
+                                            <small class="text-muted">{{ $question->created_at->format('g:i A', 'admin') }}</small>
                                         @else
                                             <small class="text-muted">N/A</small>
                                         @endif
@@ -456,12 +456,12 @@
                         .map(checkbox => checkbox.value);
 
                     if (selectedIds.length === 0) {
-                        alert('{{ __('Please select questions to delete.') }}');
+                        alert('{{ custom_trans('Please select questions to delete.', 'admin') }}');
                         return;
                     }
 
                     if (confirm(
-                            '{{ __('Are you sure you want to delete the selected questions? This action cannot be undone.') }}'
+                            '{{ custom_trans('Are you sure you want to delete the selected questions? This action cannot be undone.', 'admin') }}'
                         )) {
                         // Create form and submit
                         const form = document.createElement('form');

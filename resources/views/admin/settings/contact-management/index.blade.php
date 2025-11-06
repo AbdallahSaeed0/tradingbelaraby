@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', __('Contact Management'))
+@section('title', custom_trans('Contact Management', 'admin'))
 
 @section('content')
     <div class="container-fluid py-4">
@@ -8,18 +8,20 @@
         <div class="page-title-box">
             <div class="row align-items-center">
                 <div class="col-sm-6">
-                    <h4 class="page-title">{{ __('Contact Management') }}</h4>
+                    <h4 class="page-title">{{ custom_trans('Contact Management', 'admin') }}</h4>
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ __('Settings') }}</a>
+                        <li class="breadcrumb-item"><a
+                                href="{{ route('admin.dashboard') }}">{{ custom_trans('Dashboard', 'admin') }}</a></li>
+                        <li class="breadcrumb-item"><a
+                                href="{{ route('admin.settings.index') }}">{{ custom_trans('Settings', 'admin') }}</a>
                         </li>
-                        <li class="breadcrumb-item active">{{ __('Contact Management') }}</li>
+                        <li class="breadcrumb-item active">{{ custom_trans('Contact Management', 'admin') }}</li>
                     </ol>
                 </div>
                 <div class="col-sm-6">
                     <div class="float-end">
                         <a href="{{ route('admin.settings.contact-management.contact-forms') }}" class="btn btn-info">
-                            <i class="fas fa-list me-2"></i>{{ __('View All Submissions') }}
+                            <i class="fas fa-list me-2"></i>{{ custom_trans('View All Submissions', 'admin') }}
                         </a>
                     </div>
                 </div>
@@ -34,7 +36,7 @@
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                    {{ __('Total Submissions') }}</div>
+                                    {{ custom_trans('Total Submissions', 'admin') }}</div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalSubmissions }}</div>
                             </div>
                             <div class="col-auto">
@@ -51,7 +53,7 @@
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                    {{ __('Unread') }}</div>
+                                    {{ custom_trans('Unread', 'admin') }}</div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $unreadSubmissions }}</div>
                             </div>
                             <div class="col-auto">
@@ -68,7 +70,7 @@
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                    {{ __('Read') }}</div>
+                                    {{ custom_trans('Read', 'admin') }}</div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $readSubmissions }}</div>
                             </div>
                             <div class="col-auto">
@@ -85,7 +87,7 @@
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                    {{ __('Replied') }}</div>
+                                    {{ custom_trans('Replied', 'admin') }}</div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $repliedSubmissions }}</div>
                             </div>
                             <div class="col-auto">
@@ -103,10 +105,12 @@
                 <div class="card content-card">
                     <div class="card-header">
                         <h5 class="mb-0">
-                            <i class="fas fa-cog text-primary me-2"></i>{{ __('Contact Information Settings') }}
+                            <i
+                                class="fas fa-cog text-primary me-2"></i>{{ custom_trans('Contact Information Settings', 'admin') }}
                         </h5>
                         <p class="text-muted mb-0">
-                            {{ __('Manage contact details, map settings, and social media links.') }}</p>
+                            {{ custom_trans('Manage contact details, map settings, and social media links.', 'admin') }}
+                        </p>
                     </div>
                     <div class="card-body">
                         <form id="contactSettingsForm">
@@ -114,14 +118,16 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="phone" class="form-label">{{ __('Phone Number') }}</label>
+                                        <label for="phone"
+                                            class="form-label">{{ custom_trans('Phone Number', 'admin') }}</label>
                                         <input type="text" class="form-control" id="phone" name="phone"
                                             value="{{ $contactSettings->phone ?? '' }}" placeholder="+1 234 567 8900">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="email" class="form-label">{{ __('Email Address') }}</label>
+                                        <label for="email"
+                                            class="form-label">{{ custom_trans('Email Address', 'admin') }}</label>
                                         <input type="email" class="form-control" id="email" name="email"
                                             value="{{ $contactSettings->email ?? '' }}" placeholder="info@example.com">
                                     </div>
@@ -129,21 +135,24 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="address" class="form-label">{{ __('Office Address') }}</label>
+                                <label for="address"
+                                    class="form-label">{{ custom_trans('Office Address', 'admin') }}</label>
                                 <textarea class="form-control" id="address" name="address" rows="3" placeholder="Enter your office address">{{ $contactSettings->address ?? '' }}</textarea>
                             </div>
 
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="map_latitude" class="form-label">{{ __('Map Latitude') }}</label>
+                                        <label for="map_latitude"
+                                            class="form-label">{{ custom_trans('Map Latitude', 'admin') }}</label>
                                         <input type="text" class="form-control" id="map_latitude" name="map_latitude"
                                             value="{{ $contactSettings->map_latitude ?? '' }}" placeholder="40.7128">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="map_longitude" class="form-label">{{ __('Map Longitude') }}</label>
+                                        <label for="map_longitude"
+                                            class="form-label">{{ custom_trans('Map Longitude', 'admin') }}</label>
                                         <input type="text" class="form-control" id="map_longitude"
                                             name="map_longitude" value="{{ $contactSettings->map_longitude ?? '' }}"
                                             placeholder="-74.0060">
@@ -152,24 +161,29 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="map_embed_url" class="form-label">{{ __('Google Maps Embed URL') }}</label>
+                                <label for="map_embed_url"
+                                    class="form-label">{{ custom_trans('Google Maps Embed URL', 'admin') }}</label>
                                 <input type="url" class="form-control" id="map_embed_url" name="map_embed_url"
                                     value="{{ $contactSettings->map_embed_url ?? '' }}"
                                     placeholder="https://www.google.com/maps/embed?pb=...">
-                                <div class="form-text">{{ __('Paste the full Google Maps embed URL here.') }}</div>
+                                <div class="form-text">
+                                    {{ custom_trans('Paste the full Google Maps embed URL here.', 'admin') }}
+                                </div>
                             </div>
 
                             <div class="mb-3">
-                                <label for="office_hours" class="form-label">{{ __('Office Hours') }}</label>
+                                <label for="office_hours"
+                                    class="form-label">{{ custom_trans('Office Hours', 'admin') }}</label>
                                 <textarea class="form-control" id="office_hours" name="office_hours" rows="2"
                                     placeholder="Monday - Friday: 9:00 AM - 6:00 PM">{{ $contactSettings->office_hours ?? '' }}</textarea>
                             </div>
 
-                            <h6 class="mb-3">{{ __('Social Media Links') }}</h6>
+                            <h6 class="mb-3">{{ custom_trans('Social Media Links', 'admin') }}</h6>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="social_facebook" class="form-label">{{ __('Facebook URL') }}</label>
+                                        <label for="social_facebook"
+                                            class="form-label">{{ custom_trans('Facebook URL', 'admin') }}</label>
                                         <input type="url" class="form-control" id="social_facebook"
                                             name="social_facebook" value="{{ $contactSettings->social_facebook ?? '' }}"
                                             placeholder="https://facebook.com/...">
@@ -177,7 +191,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="social_twitter" class="form-label">{{ __('Twitter URL') }}</label>
+                                        <label for="social_twitter"
+                                            class="form-label">{{ custom_trans('Twitter URL', 'admin') }}</label>
                                         <input type="url" class="form-control" id="social_twitter"
                                             name="social_twitter" value="{{ $contactSettings->social_twitter ?? '' }}"
                                             placeholder="https://twitter.com/...">
@@ -188,7 +203,8 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="social_youtube" class="form-label">{{ __('YouTube URL') }}</label>
+                                        <label for="social_youtube"
+                                            class="form-label">{{ custom_trans('YouTube URL', 'admin') }}</label>
                                         <input type="url" class="form-control" id="social_youtube"
                                             name="social_youtube" value="{{ $contactSettings->social_youtube ?? '' }}"
                                             placeholder="https://youtube.com/...">
@@ -196,7 +212,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="social_linkedin" class="form-label">{{ __('LinkedIn URL') }}</label>
+                                        <label for="social_linkedin"
+                                            class="form-label">{{ custom_trans('LinkedIn URL', 'admin') }}</label>
                                         <input type="url" class="form-control" id="social_linkedin"
                                             name="social_linkedin" value="{{ $contactSettings->social_linkedin ?? '' }}"
                                             placeholder="https://linkedin.com/...">
@@ -207,7 +224,8 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="social_snapchat" class="form-label">{{ __('Snapchat URL') }}</label>
+                                        <label for="social_snapchat"
+                                            class="form-label">{{ custom_trans('Snapchat URL', 'admin') }}</label>
                                         <input type="url" class="form-control" id="social_snapchat"
                                             name="social_snapchat" value="{{ $contactSettings->social_snapchat ?? '' }}"
                                             placeholder="https://snapchat.com/...">
@@ -215,7 +233,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="social_tiktok" class="form-label">{{ __('TikTok URL') }}</label>
+                                        <label for="social_tiktok"
+                                            class="form-label">{{ custom_trans('TikTok URL', 'admin') }}</label>
                                         <input type="url" class="form-control" id="social_tiktok"
                                             name="social_tiktok" value="{{ $contactSettings->social_tiktok ?? '' }}"
                                             placeholder="https://tiktok.com/...">
@@ -229,12 +248,13 @@
                                     <input class="form-check-input" type="checkbox" id="is_active" name="is_active"
                                         value="1"
                                         {{ $contactSettings && $contactSettings->is_active ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="is_active">{{ __('Active') }}</label>
+                                    <label class="form-check-label"
+                                        for="is_active">{{ custom_trans('Active', 'admin') }}</label>
                                 </div>
                             </div>
 
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save me-2"></i>{{ __('Save Settings') }}
+                                <i class="fas fa-save me-2"></i>{{ custom_trans('Save Settings', 'admin') }}
                             </button>
                         </form>
                     </div>
@@ -246,9 +266,9 @@
                 <div class="card content-card">
                     <div class="card-header">
                         <h5 class="mb-0">
-                            <i class="fas fa-inbox text-info me-2"></i>{{ __('Recent Submissions') }}
+                            <i class="fas fa-inbox text-info me-2"></i>{{ custom_trans('Recent Submissions', 'admin') }}
                         </h5>
-                        <p class="text-muted mb-0">{{ __('Latest contact form submissions.') }}</p>
+                        <p class="text-muted mb-0">{{ custom_trans('Latest contact form submissions.', 'admin') }}</p>
                     </div>
                     <div class="card-body">
                         @forelse($contactForms as $form)
@@ -270,14 +290,14 @@
                                 <div class="mt-2">
                                     <a href="{{ route('admin.settings.contact-management.show', $form->id) }}"
                                         class="btn btn-sm btn-outline-primary">
-                                        <i class="fas fa-eye me-1"></i>{{ __('View') }}
+                                        <i class="fas fa-eye me-1"></i>{{ custom_trans('View', 'admin') }}
                                     </a>
                                 </div>
                             </div>
                         @empty
                             <div class="text-center py-4">
                                 <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
-                                <p class="text-muted">{{ __('No submissions yet.') }}</p>
+                                <p class="text-muted">{{ custom_trans('No submissions yet.', 'admin') }}</p>
                             </div>
                         @endforelse
 
@@ -285,7 +305,7 @@
                             <div class="text-center mt-3">
                                 <a href="{{ route('admin.settings.contact-management.contact-forms') }}"
                                     class="btn btn-outline-primary btn-sm">
-                                    {{ __('View All Submissions') }}
+                                    {{ custom_trans('View All Submissions', 'admin') }}
                                 </a>
                             </div>
                         @endif
@@ -308,7 +328,8 @@
                 const originalText = submitBtn.html();
 
                 submitBtn.prop('disabled', true).html(
-                    '<i class="fas fa-spinner fa-spin me-2"></i>{{ __('Saving...') }}');
+                    '<i class="fas fa-spinner fa-spin me-2"></i>{{ custom_trans('Saving...', 'admin') }}'
+                );
 
                 $.ajax({
                     url: '{{ route('admin.settings.contact-management.update-settings') }}',
@@ -321,11 +342,13 @@
                             toastr.success(response.message);
                         } else {
                             toastr.error(response.message ||
-                                '{{ __('An error occurred while saving.') }}');
+                                '{{ custom_trans('An error occurred while saving.', 'admin') }}'
+                            );
                         }
                     },
                     error: function(xhr) {
-                        let errorMessage = '{{ __('An error occurred while saving.') }}';
+                        let errorMessage =
+                            '{{ custom_trans('An error occurred while saving.', 'admin') }}';
                         if (xhr.responseJSON && xhr.responseJSON.message) {
                             errorMessage = xhr.responseJSON.message;
                         } else if (xhr.responseJSON && xhr.responseJSON.errors) {

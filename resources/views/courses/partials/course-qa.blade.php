@@ -18,10 +18,10 @@
     <div class="container">
         <!-- Header with title and add question button -->
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="fw-bold">{{ custom_trans('Questions & Answers') }} <span
+            <h3 class="fw-bold">{{ custom_trans('Questions & Answers', 'front') }} <span
                     class="text-muted">({{ $allQuestions->count() ?? 0 }})</span></h3>
             <button class="btn btn-orange" data-bs-toggle="modal" data-bs-target="#addQuestionModal">
-                <i class="fa fa-plus me-2"></i>{{ custom_trans('Add New Question') }}
+                <i class="fa fa-plus me-2"></i>{{ custom_trans('Add New Question', 'front') }}
             </button>
         </div>
 
@@ -45,11 +45,11 @@
                             <div class="d-flex justify-content-between align-items-start w-100">
                                 <div>
                                     <div class="qa-user-info text-muted mb-1">
-                                        {{ $question->user->name ?? custom_trans('User') }}
+                                        {{ $question->user->name ?? custom_trans('User', 'front') }}
                                         • {{ $question->created_at->format('jS F Y') }}
                                         @if ($question->user_id === $user?->id && !$question->is_public)
                                             <span
-                                                class="badge bg-warning text-dark ms-2">{{ custom_trans('Pending Approval') }}</span>
+                                                class="badge bg-warning text-dark ms-2">{{ custom_trans('Pending Approval', 'front') }}</span>
                                         @endif
                                     </div>
                                     <h6 class="qa-question-title mb-0">{{ $question->question_title }}</h6>
@@ -57,7 +57,7 @@
                                 <div class="qa-actions d-flex flex-column align-items-end">
                                     <div class="d-flex align-items-center mb-2">
                                         <span class="me-3">{{ $question->answer_content ? 1 : 0 }}
-                                            {{ custom_trans('answers') }}</span>
+                                            {{ custom_trans('answers', 'front') }}</span>
                                         <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal"
                                             data-bs-target="#reportModal">
                                             <i class="fa fa-flag"></i>
@@ -75,7 +75,7 @@
                                             data-bs-target="#addAnswerModal"
                                             data-question="{{ $question->question_title }}"
                                             data-question-id="{{ $question->id }}">
-                                            {{ custom_trans('Add Answer') }}
+                                            {{ custom_trans('Add Answer', 'front') }}
                                         </button>
                                     @endif
                                 </div>
@@ -95,12 +95,12 @@
                                             <div class="qa-user-info text-muted mb-2">
                                                 @if ($question->instructor)
                                                     {{ $question->instructor->name }}
-                                                    ({{ $question->instructor->isInstructor() ? custom_trans('Instructor') : custom_trans('Admin') }})
+                                                    ({{ $question->instructor->isInstructor() ? custom_trans('Instructor', 'front') : custom_trans('Admin', 'front') }})
                                                 @else
-                                                    {{ custom_trans('Instructor') }}
+                                                    {{ custom_trans('Instructor', 'front') }}
                                                 @endif
                                                 •
-                                                {{ $question->answered_at ? $question->answered_at->format('jS F Y') : custom_trans('Recently') }}
+                                                {{ $question->answered_at ? $question->answered_at->format('jS F Y') : custom_trans('Recently', 'front') }}
                                             </div>
                                             <div class="qa-answer-content">
                                                 {!! nl2br(e($question->answer_content)) !!}
@@ -114,7 +114,7 @@
                                                                     type="audio/webm">
                                                                 <source src="{{ $question->audio_url }}"
                                                                     type="audio/mp3">
-                                                                {{ custom_trans('Your browser does not support the audio element.') }}
+                                                                {{ custom_trans('Your browser does not support the audio element.', 'front') }}
                                                             </audio>
                                                         </div>
                                                     </div>
@@ -129,7 +129,7 @@
                                         <div class="flex-grow-1">
                                             <div class="qa-answer-content">
                                                 <p class="text-muted mb-0">
-                                                    {{ custom_trans('No answers yet. Be the first to answer this question!') }}
+                                                    {{ custom_trans('No answers yet. Be the first to answer this question!', 'front') }}
                                                 </p>
                                             </div>
                                         </div>
@@ -144,11 +144,11 @@
                 <div class="text-center py-5">
                     <div class="qa-empty-state">
                         <i class="fa fa-question-circle fa-3x text-muted mb-3"></i>
-                        <h5 class="text-muted mb-2">{{ custom_trans('No questions yet') }}</h5>
+                        <h5 class="text-muted mb-2">{{ custom_trans('No questions yet', 'front') }}</h5>
                         <p class="text-muted mb-4">
-                            {{ custom_trans('Be the first to ask a question about this course!') }}</p>
+                            {{ custom_trans('Be the first to ask a question about this course!', 'front') }}</p>
                         <button class="btn btn-orange" data-bs-toggle="modal" data-bs-target="#addQuestionModal">
-                            <i class="fa fa-plus me-2"></i>{{ custom_trans('Ask First Question') }}
+                            <i class="fa fa-plus me-2"></i>{{ custom_trans('Ask First Question', 'front') }}
                         </button>
                     </div>
                 </div>
@@ -162,7 +162,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addQuestionModalLabel">{{ custom_trans('Add New Question') }}</h5>
+                <h5 class="modal-title" id="addQuestionModalLabel">{{ custom_trans('Add New Question', 'front') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -170,35 +170,35 @@
                     @csrf
                     <input type="hidden" name="course_id" value="{{ $course->id }}">
                     <div class="mb-3">
-                        <label for="qaQuestionTitle" class="form-label">{{ custom_trans('Question Title') }}</label>
+                        <label for="qaQuestionTitle" class="form-label">{{ custom_trans('Question Title', 'front') }}</label>
                         <input type="text" class="form-control" id="qaQuestionTitle" name="question_title"
-                            placeholder="{{ custom_trans('Enter your question title') }}" minlength="3"
+                            placeholder="{{ custom_trans('Enter your question title', 'front') }}" minlength="3"
                             maxlength="500" required>
-                        <div class="form-text">{{ custom_trans('Minimum 3 characters required') }}</div>
+                        <div class="form-text">{{ custom_trans('Minimum 3 characters required', 'front') }}</div>
                     </div>
                     <div class="mb-3">
                         <label for="questionContent"
-                            class="form-label">{{ custom_trans('Question Details') }}</label>
+                            class="form-label">{{ custom_trans('Question Details', 'front') }}</label>
                         <textarea class="form-control" id="questionContent" name="question_content" rows="4"
-                            placeholder="{{ custom_trans('Provide more details about your question...') }}"></textarea>
+                            placeholder="{{ custom_trans('Provide more details about your question...', 'front') }}"></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="questionType" class="form-label">{{ custom_trans('Question Type') }}</label>
+                        <label for="questionType" class="form-label">{{ custom_trans('Question Type', 'front') }}</label>
                         <select class="form-control" id="questionType" name="question_type" required>
-                            <option value="">{{ custom_trans('Select question type') }}</option>
-                            <option value="general">{{ custom_trans('General') }}</option>
-                            <option value="technical">{{ custom_trans('Technical') }}</option>
-                            <option value="assignment">{{ custom_trans('Assignment Help') }}</option>
-                            <option value="schedule">{{ custom_trans('Schedule & Deadlines') }}</option>
-                            <option value="content">{{ custom_trans('Course Content') }}</option>
-                            <option value="other">{{ custom_trans('Other') }}</option>
+                            <option value="">{{ custom_trans('Select question type', 'front') }}</option>
+                            <option value="general">{{ custom_trans('General', 'front') }}</option>
+                            <option value="technical">{{ custom_trans('Technical', 'front') }}</option>
+                            <option value="assignment">{{ custom_trans('Assignment Help', 'front') }}</option>
+                            <option value="schedule">{{ custom_trans('Schedule & Deadlines', 'front') }}</option>
+                            <option value="content">{{ custom_trans('Course Content', 'front') }}</option>
+                            <option value="other">{{ custom_trans('Other', 'front') }}</option>
                         </select>
                     </div>
                     <div class="mb-3">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="isAnonymous" name="is_anonymous">
                             <label class="form-check-label" for="isAnonymous">
-                                {{ custom_trans('Ask anonymously') }}
+                                {{ custom_trans('Ask anonymously', 'front') }}
                             </label>
                         </div>
                     </div>
@@ -206,9 +206,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary"
-                    data-bs-dismiss="modal">{{ custom_trans('Cancel') }}</button>
+                    data-bs-dismiss="modal">{{ custom_trans('Cancel', 'front') }}</button>
                 <button type="button" class="btn btn-orange"
-                    id="submitQuestion">{{ custom_trans('Submit Question') }}</button>
+                    id="submitQuestion">{{ custom_trans('Submit Question', 'front') }}</button>
             </div>
         </div>
     </div>
@@ -220,28 +220,28 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addAnswerModalLabel">{{ custom_trans('Add Answer') }}</h5>
+                <h5 class="modal-title" id="addAnswerModalLabel">{{ custom_trans('Add Answer', 'front') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="mb-3">
-                    <h6 class="text-muted">{{ custom_trans('Question:') }}</h6>
+                    <h6 class="text-muted">{{ custom_trans('Question:', 'front') }}</h6>
                     <p id="answerQuestionTitle" class="fw-bold"></p>
                 </div>
                 <form id="addAnswerForm">
                     @csrf
                     <div class="mb-3">
-                        <label for="answerContent" class="form-label">{{ custom_trans('Your Answer') }}</label>
+                        <label for="answerContent" class="form-label">{{ custom_trans('Your Answer', 'front') }}</label>
                         <textarea class="form-control" id="answerContent" name="answer_content" rows="4"
-                            placeholder="{{ custom_trans('Write your answer here...') }}" required></textarea>
+                            placeholder="{{ custom_trans('Write your answer here...', 'front') }}" required></textarea>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary"
-                    data-bs-dismiss="modal">{{ custom_trans('Cancel') }}</button>
+                    data-bs-dismiss="modal">{{ custom_trans('Cancel', 'front') }}</button>
                 <button type="button" class="btn btn-orange"
-                    id="submitAnswer">{{ custom_trans('Submit Answer') }}</button>
+                    id="submitAnswer">{{ custom_trans('Submit Answer', 'front') }}</button>
             </div>
         </div>
     </div>
@@ -252,32 +252,32 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="reportModalLabel">{{ custom_trans('Report Question') }}</h5>
+                <h5 class="modal-title" id="reportModalLabel">{{ custom_trans('Report Question', 'front') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="reportForm">
                     @csrf
                     <div class="mb-3">
-                        <label for="reportTitle" class="form-label">{{ custom_trans('Report Title') }}</label>
+                        <label for="reportTitle" class="form-label">{{ custom_trans('Report Title', 'front') }}</label>
                         <input type="text" class="form-control" id="reportTitle" name="report_title" required>
                     </div>
                     <div class="mb-3">
-                        <label for="reportEmail" class="form-label">{{ custom_trans('Your Email') }}</label>
+                        <label for="reportEmail" class="form-label">{{ custom_trans('Your Email', 'front') }}</label>
                         <input type="email" class="form-control" id="reportEmail" name="report_email" required>
                     </div>
                     <div class="mb-3">
-                        <label for="reportDetails" class="form-label">{{ custom_trans('Report Details') }}</label>
+                        <label for="reportDetails" class="form-label">{{ custom_trans('Report Details', 'front') }}</label>
                         <textarea class="form-control" id="reportDetails" name="report_details" rows="4"
-                            placeholder="{{ custom_trans('Please provide details about your report...') }}" required></textarea>
+                            placeholder="{{ custom_trans('Please provide details about your report...', 'front') }}" required></textarea>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary"
-                    data-bs-dismiss="modal">{{ custom_trans('Cancel') }}</button>
+                    data-bs-dismiss="modal">{{ custom_trans('Cancel', 'front') }}</button>
                 <button type="button" class="btn btn-danger"
-                    id="submitReport">{{ custom_trans('Submit Report') }}</button>
+                    id="submitReport">{{ custom_trans('Submit Report', 'front') }}</button>
             </div>
         </div>
     </div>
@@ -339,18 +339,18 @@
                 const finalTitle = questionTitle || (titleField ? titleField.value : '');
 
                 if (!finalTitle) {
-                    showToast('{{ custom_trans('Question title is required') }}', 'error');
+                    showToast('{{ custom_trans('Question title is required', 'front') }}', 'error');
                     return;
                 }
 
                 if (finalTitle.trim().length < 3) {
-                    showToast('{{ custom_trans('Question title must be at least 3 characters') }}',
+                    showToast('{{ custom_trans('Question title must be at least 3 characters', 'front') }}',
                         'error');
                     return;
                 }
 
                 if (!questionType) {
-                    showToast('{{ custom_trans('Please select a question type') }}', 'error');
+                    showToast('{{ custom_trans('Please select a question type', 'front') }}', 'error');
                     return;
                 }
 
@@ -358,7 +358,7 @@
                 const submitBtn = this;
                 const originalText = submitBtn.innerHTML;
                 submitBtn.innerHTML =
-                    `<i class="fa fa-spinner fa-spin me-2"></i>{{ custom_trans('Submitting...') }}`;
+                    `<i class="fa fa-spinner fa-spin me-2"></i>{{ custom_trans('Submitting...', 'front') }}`;
                 submitBtn.disabled = true;
 
 
@@ -410,17 +410,17 @@
 
                             // Question is now visible immediately
                             showToast(
-                                '{{ custom_trans('Question submitted successfully!') }}',
+                                '{{ custom_trans('Question submitted successfully!', 'front') }}',
                                 'success');
                         } else {
                             showToast(data.message ||
-                                '{{ custom_trans('Error submitting question') }}', 'error');
+                                '{{ custom_trans('Error submitting question', 'front') }}', 'error');
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
                         showToast(error.message ||
-                            '{{ custom_trans('Error submitting question') }}',
+                            '{{ custom_trans('Error submitting question', 'front') }}',
                             'error');
                     })
                     .finally(() => {
@@ -443,12 +443,12 @@
                 const questionId = this.getAttribute('data-question-id');
 
                 if (content.trim() === '') {
-                    showToast('{{ custom_trans('Please enter your answer') }}', 'error');
+                    showToast('{{ custom_trans('Please enter your answer', 'front') }}', 'error');
                     return;
                 }
 
                 if (!questionId) {
-                    showToast('{{ custom_trans('Question ID not found') }}', 'error');
+                    showToast('{{ custom_trans('Question ID not found', 'front') }}', 'error');
                     return;
                 }
 
@@ -459,7 +459,7 @@
                 @endphp
                 @if (!$isAdmin)
                     showToast(
-                        '{{ custom_trans('Only instructors and administrators can answer questions') }}',
+                        '{{ custom_trans('Only instructors and administrators can answer questions', 'front') }}',
                         'error');
                     return;
                 @endif
@@ -468,7 +468,7 @@
                 const submitBtn = this;
                 const originalText = submitBtn.innerHTML;
                 submitBtn.innerHTML =
-                    `<i class="fa fa-spinner fa-spin me-2"></i>{{ custom_trans('Submitting...') }}`;
+                    `<i class="fa fa-spinner fa-spin me-2"></i>{{ custom_trans('Submitting...', 'front') }}`;
                 submitBtn.disabled = true;
 
                 // Create FormData for answer submission
@@ -522,12 +522,12 @@
                             }, 300);
                         } else {
                             showToast(data.message ||
-                                '{{ custom_trans('Error submitting answer') }}', 'error');
+                                '{{ custom_trans('Error submitting answer', 'front') }}', 'error');
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        showToast(error.message || '{{ custom_trans('Error submitting answer') }}',
+                        showToast(error.message || '{{ custom_trans('Error submitting answer', 'front') }}',
                             'error');
                     })
                     .finally(() => {
@@ -551,12 +551,12 @@
                 const details = document.getElementById('reportDetails').value;
 
                 if (title.trim() === '' || email.trim() === '') {
-                    showToast('{{ custom_trans('Please fill in all required fields') }}', 'error');
+                    showToast('{{ custom_trans('Please fill in all required fields', 'front') }}', 'error');
                     return;
                 }
 
                 // Show success message
-                showToast('{{ custom_trans('Report submitted successfully!') }}', 'success');
+                showToast('{{ custom_trans('Report submitted successfully!', 'front') }}', 'success');
 
                 // Reset form
                 document.getElementById('reportForm').reset();

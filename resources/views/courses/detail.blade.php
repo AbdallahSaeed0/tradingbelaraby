@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-@section('title', ($course->localized_name ?? 'Course') . ' - ' . (\App\Models\MainContentSettings::getActive()?->site_name ??
-    'Site Name'))
+@section('title', ($course->localized_name ?? 'Course') . ' - ' .
+    (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site Name'))
 
-    @section('content')
+@section('content')
     <!-- Banner Section -->
     <section class="course-banner position-relative d-flex align-items-center justify-content-center">
         <img src="https://eclass.mediacity.co.in/demo2/public/images/breadcum/16953680301690548224bdrc-bg.png" alt="Banner"
@@ -13,7 +13,7 @@
             <h1 class="display-4 fw-bold text-white mb-3">Course Detail</h1>
             <div class="d-flex justify-content-center mb-2">
                 <span class="course-label px-4 py-2 rounded-pill bg-white text-dark fw-semibold shadow">
-                    <a href="{{ route('home') }}" class="text-dark text-decoration-none hover-primary">Home</a>
+                    <a href="{{ route('home', 'front') }}" class="text-dark text-decoration-none hover-primary">Home</a>
                     &nbsp;|&nbsp;
                     Course Details
                 </span>
@@ -32,7 +32,8 @@
                 <div class="col-lg-8 mb-4 mb-lg-0">
                     <h2 class="fw-bold mb-4">
                         {{ $course->localized_name }}</h2>
-                    <img src="{{ $course->image_url }}" class="img-fluid rounded-4 mb-4" alt="{{ $course->localized_name }}">
+                    <img src="{{ $course->image_url }}" class="img-fluid rounded-4 mb-4"
+                        alt="{{ $course->localized_name }}">
                     <div class="what-learn-box p-4 rounded-4 border">
                         <h5 class="fw-bold mb-3">What learn</h5>
                         @php
@@ -65,12 +66,12 @@
                     </div>
                     <!-- Meetings Requirements & Description -->
                     <div class="mt-5">
-                        <h4 class="fw-bold mb-3">{{ __('Meetings Requirements') }}</h4>
+                        <h4 class="fw-bold mb-3">{{ custom_trans('Meetings Requirements', 'front') }}</h4>
                         @if (!empty($course->localized_requirements))
                             <div class="mb-3 text-muted fs-1rem">{{ $course->localized_requirements }}</div>
                         @else
                             <div class="mb-3 text-muted fs-1rem">
-                                <i class="fas fa-info-circle me-2"></i>{{ __('Not Found') }}
+                                <i class="fas fa-info-circle me-2"></i>{{ custom_trans('Not Found', 'front') }}
                             </div>
                         @endif
                         <h4 class="fw-bold mb-3">Description</h4>
@@ -286,34 +287,34 @@
                                                 SAR</span>
                                         @endif
                                     @else
-                                        {{ custom_trans('free') }}
+                                        {{ custom_trans('free', 'front') }}
                                     @endif
                                 </span>
                             </li>
                             <li class="list-group-item d-flex align-items-center"><i
                                     class="fa fa-home me-2 text-orange"></i> <span
-                                    class="fw-bold">{{ custom_trans('instructor') }}:</span>
+                                    class="fw-bold">{{ custom_trans('instructor', 'front') }}:</span>
                                 <span class="ms-auto">{{ $course->instructor->name ?? 'Not Found' }}</span>
                             </li>
                             <li class="list-group-item d-flex align-items-center"><i
                                     class="fa fa-book me-2 text-orange"></i> <span
-                                    class="fw-bold">{{ custom_trans('lectures') }}:</span>
+                                    class="fw-bold">{{ custom_trans('lectures', 'front') }}:</span>
                                 <span
                                     class="ms-auto">{{ $course->sections->sum(function ($section) {return $section->lectures->count();}) }}</span>
                             </li>
                             <li class="list-group-item d-flex align-items-center"><i
                                     class="fa fa-clock me-2 text-orange"></i> <span
-                                    class="fw-bold">{{ custom_trans('duration') }}:</span>
+                                    class="fw-bold">{{ custom_trans('duration', 'front') }}:</span>
                                 <span class="ms-auto">{{ $course->duration ?? 'Not Found' }}</span>
                             </li>
                             <li class="list-group-item d-flex align-items-center"><i
                                     class="fa fa-user me-2 text-orange"></i> <span
-                                    class="fw-bold">{{ custom_trans('enrolled') }}:</span>
+                                    class="fw-bold">{{ custom_trans('enrolled', 'front') }}:</span>
                                 <span class="ms-auto">{{ $course->enrolled_students ?? 0 }}</span>
                             </li>
                             <li class="list-group-item d-flex align-items-center"><i
                                     class="fa fa-globe me-2 text-orange"></i> <span
-                                    class="fw-bold">{{ custom_trans('language') }}:</span>
+                                    class="fw-bold">{{ custom_trans('language', 'front') }}:</span>
                                 <span class="ms-auto">{{ $course->language ?? 'Not Found' }}</span>
                             </li>
                         </ul>
@@ -321,16 +322,16 @@
                             @auth
                                 @if (auth()->user()->enrollments()->where('course_id', $course->id)->exists())
                                     <a href="{{ route('courses.learn', $course->id) }}"
-                                        class="btn btn-orange w-100 fw-bold mb-3">{{ custom_trans('go_to_course') }}</a>
+                                        class="btn btn-orange w-100 fw-bold mb-3">{{ custom_trans('go_to_course', 'front') }}</a>
                                 @else
                                     <button class="btn btn-orange w-100 fw-bold mb-3 enroll-btn"
                                         data-course-id="{{ $course->id }}">
-                                        <i class="fas fa-graduation-cap me-2"></i>{{ custom_trans('enroll_now') }}
+                                        <i class="fas fa-graduation-cap me-2"></i>{{ custom_trans('enroll_now', 'front') }}
                                     </button>
                                 @endif
                             @else
-                                <a href="{{ route('login') }}" class="btn btn-orange w-100 fw-bold mb-3">
-                                    <i class="fas fa-graduation-cap me-2"></i>{{ custom_trans('enroll_now') }}
+                                <a href="{{ route('login', 'front') }}" class="btn btn-orange w-100 fw-bold mb-3">
+                                    <i class="fas fa-graduation-cap me-2"></i>{{ custom_trans('enroll_now', 'front') }}
                                 </a>
                             @endauth
                             <div class="d-flex justify-content-between">
@@ -344,7 +345,7 @@
                                             class="fa fa-heart {{ auth()->user()->hasInWishlist($course) ? 'text-danger' : '' }}"></i>
                                     </button>
                                 @else
-                                    <button class="icon-btn" onclick="window.location.href='{{ route('login') }}'">
+                                    <button class="icon-btn" onclick="window.location.href='{{ route('login', 'front') }}'">
                                         <i class="fa fa-heart"></i>
                                     </button>
                                 @endauth
@@ -566,4 +567,3 @@
         });
     </script>
 @endpush
-

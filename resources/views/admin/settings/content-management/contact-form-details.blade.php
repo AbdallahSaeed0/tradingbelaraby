@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', __('Contact Form Details'))
+@section('title', custom_trans('Contact Form Details', 'admin'))
 
 @section('content')
     <div class="container-fluid py-4">
@@ -8,23 +8,23 @@
         <div class="page-title-box">
             <div class="row align-items-center">
                 <div class="col-sm-6">
-                    <h4 class="page-title">{{ __('Contact Form Details') }}</h4>
+                    <h4 class="page-title">{{ custom_trans('Contact Form Details', 'admin') }}</h4>
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ __('Settings') }}</a>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ custom_trans('Dashboard', 'admin') }}</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ custom_trans('Settings', 'admin') }}</a>
                         </li>
                         <li class="breadcrumb-item"><a
-                                href="{{ route('admin.settings.content-management.index') }}">{{ __('Content Management') }}</a>
+                                href="{{ route('admin.settings.content-management.index') }}">{{ custom_trans('Content Management', 'admin') }}</a>
                         </li>
                         <li class="breadcrumb-item"><a
-                                href="{{ route('admin.settings.contact-forms.index') }}">{{ __('Contact Forms') }}</a></li>
-                        <li class="breadcrumb-item active">{{ __('Details') }}</li>
+                                href="{{ route('admin.settings.contact-forms.index') }}">{{ custom_trans('Contact Forms', 'admin') }}</a></li>
+                        <li class="breadcrumb-item active">{{ custom_trans('Details', 'admin') }}</li>
                     </ol>
                 </div>
                 <div class="col-sm-6">
                     <div class="float-end">
                         <a href="{{ route('admin.settings.contact-forms.index') }}" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left me-2"></i>{{ __('Back to List') }}
+                            <i class="fas fa-arrow-left me-2"></i>{{ custom_trans('Back to List', 'admin') }}
                         </a>
                     </div>
                 </div>
@@ -37,30 +37,30 @@
                 <div class="card content-card mb-4">
                     <div class="card-header">
                         <h5 class="mb-0">
-                            <i class="fas fa-envelope text-primary me-2"></i>{{ __('Contact Form Submission') }}
+                            <i class="fas fa-envelope text-primary me-2"></i>{{ custom_trans('Contact Form Submission', 'admin') }}
                         </h5>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">{{ __('Name') }}</label>
+                                    <label class="form-label fw-bold">{{ custom_trans('Name', 'admin') }}</label>
                                     <p class="form-control-plaintext">{{ $contactForm->name }}</p>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">{{ __('Email') }}</label>
+                                    <label class="form-label fw-bold">{{ custom_trans('Email', 'admin') }}</label>
                                     <p class="form-control-plaintext">{{ $contactForm->email }}</p>
                                 </div>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-bold">{{ __('Phone') }}</label>
-                            <p class="form-control-plaintext">{{ $contactForm->phone ?: __('Not provided') }}</p>
+                            <label class="form-label fw-bold">{{ custom_trans('Phone', 'admin') }}</label>
+                            <p class="form-control-plaintext">{{ $contactForm->phone ?: custom_trans('Not provided', 'admin') }}</p>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-bold">{{ __('Message') }}</label>
+                            <label class="form-label fw-bold">{{ custom_trans('Message', 'admin') }}</label>
                             <div class="border rounded p-3 bg-light">
                                 {{ $contactForm->message }}
                             </div>
@@ -68,7 +68,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">{{ __('Status') }}</label>
+                                    <label class="form-label fw-bold">{{ custom_trans('Status', 'admin') }}</label>
                                     <p>
                                         <span
                                             class="badge bg-{{ $contactForm->status === 'new' ? 'danger' : ($contactForm->status === 'read' ? 'warning' : ($contactForm->status === 'replied' ? 'success' : 'secondary')) }}">
@@ -79,22 +79,22 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">{{ __('Submitted') }}</label>
+                                    <label class="form-label fw-bold">{{ custom_trans('Submitted', 'admin') }}</label>
                                     <p class="form-control-plaintext">
-                                        {{ $contactForm->created_at->format('M d, Y H:i:s') }}</p>
+                                        {{ $contactForm->created_at->format('M d, Y H:i:s', 'admin') }}</p>
                                 </div>
                             </div>
                         </div>
                         @if ($contactForm->read_at)
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Read At') }}</label>
-                                <p class="form-control-plaintext">{{ $contactForm->read_at->format('M d, Y H:i:s') }}</p>
+                                <label class="form-label fw-bold">{{ custom_trans('Read At', 'admin') }}</label>
+                                <p class="form-control-plaintext">{{ $contactForm->read_at->format('M d, Y H:i:s', 'admin') }}</p>
                             </div>
                         @endif
                         @if ($contactForm->replied_at)
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Replied At') }}</label>
-                                <p class="form-control-plaintext">{{ $contactForm->replied_at->format('M d, Y H:i:s') }}
+                                <label class="form-label fw-bold">{{ custom_trans('Replied At', 'admin') }}</label>
+                                <p class="form-control-plaintext">{{ $contactForm->replied_at->format('M d, Y H:i:s', 'admin') }}
                                 </p>
                             </div>
                         @endif
@@ -107,32 +107,32 @@
                 <div class="card content-card mb-4">
                     <div class="card-header">
                         <h5 class="mb-0">
-                            <i class="fas fa-cogs text-info me-2"></i>{{ __('Status Management') }}
+                            <i class="fas fa-cogs text-info me-2"></i>{{ custom_trans('Status Management', 'admin') }}
                         </h5>
                     </div>
                     <div class="card-body">
                         <form id="statusForm">
                             @csrf
                             <div class="mb-3">
-                                <label for="status" class="form-label fw-bold">{{ __('Status') }}</label>
+                                <label for="status" class="form-label fw-bold">{{ custom_trans('Status', 'admin') }}</label>
                                 <select class="form-select" id="status" name="status">
                                     <option value="new" {{ $contactForm->status === 'new' ? 'selected' : '' }}>
-                                        {{ __('New') }}</option>
+                                        {{ custom_trans('New', 'admin') }}</option>
                                     <option value="read" {{ $contactForm->status === 'read' ? 'selected' : '' }}>
-                                        {{ __('Read') }}</option>
+                                        {{ custom_trans('Read', 'admin') }}</option>
                                     <option value="replied" {{ $contactForm->status === 'replied' ? 'selected' : '' }}>
-                                        {{ __('Replied') }}</option>
+                                        {{ custom_trans('Replied', 'admin') }}</option>
                                     <option value="closed" {{ $contactForm->status === 'closed' ? 'selected' : '' }}>
-                                        {{ __('Closed') }}</option>
+                                        {{ custom_trans('Closed', 'admin') }}</option>
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label for="admin_notes" class="form-label fw-bold">{{ __('Admin Notes') }}</label>
+                                <label for="admin_notes" class="form-label fw-bold">{{ custom_trans('Admin Notes', 'admin') }}</label>
                                 <textarea class="form-control" id="admin_notes" name="admin_notes" rows="4"
-                                    placeholder="{{ __('Add notes about this submission...') }}">{{ $contactForm->admin_notes }}</textarea>
+                                    placeholder="{{ custom_trans('Add notes about this submission...', 'admin') }}">{{ $contactForm->admin_notes }}</textarea>
                             </div>
                             <button type="submit" class="btn btn-primary w-100">
-                                <i class="fas fa-save me-2"></i>{{ __('Update Status') }}
+                                <i class="fas fa-save me-2"></i>{{ custom_trans('Update Status', 'admin') }}
                             </button>
                         </form>
                     </div>
@@ -142,25 +142,25 @@
                 <div class="card content-card">
                     <div class="card-header">
                         <h5 class="mb-0">
-                            <i class="fas fa-bolt text-warning me-2"></i>{{ __('Quick Actions') }}
+                            <i class="fas fa-bolt text-warning me-2"></i>{{ custom_trans('Quick Actions', 'admin') }}
                         </h5>
                     </div>
                     <div class="card-body">
                         <div class="d-grid gap-2">
                             <button type="button" class="btn btn-outline-success mark-read-btn"
                                 {{ $contactForm->status === 'read' ? 'disabled' : '' }}>
-                                <i class="fas fa-eye me-2"></i>{{ __('Mark as Read') }}
+                                <i class="fas fa-eye me-2"></i>{{ custom_trans('Mark as Read', 'admin') }}
                             </button>
                             <button type="button" class="btn btn-outline-info mark-replied-btn"
                                 {{ $contactForm->status === 'replied' ? 'disabled' : '' }}>
-                                <i class="fas fa-reply me-2"></i>{{ __('Mark as Replied') }}
+                                <i class="fas fa-reply me-2"></i>{{ custom_trans('Mark as Replied', 'admin') }}
                             </button>
                             <button type="button" class="btn btn-outline-secondary mark-closed-btn"
                                 {{ $contactForm->status === 'closed' ? 'disabled' : '' }}>
-                                <i class="fas fa-times me-2"></i>{{ __('Mark as Closed') }}
+                                <i class="fas fa-times me-2"></i>{{ custom_trans('Mark as Closed', 'admin') }}
                             </button>
                             <button type="button" class="btn btn-outline-danger delete-form-btn">
-                                <i class="fas fa-trash me-2"></i>{{ __('Delete Submission') }}
+                                <i class="fas fa-trash me-2"></i>{{ custom_trans('Delete Submission', 'admin') }}
                             </button>
                         </div>
                     </div>
@@ -202,7 +202,7 @@
                     },
                     error: function() {
                         toastr.error(
-                            '{{ __('An error occurred while updating the status') }}');
+                            '{{ custom_trans('An error occurred while updating the status', 'admin') }}');
                     }
                 });
             });
@@ -239,14 +239,14 @@
                         }
                     },
                     error: function() {
-                        toastr.error('{{ __('An error occurred while updating the status') }}');
+                        toastr.error('{{ custom_trans('An error occurred while updating the status', 'admin') }}');
                     }
                 });
             }
 
             // Delete Form
             $('.delete-form-btn').on('click', function() {
-                if (confirm('{{ __('Are you sure you want to delete this contact form submission?') }}')) {
+                if (confirm('{{ custom_trans('Are you sure you want to delete this contact form submission?', 'admin') }}')) {
                     $.ajax({
                         url: '{{ route('admin.settings.contact-forms.destroy', $contactForm) }}',
                         method: 'DELETE',
@@ -266,7 +266,7 @@
                         },
                         error: function() {
                             toastr.error(
-                                '{{ __('An error occurred while deleting the submission') }}'
+                                '{{ custom_trans('An error occurred while deleting the submission', 'admin') }}'
                             );
                         }
                     });

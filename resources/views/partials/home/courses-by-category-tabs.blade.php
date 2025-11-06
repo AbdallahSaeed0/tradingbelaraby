@@ -5,10 +5,11 @@
             <!-- Section Header -->
             <div class="text-center mb-5">
                 <span class="text-warning fw-bold mb-2 d-block fs-11">
-                    <i class="fas fa-th-large"></i> {{ __('Explore by Category') }}
+                    <i class="fas fa-th-large"></i> {{ custom_trans('Explore by Category', 'front') }}
                 </span>
-                <h2 class="fw-bold mb-3 fs-25">{{ __('Browse Courses by Category') }}</h2>
-                <p class="text-muted">{{ __('Find the perfect course for your learning journey') }}</p>
+                <h2 class="fw-bold mb-3 fs-25">{{ custom_trans('Browse Courses by Category', 'front') }}</h2>
+                <p class="text-muted">{{ custom_trans('Find the perfect course for your learning journey', 'front') }}
+                </p>
             </div>
 
             <!-- Category Tabs -->
@@ -59,7 +60,8 @@
                                                         alt="{{ $course->localized_name }}">
 
                                                     @if ($course->is_featured)
-                                                        <span class="badge badge-green">{{ __('Featured') }}</span>
+                                                        <span
+                                                            class="badge badge-green">{{ custom_trans('Featured', 'front') }}</span>
                                                     @endif
 
                                                     @if ($course->is_discounted)
@@ -104,7 +106,8 @@
                                                         {{ Str::limit($course->localized_description, 80) }}
                                                     </p>
                                                     <a href="{{ route('courses.show', $course) }}"
-                                                        class="read-more">{{ __('Read More') }} &rarr;</a>
+                                                        class="read-more">{{ custom_trans('Read More', 'front') }}
+                                                        &rarr;</a>
                                                     <img src="https://eclass.mediacity.co.in/demo2/public/frontcss/img/icon/cou-icon.png"
                                                         class="book-icon" alt="book">
                                                 </div>
@@ -116,14 +119,16 @@
 
                             <div class="text-center mt-4">
                                 <a href="{{ route('categories.show', $category) }}" class="btn btn-outline-primary">
-                                    {{ __('View All') }} {{ $category->localized_name }} {{ __('Courses') }}
+                                    {{ custom_trans('View All', 'front') }} {{ $category->localized_name }}
+                                    {{ custom_trans('Courses', 'front') }}
                                     <i class="fas fa-arrow-right ms-2"></i>
                                 </a>
                             </div>
                         @else
                             <div class="text-center py-5">
                                 <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
-                                <p class="text-muted">{{ __('No courses available in this category yet.') }}</p>
+                                <p class="text-muted">
+                                    {{ custom_trans('No courses available in this category yet.', 'front') }}</p>
                             </div>
                         @endif
                     </div>
@@ -134,7 +139,7 @@
             @if ($allCategories->count() > 6)
                 <div class="text-center mt-5">
                     <a href="{{ route('categories.index') }}" class="btn btn-primary btn-lg">
-                        {{ __('View All Categories') }}
+                        {{ custom_trans('View All Categories', 'front') }}
                         <i class="fas fa-arrow-right ms-2"></i>
                     </a>
                 </div>

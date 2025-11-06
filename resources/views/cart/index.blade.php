@@ -8,8 +8,8 @@
         <div class="container">
             <div class="row justify-content-center text-center">
                 <div class="col-lg-8">
-                    <h1 class="fw-bold mb-3">{{ custom_trans('shopping_cart') }}</h1>
-                    <p class="lead mb-0">{{ custom_trans('cart_description') }}</p>
+                    <h1 class="fw-bold mb-3">{{ custom_trans('shopping_cart', 'front') }}</h1>
+                    <p class="lead mb-0">{{ custom_trans('cart_description', 'front') }}</p>
                 </div>
             </div>
         </div>
@@ -60,12 +60,12 @@
                                                         </div>
                                                     @endif
                                                 @else
-                                                    <span class="free-course-badge">{{ custom_trans('free') }}</span>
+                                                    <span class="free-course-badge">{{ custom_trans('free', 'front') }}</span>
                                                 @endif
                                             </div>
                                             <button class="btn btn-sm btn-outline-danger remove-cart-btn"
                                                 data-course-id="{{ $item->course->id }}">
-                                                <i class="fas fa-trash me-1"></i>{{ custom_trans('remove') }}
+                                                <i class="fas fa-trash me-1"></i>{{ custom_trans('remove', 'front') }}
                                             </button>
                                         </div>
                                     </div>
@@ -77,17 +77,17 @@
                     <!-- Cart Summary -->
                     <div class="col-lg-4">
                         <div class="total-section mb-4">
-                            <h4 class="fw-bold mb-3">{{ custom_trans('order_summary') }}</h4>
+                            <h4 class="fw-bold mb-3">{{ custom_trans('order_summary', 'front') }}</h4>
 
                             <!-- Subtotal -->
                             <div class="d-flex justify-content-between mb-2">
-                                <span>{{ custom_trans('subtotal') }}</span>
+                                <span>{{ custom_trans('subtotal', 'front') }}</span>
                                 <span class="fw-bold">₹{{ number_format($total, 2) }}</span>
                             </div>
 
                             <!-- Discount -->
                             <div class="d-flex justify-content-between mb-2 discount-row d-none">
-                                <span>{{ custom_trans('discount') }}</span>
+                                <span>{{ custom_trans('discount', 'front') }}</span>
                                 <span class="fw-bold discount-applied">-₹0.00</span>
                             </div>
 
@@ -95,28 +95,28 @@
 
                             <!-- Total -->
                             <div class="d-flex justify-content-between mb-3">
-                                <span class="fw-bold">{{ custom_trans('total') }}</span>
+                                <span class="fw-bold">{{ custom_trans('total', 'front') }}</span>
                                 <span class="fw-bold total-amount">₹{{ number_format($total, 2) }}</span>
                             </div>
 
                             <!-- Checkout Button -->
                             <a href="{{ route('checkout.index') }}" class="btn checkout-btn w-100">
                                 <i class="fas fa-credit-card me-2"></i>
-                                {{ custom_trans('proceed_to_checkout') }}
+                                {{ custom_trans('proceed_to_checkout', 'front') }}
                             </a>
                         </div>
 
                         <!-- Coupon Section -->
                         <div class="coupon-section">
-                            <h5 class="fw-bold mb-3">{{ custom_trans('apply_coupon') }}</h5>
+                            <h5 class="fw-bold mb-3">{{ custom_trans('apply_coupon', 'front') }}</h5>
                             <div class="input-group mb-3">
                                 <input type="text" class="form-control" id="couponCode"
-                                    placeholder="{{ custom_trans('enter_coupon_code') }}">
+                                    placeholder="{{ custom_trans('enter_coupon_code', 'front') }}">
                                 <button class="btn btn-outline-primary" type="button" id="applyCoupon">
-                                    {{ custom_trans('apply') }}
+                                    {{ custom_trans('apply', 'front') }}
                                 </button>
                             </div>
-                            <small class="text-muted">{{ custom_trans('coupon_description') }}</small>
+                            <small class="text-muted">{{ custom_trans('coupon_description', 'front') }}</small>
                         </div>
                     </div>
                 </div>
@@ -125,10 +125,10 @@
                     <div class="col-lg-6 text-center">
                         <div class="empty-cart py-5">
                             <i class="fas fa-shopping-cart fa-4x text-muted mb-4"></i>
-                            <h3 class="fw-bold mb-3">{{ custom_trans('empty_cart') }}</h3>
-                            <p class="text-muted mb-4">{{ custom_trans('empty_cart_message') }}</p>
+                            <h3 class="fw-bold mb-3">{{ custom_trans('empty_cart', 'front') }}</h3>
+                            <p class="text-muted mb-4">{{ custom_trans('empty_cart_message', 'front') }}</p>
                             <a href="{{ route('categories.index') }}" class="btn btn-primary">
-                                <i class="fas fa-search me-2"></i>{{ custom_trans('browse_courses') }}
+                                <i class="fas fa-search me-2"></i>{{ custom_trans('browse_courses', 'front') }}
                             </a>
                         </div>
                     </div>
@@ -147,7 +147,7 @@
 
             removeButtons.forEach(button => {
                 button.addEventListener('click', function() {
-                    if (confirm('{{ custom_trans('remove_from_cart_confirm') }}')) {
+                    if (confirm('{{ custom_trans('remove_from_cart_confirm', 'front') }}')) {
                         const courseId = this.dataset.courseId;
 
                         fetch(`/cart/${courseId}/remove`, {
@@ -225,7 +225,7 @@
                         })
                         .finally(() => {
                             this.disabled = false;
-                            this.innerHTML = '{{ custom_trans('apply') }}';
+                            this.innerHTML = '{{ custom_trans('apply', 'front') }}';
                         });
                 });
             }

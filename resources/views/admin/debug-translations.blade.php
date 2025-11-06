@@ -59,9 +59,9 @@
                         </ul>
 
                         <h6>Custom Function Test (Auto-detect):</h6>
-                        <p>custom_trans('courses'): "{{ custom_trans('courses') }}" (auto-detected as admin)</p>
-                        <p>custom_trans('admins'): "{{ custom_trans('admins') }}" (auto-detected as admin)</p>
-                        <p>custom_trans('home'): "{{ custom_trans('home') }}" (auto-detected as admin)</p>
+                        <p>custom_trans('courses', 'admin'): "{{ custom_trans('courses', 'admin') }}" (auto-detected as admin)</p>
+                        <p>custom_trans('admins', 'admin'): "{{ custom_trans('admins', 'admin') }}" (auto-detected as admin)</p>
+                        <p>custom_trans('home', 'admin'): "{{ custom_trans('home', 'admin') }}" (auto-detected as admin)</p>
 
                         <h6>Route Information:</h6>
                         <p>Current route name: {{ request()->route() ? request()->route()->getName() : 'No route' }}</p>

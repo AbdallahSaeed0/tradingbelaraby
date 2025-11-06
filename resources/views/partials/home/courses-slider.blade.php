@@ -8,9 +8,9 @@
         <div class="d-flex justify-content-between mb-3">
             <div class="mb-4">
                 <span class="text-warning fw-bold mb-2 d-block fs-11">
-                    <i class="fas fa-star"></i> {{ __('Our Courses') }}
+                    <i class="fas fa-star"></i> {{ custom_trans('Our Courses', 'front') }}
                 </span>
-                <h2 class="fw-bold mb-3 fs-25">{{ __('Our Courses') }}</h2>
+                <h2 class="fw-bold mb-3 fs-25">{{ custom_trans('Our Courses', 'front') }}</h2>
             </div>
             <div class="buts d-flex align-items-center">
                 <button class="btn btn-danger me-2 px-4 py-2 rounded-3 swiper-button-prev"></button>
@@ -28,7 +28,7 @@
                                     alt="{{ $course->localized_name }}">
 
                                 @if ($course->is_featured)
-                                    <span class="badge badge-green">{{ __('Featured') }}</span>
+                                    <span class="badge badge-green">{{ custom_trans('Featured', 'front') }}</span>
                                 @endif
 
                                 @if ($course->is_discounted)
@@ -65,7 +65,7 @@
                                     </a>
                                 </h5>
                                 <p class="course-desc">{{ Str::limit($course->localized_description, 80) }}</p>
-                                <a href="{{ route('courses.show', $course) }}" class="read-more">{{ __('Read More') }}
+                                <a href="{{ route('courses.show', $course) }}" class="read-more">{{ custom_trans('Read More', 'front') }}
                                     &rarr;</a>
                                 <img src="https://eclass.mediacity.co.in/demo2/public/frontcss/img/icon/cou-icon.png"
                                     class="book-icon" alt="book">
@@ -79,7 +79,7 @@
                             <div class="course-img-wrap">
                                 <img src="https://eclass.mediacity.co.in/demo2/public/images/course/man-filming-with-professional-camera.jpg"
                                     class="course-img" alt="Sample Course">
-                                <span class="badge badge-green">{{ __('Featured') }}</span>
+                                <span class="badge badge-green">{{ custom_trans('Featured', 'front') }}</span>
                                 <span class="price-badge">
                                     <span class="discounted">99.99 SAR</span>
                                 </span>
@@ -91,11 +91,11 @@
                                 </div>
                             </div>
                             <div class="course-card-body">
-                                <h5 class="course-title">{{ __('Sample Course') }}</h5>
+                                <h5 class="course-title">{{ custom_trans('Sample Course', 'front') }}</h5>
                                 <p class="course-desc">
-                                    {{ __('This is a sample course description. Add some featured courses to see them here.') }}
+                                    {{ custom_trans('This is a sample course description. Add some featured courses to see them here.', 'front') }}
                                 </p>
-                                <a href="#" class="read-more">{{ __('Read More') }} &rarr;</a>
+                                <a href="#" class="read-more">{{ custom_trans('Read More', 'front') }} &rarr;</a>
                                 <img src="https://eclass.mediacity.co.in/demo2/public/frontcss/img/icon/cou-icon.png"
                                     class="book-icon" alt="book">
                             </div>

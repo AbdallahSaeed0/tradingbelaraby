@@ -14,7 +14,7 @@
                 <!-- Timer -->
                 <div class="quiz-timer bg-white text-dark px-4 py-2 rounded-pill fw-bold shadow">
                     <i class="fa fa-clock me-2 text-orange"></i>
-                    {{ __('Quiz Timer') }}: <span id="timer">{{ $quiz->time_limit_minutes ?? '∞' }}</span>
+                    {{ custom_trans('Quiz Timer', 'front') }}: <span id="timer">{{ $quiz->time_limit_minutes ?? '∞' }}</span>
                 </div>
             </div>
         </div>
@@ -56,7 +56,7 @@
                             @else
                                 <div class="alert alert-info">
                                     <i class="fa fa-info-circle me-2"></i>
-                                    {{ __('This question type does not have multiple choice options.') }}
+                                    {{ custom_trans('This question type does not have multiple choice options.', 'front') }}
                                 </div>
                             @endif
                         </div>
@@ -64,11 +64,11 @@
                         <!-- Navigation Buttons -->
                         <div class="quiz-navigation d-flex justify-content-between align-items-center">
                             <button class="btn btn-outline-secondary px-4 py-2 fw-bold d-none-initially" id="prevBtn">
-                                <i class="fa fa-arrow-left me-2"></i>{{ __('Previous') }}
+                                <i class="fa fa-arrow-left me-2"></i>{{ custom_trans('Previous', 'front') }}
                             </button>
                             <div class="flex-grow-1"></div>
                             <button class="btn btn-orange px-4 py-2 fw-bold" id="nextBtn">
-                                {{ __('Next') }}<i class="fa fa-arrow-right ms-2"></i>
+                                {{ custom_trans('Next', 'front') }}<i class="fa fa-arrow-right ms-2"></i>
                             </button>
                         </div>
                     </div>
@@ -84,32 +84,32 @@
             <div class="modal-content">
                 <div class="modal-header bg-success text-white">
                     <h5 class="modal-title" id="quizCompleteModalLabel">
-                        <i class="fa fa-trophy me-2"></i>{{ __('Quiz Completed!') }}
+                        <i class="fa fa-trophy me-2"></i>{{ custom_trans('Quiz Completed!', 'front') }}
                     </h5>
                 </div>
                 <div class="modal-body text-center py-5">
                     <div class="mb-4">
                         <i class="fa fa-check-circle text-success fs-4rem"></i>
                     </div>
-                    <h4 class="fw-bold mb-3">{{ __('Congratulations!') }}</h4>
-                    <p class="text-muted mb-4">{{ __('You have successfully completed the quiz.') }}</p>
+                    <h4 class="fw-bold mb-3">{{ custom_trans('Congratulations!', 'front') }}</h4>
+                    <p class="text-muted mb-4">{{ custom_trans('You have successfully completed the quiz.', 'front') }}</p>
                     <div class="quiz-results">
                         <div class="row g-3">
                             <div class="col-md-4">
                                 <div class="result-card bg-light p-3 rounded">
-                                    <div class="fw-bold text-primary">{{ __('Score') }}</div>
+                                    <div class="fw-bold text-primary">{{ custom_trans('Score', 'front') }}</div>
                                     <div class="fs-4 fw-bold" id="finalScore">-/-</div>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="result-card bg-light p-3 rounded">
-                                    <div class="fw-bold text-primary">{{ __('Percentage') }}</div>
+                                    <div class="fw-bold text-primary">{{ custom_trans('Percentage', 'front') }}</div>
                                     <div class="fs-4 fw-bold" id="finalPercentage">-</div>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="result-card bg-light p-3 rounded">
-                                    <div class="fw-bold text-primary">{{ __('Time Taken') }}</div>
+                                    <div class="fw-bold text-primary">{{ custom_trans('Time Taken', 'front') }}</div>
                                     <div class="fs-4 fw-bold" id="timeTaken">-</div>
                                 </div>
                             </div>
@@ -117,10 +117,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('Close') }}</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ custom_trans('Close', 'front') }}</button>
                     <a href="{{ route('quizzes.results', ['quiz' => $quiz, 'attempt' => $attempt]) }}"
                         class="btn btn-success">
-                        <i class="fa fa-chart-bar me-2"></i>{{ __('View Detailed Results') }}
+                        <i class="fa fa-chart-bar me-2"></i>{{ custom_trans('View Detailed Results', 'front') }}
                     </a>
                 </div>
             </div>
@@ -280,9 +280,9 @@
 
             // Update next button text
             if (currentQuestion === quizData.length - 1) {
-                nextBtn.innerHTML = '{{ __('Finish Quiz') }}<i class="fa fa-check ms-2"></i>';
+                nextBtn.innerHTML = '{{ custom_trans('Finish Quiz', 'front') }}<i class="fa fa-check ms-2"></i>';
             } else {
-                nextBtn.innerHTML = '{{ __('Next') }}<i class="fa fa-arrow-right ms-2"></i>';
+                nextBtn.innerHTML = '{{ custom_trans('Next', 'front') }}<i class="fa fa-arrow-right ms-2"></i>';
             }
         }
 

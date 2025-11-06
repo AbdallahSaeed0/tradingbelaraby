@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', __('Testimonials Management'))
+@section('title', custom_trans('Testimonials Management', 'admin'))
 
 @section('content')
     <div class="container-fluid py-4">
@@ -8,19 +8,19 @@
         <div class="page-title-box">
             <div class="row align-items-center">
                 <div class="col-sm-6">
-                    <h4 class="page-title">{{ __('Testimonials Management') }}</h4>
+                    <h4 class="page-title">{{ custom_trans('Testimonials Management', 'admin') }}</h4>
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ __('Settings') }}</a>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ custom_trans('Dashboard', 'admin') }}</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ custom_trans('Settings', 'admin') }}</a>
                         </li>
-                        <li class="breadcrumb-item active">{{ __('Testimonials') }}</li>
+                        <li class="breadcrumb-item active">{{ custom_trans('Testimonials', 'admin') }}</li>
                     </ol>
                 </div>
                 <div class="col-sm-6">
                     <div class="float-end">
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                             data-bs-target="#addTestimonialModal">
-                            <i class="fas fa-plus me-2"></i>{{ __('Add Testimonial') }}
+                            <i class="fas fa-plus me-2"></i>{{ custom_trans('Add Testimonial', 'admin') }}
                         </button>
                     </div>
                 </div>
@@ -33,38 +33,38 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="mb-3">
-                            <label for="search" class="form-label">{{ __('Search') }}</label>
+                            <label for="search" class="form-label">{{ custom_trans('Search', 'admin') }}</label>
                             <input type="text" class="form-control" id="search"
-                                placeholder="{{ __('Search testimonials...') }}">
+                                placeholder="{{ custom_trans('Search testimonials...', 'admin') }}">
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="mb-3">
-                            <label for="status" class="form-label">{{ __('Status') }}</label>
+                            <label for="status" class="form-label">{{ custom_trans('Status', 'admin') }}</label>
                             <select class="form-select" id="status">
-                                <option value="">{{ __('All') }}</option>
-                                <option value="active">{{ __('Active') }}</option>
-                                <option value="inactive">{{ __('Inactive') }}</option>
+                                <option value="">{{ custom_trans('All', 'admin') }}</option>
+                                <option value="active">{{ custom_trans('Active', 'admin') }}</option>
+                                <option value="inactive">{{ custom_trans('Inactive', 'admin') }}</option>
                             </select>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="mb-3">
-                            <label for="sort" class="form-label">{{ __('Sort By') }}</label>
+                            <label for="sort" class="form-label">{{ custom_trans('Sort By', 'admin') }}</label>
                             <select class="form-select" id="sort">
-                                <option value="order">{{ __('Order') }}</option>
-                                <option value="name">{{ __('Name') }}</option>
-                                <option value="created_at">{{ __('Created Date') }}</option>
-                                <option value="rating">{{ __('Rating') }}</option>
+                                <option value="order">{{ custom_trans('Order', 'admin') }}</option>
+                                <option value="name">{{ custom_trans('Name', 'admin') }}</option>
+                                <option value="created_at">{{ custom_trans('Created Date', 'admin') }}</option>
+                                <option value="rating">{{ custom_trans('Rating', 'admin') }}</option>
                             </select>
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="mb-3">
-                            <label for="direction" class="form-label">{{ __('Direction') }}</label>
+                            <label for="direction" class="form-label">{{ custom_trans('Direction', 'admin') }}</label>
                             <select class="form-select" id="direction">
-                                <option value="asc">{{ __('Ascending') }}</option>
-                                <option value="desc">{{ __('Descending') }}</option>
+                                <option value="asc">{{ custom_trans('Ascending', 'admin') }}</option>
+                                <option value="desc">{{ custom_trans('Descending', 'admin') }}</option>
                             </select>
                         </div>
                     </div>
@@ -78,22 +78,22 @@
                 <div class="row align-items-center">
                     <div class="col">
                         <h5 class="mb-0">
-                            <i class="fas fa-quote-left text-primary me-2"></i>{{ __('All Testimonials') }}
+                            <i class="fas fa-quote-left text-primary me-2"></i>{{ custom_trans('All Testimonials', 'admin') }}
                         </h5>
                     </div>
                     <div class="col-auto">
                         <div class="btn-group" role="group">
                             <button type="button" class="btn btn-outline-success bulk-action-btn" data-action="activate"
                                 disabled>
-                                <i class="fas fa-check me-1"></i>{{ __('Activate') }}
+                                <i class="fas fa-check me-1"></i>{{ custom_trans('Activate', 'admin') }}
                             </button>
                             <button type="button" class="btn btn-outline-warning bulk-action-btn" data-action="deactivate"
                                 disabled>
-                                <i class="fas fa-pause me-1"></i>{{ __('Deactivate') }}
+                                <i class="fas fa-pause me-1"></i>{{ custom_trans('Deactivate', 'admin') }}
                             </button>
                             <button type="button" class="btn btn-outline-danger bulk-action-btn" data-action="delete"
                                 disabled>
-                                <i class="fas fa-trash me-1"></i>{{ __('Delete') }}
+                                <i class="fas fa-trash me-1"></i>{{ custom_trans('Delete', 'admin') }}
                             </button>
                         </div>
                     </div>
@@ -109,16 +109,16 @@
                                         <input class="form-check-input" type="checkbox" id="select_all">
                                     </div>
                                 </th>
-                                <th width="80">{{ __('Order') }}</th>
-                                <th width="80">{{ __('Avatar') }}</th>
-                                <th>{{ __('Name') }}</th>
-                                <th>{{ __('Name (AR)') }}</th>
-                                <th>{{ __('Position') }}</th>
-                                <th>{{ __('Company') }}</th>
-                                <th>{{ __('Content') }}</th>
-                                <th width="80">{{ __('Rating') }}</th>
-                                <th width="100">{{ __('Status') }}</th>
-                                <th width="120">{{ __('Actions') }}</th>
+                                <th width="80">{{ custom_trans('Order', 'admin') }}</th>
+                                <th width="80">{{ custom_trans('Avatar', 'admin') }}</th>
+                                <th>{{ custom_trans('Name', 'admin') }}</th>
+                                <th>{{ custom_trans('Name (AR)', 'admin') }}</th>
+                                <th>{{ custom_trans('Position', 'admin') }}</th>
+                                <th>{{ custom_trans('Company', 'admin') }}</th>
+                                <th>{{ custom_trans('Content', 'admin') }}</th>
+                                <th width="80">{{ custom_trans('Rating', 'admin') }}</th>
+                                <th width="100">{{ custom_trans('Status', 'admin') }}</th>
+                                <th width="120">{{ custom_trans('Actions', 'admin') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -176,7 +176,7 @@
                                     <td colspan="11" class="text-center py-4">
                                         <div class="text-muted">
                                             <i class="fas fa-quote-left fa-3x mb-3"></i>
-                                            <p>{{ __('No testimonials found') }}</p>
+                                            <p>{{ custom_trans('No testimonials found', 'admin') }}</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -273,7 +273,7 @@
                 const action = $(this).data('action');
 
                 if (selectedTestimonials.length === 0) {
-                    toastr.warning('{{ __('Please select testimonials first') }}');
+                    toastr.warning('{{ custom_trans('Please select testimonials first', 'admin') }}');
                     return;
                 }
 
@@ -281,15 +281,15 @@
                 switch (action) {
                     case 'activate':
                         confirmMessage =
-                            '{{ __('Are you sure you want to activate the selected testimonials?') }}';
+                            '{{ custom_trans('Are you sure you want to activate the selected testimonials?', 'admin') }}';
                         break;
                     case 'deactivate':
                         confirmMessage =
-                            '{{ __('Are you sure you want to deactivate the selected testimonials?') }}';
+                            '{{ custom_trans('Are you sure you want to deactivate the selected testimonials?', 'admin') }}';
                         break;
                     case 'delete':
                         confirmMessage =
-                            '{{ __('Are you sure you want to delete the selected testimonials? This action cannot be undone.') }}';
+                            '{{ custom_trans('Are you sure you want to delete the selected testimonials? This action cannot be undone.', 'admin') }}';
                         break;
                 }
 
@@ -314,7 +314,7 @@
                         },
                         error: function() {
                             toastr.error(
-                                '{{ __('An error occurred while performing the bulk action') }}'
+                                '{{ custom_trans('An error occurred while performing the bulk action', 'admin') }}'
                             );
                         }
                     });
@@ -341,7 +341,7 @@
                     },
                     error: function() {
                         toastr.error(
-                            '{{ __('An error occurred while updating the status') }}');
+                            '{{ custom_trans('An error occurred while updating the status', 'admin') }}');
                         // Revert the checkbox
                         $(this).prop('checked', !isChecked);
                     }
@@ -352,7 +352,7 @@
             $(document).on('click', '.delete-testimonial-btn', function() {
                 const testimonialId = $(this).data('id');
 
-                if (confirm('{{ __('Are you sure you want to delete this testimonial?') }}')) {
+                if (confirm('{{ custom_trans('Are you sure you want to delete this testimonial?', 'admin') }}')) {
                     $.ajax({
                         url: `/admin/settings/testimonials/${testimonialId}`,
                         method: 'DELETE',
@@ -371,7 +371,7 @@
                         },
                         error: function() {
                             toastr.error(
-                                '{{ __('An error occurred while deleting the testimonial') }}'
+                                '{{ custom_trans('An error occurred while deleting the testimonial', 'admin') }}'
                             );
                         }
                     });
@@ -404,7 +404,7 @@
                     `);
                 } else {
                     $('#edit_current_avatar').html(
-                        '<p class="text-muted">{{ __('No avatar uploaded') }}</p>');
+                        '<p class="text-muted">{{ custom_trans('No avatar uploaded', 'admin') }}</p>');
                 }
 
                 $('#editTestimonialModal').modal('show');
@@ -444,7 +444,7 @@
                             },
                             error: function() {
                                 toastr.error(
-                                    '{{ __('An error occurred while updating the order') }}'
+                                    '{{ custom_trans('An error occurred while updating the order', 'admin') }}'
                                 );
                             }
                         });

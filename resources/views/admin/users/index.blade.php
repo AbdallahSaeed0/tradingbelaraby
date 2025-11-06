@@ -86,7 +86,7 @@
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fa fa-search"></i></span>
                                 <input type="text" class="form-control" name="search" placeholder="Search users..."
-                                    id="searchInput" value="{{ request('search') }}">
+                                    id="searchInput" value="{{ request('search', 'admin') }}">
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -138,14 +138,14 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center justify-content-between">
                             <div>
-                                <span class="fw-bold text-warning" id="selectedCount">0</span> {{ __('users selected') }}
+                                <span class="fw-bold text-warning" id="selectedCount">0</span> {{ custom_trans('users selected', 'admin') }}
                             </div>
                             <div>
                                 <button type="button" class="btn btn-danger" id="bulkDeleteBtn" disabled>
-                                    <i class="fas fa-trash me-1"></i>{{ __('Delete Selected') }}
+                                    <i class="fas fa-trash me-1"></i>{{ custom_trans('Delete Selected', 'admin') }}
                                 </button>
                                 <button type="button" class="btn btn-outline-secondary ms-2" id="clearSelection">
-                                    <i class="fas fa-times me-1"></i>{{ __('Clear Selection') }}
+                                    <i class="fas fa-times me-1"></i>{{ custom_trans('Clear Selection', 'admin') }}
                                 </button>
                             </div>
                         </div>
@@ -210,7 +210,7 @@
                                     </td>
                                     <td>{{ $user->email }}</td>
                                     <td>
-                                        <span class="badge bg-info">{{ ucfirst($user->role ?? 'student') }}</span>
+                                        <span class="badge bg-info">{{ ucfirst($user->role ?? 'student', 'admin') }}</span>
                                     </td>
                                     <td>
                                         <span
@@ -223,7 +223,7 @@
                                         <small class="text-muted d-block">courses</small>
                                     </td>
                                     <td>
-                                        <span>{{ $user->created_at->format('M d, Y') }}</span>
+                                        <span>{{ $user->created_at->format('M d, Y', 'admin') }}</span>
                                         <small class="text-muted d-block">{{ $user->created_at->diffForHumans() }}</small>
                                     </td>
                                     <td>
@@ -502,12 +502,12 @@
                         .map(checkbox => checkbox.value);
 
                     if (selectedIds.length === 0) {
-                        alert('{{ __('Please select users to delete.') }}');
+                        alert('{{ custom_trans('Please select users to delete.', 'admin') }}');
                         return;
                     }
 
                     if (confirm(
-                            '{{ __('Are you sure you want to delete the selected users? This action cannot be undone.') }}'
+                            '{{ custom_trans('Are you sure you want to delete the selected users? This action cannot be undone.', 'admin') }}'
                         )) {
                         // Create form and submit
                         const form = document.createElement('form');

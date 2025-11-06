@@ -71,9 +71,9 @@
                             <div class="mb-3">
                                 <label for="translation_key" class="form-label">Translation Key *</label>
                                 <input type="text" class="form-control @error('translation_key') is-invalid @enderror"
-                                    id="translation_key" name="translation_key" value="{{ old('translation_key') }}"
+                                    id="translation_key" name="translation_key" value="{{ old('translation_key', 'admin') }}"
                                     placeholder="e.g., courses, users, dashboard" required>
-                                <div class="form-text">This is the key used in your code like: {{ __('key') }}</div>
+                                <div class="form-text">This is the key used in your code like: {{ custom_trans('key', 'admin') }}</div>
                                 @error('translation_key')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -82,7 +82,7 @@
                             <div class="mb-3">
                                 <label for="translation_value" class="form-label">Translation Value *</label>
                                 <textarea class="form-control @error('translation_value') is-invalid @enderror" id="translation_value"
-                                    name="translation_value" rows="3" placeholder="Enter the translated text" required>{{ old('translation_value') }}</textarea>
+                                    name="translation_value" rows="3" placeholder="Enter the translated text" required>{{ old('translation_value', 'admin') }}</textarea>
                                 @error('translation_value')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -109,7 +109,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <h6>General Usage</h6>
-                                <code>{{ __('key') }}</code>
+                                <code>{{ custom_trans('key', 'admin') }}</code>
                                 <p class="text-muted small">Works in any group</p>
                             </div>
                             <div class="col-md-4">

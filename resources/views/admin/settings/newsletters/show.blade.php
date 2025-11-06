@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', __('Newsletter Subscriber Details'))
+@section('title', custom_trans('Newsletter Subscriber Details', 'admin'))
 
 @section('content')
     <div class="container-fluid">
@@ -9,17 +9,17 @@
                 <div class="page-title-box">
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a>
+                            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ custom_trans('Dashboard', 'admin') }}</a>
                             </li>
-                            <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ __('Settings') }}</a>
+                            <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ custom_trans('Settings', 'admin') }}</a>
                             </li>
                             <li class="breadcrumb-item"><a
-                                    href="{{ route('admin.settings.newsletters.index') }}">{{ __('Newsletter Subscriptions') }}</a>
+                                    href="{{ route('admin.settings.newsletters.index') }}">{{ custom_trans('Newsletter Subscriptions', 'admin') }}</a>
                             </li>
-                            <li class="breadcrumb-item active">{{ __('Subscriber Details') }}</li>
+                            <li class="breadcrumb-item active">{{ custom_trans('Subscriber Details', 'admin') }}</li>
                         </ol>
                     </div>
-                    <h4 class="page-title">{{ __('Newsletter Subscriber Details') }}</h4>
+                    <h4 class="page-title">{{ custom_trans('Newsletter Subscriber Details', 'admin') }}</h4>
                 </div>
             </div>
         </div>
@@ -29,7 +29,7 @@
                 <div class="card">
                     <div class="card-header">
                         <h4 class="header-title">
-                            <i class="fas fa-user me-2"></i>{{ __('Subscriber Information') }}
+                            <i class="fas fa-user me-2"></i>{{ custom_trans('Subscriber Information', 'admin') }}
                         </h4>
                     </div>
                     <div class="card-body">
@@ -38,18 +38,18 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label class="form-label fw-bold">{{ __('Email Address') }}</label>
+                                            <label class="form-label fw-bold">{{ custom_trans('Email Address', 'admin') }}</label>
                                             <p class="form-control-plaintext">{{ $newsletter->email }}</p>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label class="form-label fw-bold">{{ __('Status') }}</label>
+                                            <label class="form-label fw-bold">{{ custom_trans('Status', 'admin') }}</label>
                                             <div>
                                                 @if ($newsletter->status === 'active')
-                                                    <span class="badge bg-success fs-6">{{ __('Active') }}</span>
+                                                    <span class="badge bg-success fs-6">{{ custom_trans('Active', 'admin') }}</span>
                                                 @else
-                                                    <span class="badge bg-warning fs-6">{{ __('Inactive') }}</span>
+                                                    <span class="badge bg-warning fs-6">{{ custom_trans('Inactive', 'admin') }}</span>
                                                 @endif
                                             </div>
                                         </div>
@@ -59,30 +59,30 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label class="form-label fw-bold">{{ __('Subscribed Date') }}</label>
+                                            <label class="form-label fw-bold">{{ custom_trans('Subscribed Date', 'admin') }}</label>
                                             <p class="form-control-plaintext">
                                                 @if ($newsletter->subscribed_at)
-                                                    {{ $newsletter->subscribed_at->format('F d, Y \a\t g:i A') }}
+                                                    {{ $newsletter->subscribed_at->format('F d, Y \a\t g:i A', 'admin') }}
                                                     <br>
                                                     <small
                                                         class="text-muted">{{ $newsletter->subscribed_at->diffForHumans() }}</small>
                                                 @else
-                                                    <span class="text-muted">{{ __('Not available') }}</span>
+                                                    <span class="text-muted">{{ custom_trans('Not available', 'admin') }}</span>
                                                 @endif
                                             </p>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label class="form-label fw-bold">{{ __('Unsubscribed Date') }}</label>
+                                            <label class="form-label fw-bold">{{ custom_trans('Unsubscribed Date', 'admin') }}</label>
                                             <p class="form-control-plaintext">
                                                 @if ($newsletter->unsubscribed_at)
-                                                    {{ $newsletter->unsubscribed_at->format('F d, Y \a\t g:i A') }}
+                                                    {{ $newsletter->unsubscribed_at->format('F d, Y \a\t g:i A', 'admin') }}
                                                     <br>
                                                     <small
                                                         class="text-muted">{{ $newsletter->unsubscribed_at->diffForHumans() }}</small>
                                                 @else
-                                                    <span class="text-muted">{{ __('Not unsubscribed') }}</span>
+                                                    <span class="text-muted">{{ custom_trans('Not unsubscribed', 'admin') }}</span>
                                                 @endif
                                             </p>
                                         </div>
@@ -92,7 +92,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label class="form-label fw-bold">{{ __('Subscription Duration') }}</label>
+                                            <label class="form-label fw-bold">{{ custom_trans('Subscription Duration', 'admin') }}</label>
                                             <p class="form-control-plaintext">
                                                 @if ($newsletter->subscribed_at)
                                                     @if ($newsletter->unsubscribed_at)
@@ -101,16 +101,16 @@
                                                         {{ $newsletter->subscribed_at->diffForHumans() }}
                                                     @endif
                                                 @else
-                                                    <span class="text-muted">{{ __('Not available') }}</span>
+                                                    <span class="text-muted">{{ custom_trans('Not available', 'admin') }}</span>
                                                 @endif
                                             </p>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label class="form-label fw-bold">{{ __('Last Updated') }}</label>
+                                            <label class="form-label fw-bold">{{ custom_trans('Last Updated', 'admin') }}</label>
                                             <p class="form-control-plaintext">
-                                                {{ $newsletter->updated_at->format('F d, Y \a\t g:i A') }}
+                                                {{ $newsletter->updated_at->format('F d, Y \a\t g:i A', 'admin') }}
                                                 <br>
                                                 <small
                                                     class="text-muted">{{ $newsletter->updated_at->diffForHumans() }}</small>
@@ -128,25 +128,25 @@
                                                 <i class="fas fa-envelope fa-3x"></i>
                                             </div>
                                         </div>
-                                        <h5 class="card-title">{{ __('Newsletter Subscriber') }}</h5>
-                                        <p class="text-muted">{{ __('Email:') }} {{ $newsletter->email }}</p>
+                                        <h5 class="card-title">{{ custom_trans('Newsletter Subscriber', 'admin') }}</h5>
+                                        <p class="text-muted">{{ custom_trans('Email:', 'admin') }} {{ $newsletter->email }}</p>
 
                                         <div class="d-grid gap-2">
                                             @if ($newsletter->status === 'active')
                                                 <button type="button" class="btn btn-warning btn-sm status-toggle"
                                                     data-id="{{ $newsletter->id }}" data-status="1">
-                                                    <i class="fas fa-pause me-1"></i>{{ __('Deactivate') }}
+                                                    <i class="fas fa-pause me-1"></i>{{ custom_trans('Deactivate', 'admin') }}
                                                 </button>
                                             @else
                                                 <button type="button" class="btn btn-success btn-sm status-toggle"
                                                     data-id="{{ $newsletter->id }}" data-status="0">
-                                                    <i class="fas fa-check me-1"></i>{{ __('Activate') }}
+                                                    <i class="fas fa-check me-1"></i>{{ custom_trans('Activate', 'admin') }}
                                                 </button>
                                             @endif
 
                                             <button type="button" class="btn btn-danger btn-sm delete-subscriber"
                                                 data-id="{{ $newsletter->id }}">
-                                                <i class="fas fa-trash me-1"></i>{{ __('Delete Subscriber') }}
+                                                <i class="fas fa-trash me-1"></i>{{ custom_trans('Delete Subscriber', 'admin') }}
                                             </button>
                                         </div>
                                     </div>
@@ -164,7 +164,7 @@
                 <div class="card">
                     <div class="card-header">
                         <h4 class="header-title">
-                            <i class="fas fa-history me-2"></i>{{ __('Activity Timeline') }}
+                            <i class="fas fa-history me-2"></i>{{ custom_trans('Activity Timeline', 'admin') }}
                         </h4>
                     </div>
                     <div class="card-body">
@@ -173,9 +173,9 @@
                                 <i class="fas fa-user-plus bg-info-lighten text-info timeline-icon"></i>
                                 <div class="timeline-item-info">
                                     <a href="#"
-                                        class="text-info fw-bold mb-1 d-block">{{ __('Account Created') }}</a>
-                                    <small>{{ $newsletter->created_at->format('F d, Y \a\t g:i A') }}</small>
-                                    <p class="font-14 mt-1 mb-0">{{ __('Newsletter subscription account was created.') }}
+                                        class="text-info fw-bold mb-1 d-block">{{ custom_trans('Account Created', 'admin') }}</a>
+                                    <small>{{ $newsletter->created_at->format('F d, Y \a\t g:i A', 'admin') }}</small>
+                                    <p class="font-14 mt-1 mb-0">{{ custom_trans('Newsletter subscription account was created.', 'admin') }}
                                     </p>
                                 </div>
                             </div>
@@ -185,9 +185,9 @@
                                     <i class="fas fa-check-circle bg-success-lighten text-success timeline-icon"></i>
                                     <div class="timeline-item-info">
                                         <a href="#"
-                                            class="text-success fw-bold mb-1 d-block">{{ __('Subscribed') }}</a>
-                                        <small>{{ $newsletter->subscribed_at->format('F d, Y \a\t g:i A') }}</small>
-                                        <p class="font-14 mt-1 mb-0">{{ __('Successfully subscribed to the newsletter.') }}
+                                            class="text-success fw-bold mb-1 d-block">{{ custom_trans('Subscribed', 'admin') }}</a>
+                                        <small>{{ $newsletter->subscribed_at->format('F d, Y \a\t g:i A', 'admin') }}</small>
+                                        <p class="font-14 mt-1 mb-0">{{ custom_trans('Successfully subscribed to the newsletter.', 'admin') }}
                                         </p>
                                     </div>
                                 </div>
@@ -198,9 +198,9 @@
                                     <i class="fas fa-pause-circle bg-warning-lighten text-warning timeline-icon"></i>
                                     <div class="timeline-item-info">
                                         <a href="#"
-                                            class="text-warning fw-bold mb-1 d-block">{{ __('Unsubscribed') }}</a>
-                                        <small>{{ $newsletter->unsubscribed_at->format('F d, Y \a\t g:i A') }}</small>
-                                        <p class="font-14 mt-1 mb-0">{{ __('Unsubscribed from the newsletter.') }}</p>
+                                            class="text-warning fw-bold mb-1 d-block">{{ custom_trans('Unsubscribed', 'admin') }}</a>
+                                        <small>{{ $newsletter->unsubscribed_at->format('F d, Y \a\t g:i A', 'admin') }}</small>
+                                        <p class="font-14 mt-1 mb-0">{{ custom_trans('Unsubscribed from the newsletter.', 'admin') }}</p>
                                     </div>
                                 </div>
                             @endif
@@ -209,9 +209,9 @@
                                 <i class="fas fa-edit bg-primary-lighten text-primary timeline-icon"></i>
                                 <div class="timeline-item-info">
                                     <a href="#"
-                                        class="text-primary fw-bold mb-1 d-block">{{ __('Last Updated') }}</a>
-                                    <small>{{ $newsletter->updated_at->format('F d, Y \a\t g:i A') }}</small>
-                                    <p class="font-14 mt-1 mb-0">{{ __('Account information was last updated.') }}</p>
+                                        class="text-primary fw-bold mb-1 d-block">{{ custom_trans('Last Updated', 'admin') }}</a>
+                                    <small>{{ $newsletter->updated_at->format('F d, Y \a\t g:i A', 'admin') }}</small>
+                                    <p class="font-14 mt-1 mb-0">{{ custom_trans('Account information was last updated.', 'admin') }}</p>
                                 </div>
                             </div>
                         </div>
@@ -226,17 +226,17 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{ __('Update Status') }}</h5>
+                    <h5 class="modal-title">{{ custom_trans('Update Status', 'admin') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p id="statusModalMessage">{{ __('Are you sure you want to update the status of this subscriber?') }}
+                    <p id="statusModalMessage">{{ custom_trans('Are you sure you want to update the status of this subscriber?', 'admin') }}
                     </p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary"
-                        data-bs-dismiss="modal">{{ __('Cancel') }}</button>
-                    <button type="button" class="btn btn-primary" id="confirmStatusToggle">{{ __('Confirm') }}</button>
+                        data-bs-dismiss="modal">{{ custom_trans('Cancel', 'admin') }}</button>
+                    <button type="button" class="btn btn-primary" id="confirmStatusToggle">{{ custom_trans('Confirm', 'admin') }}</button>
                 </div>
             </div>
         </div>
@@ -247,16 +247,16 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{ __('Delete Subscriber') }}</h5>
+                    <h5 class="modal-title">{{ custom_trans('Delete Subscriber', 'admin') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>{{ __('Are you sure you want to delete this subscriber? This action cannot be undone.') }}</p>
+                    <p>{{ custom_trans('Are you sure you want to delete this subscriber? This action cannot be undone.', 'admin') }}</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary"
-                        data-bs-dismiss="modal">{{ __('Cancel') }}</button>
-                    <button type="button" class="btn btn-danger" id="confirmDelete">{{ __('Delete') }}</button>
+                        data-bs-dismiss="modal">{{ custom_trans('Cancel', 'admin') }}</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">{{ custom_trans('Delete', 'admin') }}</button>
                 </div>
             </div>
         </div>
@@ -278,11 +278,11 @@
                 const action = newStatus ? 'activate' : 'deactivate';
 
                 $('#statusModalMessage').text(
-                    `{{ __('Are you sure you want to') }} ${action} {{ __('this subscriber?') }}`);
+                    `{{ custom_trans('Are you sure you want to', 'admin') }} ${action} {{ custom_trans('this subscriber?', 'admin') }}`);
 
                 $('#confirmStatusToggle').off('click').on('click', function() {
                     $.ajax({
-                        url: `{{ url('admin/settings/newsletters') }}/${currentSubscriberId}/status`,
+                        url: `{{ url('admin/settings/newsletters', 'admin') }}/${currentSubscriberId}/status`,
                         type: 'POST',
                         data: {
                             _token: '{{ csrf_token() }}',
@@ -297,13 +297,13 @@
                                 }, 1500);
                             } else {
                                 toastr.error(response.message ||
-                                    '{{ __('An error occurred while updating status.') }}'
+                                    '{{ custom_trans('An error occurred while updating status.', 'admin') }}'
                                 );
                             }
                         },
                         error: function(xhr) {
                             let errorMessage =
-                                '{{ __('An error occurred while updating status.') }}';
+                                '{{ custom_trans('An error occurred while updating status.', 'admin') }}';
                             if (xhr.responseJSON && xhr.responseJSON.message) {
                                 errorMessage = xhr.responseJSON.message;
                             }
@@ -323,7 +323,7 @@
 
                 $('#confirmDelete').off('click').on('click', function() {
                     $.ajax({
-                        url: `{{ url('admin/settings/newsletters') }}/${currentSubscriberId}`,
+                        url: `{{ url('admin/settings/newsletters', 'admin') }}/${currentSubscriberId}`,
                         type: 'DELETE',
                         data: {
                             _token: '{{ csrf_token() }}'
@@ -338,13 +338,13 @@
                                 }, 1500);
                             } else {
                                 toastr.error(response.message ||
-                                    '{{ __('An error occurred while deleting subscriber.') }}'
+                                    '{{ custom_trans('An error occurred while deleting subscriber.', 'admin') }}'
                                 );
                             }
                         },
                         error: function(xhr) {
                             let errorMessage =
-                                '{{ __('An error occurred while deleting subscriber.') }}';
+                                '{{ custom_trans('An error occurred while deleting subscriber.', 'admin') }}';
                             if (xhr.responseJSON && xhr.responseJSON.message) {
                                 errorMessage = xhr.responseJSON.message;
                             }

@@ -9,11 +9,11 @@
             <div class="col-12">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h1 class="h3 mb-0">{{ __('Traders Management') }}</h1>
+                        <h1 class="h3 mb-0">{{ custom_trans('Traders Management', 'admin') }}</h1>
                         <p class="text-muted">Manage trader registrations and view their information.</p>
                     </div>
                     <div>
-                        <span class="badge bg-primary fs-6">{{ $traders->total() }} {{ __('Total Traders') }}</span>
+                        <span class="badge bg-primary fs-6">{{ $traders->total() }} {{ custom_trans('Total Traders', 'admin') }}</span>
                     </div>
                 </div>
             </div>
@@ -26,23 +26,23 @@
                     <div class="card-body">
                         <form method="GET" action="{{ route('admin.traders.index') }}" class="row g-3">
                             <div class="col-md-6">
-                                <label for="search" class="form-label">{{ __('Search') }}</label>
+                                <label for="search" class="form-label">{{ custom_trans('Search', 'admin') }}</label>
                                 <input type="text" class="form-control" id="search" name="search"
-                                    value="{{ request('search') }}"
-                                    placeholder="{{ __('Search by name, email, phone...') }}">
+                                    value="{{ request('search', 'admin') }}"
+                                    placeholder="{{ custom_trans('Search by name, email, phone...', 'admin') }}">
                             </div>
                             <div class="col-md-3 d-flex align-items-end">
                                 <button type="submit" class="btn btn-primary me-2">
-                                    <i class="fas fa-search me-1"></i>{{ __('Filter') }}
+                                    <i class="fas fa-search me-1"></i>{{ custom_trans('Filter', 'admin') }}
                                 </button>
                                 <a href="{{ route('admin.traders.index') }}" class="btn btn-outline-secondary">
-                                    <i class="fas fa-times me-1"></i>{{ __('Clear') }}
+                                    <i class="fas fa-times me-1"></i>{{ custom_trans('Clear', 'admin') }}
                                 </a>
                             </div>
                             <div class="col-md-3 d-flex align-items-end">
                                 <a href="{{ route('admin.traders.export') }}{{ request()->getQueryString() ? '?' . request()->getQueryString() : '' }}"
                                     class="btn btn-success">
-                                    <i class="fas fa-download me-1"></i>{{ __('Export CSV') }}
+                                    <i class="fas fa-download me-1"></i>{{ custom_trans('Export CSV', 'admin') }}
                                 </a>
                             </div>
                         </form>
@@ -58,14 +58,14 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center justify-content-between">
                             <div>
-                                <span class="fw-bold text-warning" id="selectedCount">0</span> {{ __('traders selected') }}
+                                <span class="fw-bold text-warning" id="selectedCount">0</span> {{ custom_trans('traders selected', 'admin') }}
                             </div>
                             <div>
                                 <button type="button" class="btn btn-danger" id="bulkDeleteBtn" disabled>
-                                    <i class="fas fa-trash me-1"></i>{{ __('Delete Selected') }}
+                                    <i class="fas fa-trash me-1"></i>{{ custom_trans('Delete Selected', 'admin') }}
                                 </button>
                                 <button type="button" class="btn btn-outline-secondary ms-2" id="clearSelection">
-                                    <i class="fas fa-times me-1"></i>{{ __('Clear Selection') }}
+                                    <i class="fas fa-times me-1"></i>{{ custom_trans('Clear Selection', 'admin') }}
                                 </button>
                             </div>
                         </div>
@@ -87,14 +87,14 @@
                                             <th>
                                                 <input type="checkbox" id="selectAll" class="form-check-input">
                                             </th>
-                                            <th>{{ __('Name') }}</th>
-                                            <th>{{ __('Email') }}</th>
-                                            <th>{{ __('Phone') }}</th>
-                                            <th>{{ __('Gender') }}</th>
-                                            <th>{{ __('Trading Community') }}</th>
-                                            <th>{{ __('Languages') }}</th>
-                                            <th>{{ __('Registered') }}</th>
-                                            <th class="text-center">{{ __('Actions') }}</th>
+                                            <th>{{ custom_trans('Name', 'admin') }}</th>
+                                            <th>{{ custom_trans('Email', 'admin') }}</th>
+                                            <th>{{ custom_trans('Phone', 'admin') }}</th>
+                                            <th>{{ custom_trans('Gender', 'admin') }}</th>
+                                            <th>{{ custom_trans('Trading Community', 'admin') }}</th>
+                                            <th>{{ custom_trans('Languages', 'admin') }}</th>
+                                            <th>{{ custom_trans('Registered', 'admin') }}</th>
+                                            <th class="text-center">{{ custom_trans('Actions', 'admin') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -146,24 +146,24 @@
                                                 </td>
                                                 <td>
                                                     <small class="text-muted">
-                                                        {{ $trader->created_at->format('M d, Y') }}<br>
-                                                        {{ $trader->created_at->format('H:i') }}
+                                                        {{ $trader->created_at->format('M d, Y', 'admin') }}<br>
+                                                        {{ $trader->created_at->format('H:i', 'admin') }}
                                                     </small>
                                                 </td>
                                                 <td class="text-center">
                                                     <div class="btn-group" role="group">
                                                         <a href="{{ route('admin.traders.show', $trader) }}"
                                                             class="btn btn-sm btn-outline-primary"
-                                                            title="{{ __('View Details') }}">
+                                                            title="{{ custom_trans('View Details', 'admin') }}">
                                                             <i class="fas fa-eye"></i>
                                                         </a>
                                                         <form action="{{ route('admin.traders.destroy', $trader) }}"
                                                             method="POST" class="d-inline"
-                                                            onsubmit="return confirm('{{ __('Are you sure you want to delete this trader?') }}')">
+                                                            onsubmit="return confirm('{{ custom_trans('Are you sure you want to delete this trader?', 'admin') }}')">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="submit" class="btn btn-sm btn-outline-danger"
-                                                                title="{{ __('Delete') }}">
+                                                                title="{{ custom_trans('Delete', 'admin') }}">
                                                                 <i class="fas fa-trash"></i>
                                                             </button>
                                                         </form>
@@ -177,8 +177,8 @@
                         @else
                             <div class="text-center py-5">
                                 <i class="fa fa-chart-bar fa-3x text-muted mb-3"></i>
-                                <h4 class="text-muted">{{ __('No traders found') }}</h4>
-                                <p class="text-muted">{{ __('No trader registrations match your search criteria.') }}</p>
+                                <h4 class="text-muted">{{ custom_trans('No traders found', 'admin') }}</h4>
+                                <p class="text-muted">{{ custom_trans('No trader registrations match your search criteria.', 'admin') }}</p>
                             </div>
                         @endif
                     </div>
@@ -265,12 +265,12 @@
                 }).get();
 
                 if (selectedIds.length === 0) {
-                    alert('{{ __('Please select traders to delete.') }}');
+                    alert('{{ custom_trans('Please select traders to delete.', 'admin') }}');
                     return;
                 }
 
                 if (confirm(
-                        '{{ __('Are you sure you want to delete the selected traders? This action cannot be undone.') }}'
+                        '{{ custom_trans('Are you sure you want to delete the selected traders? This action cannot be undone.', 'admin') }}'
                     )) {
                     $('#selectedTraderIds').val(JSON.stringify(selectedIds));
                     $('#bulkDeleteForm').submit();

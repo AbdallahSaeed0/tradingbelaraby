@@ -64,13 +64,13 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Created At</label>
-                                    <p class="mb-0">{{ $translation->created_at->format('M d, Y H:i:s') }}</p>
+                                    <p class="mb-0">{{ $translation->created_at->format('M d, Y H:i:s', 'admin') }}</p>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Updated At</label>
-                                    <p class="mb-0">{{ $translation->updated_at->format('M d, Y H:i:s') }}</p>
+                                    <p class="mb-0">{{ $translation->updated_at->format('M d, Y H:i:s', 'admin') }}</p>
                                 </div>
                             </div>
                         </div>
@@ -86,7 +86,7 @@
                     <div class="card-body">
                         <div class="mb-3">
                             <label class="form-label fw-bold">General Usage</label>
-                            <code class="d-block p-2 bg-light rounded">{{ __('key') }}</code>
+                            <code class="d-block p-2 bg-light rounded">{{ custom_trans('key', 'admin') }}</code>
                         </div>
 
                         <div class="mb-3">

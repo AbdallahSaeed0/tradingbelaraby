@@ -22,7 +22,7 @@
                 <span class="category-label px-4 py-2 rounded-pill bg-white text-dark fw-semibold shadow">
                     <a href="{{ route('home') }}" class="text-dark text-decoration-none hover-primary">Home</a>
                     &nbsp;|&nbsp;
-                    {{ custom_trans('category_detail') }}
+                    {{ custom_trans('category_detail', 'front') }}
                 </span>
             </div>
             @php
@@ -43,9 +43,9 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item"><a href="{{ route('home') }}"
-                            class="text-decoration-none">{{ custom_trans('home') }}</a></li>
+                            class="text-decoration-none">{{ custom_trans('home', 'front') }}</a></li>
                     <li class="breadcrumb-item"><a href="{{ route('categories.index') }}"
-                            class="text-decoration-none">{{ custom_trans('categories') }}</a></li>
+                            class="text-decoration-none">{{ custom_trans('categories', 'front') }}</a></li>
                     <li class="breadcrumb-item active" aria-current="page">
                         {{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}</li>
                 </ol>
@@ -60,24 +60,24 @@
                 <!-- Sidebar Filters -->
                 <div class="col-lg-3 mb-4 mb-lg-0">
                     <div class="filter-section p-3 rounded-3 shadow-sm bg-white mb-4">
-                        <h5 class="fw-bold mb-3">{{ custom_trans('filters') }}</h5>
+                        <h5 class="fw-bold mb-3">{{ custom_trans('filters', 'front') }}</h5>
 
                         <!-- Price Filter -->
                         <div class="mb-4">
-                            <h6 class="fw-semibold mb-2">{{ custom_trans('price') }}</h6>
+                            <h6 class="fw-semibold mb-2">{{ custom_trans('price', 'front') }}</h6>
                             <div class="form-check mb-2">
                                 <input class="form-check-input price-filter" type="checkbox" id="priceFree" value="free">
-                                <label class="form-check-label" for="priceFree">{{ custom_trans('free') }}</label>
+                                <label class="form-check-label" for="priceFree">{{ custom_trans('free', 'front') }}</label>
                             </div>
                             <div class="form-check mb-2">
                                 <input class="form-check-input price-filter" type="checkbox" id="pricePaid" value="paid">
-                                <label class="form-check-label" for="pricePaid">{{ custom_trans('paid') }}</label>
+                                <label class="form-check-label" for="pricePaid">{{ custom_trans('paid', 'front') }}</label>
                             </div>
                         </div>
 
                         <!-- Rating Filter -->
                         <div class="mb-4">
-                            <h6 class="fw-semibold mb-2">{{ custom_trans('rating') }}</h6>
+                            <h6 class="fw-semibold mb-2">{{ custom_trans('rating', 'front') }}</h6>
                             <div class="form-check mb-2">
                                 <input class="form-check-input rating-filter" type="checkbox" id="rating5" value="5">
                                 <label class="form-check-label" for="rating5">
@@ -86,7 +86,7 @@
                                     <i class="fas fa-star text-warning"></i>
                                     <i class="fas fa-star text-warning"></i>
                                     <i class="fas fa-star text-warning"></i>
-                                    (5 {{ custom_trans('stars') }})
+                                    (5 {{ custom_trans('stars', 'front') }})
                                 </label>
                             </div>
                             <div class="form-check mb-2">
@@ -97,7 +97,7 @@
                                     <i class="fas fa-star text-warning"></i>
                                     <i class="fas fa-star text-warning"></i>
                                     <i class="far fa-star text-warning"></i>
-                                    & up (4+ {{ custom_trans('stars') }})
+                                    & up (4+ {{ custom_trans('stars', 'front') }})
                                 </label>
                             </div>
                             <div class="form-check mb-2">
@@ -108,7 +108,7 @@
                                     <i class="fas fa-star text-warning"></i>
                                     <i class="far fa-star text-warning"></i>
                                     <i class="far fa-star text-warning"></i>
-                                    & up (3+ {{ custom_trans('stars') }})
+                                    & up (3+ {{ custom_trans('stars', 'front') }})
                                 </label>
                             </div>
                         </div>
@@ -117,7 +117,7 @@
 
                         <!-- Clear Filters -->
                         <button class="btn btn-outline-secondary btn-sm w-100" id="clearFilters">
-                            {{ custom_trans('clear_filters') }}
+                            {{ custom_trans('clear_filters', 'front') }}
                         </button>
                     </div>
 
@@ -131,16 +131,16 @@
                         <div>
                             <h4 class="fw-bold mb-1">
                                 {{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}
-                                {{ custom_trans('courses') }}</h4>
-                            <p class="text-muted mb-0">{{ $courses->total() }} {{ custom_trans('courses_found') }}</p>
+                                {{ custom_trans('courses', 'front') }}</h4>
+                            <p class="text-muted mb-0">{{ $courses->total() }} {{ custom_trans('courses_found', 'front') }}</p>
                         </div>
                         <div class="d-flex gap-2">
                             <select class="form-select sort-dropdown max-w-150">
-                                <option value="newest">{{ custom_trans('newest') }}</option>
-                                <option value="popular">{{ custom_trans('popular') }}</option>
-                                <option value="rating">{{ custom_trans('highest_rated') }}</option>
-                                <option value="price_low">{{ custom_trans('price_low_to_high') }}</option>
-                                <option value="price_high">{{ custom_trans('price_high_to_low') }}</option>
+                                <option value="newest">{{ custom_trans('newest', 'front') }}</option>
+                                <option value="popular">{{ custom_trans('popular', 'front') }}</option>
+                                <option value="rating">{{ custom_trans('highest_rated', 'front') }}</option>
+                                <option value="price_low">{{ custom_trans('price_low_to_high', 'front') }}</option>
+                                <option value="price_high">{{ custom_trans('price_high_to_low', 'front') }}</option>
                             </select>
                             <div class="btn-group" role="group" aria-label="View toggle">
                                 <button class="btn btn-outline-primary active" id="listViewBtn" type="button">
@@ -163,7 +163,7 @@
                                             alt="{{ $course->localized_name }}">
                                         @if ($course->is_featured)
                                             <span class="badge bg-success position-absolute top-0 start-0 m-2">
-                                                {{ custom_trans('featured') }}
+                                                {{ custom_trans('featured', 'front') }}
                                             </span>
                                         @endif
                                         <div class="position-absolute top-0 end-0 m-2">
@@ -177,7 +177,7 @@
                                                     </small>
                                                 @endif
                                             @else
-                                                <span class="badge bg-success">{{ custom_trans('free') }}</span>
+                                                <span class="badge bg-success">{{ custom_trans('free', 'front') }}</span>
                                             @endif
                                         </div>
                                     </div>
@@ -238,33 +238,33 @@
                                             <div class="d-flex align-items-center">
                                                 <i class="fas fa-users text-muted me-1"></i>
                                                 <small class="text-muted">{{ $course->enrolled_students ?? 0 }}
-                                                    {{ custom_trans('students') }}</small>
+                                                    {{ custom_trans('students', 'front') }}</small>
                                             </div>
                                         </div>
 
                                         <div class="d-flex justify-content-between align-items-center">
                                             <a href="{{ route('courses.show', $course->id) }}"
                                                 class="btn btn-primary btn-sm">
-                                                {{ custom_trans('view_details') }}
+                                                {{ custom_trans('view_details', 'front') }}
                                             </a>
                                             @auth
                                                 @if (auth()->user()->enrollments()->where('course_id', $course->id)->exists())
                                                     <a href="{{ route('courses.learn', $course->id) }}"
                                                         class="btn btn-success btn-sm">
                                                         <i class="fas fa-graduation-cap me-1"></i>
-                                                        {{ custom_trans('go_to_course') }}
+                                                        {{ custom_trans('go_to_course', 'front') }}
                                                     </a>
                                                 @else
                                                     <button class="btn btn-success btn-sm enroll-btn"
                                                         data-course-id="{{ $course->id }}">
                                                         <i class="fas fa-graduation-cap me-1"></i>
-                                                        {{ custom_trans('enroll_now') }}
+                                                        {{ custom_trans('enroll_now', 'front') }}
                                                     </button>
                                                 @endif
                                             @else
                                                 <a href="{{ route('login') }}" class="btn btn-success btn-sm">
                                                     <i class="fas fa-graduation-cap me-1"></i>
-                                                    {{ custom_trans('enroll_now') }}
+                                                    {{ custom_trans('enroll_now', 'front') }}
                                                 </a>
                                             @endauth
                                         </div>
@@ -275,10 +275,10 @@
                             <div class="col-12 text-center py-5">
                                 <div class="empty-state">
                                     <i class="fas fa-search fa-4x text-muted mb-3"></i>
-                                    <h4 class="fw-bold text-muted mb-2">{{ custom_trans('no_courses_found') }}</h4>
-                                    <p class="text-muted">{{ custom_trans('no_courses_in_category') }}</p>
+                                    <h4 class="fw-bold text-muted mb-2">{{ custom_trans('no_courses_found', 'front') }}</h4>
+                                    <p class="text-muted">{{ custom_trans('no_courses_in_category', 'front') }}</p>
                                     <a href="{{ route('categories.index') }}" class="btn btn-primary">
-                                        {{ custom_trans('browse_all_categories') }}
+                                        {{ custom_trans('browse_all_categories', 'front') }}
                                     </a>
                                 </div>
                             </div>
@@ -378,8 +378,8 @@
                     const priceElement = card.querySelector('.position-absolute .badge');
                     if (priceElement) {
                         const price = priceElement.textContent.trim();
-                        const isFree = price === '{{ custom_trans('free') }}';
-                        const isPaid = price !== '{{ custom_trans('free') }}';
+                        const isFree = price === '{{ custom_trans('free', 'front') }}';
+                        const isPaid = price !== '{{ custom_trans('free', 'front') }}';
 
                         if (activeFilters.price.includes('free') && !isFree) show = false;
                         if (activeFilters.price.includes('paid') && !isPaid) show = false;
@@ -532,7 +532,7 @@
                                     goToCourseLink.href = `/courses/${courseId}/learn`;
                                     goToCourseLink.className = 'btn btn-success btn-sm';
                                     goToCourseLink.innerHTML =
-                                        '<i class="fas fa-graduation-cap me-1"></i>{{ custom_trans('go_to_course') }}';
+                                        '<i class="fas fa-graduation-cap me-1"></i>{{ custom_trans('go_to_course', 'front') }}';
 
                                     this.parentNode.replaceChild(goToCourseLink, this);
                                 }, 2000);

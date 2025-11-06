@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', __('Info Split Section Management'))
+@section('title', custom_trans('Info Split Section Management', 'admin'))
 
 @section('content')
     <div class="container-fluid py-4">
@@ -8,12 +8,12 @@
         <div class="page-title-box">
             <div class="row align-items-center">
                 <div class="col-sm-6">
-                    <h4 class="page-title">{{ __('Info Split Section Management') }}</h4>
+                    <h4 class="page-title">{{ custom_trans('Info Split Section Management', 'admin') }}</h4>
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ __('Settings') }}</a>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ custom_trans('Dashboard', 'admin') }}</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ custom_trans('Settings', 'admin') }}</a>
                         </li>
-                        <li class="breadcrumb-item active">{{ __('Info Split Section') }}</li>
+                        <li class="breadcrumb-item active">{{ custom_trans('Info Split Section', 'admin') }}</li>
                     </ol>
                 </div>
                 <div class="col-sm-6">
@@ -21,7 +21,7 @@
                         <button type="button" class="btn btn-success" id="toggleStatus"
                             data-status="{{ $infoSplit && $infoSplit->is_active ? 1 : 0 }}">
                             <i class="fas fa-toggle-{{ $infoSplit && $infoSplit->is_active ? 'on' : 'off' }} me-2"></i>
-                            {{ $infoSplit && $infoSplit->is_active ? __('Deactivate') : __('Activate') }}
+                            {{ $infoSplit && $infoSplit->is_active ? custom_trans('Deactivate', 'admin') : custom_trans('Activate', 'admin') }}
                         </button>
                     </div>
                 </div>
@@ -34,10 +34,10 @@
                 <div class="card content-card">
                     <div class="card-header">
                         <h5 class="mb-0">
-                            <i class="fas fa-info-circle text-primary me-2"></i>{{ __('Info Split Section Content') }}
+                            <i class="fas fa-info-circle text-primary me-2"></i>{{ custom_trans('Info Split Section Content', 'admin') }}
                         </h5>
                         <p class="text-muted mb-0">
-                            {{ __('Manage the main content and settings for the Info Split section.') }}</p>
+                            {{ custom_trans('Manage the main content and settings for the Info Split section.', 'admin') }}</p>
                     </div>
                     <div class="card-body">
                         <form id="infoSplitForm" enctype="multipart/form-data">
@@ -45,14 +45,14 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="title" class="form-label">{{ __('Title') }} *</label>
+                                        <label for="title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
                                         <input type="text" class="form-control" id="title" name="title"
                                             value="{{ $infoSplit->title ?? '' }}" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="title_ar" class="form-label">{{ __('Title (Arabic)') }}</label>
+                                        <label for="title_ar" class="form-label">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
                                         <input type="text" class="form-control" id="title_ar" name="title_ar"
                                             value="{{ $infoSplit->title_ar ?? '' }}">
                                     </div>
@@ -62,14 +62,14 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="description" class="form-label">{{ __('Description') }} *</label>
+                                        <label for="description" class="form-label">{{ custom_trans('Description', 'admin') }} *</label>
                                         <textarea class="form-control" id="description" name="description" rows="4" required>{{ $infoSplit->description ?? '' }}</textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="description_ar"
-                                            class="form-label">{{ __('Description (Arabic)') }}</label>
+                                            class="form-label">{{ custom_trans('Description (Arabic)', 'admin') }}</label>
                                         <textarea class="form-control" id="description_ar" name="description_ar" rows="4">{{ $infoSplit->description_ar ?? '' }}</textarea>
                                     </div>
                                 </div>
@@ -78,7 +78,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="button_text" class="form-label">{{ __('Button Text') }} *</label>
+                                        <label for="button_text" class="form-label">{{ custom_trans('Button Text', 'admin') }} *</label>
                                         <input type="text" class="form-control" id="button_text" name="button_text"
                                             value="{{ $infoSplit->button_text ?? '' }}" required>
                                     </div>
@@ -86,7 +86,7 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="button_text_ar"
-                                            class="form-label">{{ __('Button Text (Arabic)') }}</label>
+                                            class="form-label">{{ custom_trans('Button Text (Arabic)', 'admin') }}</label>
                                         <input type="text" class="form-control" id="button_text_ar" name="button_text_ar"
                                             value="{{ $infoSplit->button_text_ar ?? '' }}">
                                     </div>
@@ -96,14 +96,14 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="button_url" class="form-label">{{ __('Button URL') }} *</label>
+                                        <label for="button_url" class="form-label">{{ custom_trans('Button URL', 'admin') }} *</label>
                                         <input type="url" class="form-control" id="button_url" name="button_url"
                                             value="{{ $infoSplit->button_url ?? '' }}" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="image" class="form-label">{{ __('Section Image') }}</label>
+                                        <label for="image" class="form-label">{{ custom_trans('Section Image', 'admin') }}</label>
                                         <input type="file" class="form-control" id="image" name="image"
                                             accept="image/*">
                                         @if ($infoSplit && $infoSplit->image)
@@ -125,14 +125,14 @@
                                             <input class="form-check-input" type="checkbox" id="is_active"
                                                 name="is_active" value="1"
                                                 {{ $infoSplit && $infoSplit->is_active ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="is_active">{{ __('Active') }}</label>
+                                            <label class="form-check-label" for="is_active">{{ custom_trans('Active', 'admin') }}</label>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <button type="submit" class="btn btn-primary">
-                                            <i class="fas fa-save me-2"></i>{{ __('Save Changes') }}
+                                            <i class="fas fa-save me-2"></i>{{ custom_trans('Save Changes', 'admin') }}
                                         </button>
                                     </div>
                                 </div>
@@ -149,9 +149,9 @@
                 <div class="card content-card">
                     <div class="card-header">
                         <h5 class="mb-0">
-                            <i class="fas fa-eye text-info me-2"></i>{{ __('Preview') }}
+                            <i class="fas fa-eye text-info me-2"></i>{{ custom_trans('Preview', 'admin') }}
                         </h5>
-                        <p class="text-muted mb-0">{{ __('How the Info Split section will appear on the frontend.') }}</p>
+                        <p class="text-muted mb-0">{{ custom_trans('How the Info Split section will appear on the frontend.', 'admin') }}</p>
                     </div>
                     <div class="card-body">
                         <div class="row align-items-center justify-content-center">
@@ -194,16 +194,16 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{ __('Update Status') }}</h5>
+                    <h5 class="modal-title">{{ custom_trans('Update Status', 'admin') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p id="statusModalMessage">{{ __('Are you sure you want to update the status of this section?') }}</p>
+                    <p id="statusModalMessage">{{ custom_trans('Are you sure you want to update the status of this section?', 'admin') }}</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary"
-                        data-bs-dismiss="modal">{{ __('Cancel') }}</button>
-                    <button type="button" class="btn btn-primary" id="confirmStatusToggle">{{ __('Confirm') }}</button>
+                        data-bs-dismiss="modal">{{ custom_trans('Cancel', 'admin') }}</button>
+                    <button type="button" class="btn btn-primary" id="confirmStatusToggle">{{ custom_trans('Confirm', 'admin') }}</button>
                 </div>
             </div>
         </div>
@@ -222,7 +222,7 @@
                 const originalText = submitBtn.html();
 
                 submitBtn.prop('disabled', true).html(
-                    '<i class="fas fa-spinner fa-spin me-2"></i>{{ __('Saving...') }}');
+                    '<i class="fas fa-spinner fa-spin me-2"></i>{{ custom_trans('Saving...', 'admin') }}');
 
                 $.ajax({
                     url: '{{ route('admin.settings.info-split.store') }}',
@@ -239,11 +239,11 @@
                             }, 1500);
                         } else {
                             toastr.error(response.message ||
-                                '{{ __('An error occurred while saving.') }}');
+                                '{{ custom_trans('An error occurred while saving.', 'admin') }}');
                         }
                     },
                     error: function(xhr) {
-                        let errorMessage = '{{ __('An error occurred while saving.') }}';
+                        let errorMessage = '{{ custom_trans('An error occurred while saving.', 'admin') }}';
                         if (xhr.responseJSON && xhr.responseJSON.message) {
                             errorMessage = xhr.responseJSON.message;
                         } else if (xhr.responseJSON && xhr.responseJSON.errors) {
@@ -267,7 +267,7 @@
                 const action = newStatus ? 'activate' : 'deactivate';
 
                 $('#statusModalMessage').text(
-                    `{{ __('Are you sure you want to') }} ${action} {{ __('this section?') }}`);
+                    `{{ custom_trans('Are you sure you want to', 'admin') }} ${action} {{ custom_trans('this section?', 'admin') }}`);
 
                 $('#confirmStatusToggle').off('click').on('click', function() {
                     $.ajax({
@@ -286,13 +286,13 @@
                                 }, 1500);
                             } else {
                                 toastr.error(response.message ||
-                                    '{{ __('An error occurred while updating status.') }}'
+                                    '{{ custom_trans('An error occurred while updating status.', 'admin') }}'
                                 );
                             }
                         },
                         error: function(xhr) {
                             let errorMessage =
-                                '{{ __('An error occurred while updating status.') }}';
+                                '{{ custom_trans('An error occurred while updating status.', 'admin') }}';
                             if (xhr.responseJSON && xhr.responseJSON.message) {
                                 errorMessage = xhr.responseJSON.message;
                             }

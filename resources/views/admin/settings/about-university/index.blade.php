@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', __('About University Management'))
+@section('title', custom_trans('About University Management', 'admin'))
 
 @section('content')
     <div class="container-fluid py-4">
@@ -8,18 +8,18 @@
         <div class="page-title-box">
             <div class="row align-items-center">
                 <div class="col-sm-6">
-                    <h4 class="page-title">{{ __('About University Management') }}</h4>
+                    <h4 class="page-title">{{ custom_trans('About University Management', 'admin') }}</h4>
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ __('Settings') }}</a>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ custom_trans('Dashboard', 'admin') }}</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ custom_trans('Settings', 'admin') }}</a>
                         </li>
-                        <li class="breadcrumb-item active">{{ __('About University') }}</li>
+                        <li class="breadcrumb-item active">{{ custom_trans('About University', 'admin') }}</li>
                     </ol>
                 </div>
                 <div class="col-sm-6">
                     <div class="float-end">
                         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFeatureModal">
-                            <i class="fas fa-plus me-2"></i>{{ __('Add New Feature') }}
+                            <i class="fas fa-plus me-2"></i>{{ custom_trans('Add New Feature', 'admin') }}
                         </button>
                     </div>
                 </div>
@@ -29,7 +29,7 @@
         <!-- Main Content Section -->
         <div class="card main-content-card mb-4">
             <div class="card-header">
-                <h5 class="mb-0">{{ __('Main Content') }}</h5>
+                <h5 class="mb-0">{{ custom_trans('Main Content', 'admin') }}</h5>
             </div>
             <div class="card-body">
                 <form id="aboutUniversityForm">
@@ -37,14 +37,14 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="title" class="form-label">{{ __('Title') }} *</label>
+                                <label for="title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
                                 <input type="text" class="form-control" id="title" name="title"
                                     value="{{ $aboutUniversity->title ?? '' }}" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="title_ar" class="form-label">{{ __('Title (Arabic)') }}</label>
+                                <label for="title_ar" class="form-label">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
                                 <input type="text" class="form-control" id="title_ar" name="title_ar"
                                     value="{{ $aboutUniversity->title_ar ?? '' }}">
                             </div>
@@ -53,13 +53,13 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="description" class="form-label">{{ __('Description') }} *</label>
+                                <label for="description" class="form-label">{{ custom_trans('Description', 'admin') }} *</label>
                                 <textarea class="form-control" id="description" name="description" rows="4" required>{{ $aboutUniversity->description ?? '' }}</textarea>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="description_ar" class="form-label">{{ __('Description (Arabic)') }}</label>
+                                <label for="description_ar" class="form-label">{{ custom_trans('Description (Arabic)', 'admin') }}</label>
                                 <textarea class="form-control" id="description_ar" name="description_ar" rows="4">{{ $aboutUniversity->description_ar ?? '' }}</textarea>
                             </div>
                         </div>
@@ -67,7 +67,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="image" class="form-label">{{ __('Main Image') }}</label>
+                                <label for="image" class="form-label">{{ custom_trans('Main Image', 'admin') }}</label>
                                 <input type="file" class="form-control" id="image" name="image" accept="image/*">
                                 @if (isset($aboutUniversity) && $aboutUniversity->image)
                                     <div class="mt-2">
@@ -79,7 +79,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="background_image" class="form-label">{{ __('Background Image') }}</label>
+                                <label for="background_image" class="form-label">{{ custom_trans('Background Image', 'admin') }}</label>
                                 <input type="file" class="form-control" id="background_image" name="background_image"
                                     accept="image/*">
                                 @if (isset($aboutUniversity) && $aboutUniversity->background_image)
@@ -96,17 +96,17 @@
                             <input class="form-check-input" type="checkbox" id="is_active" name="is_active"
                                 {{ isset($aboutUniversity) && $aboutUniversity->is_active ? 'checked' : '' }}>
                             <label class="form-check-label" for="is_active">
-                                {{ __('Active') }}
+                                {{ custom_trans('Active', 'admin') }}
                             </label>
                         </div>
                     </div>
                     <div class="d-flex justify-content-between">
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save me-2"></i>{{ __('Save Content') }}
+                            <i class="fas fa-save me-2"></i>{{ custom_trans('Save Content', 'admin') }}
                         </button>
                         @if (isset($aboutUniversity))
                             <button type="button" class="btn btn-warning" id="toggle_status">
-                                <i class="fas fa-toggle-on me-2"></i>{{ __('Toggle Status') }}
+                                <i class="fas fa-toggle-on me-2"></i>{{ custom_trans('Toggle Status', 'admin') }}
                             </button>
                         @endif
                     </div>
@@ -117,17 +117,17 @@
         <!-- Features Section -->
         <div class="card features-card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">{{ __('Features') }}</h5>
+                <h5 class="mb-0">{{ custom_trans('Features', 'admin') }}</h5>
                 <div class="bulk-actions d-none-initially">
                     <div class="btn-group" role="group">
                         <button type="button" class="btn btn-success btn-sm" id="bulk_activate">
-                            <i class="fas fa-check me-1"></i>{{ __('Activate') }}
+                            <i class="fas fa-check me-1"></i>{{ custom_trans('Activate', 'admin') }}
                         </button>
                         <button type="button" class="btn btn-warning btn-sm" id="bulk_deactivate">
-                            <i class="fas fa-pause me-1"></i>{{ __('Deactivate') }}
+                            <i class="fas fa-pause me-1"></i>{{ custom_trans('Deactivate', 'admin') }}
                         </button>
                         <button type="button" class="btn btn-danger btn-sm" id="bulk_delete">
-                            <i class="fas fa-trash me-1"></i>{{ __('Delete') }}
+                            <i class="fas fa-trash me-1"></i>{{ custom_trans('Delete', 'admin') }}
                         </button>
                     </div>
                 </div>
@@ -142,14 +142,14 @@
                                         <input class="form-check-input" type="checkbox" id="select_all">
                                     </div>
                                 </th>
-                                <th width="80">{{ __('Number') }}</th>
-                                <th width="80">{{ __('Order') }}</th>
-                                <th>{{ __('Title') }}</th>
-                                <th>{{ __('Title (AR)') }}</th>
-                                <th>{{ __('Description') }}</th>
-                                <th>{{ __('Description (AR)') }}</th>
-                                <th width="100">{{ __('Status') }}</th>
-                                <th width="120">{{ __('Actions') }}</th>
+                                <th width="80">{{ custom_trans('Number', 'admin') }}</th>
+                                <th width="80">{{ custom_trans('Order', 'admin') }}</th>
+                                <th>{{ custom_trans('Title', 'admin') }}</th>
+                                <th>{{ custom_trans('Title (AR)', 'admin') }}</th>
+                                <th>{{ custom_trans('Description', 'admin') }}</th>
+                                <th>{{ custom_trans('Description (AR)', 'admin') }}</th>
+                                <th width="100">{{ custom_trans('Status', 'admin') }}</th>
+                                <th width="120">{{ custom_trans('Actions', 'admin') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -201,7 +201,7 @@
                                     <td colspan="9" class="text-center py-4">
                                         <div class="text-muted">
                                             <i class="fas fa-inbox fa-3x mb-3"></i>
-                                            <p>{{ __('No features found') }}</p>
+                                            <p>{{ custom_trans('No features found', 'admin') }}</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -219,7 +219,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addFeatureModalLabel">{{ __('Add New Feature') }}</h5>
+                    <h5 class="modal-title" id="addFeatureModalLabel">{{ custom_trans('Add New Feature', 'admin') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="addFeatureForm">
@@ -228,14 +228,14 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="feature_title" class="form-label">{{ __('Title') }} *</label>
+                                    <label for="feature_title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
                                     <input type="text" class="form-control" id="feature_title" name="title"
                                         required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="feature_title_ar" class="form-label">{{ __('Title (Arabic)') }}</label>
+                                    <label for="feature_title_ar" class="form-label">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
                                     <input type="text" class="form-control" id="feature_title_ar" name="title_ar">
                                 </div>
                             </div>
@@ -243,14 +243,14 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="feature_description" class="form-label">{{ __('Description') }} *</label>
+                                    <label for="feature_description" class="form-label">{{ custom_trans('Description', 'admin') }} *</label>
                                     <textarea class="form-control" id="feature_description" name="description" rows="3" required></textarea>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="feature_description_ar"
-                                        class="form-label">{{ __('Description (Arabic)') }}</label>
+                                        class="form-label">{{ custom_trans('Description (Arabic)', 'admin') }}</label>
                                     <textarea class="form-control" id="feature_description_ar" name="description_ar" rows="3"></textarea>
                                 </div>
                             </div>
@@ -258,14 +258,14 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="feature_number" class="form-label">{{ __('Number') }} *</label>
+                                    <label for="feature_number" class="form-label">{{ custom_trans('Number', 'admin') }} *</label>
                                     <input type="number" class="form-control" id="feature_number" name="number"
                                         min="1" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="feature_order" class="form-label">{{ __('Order') }}</label>
+                                    <label for="feature_order" class="form-label">{{ custom_trans('Order', 'admin') }}</label>
                                     <input type="number" class="form-control" id="feature_order" name="order"
                                         value="0" min="0">
                                 </div>
@@ -276,15 +276,15 @@
                                 <input class="form-check-input" type="checkbox" id="feature_is_active" name="is_active"
                                     checked>
                                 <label class="form-check-label" for="feature_is_active">
-                                    {{ __('Active') }}
+                                    {{ custom_trans('Active', 'admin') }}
                                 </label>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary"
-                            data-bs-dismiss="modal">{{ __('Cancel') }}</button>
-                        <button type="submit" class="btn btn-primary">{{ __('Create Feature') }}</button>
+                            data-bs-dismiss="modal">{{ custom_trans('Cancel', 'admin') }}</button>
+                        <button type="submit" class="btn btn-primary">{{ custom_trans('Create Feature', 'admin') }}</button>
                     </div>
                 </form>
             </div>
@@ -297,7 +297,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editFeatureModalLabel">{{ __('Edit Feature') }}</h5>
+                    <h5 class="modal-title" id="editFeatureModalLabel">{{ custom_trans('Edit Feature', 'admin') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="editFeatureForm">
@@ -307,7 +307,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="edit_feature_title" class="form-label">{{ __('Title') }} *</label>
+                                    <label for="edit_feature_title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
                                     <input type="text" class="form-control" id="edit_feature_title" name="title"
                                         required>
                                 </div>
@@ -315,7 +315,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="edit_feature_title_ar"
-                                        class="form-label">{{ __('Title (Arabic)') }}</label>
+                                        class="form-label">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
                                     <input type="text" class="form-control" id="edit_feature_title_ar"
                                         name="title_ar">
                                 </div>
@@ -324,7 +324,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="edit_feature_description" class="form-label">{{ __('Description') }}
+                                    <label for="edit_feature_description" class="form-label">{{ custom_trans('Description', 'admin') }}
                                         *</label>
                                     <textarea class="form-control" id="edit_feature_description" name="description" rows="3" required></textarea>
                                 </div>
@@ -332,7 +332,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="edit_feature_description_ar"
-                                        class="form-label">{{ __('Description (Arabic)') }}</label>
+                                        class="form-label">{{ custom_trans('Description (Arabic)', 'admin') }}</label>
                                     <textarea class="form-control" id="edit_feature_description_ar" name="description_ar" rows="3"></textarea>
                                 </div>
                             </div>
@@ -340,14 +340,14 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="edit_feature_number" class="form-label">{{ __('Number') }} *</label>
+                                    <label for="edit_feature_number" class="form-label">{{ custom_trans('Number', 'admin') }} *</label>
                                     <input type="number" class="form-control" id="edit_feature_number" name="number"
                                         min="1" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="edit_feature_order" class="form-label">{{ __('Order') }}</label>
+                                    <label for="edit_feature_order" class="form-label">{{ custom_trans('Order', 'admin') }}</label>
                                     <input type="number" class="form-control" id="edit_feature_order" name="order"
                                         min="0">
                                 </div>
@@ -358,15 +358,15 @@
                                 <input class="form-check-input" type="checkbox" id="edit_feature_is_active"
                                     name="is_active">
                                 <label class="form-check-label" for="edit_feature_is_active">
-                                    {{ __('Active') }}
+                                    {{ custom_trans('Active', 'admin') }}
                                 </label>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary"
-                            data-bs-dismiss="modal">{{ __('Cancel') }}</button>
-                        <button type="submit" class="btn btn-warning">{{ __('Update Feature') }}</button>
+                            data-bs-dismiss="modal">{{ custom_trans('Cancel', 'admin') }}</button>
+                        <button type="submit" class="btn btn-warning">{{ custom_trans('Update Feature', 'admin') }}</button>
                     </div>
                 </form>
             </div>
@@ -379,20 +379,20 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="viewFeatureModalLabel">{{ __('Feature Details') }}</h5>
+                    <h5 class="modal-title" id="viewFeatureModalLabel">{{ custom_trans('Feature Details', 'admin') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Title') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Title', 'admin') }}</label>
                                 <p id="view_feature_title" class="form-control-plaintext"></p>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Title (Arabic)') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
                                 <p id="view_feature_title_ar" class="form-control-plaintext"></p>
                             </div>
                         </div>
@@ -400,13 +400,13 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Description') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Description', 'admin') }}</label>
                                 <p id="view_feature_description" class="form-control-plaintext"></p>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Description (Arabic)') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Description (Arabic)', 'admin') }}</label>
                                 <p id="view_feature_description_ar" class="form-control-plaintext"></p>
                             </div>
                         </div>
@@ -414,13 +414,13 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Number') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Number', 'admin') }}</label>
                                 <p id="view_feature_number" class="form-control-plaintext"></p>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Order') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Order', 'admin') }}</label>
                                 <p id="view_feature_order" class="form-control-plaintext"></p>
                             </div>
                         </div>
@@ -428,7 +428,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">{{ __('Status') }}</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Status', 'admin') }}</label>
                                 <p id="view_feature_status" class="form-control-plaintext"></p>
                             </div>
                         </div>
@@ -436,7 +436,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary"
-                        data-bs-dismiss="modal">{{ __('Close') }}</button>
+                        data-bs-dismiss="modal">{{ custom_trans('Close', 'admin') }}</button>
                 </div>
             </div>
         </div>
@@ -509,7 +509,7 @@
                         }
                     },
                     error: function() {
-                        toastr.error('{{ __('An error occurred while saving the content') }}');
+                        toastr.error('{{ custom_trans('An error occurred while saving the content', 'admin') }}');
                     }
                 });
             });
@@ -534,7 +534,7 @@
                     },
                     error: function() {
                         toastr.error(
-                            '{{ __('An error occurred while updating the status') }}');
+                            '{{ custom_trans('An error occurred while updating the status', 'admin') }}');
                     }
                 });
             });
@@ -559,7 +559,7 @@
                     },
                     error: function() {
                         toastr.error(
-                            '{{ __('An error occurred while updating the feature status') }}'
+                            '{{ custom_trans('An error occurred while updating the feature status', 'admin') }}'
                         );
                         // Revert the checkbox
                         $(this).prop('checked', !isChecked);
@@ -594,7 +594,7 @@
                     },
                     error: function() {
                         toastr.error(
-                            '{{ __('An error occurred while creating the feature') }}');
+                            '{{ custom_trans('An error occurred while creating the feature', 'admin') }}');
                     }
                 });
             });
@@ -628,7 +628,7 @@
                     },
                     error: function() {
                         toastr.error(
-                            '{{ __('An error occurred while updating the feature') }}');
+                            '{{ custom_trans('An error occurred while updating the feature', 'admin') }}');
                     }
                 });
             });
@@ -659,8 +659,8 @@
                 $('#view_feature_description_ar').text(feature.description_ar || '-');
                 $('#view_feature_number').text(feature.number);
                 $('#view_feature_order').text(feature.order);
-                $('#view_feature_status').text(feature.is_active ? '{{ __('Active') }}' :
-                    '{{ __('Inactive') }}');
+                $('#view_feature_status').text(feature.is_active ? '{{ custom_trans('Active', 'admin') }}' :
+                    '{{ custom_trans('Inactive', 'admin') }}');
 
                 $('#viewFeatureModal').modal('show');
             });
@@ -669,7 +669,7 @@
             $('.delete-feature-btn').on('click', function() {
                 const featureId = $(this).data('id');
 
-                if (confirm('{{ __('Are you sure you want to delete this feature?') }}')) {
+                if (confirm('{{ custom_trans('Are you sure you want to delete this feature?', 'admin') }}')) {
                     $.ajax({
                         url: `/admin/settings/about-university/feature/${featureId}`,
                         method: 'DELETE',
@@ -688,7 +688,7 @@
                         },
                         error: function() {
                             toastr.error(
-                                '{{ __('An error occurred while deleting the feature') }}');
+                                '{{ custom_trans('An error occurred while deleting the feature', 'admin') }}');
                         }
                     });
                 }
@@ -721,7 +721,7 @@
                         },
                         error: function() {
                             toastr.error(
-                                '{{ __('An error occurred while updating the order') }}'
+                                '{{ custom_trans('An error occurred while updating the order', 'admin') }}'
                             );
                         }
                     });

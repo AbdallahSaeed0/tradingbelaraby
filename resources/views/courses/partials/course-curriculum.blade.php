@@ -1,13 +1,13 @@
 <div class="course-content-section bg-light-blue-section py-5">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="fw-bold">{{ __('Course Content') }}</h3>
+            <h3 class="fw-bold">{{ custom_trans('Course Content', 'front') }}</h3>
             <div class="d-flex gap-2">
                 <button class="btn btn-outline-primary" id="markCompleteBtn" disabled>
-                    <i class="fa fa-check me-2"></i>{{ __('Mark Selected as Complete') }}
+                    <i class="fa fa-check me-2"></i>{{ custom_trans('Mark Selected as Complete', 'front') }}
                 </button>
                 <button class="btn btn-outline-warning" id="markIncompleteBtn" disabled>
-                    <i class="fa fa-times me-2"></i>{{ __('Mark Selected as Incomplete') }}
+                    <i class="fa fa-times me-2"></i>{{ custom_trans('Mark Selected as Incomplete', 'front') }}
                 </button>
             </div>
         </div>
@@ -65,10 +65,10 @@
                                         <div class="me-3">
                                             @if ($isCompleted)
                                                 <i class="fa fa-check-circle text-success fs-1-2rem"
-                                                    title="{{ __('Completed') }}"></i>
+                                                    title="{{ custom_trans('Completed', 'front') }}"></i>
                                             @else
                                                 <i class="fa fa-circle text-muted fs-1-2rem"
-                                                    title="{{ __('Not Completed') }}"></i>
+                                                    title="{{ custom_trans('Not Completed', 'front') }}"></i>
                                             @endif
                                         </div>
 
@@ -86,7 +86,7 @@
                                                         {{ \App\Helpers\TranslationHelper::getLocalizedContent($lecture->title, $lecture->title_ar) }}
                                                         @if ($isCompleted)
                                                             <span class="badge bg-success ms-2">
-                                                                <i class="fa fa-check"></i> {{ __('Completed') }}
+                                                                <i class="fa fa-check"></i> {{ custom_trans('Completed', 'front') }}
                                                             </span>
                                                         @endif
                                                     </h6>

@@ -3,9 +3,10 @@
         {{ $course->localized_name }}
     </div>
     <div class="d-flex gap-2">
-        <button class="btn btn-orange"><i class="fa fa-certificate me-2"></i>{{ __('Get Certificate') }}</button>
+        <button class="btn btn-orange"><i
+                class="fa fa-certificate me-2"></i>{{ custom_trans('Get Certificate', 'front') }}</button>
         <a href="{{ route('courses.show', $course->id) }}" class="btn btn-outline-light course-details-btn">
-            <i class="fa fa-arrow-right me-2"></i>{{ __('Course details') }}
+            <i class="fa fa-arrow-right me-2"></i>{{ custom_trans('Course details', 'front') }}
         </a>
     </div>
 </div>

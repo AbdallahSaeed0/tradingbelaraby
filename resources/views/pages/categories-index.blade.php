@@ -9,7 +9,7 @@
             class="category-banner-bg position-absolute w-100 h-100 top-0 start-0">
         <div class="category-banner-overlay position-absolute w-100 h-100 top-0 start-0"></div>
         <div class="container position-relative z-3 text-center">
-            <h1 class="display-3 fw-bold text-white mb-3">{{ custom_trans('explore_categories') }}</h1>
+            <h1 class="display-3 fw-bold text-white mb-3">{{ custom_trans('explore_categories', 'front') }}</h1>
             <!-- Category counter removed as requested -->
         </div>
     </section>
@@ -19,8 +19,8 @@
         <div class="container">
             <div class="row justify-content-center mb-4">
                 <div class="col-lg-8 text-center">
-                    <h2 class="fw-bold mb-3">{{ custom_trans('all_categories') }}</h2>
-                    <p class="text-muted lead">{{ custom_trans('browse_categories_description') }}</p>
+                    <h2 class="fw-bold mb-3">{{ custom_trans('all_categories', 'front') }}</h2>
+                    <p class="text-muted lead">{{ custom_trans('browse_categories_description', 'front') }}</p>
                 </div>
             </div>
 
@@ -53,11 +53,11 @@
                                     </a>
                                 </h5>
                                 <p class="card-text text-muted mb-3 flex-grow-1">
-                                    {{ \App\Helpers\TranslationHelper::getLocalizedContent($category->description, $category->description_ar) ?: custom_trans('no_description_available') }}
+                                    {{ \App\Helpers\TranslationHelper::getLocalizedContent($category->description, $category->description_ar) ?: custom_trans('no_description_available', 'front') }}
                                 </p>
                                 <div class="d-flex justify-content-end">
                                     <a href="{{ route('categories.show', $category->slug) }}" class="btn btn-primary">
-                                        {{ custom_trans('view_courses') }}
+                                        {{ custom_trans('view_courses', 'front') }}
                                     </a>
                                 </div>
                             </div>
@@ -67,8 +67,8 @@
                     <div class="col-12 text-center py-5">
                         <div class="empty-state">
                             <i class="fas fa-folder-open fa-4x text-muted mb-3"></i>
-                            <h4 class="fw-bold text-muted mb-2">{{ custom_trans('no_categories_found') }}</h4>
-                            <p class="text-muted">{{ custom_trans('no_categories_message') }}</p>
+                            <h4 class="fw-bold text-muted mb-2">{{ custom_trans('no_categories_found', 'front') }}</h4>
+                            <p class="text-muted">{{ custom_trans('no_categories_message', 'front') }}</p>
                         </div>
                     </div>
                 @endforelse
@@ -93,8 +93,8 @@
             <div class="container">
                 <div class="row justify-content-center mb-4">
                     <div class="col-lg-8 text-center">
-                        <h2 class="fw-bold mb-3">{{ custom_trans('featured_categories') }}</h2>
-                        <p class="text-muted">{{ custom_trans('featured_categories_description') }}</p>
+                        <h2 class="fw-bold mb-3">{{ custom_trans('featured_categories', 'front') }}</h2>
+                        <p class="text-muted">{{ custom_trans('featured_categories_description', 'front') }}</p>
                     </div>
                 </div>
 
@@ -120,7 +120,7 @@
                                     <div class="d-flex justify-content-end">
                                         <a href="{{ route('categories.show', $category->slug) }}"
                                             class="btn btn-outline-primary btn-sm">
-                                            {{ custom_trans('explore') }}
+                                            {{ custom_trans('explore', 'front') }}
                                         </a>
                                     </div>
                                 </div>

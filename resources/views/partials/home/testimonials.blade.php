@@ -7,9 +7,9 @@
     <div class="container">
         <div class="text-center mb-4">
             <span class="text-warning fw-bold d-block mb-2 fs-11">
-                <i class="fas fa-graduation-cap"></i> {{ __('Testimonial') }}
+                <i class="fas fa-graduation-cap"></i> {{ custom_trans('Testimonial', 'front') }}
             </span>
-            <h2 class="fw-bold mb-3">{{ __('What Our Clients Says') }}</h2>
+            <h2 class="fw-bold mb-3">{{ custom_trans('What Our Clients Says', 'front') }}</h2>
         </div>
         <div class="testimonial-slider">
             @php
@@ -68,7 +68,7 @@
                             <i class="fas fa-quote-right fa-2x text-warning"></i>
                         </div>
                         <p class="testimonial-text mb-4">
-                            {{ __('It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.') }}
+                            {{ custom_trans('It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.', 'front') }}
                         </p>
                         <img src="{{ $t['img'] }}" class="testimonial-avatar mb-2" alt="{{ $t['name'] }}"
                             class="testimonial-avatar-img">
