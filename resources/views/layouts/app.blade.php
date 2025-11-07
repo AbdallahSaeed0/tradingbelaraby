@@ -113,7 +113,7 @@
                                             $contactSettings->social_tiktok);
                                 @endphp
                                 @if ($hasSocialLinks)
-                                    <span>Follow us:-</span>
+                                    <span>{{ custom_trans('Follow Us', 'front') }}:</span>
                                     @if ($contactSettings->social_facebook)
                                         <a href="{{ $contactSettings->social_facebook }}" target="_blank"><i
                                                 class="fab fa-facebook-f"></i></a>
@@ -147,7 +147,7 @@
                                     <img src="https://eclass.mediacity.co.in/demo2/public/frontcss/img/icon/phone-call.png"
                                         alt="Phone" class="contact-icon">
                                     <div class="contact-info">
-                                        <span class="contact-label">Call Now !</span>
+                                        <span class="contact-label">{{ custom_trans('Call Now!', 'front') }}</span>
                                         <span class="contact-value"><b><a href="tel:{{ $contactSettings->phone }}"
                                                     class="text-decoration-none">{{ $contactSettings->phone }}</a></b></span>
                                     </div>
@@ -158,7 +158,7 @@
                                     <img src="https://eclass.mediacity.co.in/demo2/public/frontcss/img/icon/mailing.png"
                                         alt="Email" class="contact-icon">
                                     <div class="contact-info">
-                                        <span class="contact-label">Email Now</span>
+                                        <span class="contact-label">{{ custom_trans('Email Now', 'front') }}</span>
                                         <span class="contact-value"><b><a href="mailto:{{ $contactSettings->email }}"
                                                     class="text-decoration-none">{{ $contactSettings->email }}</a></b></span>
                                     </div>

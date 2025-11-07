@@ -3,9 +3,9 @@
     <div class="container">
         <div class="text-center mb-5">
             <span class="text-warning fw-bold d-block mb-2 fs-11">
-                <i class="fas fa-graduation-cap"></i> Our Blog
+                <i class="fas fa-graduation-cap"></i> {{ custom_trans('Our Blog', 'front') }}
             </span>
-            <h2 class="fw-bold mb-3">Latest Blog & News</h2>
+            <h2 class="fw-bold mb-3">{{ custom_trans('Latest Blog & News', 'front') }}</h2>
         </div>
         <div class="row justify-content-center g-4">
             @php
@@ -25,8 +25,8 @@
                                         class="fa fa-calendar me-2"></i>{{ $blog->created_at->format('M d, Y') }}</span>
                             </div>
                             <div class="p-4 flex-grow-1 d-flex flex-column">
-                                <div class="mb-2 text-muted small"><i class="fa fa-user me-1"></i> By
-                                    {{ $blog->author_name ?? 'Admin' }}</div>
+                                <div class="mb-2 text-muted small"><i class="fa fa-user me-1"></i> {{ custom_trans('By', 'front') }}
+                                    {{ $blog->author_name ?? custom_trans('Admin', 'front') }}</div>
                                 <h5 class="blog-title fw-bold mb-2">
                                     <a href="{{ route('blog.show', $blog->slug) }}"
                                         class="text-decoration-none text-dark">
@@ -49,7 +49,7 @@
                                     </div>
                                 @endif
                                 <a href="{{ route('blog.show', $blog->slug) }}"
-                                    class="text-primary fw-bold mt-auto">Read More &rarr;</a>
+                                    class="text-primary fw-bold mt-auto">{{ custom_trans('Read More', 'front') }} &rarr;</a>
                             </div>
                         </div>
                     </div>
@@ -58,7 +58,7 @@
                 <div class="col-12 text-center">
                     <div class="text-muted py-4">
                         <i class="fas fa-newspaper fa-2x mb-2"></i>
-                        <p class="mb-0">Not Found</p>
+                        <p class="mb-0">{{ custom_trans('Not Found', 'front') }}</p>
                     </div>
                 </div>
             @endif

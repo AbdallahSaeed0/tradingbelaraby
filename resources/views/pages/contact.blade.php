@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Contact Us - ' . (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site Name'))
+@section('title', custom_trans('contact_us', 'front') . ' - ' . (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site Name'))
 
 @section('content')
     @php
@@ -13,11 +13,11 @@
             class="contact-banner-bg position-absolute w-100 h-100 top-0 start-0">
         <div class="contact-banner-overlay position-absolute w-100 h-100 top-0 start-0"></div>
         <div class="container position-relative z-3 text-center">
-            <h1 class="display-4 fw-bold text-white mb-3">Contact Us</h1>
+            <h1 class="display-4 fw-bold text-white mb-3">{{ custom_trans('contact_us', 'front') }}</h1>
             <div class="d-flex justify-content-center mb-2">
                 <span class="contact-label px-4 py-2 rounded-pill bg-white text-dark fw-semibold shadow">
-                    <a href="{{ route('home') }}" class="text-dark text-decoration-none hover-primary">Home</a> &nbsp;|&nbsp;
-                    Contact Us
+                    <a href="{{ route('home') }}" class="text-dark text-decoration-none hover-primary">{{ custom_trans('home', 'front') }}</a> &nbsp;|&nbsp;
+                    {{ custom_trans('contact_us', 'front') }}
                 </span>
             </div>
         </div>
@@ -27,8 +27,8 @@
     <section class="contact-info-section py-5 bg-white">
         <div class="container">
             <div class="text-center mb-4">
-                <span class="text-orange small fw-bold"><i class="fa fa-paper-plane me-1"></i>Keep in Touch</span>
-                <h2 class="fw-bold mt-2 mb-4">Get In Touch</h2>
+                <span class="text-orange small fw-bold"><i class="fa fa-paper-plane me-1"></i>{{ custom_trans('Keep in Touch', 'front') }}</span>
+                <h2 class="fw-bold mt-2 mb-4">{{ custom_trans('Get In Touch', 'front') }}</h2>
             </div>
             <div class="row justify-content-center g-4">
                 <div class="col-md-4">
@@ -36,7 +36,7 @@
                         <div class="contact-icon-box mb-3 mx-auto bg-white text-orange"><i class="fa fa-phone fa-2x"></i>
                         </div>
                         <div class="fw-bold mb-1">{{ $contactSettings->phone ?? '9123456789' }}</div>
-                        <div class="text-muted small">Phone Support</div>
+                        <div class="text-muted small">{{ custom_trans('Phone Support', 'front') }}</div>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -44,7 +44,7 @@
                         <div class="contact-icon-box mb-3 mx-auto bg-white text-orange"><i class="fa fa-envelope fa-2x"></i>
                         </div>
                         <div class="fw-bold mb-1">{{ $contactSettings->email ?? 'info@example.com' }}</div>
-                        <div class="text-muted small">Email Address</div>
+                        <div class="text-muted small">{{ custom_trans('Email Address', 'front') }}</div>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -53,7 +53,7 @@
                                 class="fa fa-map-marker-alt fa-2x"></i></div>
                         <div class="fw-bold mb-1">
                             {{ $contactSettings->address ?? 'Company 12345 South Main Street Anywhere' }}</div>
-                        <div class="text-muted small">Office Address</div>
+                        <div class="text-muted small">{{ custom_trans('Office Address', 'front') }}</div>
                     </div>
                 </div>
             </div>
@@ -79,46 +79,46 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-10">
-                    <h2 class="fw-bold text-center mb-4">Student Inquiry Form</h2>
+                    <h2 class="fw-bold text-center mb-4">{{ custom_trans('Student Inquiry Form', 'front') }}</h2>
                     <form id="contactForm" class="contact-form">
                         @csrf
                         <div class="row g-3 mb-3">
                             <div class="col-md-4">
                                 <div class="input-group">
-                                    <input type="text" name="name" class="form-control rounded-3" placeholder="Name"
+                                    <input type="text" name="name" class="form-control rounded-3" placeholder="{{ custom_trans('name', 'front') }}"
                                         required>
                                     <span class="input-group-text bg-white"><i class="fa fa-user"></i></span>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="input-group">
-                                    <input type="email" name="email" class="form-control rounded-3" placeholder="Email"
+                                    <input type="email" name="email" class="form-control rounded-3" placeholder="{{ custom_trans('Email', 'front') }}"
                                         required>
                                     <span class="input-group-text bg-white"><i class="fa fa-envelope"></i></span>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="input-group">
-                                    <input type="text" name="phone" class="form-control rounded-3" placeholder="Phone">
+                                    <input type="text" name="phone" class="form-control rounded-3" placeholder="{{ custom_trans('Phone', 'front') }}">
                                     <span class="input-group-text bg-white"><i class="fa fa-phone"></i></span>
                                 </div>
                             </div>
                         </div>
                         <div class="mb-3">
                             <div class="input-group">
-                                <input type="text" name="subject" class="form-control rounded-3" placeholder="Subject"
+                                <input type="text" name="subject" class="form-control rounded-3" placeholder="{{ custom_trans('Subject', 'front') }}"
                                     required>
                                 <span class="input-group-text bg-white"><i class="fa fa-tag"></i></span>
                             </div>
                         </div>
                         <div class="mb-4">
-                            <textarea name="message" class="form-control rounded-3" rows="5" placeholder="Your Message" required></textarea>
+                            <textarea name="message" class="form-control rounded-3" rows="5" placeholder="{{ custom_trans('Your Message', 'front') }}" required></textarea>
                         </div>
                         <div class="text-center">
                             <button type="submit" class="btn btn-orange px-5 py-2 rounded-3 fw-bold" id="submitBtn">
-                                <span class="btn-text">Make An Request <i class="fa fa-arrow-right ms-2"></i></span>
+                                <span class="btn-text">{{ custom_trans('Make An Request', 'front') }} <i class="fa fa-arrow-right ms-2"></i></span>
                                 <span class="btn-loading d-none-initially">
-                                    <i class="fas fa-spinner fa-spin me-2"></i>Sending...
+                                    <i class="fas fa-spinner fa-spin me-2"></i>{{ custom_trans('Sending...', 'front') }}
                                 </span>
                             </button>
                         </div>
@@ -163,17 +163,17 @@
                     processData: false,
                     contentType: false,
                     success: function(response) {
+                        const successMessageDefault = @json(custom_trans('Your message has been sent successfully!', 'front'));
                         if (response.success) {
-                            toastr.success(response.message ||
-                                'Your message has been sent successfully!');
+                            toastr.success(response.message || successMessageDefault);
                             $('#contactForm')[0].reset();
                         } else {
-                            toastr.error(response.message ||
-                                'An error occurred while sending your message.');
+                            const errorMessageDefault = @json(custom_trans('An error occurred while sending your message.', 'front'));
+                            toastr.error(response.message || errorMessageDefault);
                         }
                     },
                     error: function(xhr) {
-                        let errorMessage = 'An error occurred while sending your message.';
+                        let errorMessage = @json(custom_trans('An error occurred while sending your message.', 'front'));
                         if (xhr.responseJSON && xhr.responseJSON.message) {
                             errorMessage = xhr.responseJSON.message;
                         } else if (xhr.responseJSON && xhr.responseJSON.errors) {

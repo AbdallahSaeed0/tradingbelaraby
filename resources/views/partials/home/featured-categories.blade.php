@@ -3,8 +3,8 @@
     <div class="container">
         <div class="row mb-4">
             <div class="col-12 text-center">
-                <h2 class="featured-categories-title mb-0">Featured Categories</h2>
-                <p class="text-muted mt-2">Explore our most popular course categories</p>
+                <h2 class="featured-categories-title mb-0">{{ custom_trans('featured_categories', 'front') }}</h2>
+                <p class="text-muted mt-2">{{ custom_trans('featured_categories_description', 'front') }}</p>
             </div>
         </div>
 
@@ -28,7 +28,7 @@
                                 <i class="fas fa-folder me-2"></i>
                                 {{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}
                             </div>
-                            <div class="category-hover-text">{{ $category->courses_count }} courses</div>
+                            <div class="category-hover-text">{{ $category->courses_count }} {{ custom_trans('courses', 'front') }}</div>
                         </div>
                     </div>
                 @endforeach
@@ -58,7 +58,7 @@
                                 <i class="fas {{ $category['icon'] }} me-2"></i>
                                 {{ $category['name'] }}
                             </div>
-                            <div class="category-hover-text">{{ $category['courses'] }} courses</div>
+                            <div class="category-hover-text">{{ $category['courses'] }} {{ custom_trans('courses', 'front') }}</div>
                         </div>
                     </div>
                 @endforeach
@@ -69,7 +69,7 @@
         <div class="row mt-5">
             <div class="col-12 text-center">
                 <a href="{{ route('categories.index') }}" class="btn btn-primary btn-lg">
-                    <i class="fas fa-th-large me-2"></i>View All Categories
+                    <i class="fas fa-th-large me-2"></i>{{ custom_trans('View All Categories', 'front') }}
                 </a>
             </div>
         </div>

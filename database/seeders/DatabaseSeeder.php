@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             AdminTypeSeeder::class,
             AdminSeeder::class,
             LanguageSeeder::class,
+            FrontPageTranslationsSeeder::class,
             InstructorSeeder::class,
             TestimonialSeeder::class,
             FeatureSeeder::class,
