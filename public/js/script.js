@@ -1,26 +1,14 @@
-// Mobile Navigation Toggle
-function toggleMobileMenu() {
-    const navLinks = document.querySelector('.nav-links');
-    const mobileBtn = document.querySelector('.mobile-menu-btn i');
-
-    if (navLinks.style.display === 'flex' || navLinks.style.display === 'block') {
-        navLinks.style.display = 'none';
-        mobileBtn.className = 'fas fa-bars';
-    } else {
-        navLinks.style.display = 'flex';
-        navLinks.style.flexDirection = 'column';
-        navLinks.style.position = 'absolute';
-        navLinks.style.top = '100%';
-        navLinks.style.left = '0';
-        navLinks.style.right = '0';
-        navLinks.style.background = '#fff';
-        navLinks.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
-        navLinks.style.zIndex = '1000';
-        mobileBtn.className = 'fas fa-times';
-    }
-}
-
 document.addEventListener('DOMContentLoaded', function () {
+    const mobileSearchModal = document.getElementById('mobileSearchModal');
+    if (mobileSearchModal) {
+        mobileSearchModal.addEventListener('shown.bs.modal', function () {
+            const searchInput = mobileSearchModal.querySelector('input[name="q"]');
+            if (searchInput) {
+                searchInput.focus();
+            }
+        });
+    }
+
     // Mobile Bottom Navigation
     const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
 

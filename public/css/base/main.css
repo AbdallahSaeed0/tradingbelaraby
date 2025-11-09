@@ -135,6 +135,29 @@ body {
   font-weight: 700;
   line-height: 1.1;
 }
+.contact-value a {
+  color: #fff;
+  text-decoration: none;
+}
+.contact-value a:hover,
+.contact-value a:focus {
+  color: #fff;
+  text-decoration: underline;
+}
+
+@media (min-width: 1200px) {
+  header .top-bar-colored .container,
+  header nav .container {
+    max-width: 1260px;
+  }
+}
+
+@media (min-width: 1400px) {
+  header .top-bar-colored .container,
+  header nav .container {
+    max-width: 1400px;
+  }
+}
 
 @media (max-width: 768px) {
   .row {

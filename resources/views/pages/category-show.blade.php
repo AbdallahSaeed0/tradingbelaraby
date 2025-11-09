@@ -20,7 +20,8 @@
                 {{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}</h1>
             <div class="d-flex justify-content-center mb-2">
                 <span class="category-label px-4 py-2 rounded-pill bg-white text-dark fw-semibold shadow">
-                    <a href="{{ route('home') }}" class="text-dark text-decoration-none hover-primary">Home</a>
+                    <a href="{{ route('home') }}"
+                        class="text-dark text-decoration-none hover-primary">{{ custom_trans('home', 'front') }}</a>
                     &nbsp;|&nbsp;
                     {{ custom_trans('category_detail', 'front') }}
                 </span>
@@ -58,83 +59,44 @@
         <div class="container">
             <div class="row">
                 <!-- Sidebar Filters -->
-                <div class="col-lg-3 mb-4 mb-lg-0">
-                    <div class="filter-section p-3 rounded-3 shadow-sm bg-white mb-4">
-                        <h5 class="fw-bold mb-3">{{ custom_trans('filters', 'front') }}</h5>
-
-                        <!-- Price Filter -->
-                        <div class="mb-4">
-                            <h6 class="fw-semibold mb-2">{{ custom_trans('price', 'front') }}</h6>
-                            <div class="form-check mb-2">
-                                <input class="form-check-input price-filter" type="checkbox" id="priceFree" value="free">
-                                <label class="form-check-label" for="priceFree">{{ custom_trans('free', 'front') }}</label>
-                            </div>
-                            <div class="form-check mb-2">
-                                <input class="form-check-input price-filter" type="checkbox" id="pricePaid" value="paid">
-                                <label class="form-check-label" for="pricePaid">{{ custom_trans('paid', 'front') }}</label>
-                            </div>
-                        </div>
-
-                        <!-- Rating Filter -->
-                        <div class="mb-4">
-                            <h6 class="fw-semibold mb-2">{{ custom_trans('rating', 'front') }}</h6>
-                            <div class="form-check mb-2">
-                                <input class="form-check-input rating-filter" type="checkbox" id="rating5" value="5">
-                                <label class="form-check-label" for="rating5">
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    (5 {{ custom_trans('stars', 'front') }})
-                                </label>
-                            </div>
-                            <div class="form-check mb-2">
-                                <input class="form-check-input rating-filter" type="checkbox" id="rating4" value="4">
-                                <label class="form-check-label" for="rating4">
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="far fa-star text-warning"></i>
-                                    & up (4+ {{ custom_trans('stars', 'front') }})
-                                </label>
-                            </div>
-                            <div class="form-check mb-2">
-                                <input class="form-check-input rating-filter" type="checkbox" id="rating3" value="3">
-                                <label class="form-check-label" for="rating3">
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="far fa-star text-warning"></i>
-                                    <i class="far fa-star text-warning"></i>
-                                    & up (3+ {{ custom_trans('stars', 'front') }})
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Level filter removed as requested -->
-
-                        <!-- Clear Filters -->
-                        <button class="btn btn-outline-secondary btn-sm w-100" id="clearFilters">
-                            {{ custom_trans('clear_filters', 'front') }}
-                        </button>
-                    </div>
-
-                    <!-- Category stats removed as requested -->
+                <div class="col-lg-3 mb-4 mb-lg-0 d-none d-lg-block">
+                    @include('pages.partials.category-filters', ['idPrefix' => 'desktop'])
                 </div>
 
                 <!-- Courses List/Grid -->
                 <div class="col-lg-9">
+                    <div class="d-lg-none mb-4">
+                        <div class="mobile-filter-trigger d-flex gap-2">
+                            <button class="btn btn-outline-primary flex-grow-1" type="button" data-bs-toggle="offcanvas"
+                                data-bs-target="#mobileFilterOffcanvas" aria-controls="mobileFilterOffcanvas">
+                                <i class="fas fa-filter me-2"></i>{{ custom_trans('filters', 'front') }}
+                            </button>
+                            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#mobileSortOptions" aria-expanded="false" aria-controls="mobileSortOptions">
+                                <i class="fas fa-sort-amount-down me-1"></i>{{ custom_trans('sort', 'front') }}
+                            </button>
+                        </div>
+                        <div class="collapse mt-3" id="mobileSortOptions">
+                            <select class="form-select sort-dropdown">
+                                <option value="newest">{{ custom_trans('newest', 'front') }}</option>
+                                <option value="popular">{{ custom_trans('popular', 'front') }}</option>
+                                <option value="rating">{{ custom_trans('highest_rated', 'front') }}</option>
+                                <option value="price_low">{{ custom_trans('price_low_to_high', 'front') }}</option>
+                                <option value="price_high">{{ custom_trans('price_high_to_low', 'front') }}</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <!-- Header with Sort Options -->
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <div>
                             <h4 class="fw-bold mb-1">
                                 {{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}
                                 {{ custom_trans('courses', 'front') }}</h4>
-                            <p class="text-muted mb-0">{{ $courses->total() }} {{ custom_trans('courses_found', 'front') }}</p>
+                            <p class="text-muted mb-0">{{ $courses->total() }}
+                                {{ custom_trans('courses_found', 'front') }}</p>
                         </div>
-                        <div class="d-flex gap-2">
+                        <div class="d-none d-md-flex gap-2">
                             <select class="form-select sort-dropdown max-w-150">
                                 <option value="newest">{{ custom_trans('newest', 'front') }}</option>
                                 <option value="popular">{{ custom_trans('popular', 'front') }}</option>
@@ -142,7 +104,7 @@
                                 <option value="price_low">{{ custom_trans('price_low_to_high', 'front') }}</option>
                                 <option value="price_high">{{ custom_trans('price_high_to_low', 'front') }}</option>
                             </select>
-                            <div class="btn-group" role="group" aria-label="View toggle">
+                            <div class="btn-group flex-row-reverse" role="group" aria-label="View toggle">
                                 <button class="btn btn-outline-primary active" id="listViewBtn" type="button">
                                     <i class="fas fa-list me-1"></i>
                                 </button>
@@ -275,7 +237,8 @@
                             <div class="col-12 text-center py-5">
                                 <div class="empty-state">
                                     <i class="fas fa-search fa-4x text-muted mb-3"></i>
-                                    <h4 class="fw-bold text-muted mb-2">{{ custom_trans('no_courses_found', 'front') }}</h4>
+                                    <h4 class="fw-bold text-muted mb-2">{{ custom_trans('no_courses_found', 'front') }}
+                                    </h4>
                                     <p class="text-muted">{{ custom_trans('no_courses_in_category', 'front') }}</p>
                                     <a href="{{ route('categories.index') }}" class="btn btn-primary">
                                         {{ custom_trans('browse_all_categories', 'front') }}
@@ -296,6 +259,20 @@
                         </div>
                     @endif
                 </div>
+            </div>
+        </div>
+        <div class="offcanvas offcanvas-end mobile-filter-offcanvas" tabindex="-1" id="mobileFilterOffcanvas"
+            aria-labelledby="mobileFilterOffcanvasLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="mobileFilterOffcanvasLabel">{{ custom_trans('filters', 'front') }}</h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                    aria-label="{{ __('Close') }}"></button>
+            </div>
+            <div class="offcanvas-body">
+                @include('pages.partials.category-filters', [
+                    'idPrefix' => 'mobile',
+                    'isOffcanvas' => true,
+                ])
             </div>
         </div>
     </section>
@@ -345,7 +322,8 @@
         // Filter functionality
         document.addEventListener('DOMContentLoaded', function() {
             const filters = document.querySelectorAll('.price-filter, .rating-filter');
-            const clearBtn = document.getElementById('clearFilters');
+            const clearButtons = document.querySelectorAll('[data-clear-filters]');
+            const applyButtons = document.querySelectorAll('[data-apply-filters]');
 
             // Ensure all courses are visible on page load
             const courseCards = document.querySelectorAll('.course-card-col');
@@ -357,7 +335,27 @@
                 filter.addEventListener('change', applyFilters);
             });
 
-            clearBtn?.addEventListener('click', clearAllFilters);
+            clearButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    clearAllFilters();
+                    const offcanvasElement = btn.closest('.offcanvas');
+                    if (offcanvasElement) {
+                        const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasElement);
+                        offcanvasInstance?.hide();
+                    }
+                });
+            });
+
+            applyButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    applyFilters();
+                    const offcanvasElement = btn.closest('.offcanvas');
+                    if (offcanvasElement) {
+                        const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasElement);
+                        offcanvasInstance?.hide();
+                    }
+                });
+            });
         });
 
         function applyFilters() {

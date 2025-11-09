@@ -181,50 +181,367 @@
                             class="logo-img">
                     </a>
                 </div>
-                <ul class="nav-links">
-                    <li><a href="{{ route('home') }}">{{ custom_trans('home', 'front') }}</a></li>
-                    <li class="dropdown">
-                        <a href="{{ route('categories.index') }}">{{ custom_trans('categories', 'front') }}</a>
-                        <ul class="dropdown-menu">
-                            @forelse($navigationCategories as $category)
-                                <li><a
-                                        href="{{ route('categories.show', $category->slug) }}">{{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}</a>
-                                </li>
-                            @empty
-                                <li><a
-                                        href="{{ route('categories.index') }}">{{ custom_trans('no_category_found', 'front') }}</a>
-                                </li>
-                            @endforelse
-                        </ul>
-                    </li>
-                    <li><a href="{{ route('blog.index') }}">{{ custom_trans('blog', 'front') }}</a></li>
-                    <li><a href="{{ route('contact') }}">{{ custom_trans('contact', 'front') }}</a></li>
-                </ul>
-                <!-- Language Switcher -->
-                @php
-                    $currentLanguage = \App\Helpers\TranslationHelper::getCurrentLanguage();
-                    $availableLanguages = \App\Helpers\TranslationHelper::getAvailableLanguages();
-                @endphp
-                <div class="language-switcher me-3">
-                    <div class="dropdown">
-                        <button class="btn btn-outline-light dropdown-toggle text-black" type="button"
-                            id="frontendLangDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-globe me-1"></i>
-                            {{ strtoupper($currentLanguage->code) }}
+                <div class="mobile-header-actions d-lg-none">
+                    <button type="button" class="mobile-icon-btn mobile-menu-btn" data-bs-toggle="offcanvas"
+                        data-bs-target="#mobileNavOffcanvas" aria-controls="mobileNavOffcanvas"
+                        aria-label="{{ __('Toggle navigation') }}">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <button type="button" class="mobile-icon-btn mobile-search-btn" data-bs-toggle="modal"
+                        data-bs-target="#mobileSearchModal"
+                        aria-label="{{ custom_trans('search_courses', 'front') }}">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <a href="{{ route('cart.index') }}" class="mobile-icon-btn mobile-cart-btn position-relative"
+                        aria-label="{{ custom_trans('cart', 'front') }}">
+                        <i class="fas fa-shopping-cart"></i>
+                        @if (auth()->check() && auth()->user()->cartItems && auth()->user()->cartItems->count() > 0)
+                            <span
+                                class="badge bg-danger cart-count-badge">{{ auth()->user()->cartItems->count() }}</span>
+                        @endif
+                    </a>
+                </div>
+                <div class="nav-desktop-actions d-none d-lg-flex">
+                    <ul class="nav-links">
+                        <li><a href="{{ route('home') }}">{{ custom_trans('home', 'front') }}</a></li>
+                        <li class="dropdown">
+                            <a href="{{ route('categories.index') }}">{{ custom_trans('categories', 'front') }}</a>
+                            <ul class="dropdown-menu">
+                                @forelse($navigationCategories as $category)
+                                    <li><a
+                                            href="{{ route('categories.show', $category->slug) }}">{{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}</a>
+                                    </li>
+                                @empty
+                                    <li><a
+                                            href="{{ route('categories.index') }}">{{ custom_trans('no_category_found', 'front') }}</a>
+                                    </li>
+                                @endforelse
+                            </ul>
+                        </li>
+                        <li><a href="{{ route('blog.index') }}">{{ custom_trans('blog', 'front') }}</a></li>
+                        <li><a href="{{ route('contact') }}">{{ custom_trans('contact', 'front') }}</a></li>
+                    </ul>
+                    <!-- Language Switcher -->
+                    @php
+                        $currentLanguage = \App\Helpers\TranslationHelper::getCurrentLanguage();
+                        $availableLanguages = \App\Helpers\TranslationHelper::getAvailableLanguages();
+                    @endphp
+                    <div class="language-switcher me-3">
+                        <div class="dropdown">
+                            <button class="btn btn-outline-light dropdown-toggle text-black" type="button"
+                                id="frontendLangDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-globe me-1"></i>
+                                {{ strtoupper($currentLanguage->code) }}
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="frontendLangDropdown">
+                                @foreach ($availableLanguages as $language)
+                                    <li>
+                                        <a class="dropdown-item {{ $currentLanguage->id == $language->id ? 'active' : '' }}"
+                                            href="{{ route('language.switch', $language->code) }}">
+                                            <span class="me-2">
+                                                @if ($language->direction == 'rtl')
+                                                    <i class="fas fa-text-width" title="RTL"></i>
+                                                @else
+                                                    <i class="fas fa-text-width" title="LTR"></i>
+                                                @endif
+                                            </span>
+                                            {{ $language->native_name }} ({{ $language->code }})
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Search Bar -->
+                    <div class="search-container me-3">
+                        <form action="{{ route('courses.search') }}" method="GET" class="d-flex">
+                            <input type="text" name="q"
+                                placeholder="{{ custom_trans('search_courses', 'front') }}"
+                                class="form-control search-input" value="{{ request('q') }}">
+                            <button type="submit" class="btn btn-outline-dark ms-2">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- User Actions -->
+                    <div class="user-actions me-3">
+                        @auth
+                            <!-- Notifications -->
+                            <div class="dropdown">
+                                <button class="btn btn-outline-dark position-relative notification-btn" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-bell"></i>
+                                    @if (auth()->user()->unreadNotifications->count() > 0)
+                                        <span
+                                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge">
+                                            {{ auth()->user()->unreadNotifications->count() }}
+                                        </span>
+                                    @endif
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-end notification-dropdown">
+                                    <div
+                                        class="dropdown-header d-flex justify-content-between align-items-center p-3 border-bottom">
+                                        <h6 class="mb-0 fw-bold text-dark">
+                                            <i class="fas fa-bell me-2 text-primary"></i>
+                                            {{ custom_trans('notifications', 'front') }}
+                                        </h6>
+                                        @if (auth()->check() && auth()->user()->notifications && auth()->user()->notifications->count() > 0)
+                                            <span
+                                                class="badge bg-warning text-dark rounded-pill">{{ auth()->user()->unreadNotifications->count() }}
+                                                {{ custom_trans('new', 'front') }}</span>
+                                        @endif
+                                    </div>
+
+                                    <div class="notification-list">
+                                        @forelse(auth()->user()->notifications->take(8) as $notification)
+                                            <div class="dropdown-item notification-item p-3 {{ $notification->read_at ? '' : 'unread' }}"
+                                                data-notification-id="{{ $notification->id }}">
+                                                <div class="d-flex align-items-start">
+                                                    <div class="notification-icon me-3">
+                                                        @if (str_contains($notification->type, 'Wishlist'))
+                                                            <i class="fas fa-heart text-danger"></i>
+                                                        @elseif (str_contains($notification->type, 'Course'))
+                                                            <i class="fas fa-graduation-cap text-primary"></i>
+                                                        @elseif (str_contains($notification->type, 'Quiz'))
+                                                            <i class="fas fa-question-circle text-warning"></i>
+                                                        @else
+                                                            <i class="fas fa-bell text-info"></i>
+                                                        @endif
+                                                    </div>
+                                                    <div class="notification-content flex-grow-1">
+                                                        <div class="notification-message fw-semibold text-dark mb-1">
+                                                            {{ $notification->data['message'] ?? 'New notification' }}
+                                                        </div>
+                                                        <div class="notification-time text-muted small">
+                                                            <i class="far fa-clock me-1"></i>
+                                                            {{ $notification->created_at->diffForHumans() }}
+                                                        </div>
+                                                    </div>
+                                                    @if (!$notification->read_at)
+                                                        <div class="notification-status ms-2">
+                                                            <span class="badge bg-danger rounded-circle w-8 h-8"></span>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        @empty
+                                            <div class="dropdown-item text-center py-4">
+                                                <div class="text-muted">
+                                                    <i class="far fa-bell-slash fa-2x mb-2"></i>
+                                                    <div>{{ custom_trans('no_notifications', 'front') }}</div>
+                                                    <small
+                                                        class="text-muted">{{ custom_trans('you_will_see_notifications_here', 'front') }}</small>
+                                                </div>
+                                            </div>
+                                        @endforelse
+                                    </div>
+
+                                    @if (auth()->check() && auth()->user()->notifications && auth()->user()->notifications->count() > 0)
+                                        <div class="dropdown-divider"></div>
+                                        <div class="dropdown-item text-center">
+                                            <a href="{{ route('notifications.index') }}"
+                                                class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-eye me-1"></i>
+                                                {{ custom_trans('view_all_notifications', 'front') }}
+                                            </a>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <!-- Wishlist -->
+                            <a href="{{ route('wishlist.index') }}" class="btn btn-outline-dark position-relative">
+                                <i class="fas fa-heart"></i>
+                                @if (auth()->check() && auth()->user()->wishlistItems && auth()->user()->wishlistItems->count() > 0)
+                                    <span
+                                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        {{ auth()->user()->wishlistItems->count() }}
+                                    </span>
+                                @endif
+                            </a>
+
+                            <!-- Cart -->
+                            <a href="{{ route('cart.index') }}" class="btn btn-outline-dark position-relative">
+                                <i class="fas fa-shopping-cart"></i>
+                                @if (auth()->check() && auth()->user()->cartItems && auth()->user()->cartItems->count() > 0)
+                                    <span
+                                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        {{ auth()->user()->cartItems->count() }}
+                                    </span>
+                                @endif
+                            </a>
+
+                            <!-- Like Button -->
+                            <button class="btn btn-outline-dark like-btn" id="likeBtn">
+                                <i class="fas fa-thumbs-up"></i>
+                            </button>
+
+                            <!-- User Dropdown -->
+                            <div class="dropdown user-dropdown">
+                                <button class="btn btn-outline-dark user-dropdown-btn d-flex align-items-center"
+                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user-circle me-2"></i>
+                                    <span class="user-name">{{ auth()->user()->name }}</span>
+                                    <i class="fas fa-chevron-down ms-2"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end user-dropdown-menu">
+                                    <li class="dropdown-header">
+                                        <div class="d-flex align-items-center">
+                                            <div class="user-avatar me-3">
+                                                <i class="fas fa-user-circle fa-2x text-primary"></i>
+                                            </div>
+                                            <div>
+                                                <div class="fw-bold">{{ auth()->user()->name }}</div>
+                                                <small class="text-muted">{{ auth()->user()->email }}</small>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('student.my-courses') }}">
+                                            <i class="fas fa-graduation-cap me-2 text-primary"></i>
+                                            {{ custom_trans('my_courses', 'front') }}
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('wishlist.index') }}">
+                                            <i class="fas fa-heart me-2 text-danger"></i>
+                                            {{ custom_trans('wishlist', 'front') }}
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('purchase.history') }}">
+                                            <i class="fas fa-history me-2 text-info"></i>
+                                            {{ custom_trans('purchase_history', 'front') }}
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('profile.edit') }}">
+                                            <i class="fas fa-user-edit me-2 text-success"></i>
+                                            {{ custom_trans('profile', 'front') }}
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li>
+                                        <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                                            @csrf
+                                            <button type="submit" class="dropdown-item text-danger">
+                                                <i class="fas fa-sign-out-alt me-2"></i>
+                                                {{ custom_trans('logout', 'front') }}
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        @endauth
+                    </div>
+
+                    <div class="auth-buttons">
+                        @guest
+                            <a href="{{ route('login') }}"
+                                class="btn btn-login-colored">{{ custom_trans('login', 'front') }}</a>
+                        @else
+                            <!-- User dropdown is now handled above -->
+                        @endguest
+
+                        @guest
+                            <a href="{{ route('register') }}"
+                                class="btn btn-register-colored">{{ custom_trans('register', 'front') }}</a>
+                        @endguest
+                    </div>
+                </div>
+            </div>
+        </nav>
+        @php
+            $currentLanguage = $currentLanguage ?? \App\Helpers\TranslationHelper::getCurrentLanguage();
+            $availableLanguages = $availableLanguages ?? \App\Helpers\TranslationHelper::getAvailableLanguages();
+        @endphp
+        <div class="offcanvas offcanvas-start mobile-nav-offcanvas" tabindex="-1" id="mobileNavOffcanvas"
+            aria-labelledby="mobileNavOffcanvasLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="mobileNavOffcanvasLabel">{{ custom_trans('menu', 'front') }}</h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                    aria-label="{{ __('Close') }}"></button>
+            </div>
+            <div class="offcanvas-body d-flex flex-column gap-4">
+                <form action="{{ route('courses.search') }}" method="GET" class="mobile-offcanvas-search">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0"><i class="fas fa-search"></i></span>
+                        <input type="text" name="q" class="form-control border-start-0"
+                            placeholder="{{ custom_trans('search_courses', 'front') }}"
+                            value="{{ request('q') }}">
+                    </div>
+                </form>
+
+                <nav class="mobile-offcanvas-nav">
+                    <ul class="list-unstyled m-0">
+                        <li class="mb-2">
+                            <a href="{{ route('home') }}" class="mobile-offcanvas-link">
+                                <i class="fas fa-home me-2"></i>{{ custom_trans('home', 'front') }}
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <button
+                                class="mobile-offcanvas-link w-100 text-start d-flex align-items-center justify-content-between"
+                                type="button" data-bs-toggle="collapse" data-bs-target="#mobileCategoriesCollapse"
+                                aria-expanded="false">
+                                <span><i
+                                        class="fas fa-th-large me-2"></i>{{ custom_trans('categories', 'front') }}</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="collapse mt-2" id="mobileCategoriesCollapse">
+                                <ul class="list-unstyled ps-3">
+                                    @forelse($navigationCategories as $category)
+                                        <li class="mb-2">
+                                            <a href="{{ route('categories.show', $category->slug) }}"
+                                                class="mobile-offcanvas-sublink">
+                                                {{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}
+                                            </a>
+                                        </li>
+                                    @empty
+                                        <li class="text-muted small">
+                                            {{ custom_trans('no_category_found', 'front') }}
+                                        </li>
+                                    @endforelse
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="mb-2">
+                            <a href="{{ route('blog.index') }}" class="mobile-offcanvas-link">
+                                <i class="fas fa-newspaper me-2"></i>{{ custom_trans('blog', 'front') }}
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="{{ route('contact') }}" class="mobile-offcanvas-link">
+                                <i class="fas fa-envelope me-2"></i>{{ custom_trans('contact', 'front') }}
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <div class="mobile-offcanvas-languages">
+                    <h6 class="fw-semibold mb-2">{{ custom_trans('language', 'front') }}</h6>
+                    <div class="btn-group w-100">
+                        <button
+                            class="btn btn-outline-secondary dropdown-toggle d-flex justify-content-between align-items-center"
+                            type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span><i class="fas fa-globe me-2"></i>{{ strtoupper($currentLanguage->code) }}</span>
                         </button>
-                        <ul class="dropdown-menu" aria-labelledby="frontendLangDropdown">
+                        <ul class="dropdown-menu w-100">
                             @foreach ($availableLanguages as $language)
                                 <li>
-                                    <a class="dropdown-item {{ $currentLanguage->id == $language->id ? 'active' : '' }}"
+                                    <a class="dropdown-item d-flex justify-content-between align-items-center {{ $currentLanguage->id == $language->id ? 'active' : '' }}"
                                         href="{{ route('language.switch', $language->code) }}">
-                                        <span class="me-2">
-                                            @if ($language->direction == 'rtl')
-                                                <i class="fas fa-text-width" title="RTL"></i>
-                                            @else
-                                                <i class="fas fa-text-width" title="LTR"></i>
-                                            @endif
-                                        </span>
-                                        {{ $language->native_name }} ({{ $language->code }})
+                                        <span>{{ $language->native_name }} ({{ $language->code }})</span>
+                                        @if ($currentLanguage->id == $language->id)
+                                            <i class="fas fa-check text-success"></i>
+                                        @endif
                                     </a>
                                 </li>
                             @endforeach
@@ -232,211 +549,38 @@
                     </div>
                 </div>
 
-                <!-- Search Bar -->
-                <div class="search-container me-3">
-                    <form action="{{ route('courses.search') }}" method="GET" class="d-flex">
-                        <input type="text" name="q" placeholder="{{ custom_trans('search_courses', 'front') }}"
-                            class="form-control search-input" value="{{ request('q') }}">
-                        <button type="submit" class="btn btn-outline-dark ms-2">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </form>
-                </div>
-
-                <!-- User Actions -->
-                <div class="user-actions me-3">
+                <div class="mobile-offcanvas-actions mt-auto">
                     @auth
-                        <!-- Notifications -->
-                        <div class="dropdown">
-                            <button class="btn btn-outline-dark position-relative notification-btn" type="button"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-bell"></i>
-                                @if (auth()->user()->unreadNotifications->count() > 0)
-                                    <span
-                                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge">
-                                        {{ auth()->user()->unreadNotifications->count() }}
-                                    </span>
-                                @endif
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-end notification-dropdown">
-                                <div
-                                    class="dropdown-header d-flex justify-content-between align-items-center p-3 border-bottom">
-                                    <h6 class="mb-0 fw-bold text-dark">
-                                        <i class="fas fa-bell me-2 text-primary"></i>
-                                        {{ custom_trans('notifications', 'front') }}
-                                    </h6>
-                                    @if (auth()->check() && auth()->user()->notifications && auth()->user()->notifications->count() > 0)
-                                        <span
-                                            class="badge bg-warning text-dark rounded-pill">{{ auth()->user()->unreadNotifications->count() }}
-                                            {{ custom_trans('new', 'front') }}</span>
-                                    @endif
-                                </div>
-
-                                <div class="notification-list">
-                                    @forelse(auth()->user()->notifications->take(8) as $notification)
-                                        <div class="dropdown-item notification-item p-3 {{ $notification->read_at ? '' : 'unread' }}"
-                                            data-notification-id="{{ $notification->id }}">
-                                            <div class="d-flex align-items-start">
-                                                <div class="notification-icon me-3">
-                                                    @if (str_contains($notification->type, 'Wishlist'))
-                                                        <i class="fas fa-heart text-danger"></i>
-                                                    @elseif (str_contains($notification->type, 'Course'))
-                                                        <i class="fas fa-graduation-cap text-primary"></i>
-                                                    @elseif (str_contains($notification->type, 'Quiz'))
-                                                        <i class="fas fa-question-circle text-warning"></i>
-                                                    @else
-                                                        <i class="fas fa-bell text-info"></i>
-                                                    @endif
-                                                </div>
-                                                <div class="notification-content flex-grow-1">
-                                                    <div class="notification-message fw-semibold text-dark mb-1">
-                                                        {{ $notification->data['message'] ?? 'New notification' }}
-                                                    </div>
-                                                    <div class="notification-time text-muted small">
-                                                        <i class="far fa-clock me-1"></i>
-                                                        {{ $notification->created_at->diffForHumans() }}
-                                                    </div>
-                                                </div>
-                                                @if (!$notification->read_at)
-                                                    <div class="notification-status ms-2">
-                                                        <span class="badge bg-danger rounded-circle w-8 h-8"></span>
-                                                    </div>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    @empty
-                                        <div class="dropdown-item text-center py-4">
-                                            <div class="text-muted">
-                                                <i class="far fa-bell-slash fa-2x mb-2"></i>
-                                                <div>{{ custom_trans('no_notifications', 'front') }}</div>
-                                                <small
-                                                    class="text-muted">{{ custom_trans('you_will_see_notifications_here', 'front') }}</small>
-                                            </div>
-                                        </div>
-                                    @endforelse
-                                </div>
-
-                                @if (auth()->check() && auth()->user()->notifications && auth()->user()->notifications->count() > 0)
-                                    <div class="dropdown-divider"></div>
-                                    <div class="dropdown-item text-center">
-                                        <a href="{{ route('notifications.index') }}"
-                                            class="btn btn-outline-primary btn-sm">
-                                            <i class="fas fa-eye me-1"></i>
-                                            {{ custom_trans('view_all_notifications', 'front') }}
-                                        </a>
-                                    </div>
-                                @endif
-                            </div>
+                        <div class="d-grid gap-2">
+                            <a href="{{ route('student.my-courses') }}" class="btn btn-outline-primary">
+                                <i class="fas fa-graduation-cap me-2"></i>{{ custom_trans('my_courses', 'front') }}
+                            </a>
+                            <a href="{{ route('wishlist.index') }}" class="btn btn-outline-primary">
+                                <i class="fas fa-heart me-2"></i>{{ custom_trans('wishlist', 'front') }}
+                            </a>
+                            <a href="{{ route('cart.index') }}" class="btn btn-outline-primary">
+                                <i class="fas fa-shopping-cart me-2"></i>{{ custom_trans('cart', 'front') }}
+                            </a>
+                            <form action="{{ route('logout') }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-danger w-100">
+                                    <i class="fas fa-sign-out-alt me-2"></i>{{ custom_trans('logout', 'front') }}
+                                </button>
+                            </form>
                         </div>
-
-                        <!-- Wishlist -->
-                        <a href="{{ route('wishlist.index') }}" class="btn btn-outline-dark position-relative">
-                            <i class="fas fa-heart"></i>
-                            @if (auth()->check() && auth()->user()->wishlistItems && auth()->user()->wishlistItems->count() > 0)
-                                <span
-                                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                    {{ auth()->user()->wishlistItems->count() }}
-                                </span>
-                            @endif
-                        </a>
-
-                        <!-- Cart -->
-                        <a href="{{ route('cart.index') }}" class="btn btn-outline-dark position-relative">
-                            <i class="fas fa-shopping-cart"></i>
-                            @if (auth()->check() && auth()->user()->cartItems && auth()->user()->cartItems->count() > 0)
-                                <span
-                                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                    {{ auth()->user()->cartItems->count() }}
-                                </span>
-                            @endif
-                        </a>
-
-                        <!-- Like Button -->
-                        <button class="btn btn-outline-dark like-btn" id="likeBtn">
-                            <i class="fas fa-thumbs-up"></i>
-                        </button>
-
-                        <!-- User Dropdown -->
-                        <div class="dropdown user-dropdown">
-                            <button class="btn btn-outline-dark user-dropdown-btn d-flex align-items-center"
-                                type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-user-circle me-2"></i>
-                                <span class="user-name">{{ auth()->user()->name }}</span>
-                                <i class="fas fa-chevron-down ms-2"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end user-dropdown-menu">
-                                <li class="dropdown-header">
-                                    <div class="d-flex align-items-center">
-                                        <div class="user-avatar me-3">
-                                            <i class="fas fa-user-circle fa-2x text-primary"></i>
-                                        </div>
-                                        <div>
-                                            <div class="fw-bold">{{ auth()->user()->name }}</div>
-                                            <small class="text-muted">{{ auth()->user()->email }}</small>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="{{ route('student.my-courses') }}">
-                                        <i class="fas fa-graduation-cap me-2 text-primary"></i>
-                                        {{ custom_trans('my_courses', 'front') }}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="{{ route('wishlist.index') }}">
-                                        <i class="fas fa-heart me-2 text-danger"></i>
-                                        {{ custom_trans('wishlist', 'front') }}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="{{ route('purchase.history') }}">
-                                        <i class="fas fa-history me-2 text-info"></i>
-                                        {{ custom_trans('purchase_history', 'front') }}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="{{ route('profile.edit') }}">
-                                        <i class="fas fa-user-edit me-2 text-success"></i>
-                                        {{ custom_trans('profile', 'front') }}
-                                    </a>
-                                </li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <li>
-                                    <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                                        @csrf
-                                        <button type="submit" class="dropdown-item text-danger">
-                                            <i class="fas fa-sign-out-alt me-2"></i>
-                                            {{ custom_trans('logout', 'front') }}
-                                        </button>
-                                    </form>
-                                </li>
-                            </ul>
+                    @else
+                        <div class="d-grid gap-2">
+                            <a href="{{ route('login') }}" class="btn btn-primary">
+                                <i class="fas fa-sign-in-alt me-2"></i>{{ custom_trans('login', 'front') }}
+                            </a>
+                            <a href="{{ route('register') }}" class="btn btn-outline-primary">
+                                <i class="fas fa-user-plus me-2"></i>{{ custom_trans('register', 'front') }}
+                            </a>
                         </div>
                     @endauth
                 </div>
-
-                <div class="auth-buttons">
-                    @guest
-                        <a href="{{ route('login') }}" class="btn btn-login-colored">{{ custom_trans('login', 'front') }}</a>
-                    @else
-                        <!-- User dropdown is now handled above -->
-                    @endguest
-
-                    @guest
-                        <a href="{{ route('register') }}"
-                            class="btn btn-register-colored">{{ custom_trans('register', 'front') }}</a>
-                    @endguest
-                </div>
-                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
-                    <i class="fas fa-bars"></i>
-                </button>
             </div>
-        </nav>
+        </div>
     </header>
 
     <!-- Main Content -->
@@ -472,7 +616,7 @@
                     <div class="col-lg-5 d-flex justify-content-center align-items-center">
                         <form id="newsletterForm" class="w-100 max-w-520">
                             @csrf
-                            <div class="input-group input-group-lg">
+                            <div class="input-group input-group-lg flex-row-reverse">
                                 <input type="email" name="email" id="newsletterEmail"
                                     class="form-control border-0 rounded-0 rounded-start"
                                     placeholder="{{ $newsletterSettings->getDisplayPlaceholder() }}"
@@ -545,7 +689,8 @@
                     <div class="footer-title-underline mb-3"></div>
                     <ul class="footer-links list-unstyled">
                         <li><a href="{{ route('home') }}">{{ custom_trans('home', 'front') }}</a></li>
-                        <li><a href="{{ route('categories.index') }}">{{ custom_trans('courses', 'front') }}</a></li>
+                        <li><a href="{{ route('categories.index') }}">{{ custom_trans('courses', 'front') }}</a>
+                        </li>
                         <li><a href="{{ route('contact') }}">{{ custom_trans('contact_us', 'front') }}</a></li>
                         <li><a href="{{ route('blog.index') }}">{{ custom_trans('blog', 'front') }}</a></li>
                         @php
@@ -588,8 +733,10 @@
                             <img src="{{ asset('images/placeholder-image.png') }}" class="footer-post-img me-3"
                                 alt="No posts">
                             <div>
-                                <div class="footer-post-title text-muted">{{ custom_trans('no_blog_posts', 'front') }}</div>
-                                <div class="footer-post-date text-muted">{{ custom_trans('coming_soon', 'front') }}</div>
+                                <div class="footer-post-title text-muted">
+                                    {{ custom_trans('no_blog_posts', 'front') }}</div>
+                                <div class="footer-post-date text-muted">{{ custom_trans('coming_soon', 'front') }}
+                                </div>
                             </div>
                         </div>
                     @endforelse
@@ -680,6 +827,37 @@
             <i class="fas fa-envelope"></i>
             <span>{{ custom_trans('contact_us', 'front') }}</span>
         </a>
+    </div>
+
+    @php
+        $currentLanguage = isset($currentLanguage)
+            ? $currentLanguage
+            : \App\Helpers\TranslationHelper::getCurrentLanguage();
+    @endphp
+
+    <!-- Mobile Search Modal -->
+    <div class="modal fade mobile-search-modal" id="mobileSearchModal" tabindex="-1"
+        aria-labelledby="mobileSearchModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" dir="{{ $currentLanguage->direction }}">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title" id="mobileSearchModalLabel">
+                        {{ custom_trans('search_courses', 'front') }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="{{ __('Close') }}"></button>
+                </div>
+                <div class="modal-body pt-2">
+                    <form action="{{ route('courses.search') }}" method="GET" class="d-flex gap-2">
+                        <input type="text" name="q" class="form-control"
+                            placeholder="{{ custom_trans('search_courses', 'front') }}"
+                            value="{{ request('q') }}" autocomplete="off">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="{{ asset('js/script.js') }}"></script>
