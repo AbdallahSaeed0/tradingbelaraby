@@ -268,7 +268,7 @@
                     }
 
                     // Send AJAX request
-                    fetch(`/wishlist/${courseId}/toggle`, {
+                    fetch(`/wishlist/toggle/${courseId}`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',

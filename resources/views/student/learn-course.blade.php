@@ -4,11 +4,11 @@
 
 @push('styles')
     @if (\App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl')
-        <link rel="stylesheet" href="{{ asset('css/rtl/pages/course-content.css', 'front') }}">
-        <link rel="stylesheet" href="{{ asset('css/rtl/pages/student-dashboard.css', 'front') }}">
+        <link rel="stylesheet" href="{{ asset('css/rtl/pages/course-content.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/rtl/pages/student-dashboard.css') }}">
     @else
-        <link rel="stylesheet" href="{{ asset('css/pages/course-content.css', 'front') }}">
-        <link rel="stylesheet" href="{{ asset('css/pages/student-dashboard.css', 'front') }}">
+        <link rel="stylesheet" href="{{ asset('css/pages/course-content.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/pages/student-dashboard.css') }}">
     @endif
 @endpush
 
@@ -90,7 +90,7 @@
                                                 <div class="d-flex justify-content-between align-items-start mb-3">
                                                     <h5 class="fw-bold mb-0">{{ $liveClass->title }}</h5>
                                                     <span
-                                                        class="badge bg-{{ $liveClass->status === 'scheduled' ? 'primary' : ($liveClass->status === 'live' ? 'success' : 'secondary', 'front') }}">
+                                                        class="badge bg-{{ $liveClass->status === 'scheduled' ? 'primary' : ($liveClass->status === 'live' ? 'success' : 'secondary') }}">
                                                         {{ ucfirst($liveClass->status) }}
                                                     </span>
                                                 </div>
@@ -234,7 +234,7 @@
                                                         <div class="col-6">
                                                             <small class="text-muted">{{ custom_trans('Type', 'front') }}:</small>
                                                             <div class="fw-bold">
-                                                                {{ ucfirst($assignment->type ?? 'Assignment', 'front') }}</div>
+                                                                {{ ucfirst($assignment->type ?? 'Assignment') }}</div>
                                                         </div>
                                                         <div class="col-6">
                                                             <small class="text-muted">{{ custom_trans('Status', 'front') }}:</small>

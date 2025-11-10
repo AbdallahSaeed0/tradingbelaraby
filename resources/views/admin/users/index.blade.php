@@ -210,7 +210,7 @@
                                     </td>
                                     <td>{{ $user->email }}</td>
                                     <td>
-                                        <span class="badge bg-info">{{ ucfirst($user->role ?? 'student', 'admin') }}</span>
+                                        <span class="badge bg-info">{{ ucfirst($user->role ?? 'student') }}</span>
                                     </td>
                                     <td>
                                         <span
@@ -223,7 +223,7 @@
                                         <small class="text-muted d-block">courses</small>
                                     </td>
                                     <td>
-                                        <span>{{ $user->created_at->format('M d, Y', 'admin') }}</span>
+                                        <span>{{ $user->created_at->format('M d, Y') }}</span>
                                         <small class="text-muted d-block">{{ $user->created_at->diffForHumans() }}</small>
                                     </td>
                                     <td>

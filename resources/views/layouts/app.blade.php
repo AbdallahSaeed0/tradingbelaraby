@@ -899,14 +899,22 @@
             document.body.style.textAlign = 'right';
         @endif
 
-        // Footer language selector
-        document.getElementById('footerLangSelect').addEventListener('change', function() {
-            const selectedLanguage = this.value;
-            window.location.href = '{{ url('/language') }}/' + selectedLanguage;
-        });
-
         // Wishlist functionality
         document.addEventListener('DOMContentLoaded', function() {
+            // Footer language selector
+            const footerLangSelect = document.getElementById('footerLangSelect');
+            if (footerLangSelect) {
+                footerLangSelect.addEventListener('change', function() {
+                    const selectedLanguage = this.value;
+                    window.location.href = '{{ url('/language') }}/' + selectedLanguage;
+                });
+            }
+
+            // Initialize header language switcher dropdown explicitly
+            const headerLanguageToggle = document.getElementById('frontendLangDropdown');
+            if (headerLanguageToggle) {
+                new bootstrap.Dropdown(headerLanguageToggle);
+            }
             const wishlistButtons = document.querySelectorAll('.wishlist-btn');
 
             wishlistButtons.forEach(button => {
@@ -923,7 +931,7 @@
                     }
 
                     // Send AJAX request
-                    fetch(`/wishlist/${courseId}/toggle`, {
+                    fetch(`/wishlist/toggle/${courseId}`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -1129,17 +1137,23 @@
             const userDropdown = document.querySelector('.user-dropdown');
             if (userDropdown) {
                 const dropdownToggle = userDropdown.querySelector('.user-dropdown-btn');
+                const dropdownInstance = new bootstrap.Dropdown(dropdownToggle, {
+                    autoClose: true
+                });
+                let hideTimeout = null;
 
                 // Show dropdown on hover
                 userDropdown.addEventListener('mouseenter', function() {
-                    const dropdown = new bootstrap.Dropdown(dropdownToggle);
-                    dropdown.show();
+                    if (hideTimeout) {
+                        clearTimeout(hideTimeout);
+                        hideTimeout = null;
+                    }
+                    dropdownInstance.show();
                 });
 
                 // Hide dropdown when mouse leaves
                 userDropdown.addEventListener('mouseleave', function() {
-                    const dropdown = new bootstrap.Dropdown(dropdownToggle);
-                    dropdown.hide();
+                    hideTimeout = setTimeout(() => dropdownInstance.hide(), 200);
                 });
             }
 

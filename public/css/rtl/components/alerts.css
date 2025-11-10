@@ -31,3 +31,24 @@
 .alert-info {
     border-left: 4px solid #0dcaf0;
 }
+
+/* Toastr Overrides */
+.toast-success {
+    background-color: #198754;
+    color: #fff;
+}
+
+.toast-error {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.toast-warning {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.toast-info {
+    background-color: #0dcaf0;
+    color: #052c65;
+}

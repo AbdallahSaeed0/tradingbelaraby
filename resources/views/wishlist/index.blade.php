@@ -19,7 +19,7 @@
     <section class="wishlist-content py-5">
         <div class="container">
             @if ($wishlistItems->count() > 0)
-                <div class="row g-4">
+                <div class="row g-4 wishlist-items-container" id="wishlistItemsRow">
                     @foreach ($wishlistItems as $item)
                         <div class="col-12 col-md-6 col-lg-4">
                             @include('partials.courses.course-card', ['course' => $item->course])
@@ -37,36 +37,46 @@
                         </div>
                     </div>
                 @endif
-            @else
-                <div class="row justify-content-center">
-                    <div class="col-lg-6 text-center">
-                        <div class="empty-wishlist py-5">
-                            <i class="fa fa-heart fa-4x text-muted mb-4"></i>
-                            <h3 class="fw-bold mb-3">{{ custom_trans('empty_wishlist', 'front') }}</h3>
-                            <p class="text-muted mb-4">{{ custom_trans('empty_wishlist_message', 'front') }}</p>
-                            <a href="{{ route('categories') }}" class="btn btn-primary">
-                                <i class="fa fa-search me-2"></i>{{ custom_trans('browse_courses', 'front') }}
-                            </a>
-                        </div>
+            @endif
+
+            <div class="row justify-content-center {{ $wishlistItems->count() > 0 ? 'd-none' : '' }}" id="emptyWishlistRow">
+                <div class="col-lg-6 text-center">
+                    <div class="empty-wishlist py-5">
+                        <i class="fa fa-heart fa-4x text-muted mb-4"></i>
+                        <h3 class="fw-bold mb-3">{{ custom_trans('empty_wishlist', 'front') }}</h3>
+                        <p class="text-muted mb-4">{{ custom_trans('empty_wishlist_message', 'front') }}</p>
+                        <a href="{{ route('categories.index') }}" class="btn btn-primary">
+                            <i class="fa fa-search me-2"></i>{{ custom_trans('browse_courses', 'front') }}
+                        </a>
                     </div>
                 </div>
-            @endif
+            </div>
         </div>
     </section>
 @endsection
 
 @push('scripts')
     <script>
-        // Remove from wishlist functionality
+        // Override wishlist button behavior on wishlist page
         document.addEventListener('DOMContentLoaded', function() {
-            const removeButtons = document.querySelectorAll('.remove-wishlist-btn');
-
-            removeButtons.forEach(button => {
-                button.addEventListener('click', function() {
+            // Remove the global wishlist handler for buttons on this page
+            const wishlistButtons = document.querySelectorAll('.wishlist-btn');
+            
+            wishlistButtons.forEach(button => {
+                // Remove all existing event listeners by cloning the button
+                const newButton = button.cloneNode(true);
+                button.parentNode.replaceChild(newButton, button);
+                
+                // Add new click handler for wishlist page
+                newButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
                     if (confirm('{{ custom_trans('remove_from_wishlist_confirm', 'front') }}')) {
                         const courseId = this.dataset.courseId;
+                        const cardColumn = this.closest('.col-12, .col-md-6, .col-lg-4');
 
-                        fetch(`/wishlist/${courseId}/remove`, {
+                        fetch(`/wishlist/remove/${courseId}`, {
                                 method: 'DELETE',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -77,19 +87,19 @@
                             .then(response => response.json())
                             .then(data => {
                                 if (data.success) {
-                                    // Remove the course card from the page
-                                    this.closest('.col-12').remove();
-
-                                    // Check if no more items
-                                    if (document.querySelectorAll('.course-card').length ===
-                                        0) {
-                                        location.reload(); // Reload to show empty state
-                                    }
+                                    toastr.info(data.message || '{{ custom_trans('Course removed from wishlist!', 'front') }}');
+                                    
+                                    // Reload page after short delay to show toast
+                                    setTimeout(() => {
+                                        window.location.reload();
+                                    }, 800);
+                                } else {
+                                    toastr.error(data.message || '{{ custom_trans('An error occurred', 'front') }}');
                                 }
                             })
                             .catch(error => {
                                 console.error('Error:', error);
-                                alert('An error occurred. Please try again.');
+                                toastr.error('{{ custom_trans('An error occurred. Please try again.', 'front') }}');
                             });
                     }
                 });

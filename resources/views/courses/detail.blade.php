@@ -3,13 +3,21 @@
 @section('title', ($course->localized_name ?? 'Course') . ' - ' .
     (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site Name'))
 
+    @push('styles')
+        <link rel="stylesheet" href="{{ asset('css/pages/course-detail.css') }}">
+    @endpush
+
+    @push('rtl-styles')
+        <link rel="stylesheet" href="{{ asset('css/rtl/pages/course-detail.css') }}">
+    @endpush
+
 @section('content')
     <!-- Banner Section -->
     <section class="course-banner position-relative d-flex align-items-center justify-content-center">
         <img src="https://eclass.mediacity.co.in/demo2/public/images/breadcum/16953680301690548224bdrc-bg.png" alt="Banner"
             class="course-banner-bg position-absolute w-100 h-100 top-0 start-0">
         <div class="course-banner-overlay position-absolute w-100 h-100 top-0 start-0"></div>
-        <div class="container position-relative z-3 text-center">
+        <div class="container position-relative py-5 z-3 text-center">
             <h1 class="display-4 fw-bold text-white mb-3">Course Detail</h1>
             <div class="d-flex justify-content-center mb-2">
                 <span class="course-label px-4 py-2 rounded-pill bg-white text-dark fw-semibold shadow">
@@ -17,9 +25,6 @@
                     &nbsp;|&nbsp;
                     Course Details
                 </span>
-            </div>
-            <div class="d-flex justify-content-center">
-                @include('partials.language-switcher')
             </div>
         </div>
     </section>
@@ -334,9 +339,53 @@
                                     <i class="fas fa-graduation-cap me-2"></i>{{ custom_trans('enroll_now', 'front') }}
                                 </a>
                             @endauth
-                            <div class="d-flex justify-content-between">
-                                <button class="icon-btn"><i class="fa fa-calendar-alt"></i></button>
-                                <button class="icon-btn"><i class="fa fa-share-alt"></i></button>
+                            <div class="d-flex justify-content-between align-items-center gap-2">
+                                <div class="btn-group share-dropdown">
+                                    <button class="icon-btn share-btn" type="button" data-bs-toggle="dropdown"
+                                        aria-expanded="false" data-share-url="{{ url()->current() }}"
+                                        data-share-title="{{ $course->localized_name }}">
+                                        <i class="fa fa-share-alt"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                        <li>
+                                            <button class="dropdown-item share-option" type="button"
+                                                data-platform="facebook">
+                                                <i
+                                                    class="fab fa-facebook me-2 text-primary"></i>{{ custom_trans('Share on Facebook', 'front') }}
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button class="dropdown-item share-option" type="button"
+                                                data-platform="twitter">
+                                                <i
+                                                    class="fab fa-x-twitter me-2"></i>{{ custom_trans('Share on Twitter (X)', 'front') }}
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button class="dropdown-item share-option" type="button"
+                                                data-platform="linkedin">
+                                                <i
+                                                    class="fab fa-linkedin me-2 text-primary"></i>{{ custom_trans('Share on LinkedIn', 'front') }}
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button class="dropdown-item share-option" type="button"
+                                                data-platform="whatsapp">
+                                                <i
+                                                    class="fab fa-whatsapp me-2 text-success"></i>{{ custom_trans('Share on WhatsApp', 'front') }}
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li>
+                                            <button class="dropdown-item share-copy" type="button">
+                                                <i
+                                                    class="fa fa-link me-2"></i>{{ custom_trans('Copy course link', 'front') }}
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
                                 @auth
                                     <!-- Wishlist Button -->
                                     <button class="icon-btn wishlist-btn" data-course-id="{{ $course->id }}"
@@ -349,7 +398,6 @@
                                         <i class="fa fa-heart"></i>
                                     </button>
                                 @endauth
-                                <button class="icon-btn"><i class="fa fa-flag"></i></button>
                             </div>
                         </div>
                     </div>
@@ -378,9 +426,6 @@
 @endsection
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         // Interactive Star Rating System (copied from HTML)
         document.addEventListener('DOMContentLoaded', function() {
@@ -564,6 +609,86 @@
                     }, 300);
                 }, 3000);
             }
+
+            // Share functionality
+            const shareDropdowns = document.querySelectorAll('.share-dropdown');
+            shareDropdowns.forEach(dropdown => {
+                const trigger = dropdown.querySelector('.share-btn');
+                if (!trigger) {
+                    return;
+                }
+
+                const shareUrl = trigger.dataset.shareUrl || window.location.href;
+                const shareTitle = trigger.dataset.shareTitle || document.title;
+
+                dropdown.querySelectorAll('.share-option').forEach(option => {
+                    option.addEventListener('click', () => {
+                        const platform = option.dataset.platform;
+                        const encodedUrl = encodeURIComponent(shareUrl);
+                        const encodedTitle = encodeURIComponent(shareTitle);
+                        let targetUrl = '';
+
+                        switch (platform) {
+                            case 'facebook':
+                                targetUrl =
+                                    `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+                                break;
+                            case 'twitter':
+                                targetUrl =
+                                    `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`;
+                                break;
+                            case 'linkedin':
+                                targetUrl =
+                                    `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`;
+                                break;
+                            case 'whatsapp':
+                                targetUrl =
+                                    `https://api.whatsapp.com/send?text=${encodedTitle}%20${encodedUrl}`;
+                                break;
+                            default:
+                                break;
+                        }
+
+                        if (targetUrl) {
+                            window.open(targetUrl, '_blank', 'noopener');
+                        }
+                    });
+                });
+
+                const copyButton = dropdown.querySelector('.share-copy');
+                if (copyButton) {
+                    copyButton.addEventListener('click', async () => {
+                        const notify = (type, message) => {
+                            if (window.toastr) {
+                                toastr[type](message);
+                            } else {
+                                alert(message);
+                            }
+                        };
+
+                        try {
+                            if (navigator.clipboard && navigator.clipboard.writeText) {
+                                await navigator.clipboard.writeText(shareUrl);
+                            } else {
+                                const tempInput = document.createElement('input');
+                                tempInput.value = shareUrl;
+                                document.body.appendChild(tempInput);
+                                tempInput.select();
+                                document.execCommand('copy');
+                                document.body.removeChild(tempInput);
+                            }
+                            notify('success',
+                                '{{ custom_trans('Course link copied to clipboard!', 'front') }}'
+                            );
+                        } catch (error) {
+                            console.error('Clipboard error:', error);
+                            notify('error',
+                                '{{ custom_trans('Unable to copy link. Please try again.', 'front') }}'
+                            );
+                        }
+                    });
+                }
+            });
         });
     </script>
 @endpush
