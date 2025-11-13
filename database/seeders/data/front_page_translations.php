@@ -1424,6 +1424,10 @@ return [
         'en' => 'Search results for',
         'ar' => 'نتائج البحث عن',
     ],
+    'Search your courses...' => [
+        'en' => 'Search your courses...',
+        'ar' => 'ابحث في دوراتك...',
+    ],
     'secure_checkout' => [
         'en' => 'Secure Checkout',
         'ar' => 'دفع آمن',
@@ -1551,6 +1555,168 @@ return [
     'you_will_see_notifications_here' => [
         'en' => 'You will see notifications here',
         'ar' => 'ستظهر إشعاراتك هنا',
+    ],
+    'Account Information' => [
+        'ar' => 'معلومات الحساب',
+    ],
+    'Account Status' => [
+        'ar' => 'حالة الحساب',
+    ],
+    'Active' => [
+        'ar' => 'نشط',
+    ],
+    'Age' => [
+        'ar' => 'العمر',
+    ],
+    'All Status' => [
+        'ar' => 'جميع الحالات',
+    ],
+    'Avg Progress' => [
+        'ar' => 'متوسط التقدم',
+    ],
+    'Beginner' => [
+        'ar' => 'مبتدئ',
+    ],
+    'Bio' => [
+        'ar' => 'نبذة شخصية',
+    ],
+    'Browse Courses' => [
+        'ar' => 'تصفح الدورات',
+    ],
+    'Change Password' => [
+        'ar' => 'تغيير كلمة المرور',
+    ],
+    'characters' => [
+        'ar' => 'حرف',
+    ],
+    'Confirm New Password' => [
+        'ar' => 'تأكيد كلمة المرور الجديدة',
+    ],
+    'Continue' => [
+        'ar' => 'متابعة',
+    ],
+    'Continue Learning' => [
+        'ar' => 'تابع التعلم',
+    ],
+    'Course Name' => [
+        'ar' => 'اسم الدورة',
+    ],
+    'Current Password' => [
+        'ar' => 'كلمة المرور الحالية',
+    ],
+    'Date of Birth' => [
+        'ar' => 'تاريخ الميلاد',
+    ],
+    'Edit Profile' => [
+        'ar' => 'تعديل الملف الشخصي',
+    ],
+    'Email Verified' => [
+        'ar' => 'البريد الإلكتروني موثق',
+    ],
+    'Enrolled' => [
+        'ar' => 'تاريخ الالتحاق',
+    ],
+    'Enter your phone number' => [
+        'ar' => 'أدخل رقم هاتفك',
+    ],
+    'Find More Courses' => [
+        'ar' => 'اعثر على المزيد من الدورات',
+    ],
+    'Filter' => [
+        'ar' => 'تصفية',
+    ],
+    'In Progress' => [
+        'ar' => 'قيد التقدم',
+    ],
+    'Last Updated' => [
+        'ar' => 'آخر تحديث',
+    ],
+    'Latest First' => [
+        'ar' => 'الأحدث أولاً',
+    ],
+    'lectures completed' => [
+        'ar' => 'محاضرات مكتملة',
+    ],
+    'Level' => [
+        'ar' => 'المستوى',
+    ],
+    'Member Since' => [
+        'ar' => 'عضو منذ',
+    ],
+    'My Courses' => [
+        'ar' => 'دوراتي',
+    ],
+    'New Password' => [
+        'ar' => 'كلمة مرور جديدة',
+    ],
+    'No Courses Found' => [
+        'ar' => 'لم يتم العثور على دورات',
+    ],
+    'No courses match your current filters. Try adjusting your search criteria.' => [
+        'ar' => 'لا توجد دورات تطابق عوامل التصفية الحالية. حاول تعديل معايير البحث.',
+    ],
+    'Not Verified' => [
+        'ar' => 'غير موثق',
+    ],
+    'Oldest First' => [
+        'ar' => 'الأقدم أولاً',
+    ],
+    'Phone Number' => [
+        'ar' => 'رقم الهاتف',
+    ],
+    'Please fix the following errors:' => [
+        'ar' => 'يرجى تصحيح الأخطاء التالية:',
+    ],
+    'Profile Information' => [
+        'ar' => 'معلومات الملف الشخصي',
+    ],
+    'Profile Picture' => [
+        'ar' => 'صورة الملف الشخصي',
+    ],
+    'Progress' => [
+        'ar' => 'التقدم',
+    ],
+    'Progress High' => [
+        'ar' => 'أعلى نسبة تقدم',
+    ],
+    'Progress Low' => [
+        'ar' => 'أقل نسبة تقدم',
+    ],
+    'Select Country' => [
+        'ar' => 'اختر الدولة',
+    ],
+    'Select Gender' => [
+        'ar' => 'اختر الجنس',
+    ],
+    'Tell us about yourself, your interests, or what you\'re learning...' => [
+        'ar' => 'أخبرنا عن نفسك، واهتماماتك، أو ما تتعلمه...',
+    ],
+    'Total Courses' => [
+        'ar' => 'إجمالي الدورات',
+    ],
+    'Track your learning progress and continue your courses' => [
+        'ar' => 'تابع تقدمك في التعلم واستمر في دوراتك',
+    ],
+    'Unknown Instructor' => [
+        'ar' => 'مدرب غير معروف',
+    ],
+    'Uncategorized' => [
+        'ar' => 'غير مصنف',
+    ],
+    'Update Profile' => [
+        'ar' => 'تحديث الملف الشخصي',
+    ],
+    'Upload a profile picture (JPG, PNG, GIF - Max 2MB)' => [
+        'ar' => 'حمّل صورة للملف الشخصي (JPG, PNG, GIF - بحد أقصى 2 ميجا بايت)',
+    ],
+    'Verified' => [
+        'ar' => 'موثق',
+    ],
+    'You haven\'t enrolled in any courses yet. Start your learning journey today!' => [
+        'ar' => 'لم تلتحق بأي دورة بعد. ابدأ رحلتك التعليمية اليوم!',
+    ],
+    'years old' => [
+        'ar' => 'عاماً',
     ],
 ];
 

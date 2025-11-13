@@ -320,7 +320,13 @@
                             <li class="list-group-item d-flex align-items-center"><i
                                     class="fa fa-globe me-2 text-orange"></i> <span
                                     class="fw-bold">{{ custom_trans('language', 'front') }}:</span>
-                                <span class="ms-auto">{{ $course->language ?? 'Not Found' }}</span>
+                                <span class="ms-auto">
+                                    @if ($course->default_language)
+                                        {{ \App\Helpers\MultilingualHelper::getLanguageName($course->default_language) }}
+                                    @else
+                                        {{ custom_trans('Not Found', 'front') }}
+                                    @endif
+                                </span>
                             </li>
                         </ul>
                         <div class="p-3">

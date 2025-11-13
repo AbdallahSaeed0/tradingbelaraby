@@ -25,6 +25,25 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
+                        @if (session('error'))
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="fa fa-exclamation-circle me-2"></i>{{ session('error') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
+
+                        @if ($errors->any())
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="fa fa-exclamation-triangle me-2"></i>There were problems with your submission:
+                                <ul class="mt-2 mb-0">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
+
                         <form action="{{ route('admin.live-classes.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
 
@@ -212,6 +231,12 @@
                                 <button type="button" class="btn btn-outline-primary" id="add-material">
                                     <i class="fa fa-plus me-2"></i>Add Material
                                 </button>
+                                @if ($errors->has('materials.*'))
+                                    <div class="text-danger small mt-2">{{ $errors->first('materials.*') }}</div>
+                                @endif
+                                @if ($errors->has('material_files.*'))
+                                    <div class="text-danger small mt-1">{{ $errors->first('material_files.*') }}</div>
+                                @endif
                             </div>
 
                             <!-- Form Actions -->

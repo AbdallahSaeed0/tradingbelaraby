@@ -538,9 +538,22 @@
                             <label for="courseBook" class="form-label">Upload Course Book (PDF)</label>
                             <input type="file" class="form-control" id="courseBook" name="book" accept=".pdf">
                             <div class="form-text">Upload the main book/material for this course (PDF format only)</div>
+                            @error('book')
+                                <div class="text-danger small mt-1">{{ $message }}</div>
+                            @enderror
                             @if ($course->book_url)
                                 <div class="mt-2">
-                                    <small class="text-muted">Current book: {{ basename($course->book_url) }}</small>
+                                    <small class="text-muted d-block">Current book: {{ basename($course->book_url) }}</small>
+                                    <a href="{{ $course->book_url }}" target="_blank" class="btn btn-sm btn-outline-primary me-2">
+                                        <i class="fa fa-download me-1"></i>Download current book
+                                    </a>
+                                    <div class="form-check mt-2">
+                                        <input class="form-check-input" type="checkbox" value="1" id="removeBook"
+                                            name="remove_book">
+                                        <label class="form-check-label" for="removeBook">
+                                            Remove current book
+                                        </label>
+                                    </div>
                                 </div>
                             @endif
                         </div>

@@ -114,6 +114,7 @@ class CoursesController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'preview_video_url' => 'nullable|string|url',
             'book' => 'nullable|file|mimes:pdf|max:10240',
+            'remove_book' => 'nullable|boolean',
 
             // Multilingual learning objectives
             'what_to_learn' => 'nullable|array',
@@ -386,6 +387,9 @@ class CoursesController extends Controller
             $data['price'] = 0;
         }
 
+        $removeExistingBook = $request->boolean('remove_book');
+        unset($data['remove_book']);
+
         // Handle file uploads
         if ($request->hasFile('image')) {
             // Delete old image if exists
@@ -401,6 +405,11 @@ class CoursesController extends Controller
                 Storage::disk('public')->delete($course->book);
             }
             $data['book'] = $request->file('book')->store('courses/books', 'public');
+        } elseif ($removeExistingBook && $course->book) {
+            if (Storage::disk('public')->exists($course->book)) {
+                Storage::disk('public')->delete($course->book);
+            }
+            $data['book'] = null;
         }
 
 
