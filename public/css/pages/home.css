@@ -1299,6 +1299,9 @@ footer {
     color: #fff;
     z-index: 2;
 }
+.course-img-wrap .badge{
+    position: absolute;
+}
 .badge-green {
     background: #2ecc40;
 }
@@ -1308,6 +1311,7 @@ footer {
 .price-badge {
     position: absolute;
     right: 12px;
+    top: 85%;
     background: #ff7043;
     color: #fff;
     border-radius: 8px;

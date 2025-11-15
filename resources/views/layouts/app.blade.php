@@ -229,15 +229,16 @@
                     <div class="language-switcher me-3">
                         <div class="dropdown">
                             <button class="btn btn-outline-light dropdown-toggle text-black" type="button"
-                                id="frontendLangDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                id="frontendLangDropdown" data-bs-toggle="dropdown" data-bs-auto-close="true"
+                                aria-expanded="false">
                                 <i class="fas fa-globe me-1"></i>
                                 {{ strtoupper($currentLanguage->code) }}
                             </button>
-                            <ul class="dropdown-menu" aria-labelledby="frontendLangDropdown">
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="frontendLangDropdown">
                                 @foreach ($availableLanguages as $language)
                                     <li>
                                         <a class="dropdown-item {{ $currentLanguage->id == $language->id ? 'active' : '' }}"
-                                            href="{{ route('language.switch', $language->code) }}">
+                                            href="{{ route('language.switch', $language->code) }}?redirect={{ urlencode(url()->full()) }}">
                                             <span class="me-2">
                                                 @if ($language->direction == 'rtl')
                                                     <i class="fas fa-text-width" title="RTL"></i>
@@ -465,7 +466,13 @@
         <div class="offcanvas offcanvas-start mobile-nav-offcanvas" tabindex="-1" id="mobileNavOffcanvas"
             aria-labelledby="mobileNavOffcanvasLabel">
             <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="mobileNavOffcanvasLabel">{{ custom_trans('menu', 'front') }}</h5>
+                <div class="d-flex align-items-center flex-grow-1">
+                    <a href="{{ route('home') }}" class="mobile-offcanvas-logo me-3">
+                        <img src="{{ $mainContentSettings ? $mainContentSettings->logo_url : asset('images/default-logo.svg') }}"
+                            alt="{{ $mainContentSettings ? $mainContentSettings->logo_alt_text : 'Site Logo' }}"
+                            class="mobile-offcanvas-logo-img">
+                    </a>
+                </div>
                 <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
                     aria-label="{{ __('Close') }}"></button>
             </div>
@@ -537,7 +544,7 @@
                             @foreach ($availableLanguages as $language)
                                 <li>
                                     <a class="dropdown-item d-flex justify-content-between align-items-center {{ $currentLanguage->id == $language->id ? 'active' : '' }}"
-                                        href="{{ route('language.switch', $language->code) }}">
+                                        href="{{ route('language.switch', $language->code) }}?redirect={{ urlencode(url()->full()) }}">
                                         <span>{{ $language->native_name }} ({{ $language->code }})</span>
                                         @if ($currentLanguage->id == $language->id)
                                             <i class="fas fa-check text-success"></i>
@@ -641,7 +648,7 @@
         <div class="container">
             <div class="row text-white pb-4">
                 <!-- About Us + Social -->
-                <div class="col-md-3 mb-4 mb-md-0">
+                <div class="col-6 col-sm-6 col-md-3 mb-4 mb-md-0">
                     <h4 class="footer-title mb-2">{{ custom_trans('about_us', 'front') }}</h4>
                     <div class="footer-title-underline mb-3"></div>
                     @php
@@ -684,7 +691,7 @@
                     @endif
                 </div>
                 <!-- Links -->
-                <div class="col-md-2 mb-4 mb-md-0">
+                <div class="col-6 col-sm-6 col-md-2 mb-4 mb-md-0">
                     <h4 class="footer-title mb-2">{{ custom_trans('our_links', 'front') }}</h4>
                     <div class="footer-title-underline mb-3"></div>
                     <ul class="footer-links list-unstyled">
@@ -704,7 +711,7 @@
                     </ul>
                 </div>
                 <!-- Latest Post -->
-                <div class="col-md-4 mb-4 mb-md-0">
+                <div class="col-12 col-sm-12 col-md-4 mb-4 mb-md-0">
                     <h4 class="footer-title mb-2">{{ custom_trans('latest_posts', 'front') }}</h4>
                     <div class="footer-title-underline mb-3"></div>
                     @php
@@ -742,7 +749,7 @@
                     @endforelse
                 </div>
                 <!-- Contact + Language -->
-                <div class="col-md-3">
+                <div class="col-12 col-sm-12 col-md-3">
                     <h4 class="footer-title mb-2">{{ custom_trans('contact_us', 'front') }}</h4>
                     <div class="footer-title-underline mb-3"></div>
                     <div class="footer-contact mb-3">
@@ -910,10 +917,68 @@
                 });
             }
 
-            // Initialize header language switcher dropdown explicitly
+            // Language switcher dropdown - Ensure Bootstrap initializes it properly
             const headerLanguageToggle = document.getElementById('frontendLangDropdown');
-            if (headerLanguageToggle) {
-                new bootstrap.Dropdown(headerLanguageToggle);
+            if (headerLanguageToggle && typeof bootstrap !== 'undefined' && bootstrap.Dropdown) {
+                try {
+                    // Initialize dropdown instance
+                    const dropdownInstance = bootstrap.Dropdown.getOrCreateInstance(headerLanguageToggle);
+                    const dropdownMenu = headerLanguageToggle.nextElementSibling;
+
+                    // Listen for Bootstrap's dropdown events on the button
+                    headerLanguageToggle.addEventListener('show.bs.dropdown', function() {
+                        if (dropdownMenu) {
+                            dropdownMenu.classList.add('show');
+                            dropdownMenu.style.display = 'block';
+                        }
+                    });
+
+                    headerLanguageToggle.addEventListener('shown.bs.dropdown', function() {
+                        if (dropdownMenu) {
+                            dropdownMenu.classList.add('show');
+                            dropdownMenu.style.display = 'block';
+                            dropdownMenu.style.opacity = '1';
+                            dropdownMenu.style.visibility = 'visible';
+                        }
+                    });
+
+                    headerLanguageToggle.addEventListener('hide.bs.dropdown', function() {
+                        if (dropdownMenu) {
+                            dropdownMenu.classList.remove('show');
+                        }
+                    });
+
+                    headerLanguageToggle.addEventListener('hidden.bs.dropdown', function() {
+                        if (dropdownMenu) {
+                            dropdownMenu.classList.remove('show');
+                            dropdownMenu.style.display = 'none';
+                        }
+                    });
+
+                    // Fallback: Manual toggle if Bootstrap doesn't trigger events
+                    headerLanguageToggle.addEventListener('click', function(e) {
+                        setTimeout(() => {
+                            if (dropdownMenu) {
+                                const isShown = dropdownMenu.classList.contains('show');
+                                if (!isShown) {
+                                    // Force show the dropdown
+                                    dropdownMenu.classList.add('show');
+                                    dropdownMenu.style.display = 'block';
+                                    dropdownMenu.style.opacity = '1';
+                                    dropdownMenu.style.visibility = 'visible';
+                                    headerLanguageToggle.setAttribute('aria-expanded', 'true');
+                                } else {
+                                    // Force hide the dropdown
+                                    dropdownMenu.classList.remove('show');
+                                    dropdownMenu.style.display = 'none';
+                                    headerLanguageToggle.setAttribute('aria-expanded', 'false');
+                                }
+                            }
+                        }, 10);
+                    });
+                } catch (e) {
+                    console.error('Error initializing language dropdown:', e);
+                }
             }
             const wishlistButtons = document.querySelectorAll('.wishlist-btn');
 

@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             LanguageSeeder::class,
             FrontPageTranslationsSeeder::class,
             InstructorSeeder::class,
+            CourseSeeder::class,
             TestimonialSeeder::class,
             FeatureSeeder::class,
             HeroFeatureSeeder::class,

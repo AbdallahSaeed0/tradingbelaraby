@@ -1,5 +1,29 @@
 /* Language Switcher Styling */
 
+.language-switcher {
+    position: relative;
+    z-index: 1000;
+}
+
+.language-switcher .dropdown {
+    position: relative;
+}
+
+.language-switcher .dropdown-menu {
+    z-index: 1050 !important;
+    position: absolute !important;
+    min-width: 200px;
+    /* Bootstrap default - hidden by default */
+    display: none;
+}
+
+/* Ensure dropdown is visible when Bootstrap adds the 'show' class */
+.language-switcher .dropdown-menu.show {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
 .language-switcher .dropdown-item.active {
     background-color: var(--bs-primary) !important;
     color: white !important;
@@ -11,4 +35,19 @@
 
 .language-switcher .dropdown-item.active:hover {
     background-color: var(--bs-primary) !important;
+}
+
+.language-switcher .btn {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
+/* Ensure language switcher works on course learn page */
+.course-content-topbar ~ * .language-switcher,
+body:has(.course-content-topbar) .language-switcher {
+    z-index: 1100 !important;
+}
+
+body:has(.course-content-topbar) .language-switcher .dropdown-menu {
+    z-index: 1100 !important;
 }

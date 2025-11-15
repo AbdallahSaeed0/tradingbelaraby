@@ -54,13 +54,40 @@ Route::get('/instructors', [App\Http\Controllers\InstructorController::class, 'i
 Route::get('/instructors/{id}', [App\Http\Controllers\InstructorController::class, 'show'])->name('instructor.show');
 
 // Language switching routes
-Route::get('/language/{code}', function($code) {
+Route::get('/language/{code}', function($code, \Illuminate\Http\Request $request) {
     // Frontend language switching
     $success = \App\Helpers\TranslationHelper::setFrontendLanguage($code);
     if ($success) {
         \App\Helpers\TranslationHelper::clearCache();
     }
-    return redirect()->back();
+    
+    // Get the intended URL from query parameter or referrer, fallback to home
+    $intendedUrl = $request->query('redirect');
+    
+    // If no redirect parameter, try to use referrer
+    if (!$intendedUrl) {
+        $referer = $request->header('referer');
+        if ($referer) {
+            // Extract path from full URL if it's a full URL
+            $parsedUrl = parse_url($referer);
+            $intendedUrl = $parsedUrl['path'] ?? $referer;
+            if (isset($parsedUrl['query'])) {
+                $intendedUrl .= '?' . $parsedUrl['query'];
+            }
+        }
+    }
+    
+    // Validate that the URL is from the same domain to prevent open redirects
+    if ($intendedUrl) {
+        $appUrl = config('app.url');
+        // Check if it's a relative path or from the same domain
+        if (strpos($intendedUrl, '/') === 0 || strpos($intendedUrl, $appUrl) === 0) {
+            return redirect($intendedUrl);
+        }
+    }
+    
+    // Fallback to home if no valid redirect URL
+    return redirect()->route('home');
 })->name('language.switch');
 
 // Admin language switching route

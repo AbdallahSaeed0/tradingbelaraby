@@ -151,6 +151,20 @@
 [dir="rtl"] .mobile-offcanvas-languages .btn-group > .btn {
     text-align: right;
 }
+
+[dir="rtl"] .mobile-offcanvas-logo {
+    margin-right: 0;
+    margin-left: 0.75rem;
+}
+
+[dir="rtl"] .mobile-nav-offcanvas .offcanvas-header {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .mobile-nav-offcanvas .offcanvas-header .d-flex {
+    flex-direction: row-reverse;
+}
+
 /* RTL Support Styles */
 
 /* RTL Margin Utilities */

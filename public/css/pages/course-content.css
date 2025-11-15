@@ -16,6 +16,27 @@
     min-height: 56px;
     font-size: 1.1rem;
 }
+
+/* Ensure language switcher dropdown works on course learn page */
+.language-switcher {
+    position: relative !important;
+    z-index: 1100 !important;
+}
+
+.language-switcher .dropdown-menu {
+    z-index: 1100 !important;
+    position: absolute !important;
+}
+
+.language-switcher .dropdown-menu.show {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.language-switcher .dropdown-menu:not(.show) {
+    display: none !important;
+}
 .course-content-title {
     font-size: 1.15rem;
     font-weight: 600;

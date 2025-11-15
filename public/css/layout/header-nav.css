@@ -214,6 +214,34 @@
     color: #fff;
 }
 
+.mobile-offcanvas-logo {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+}
+
+.mobile-offcanvas-logo:hover {
+    opacity: 0.8;
+}
+
+.mobile-offcanvas-logo-img {
+    max-height: 40px;
+    width: auto;
+    object-fit: contain;
+}
+
+.mobile-nav-offcanvas .offcanvas-header {
+    border-bottom: 1px solid #dee2e6;
+    padding: 1rem 1.25rem;
+}
+
+.mobile-nav-offcanvas .offcanvas-title {
+    color: #17506b;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
 .mobile-nav-offcanvas .offcanvas-body {
     display: flex;
     flex-direction: column;

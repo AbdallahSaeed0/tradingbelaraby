@@ -9,39 +9,18 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Mobile Bottom Navigation
+    // Mobile Bottom Navigation - Allow default link behavior
     const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
 
     mobileNavItems.forEach(item => {
         item.addEventListener('click', function (e) {
-            e.preventDefault();
-
             // Remove active class from all items
             mobileNavItems.forEach(navItem => navItem.classList.remove('active'));
 
             // Add active class to clicked item
             this.classList.add('active');
 
-            // Handle navigation based on the clicked item
-            const icon = this.querySelector('i').className;
-
-            if (icon.includes('fa-home')) {
-                // Navigate to home
-                console.log('Navigate to Home');
-                // window.location.href = '/';
-            } else if (icon.includes('fa-shopping-cart')) {
-                // Navigate to cart
-                console.log('Navigate to Cart');
-                // window.location.href = '/cart';
-            } else if (icon.includes('fa-bell')) {
-                // Navigate to notifications
-                console.log('Navigate to Notifications');
-                // window.location.href = '/notifications';
-            } else if (icon.includes('fa-user')) {
-                // Navigate to profile
-                console.log('Navigate to Profile');
-                // window.location.href = '/profile';
-            }
+            // Let the link navigate naturally - no preventDefault()
         });
     });
 

@@ -1309,6 +1309,9 @@ footer {
     color: #fff;
     z-index: 2;
 }
+.course-img-wrap .badge{
+    position: absolute;
+}
 .badge-green {
     background: #2ecc40;
 }
