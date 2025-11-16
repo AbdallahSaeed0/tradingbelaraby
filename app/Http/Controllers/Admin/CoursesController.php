@@ -9,12 +9,20 @@ use App\Models\CourseLecture;
 use App\Models\CourseSection;
 use App\Models\User;
 use App\Models\Admin;
+use App\Http\Controllers\Admin\CourseDuplicateService;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 
 class CoursesController extends Controller
 {
+    protected CourseDuplicateService $duplicateService;
+
+    public function __construct(CourseDuplicateService $duplicateService)
+    {
+        $this->duplicateService = $duplicateService;
+    }
+
     public function index(Request $request)
     {
         // Get courses with filters
@@ -49,7 +57,14 @@ class CoursesController extends Controller
             $query->where('instructor_id', $request->instructor);
         }
 
-        $courses = $query->paginate(20);
+        // Pagination size (default 10, user-controllable)
+        $perPage = (int) $request->get('per_page', 10);
+        $allowedPerPage = [10, 25, 50, 100];
+        if (!in_array($perPage, $allowedPerPage)) {
+            $perPage = 10;
+        }
+
+        $courses = $query->paginate($perPage)->appends($request->query());
 
                 // Get statistics based on permissions
         if ($admin->hasPermission('manage_own_courses') && !$admin->hasPermission('manage_courses')) {
@@ -83,6 +98,18 @@ class CoursesController extends Controller
         }
 
         return view('admin.courses.index', compact('courses', 'stats', 'categories', 'instructors'));
+    }
+
+    /**
+     * Duplicate a course and redirect to the edit page for the new copy.
+     */
+    public function duplicate(Course $course)
+    {
+        $newCourse = $this->duplicateService->duplicate($course);
+
+        return redirect()
+            ->route('admin.courses.edit', $newCourse)
+            ->with('success', 'Course duplicated successfully. You are now editing the copy.');
     }
 
     public function create()
@@ -154,6 +181,11 @@ class CoursesController extends Controller
         // Set the first instructor as the main instructor_id for legacy compatibility
         if (!empty($request->instructor_ids)) {
             $data['instructor_id'] = $request->instructor_ids[0];
+        }
+
+        // Ensure is_free is always set explicitly (unchecked checkbox won't be present in the request)
+        if (!$request->has('is_free')) {
+            $data['is_free'] = false;
         }
 
         // If course is free, set price to 0
@@ -380,6 +412,11 @@ class CoursesController extends Controller
         // Set the first instructor as the main instructor_id for legacy compatibility
         if (!empty($request->instructor_ids)) {
             $data['instructor_id'] = $request->instructor_ids[0];
+        }
+
+        // Ensure is_free is always set explicitly on create as well
+        if (!$request->has('is_free')) {
+            $data['is_free'] = false;
         }
 
         // If course is free, set price to 0

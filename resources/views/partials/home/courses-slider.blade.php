@@ -12,9 +12,25 @@
                 </span>
                 <h2 class="fw-bold mb-3 fs-25">{{ custom_trans('Our Courses', 'front') }}</h2>
             </div>
+            @php
+                $direction = \App\Helpers\TranslationHelper::getFrontendLanguage()->direction ?? 'ltr';
+            @endphp
             <div class="buts d-flex align-items-center">
-                <button class="btn btn-danger me-2 px-4 py-2 rounded-3 swiper-button-prev"></button>
-                <button class="btn btn-danger px-4 py-2 rounded-3 swiper-button-next"></button>
+                @if ($direction === 'rtl')
+                    <button class="btn btn-danger me-2 px-4 py-2 rounded-3 swiper-button-prev">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button class="btn btn-danger px-4 py-2 rounded-3 swiper-button-next">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                @else
+                    <button class="btn btn-danger me-2 px-4 py-2 rounded-3 swiper-button-prev">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <button class="btn btn-danger px-4 py-2 rounded-3 swiper-button-next">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                @endif
             </div>
         </div>
         <!-- Swiper -->

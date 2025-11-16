@@ -121,7 +121,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="d-flex gap-2">
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fa fa-search me-1"></i>Filter
@@ -130,6 +130,18 @@
                                     <i class="fa fa-refresh me-1"></i>Clear
                                 </a>
                             </div>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select" name="per_page" id="perPageFilter"
+                                onchange="document.getElementById('filterForm').submit();">
+                                @php
+                                    $perPage = (int) request('per_page', 10);
+                                @endphp
+                                <option value="10" {{ $perPage === 10 ? 'selected' : '' }}>10 per page</option>
+                                <option value="25" {{ $perPage === 25 ? 'selected' : '' }}>25 per page</option>
+                                <option value="50" {{ $perPage === 50 ? 'selected' : '' }}>50 per page</option>
+                                <option value="100" {{ $perPage === 100 ? 'selected' : '' }}>100 per page</option>
+                            </select>
                         </div>
                     </div>
                 </form>
@@ -337,7 +349,8 @@
                                                     <i class="fa fa-ellipsis-v"></i>
                                                 </button>
                                                 <ul class="dropdown-menu">
-                                                    <li><a class="dropdown-item" href="#"><i
+                                                    <li><a class="dropdown-item"
+                                                            href="{{ route('admin.courses.duplicate', $course) }}"><i
                                                                 class="fa fa-copy me-2"></i>Duplicate</a></li>
                                                     <li><a class="dropdown-item"
                                                             href="{{ route('admin.courses.enrollments', $course) }}"><i
@@ -380,12 +393,14 @@
                 </div>
             </div>
             <div class="card-footer">
-                <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
                     <div class="text-muted">
-                        Showing {{ $courses->firstItem() }} to {{ $courses->lastItem() }} of {{ $courses->total() }}
+                        Showing {{ $courses->firstItem() ?? 0 }} to {{ $courses->lastItem() ?? 0 }} of {{ $courses->total() }}
                         entries
                     </div>
-                    {{ $courses->links() }}
+                    <div class="d-flex align-items-center">
+                        {{ $courses->links('pagination::bootstrap-5') }}
+                    </div>
                 </div>
             </div>
         </div>
@@ -494,12 +509,14 @@
                 </div>
             </div>
             <div class="card-footer">
-                <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
                     <div class="text-muted">
-                        Showing {{ $courses->firstItem() }} to {{ $courses->lastItem() }} of {{ $courses->total() }}
+                        Showing {{ $courses->firstItem() ?? 0 }} to {{ $courses->lastItem() ?? 0 }} of {{ $courses->total() }}
                         entries
                     </div>
-                    {{ $courses->links() }}
+                    <div class="d-flex align-items-center">
+                        {{ $courses->links('pagination::bootstrap-5') }}
+                    </div>
                 </div>
             </div>
         </div>

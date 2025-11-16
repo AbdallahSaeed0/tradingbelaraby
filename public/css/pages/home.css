@@ -1369,8 +1369,10 @@ footer {
     bottom: 16px;
     right: 16px;
 }
-.swiper-button-next,
-.swiper-button-prev {
+.courses-section .swiper-button-next,
+.courses-section .swiper-button-prev,
+.courses-by-category-section .swiper-button-next,
+.courses-by-category-section .swiper-button-prev {
     background: #ff7043 !important;
     color: #fff !important;
     border-radius: 8px !important;
@@ -1389,24 +1391,30 @@ footer {
     margin: 0 !important;
 }
 
-.swiper-button-next {
+.courses-section .swiper-button-next,
+.courses-by-category-section .swiper-button-next {
     right: 10px !important;
     left: auto !important;
 }
 
-.swiper-button-prev {
+.courses-section .swiper-button-prev,
+.courses-by-category-section .swiper-button-prev {
     left: 10px !important;
     right: auto !important;
 }
 
-.swiper-button-next:hover,
-.swiper-button-prev:hover {
+.courses-section .swiper-button-next:hover,
+.courses-section .swiper-button-prev:hover,
+.courses-by-category-section .swiper-button-next:hover,
+.courses-by-category-section .swiper-button-prev:hover {
     background: #d94e1f !important;
     transform: translateY(-50%) scale(1.1) !important;
 }
 
-.swiper-button-next:after,
-.swiper-button-prev:after {
+.courses-section .swiper-button-next:after,
+.courses-section .swiper-button-prev:after,
+.courses-by-category-section .swiper-button-next:after,
+.courses-by-category-section .swiper-button-prev:after {
     font-size: 0.8em !important;
     font-weight: 800;
 }
@@ -1416,21 +1424,25 @@ footer {
 }
 
 /* Additional Swiper Button Positioning Fixes */
-.swiper-button-next {
+.courses-section .swiper-button-next,
+.courses-by-category-section .swiper-button-next {
     right: 10px !important;
     left: auto !important;
     transform: translateY(-50%) !important;
 }
 
-.swiper-button-prev {
+.courses-section .swiper-button-prev,
+.courses-by-category-section .swiper-button-prev {
     left: 10px !important;
     right: auto !important;
     transform: translateY(-50%) !important;
 }
 
 /* Ensure buttons don't inherit any conflicting styles */
-.swiper-button-next,
-.swiper-button-prev {
+.courses-section .swiper-button-next,
+.courses-section .swiper-button-prev,
+.courses-by-category-section .swiper-button-next,
+.courses-by-category-section .swiper-button-prev {
     float: none !important;
     clear: none !important;
     direction: ltr !important;
@@ -1438,8 +1450,10 @@ footer {
 
 /* Responsive Swiper Navigation */
 @media (max-width: 768px) {
-    .swiper-button-next,
-    .swiper-button-prev {
+    .courses-section .swiper-button-next,
+    .courses-section .swiper-button-prev,
+    .courses-by-category-section .swiper-button-next,
+    .courses-by-category-section .swiper-button-prev {
         width: 36px !important;
         height: 36px !important;
     }

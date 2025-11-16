@@ -50,7 +50,22 @@ class EnrollmentController extends Controller
             return redirect()->route('courses.show', $course->id)->with('info', 'You are already enrolled in this course!');
         }
 
-        // Create enrollment
+        // Prevent direct enrollment for paid courses - they must go through checkout/cart
+        if (!$course->is_free && $course->price > 0) {
+            $message = 'This is a paid course. Please add it to your cart and complete checkout.';
+
+            if ($request->expectsJson()) {
+                // Return 200 with success=false so frontend can handle gracefully without JS error
+                return response()->json([
+                    'success' => false,
+                    'message' => $message,
+                ]);
+            }
+
+            return redirect()->route('cart.index')->with('error', $message);
+        }
+
+        // Create enrollment (free courses)
         $user->enrollments()->create([
             'course_id' => $course->id,
             'status' => 'active',

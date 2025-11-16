@@ -19,6 +19,7 @@ use App\Http\Controllers\LiveClassController;
 use App\Http\Controllers\HomeworkController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\CourseRatingController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ComingSoonController;
 
@@ -127,6 +128,9 @@ Route::get('/test-language', function() {
 Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
 Route::get('/courses/search', [CourseController::class, 'search'])->name('courses.search');
 Route::get('/courses/{course}', [CourseController::class, 'show'])->name('courses.show');
+Route::post('/courses/{course}/review', [CourseRatingController::class, 'store'])
+    ->middleware('auth')
+    ->name('courses.review.store');
 
 // Blog routes
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
@@ -271,6 +275,9 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
     Route::resource('users', App\Http\Controllers\Admin\UsersController::class)->middleware('admin.permission:manage_users');
     Route::resource('categories', App\Http\Controllers\Admin\CategoriesController::class)->middleware('admin.permission:manage_categories');
     Route::resource('courses', App\Http\Controllers\Admin\CoursesController::class)->middleware('admin.permission:manage_courses,manage_own_courses');
+    Route::get('/courses/{course}/duplicate', [App\Http\Controllers\Admin\CoursesController::class, 'duplicate'])
+        ->name('courses.duplicate')
+        ->middleware('admin.permission:manage_courses,manage_own_courses');
     Route::resource('enrollments', App\Http\Controllers\Admin\EnrollmentsController::class)->middleware('admin.permission:manage_enrollments');
     Route::resource('homework', App\Http\Controllers\Admin\HomeworkManagementController::class)->middleware('admin.permission:manage_homework,manage_own_homework');
     Route::resource('quizzes', App\Http\Controllers\Admin\QuizManagementController::class)->middleware('admin.permission:manage_quizzes,manage_own_quizzes');

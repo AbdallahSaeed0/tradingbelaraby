@@ -1,8 +1,16 @@
 <?php
 
 return [
-    'About Our University' => [
+'About Our University' => [
         'ar' => 'عن جامعتنا',
+    ],
+    'About Instructor' => [
+        'en' => 'About Instructor',
+        'ar' => 'عن المدرب',
+    ],
+    'About Instructors' => [
+        'en' => 'About Instructors',
+        'ar' => 'عن المدربين',
     ],
     'Accepted formats: PDF, DOC, DOCX, TXT, ZIP, RAR' => [
         'ar' => 'الصيغ المقبولة: PDF، DOC، DOCX، TXT، ZIP، RAR',
@@ -141,6 +149,13 @@ return [
     'Course details' => [
         'ar' => 'تفاصيل الدورة',
     ],
+    'Course detail' => [
+        'ar' => 'تفاصيل الدورة',
+    ],
+    'What learn' => [
+        'en' => 'What you will learn',
+        'ar' => 'ماذا ستتعلم',
+    ],
     'Courses' => [
         'ar' => 'الدورات',
     ],
@@ -156,8 +171,16 @@ return [
     'Describe your training/teaching experience' => [
         'ar' => 'صف خبرتك في التدريب/التدريس',
     ],
-    'Description' => [
+'Description' => [
         'ar' => 'الوصف',
+    ],
+    'Course' => [
+        'en' => 'Course',
+        'ar' => 'دورة',
+    ],
+    'Site Name' => [
+        'en' => 'Site Name',
+        'ar' => 'اسم الموقع',
     ],
     'Designing' => [
         'ar' => 'التصميم',
@@ -576,6 +599,10 @@ return [
     'Rating' => [
         'ar' => 'التقييم',
     ],
+    'Reviews' => [
+        'en' => 'Reviews',
+        'ar' => 'التقييمات',
+    ],
     'Read Less' => [
         'ar' => 'قراءة أقل',
     ],
@@ -821,6 +848,18 @@ return [
     'What are' => [
         'ar' => 'ما هي',
     ],
+    'learn' => [
+        'en' => 'Learn',
+        'ar' => 'التعلم',
+    ],
+    'price' => [
+        'en' => 'Price',
+        'ar' => 'السعر',
+    ],
+    'value' => [
+        'en' => 'Value',
+        'ar' => 'القيمة',
+    ],
     'WhatsApp' => [
         'ar' => 'واتساب',
     ],
@@ -856,6 +895,42 @@ return [
     ],
     'Your Answer' => [
         'ar' => 'إجابتك',
+    ],
+    'Frequently Asked Questions' => [
+        'en' => 'Frequently Asked Questions',
+        'ar' => 'الأسئلة الشائعة',
+    ],
+    'No bio available' => [
+        'en' => 'No bio available',
+        'ar' => 'لا توجد نبذة متاحة',
+    ],
+    'No instructor assigned' => [
+        'en' => 'No instructor assigned',
+        'ar' => 'لم يتم تعيين مدرب',
+    ],
+    'Student Feedback' => [
+        'en' => 'Student Feedback',
+        'ar' => 'آراء الطلاب',
+    ],
+    'Course Rating' => [
+        'en' => 'Course Rating',
+        'ar' => 'تقييم الدورة',
+    ],
+    'Write review:' => [
+        'en' => 'Write review:',
+        'ar' => 'اكتب مراجعتك:',
+    ],
+    'Course Features' => [
+        'en' => 'Course Features',
+        'ar' => 'مميزات الدورة',
+    ],
+    'Course Preview' => [
+        'en' => 'Course Preview',
+        'ar' => 'معاينة الدورة',
+    ],
+    'Course Preview Video' => [
+        'en' => 'Course Preview Video',
+        'ar' => 'فيديو معاينة الدورة',
     ],
     'Your Message' => [
         'en' => 'Your Message',
@@ -945,6 +1020,10 @@ return [
         'en' => 'Browse More Courses',
         'ar' => 'تصفح المزيد من الدورات',
     ],
+    'popular_categories' => [
+        'en' => 'Popular Categories',
+        'ar' => 'الفئات الشائعة',
+    ],
     'card_holder_name' => [
         'en' => 'Cardholder Name',
         'ar' => 'اسم حامل البطاقة',
@@ -961,6 +1040,14 @@ return [
         'en' => 'Review the items in your cart before proceeding to checkout.',
         'ar' => 'راجع العناصر في سلة التسوق الخاصة بك قبل المتابعة.',
     ],
+    'cart_items' => [
+        'en' => 'Cart Items',
+        'ar' => 'عناصر السلة',
+    ],
+    'continue_shopping' => [
+        'en' => 'Continue Shopping',
+        'ar' => 'متابعة التسوق',
+    ],
     'categories' => [
         'en' => 'Categories',
         'ar' => 'الفئات',
@@ -972,6 +1059,14 @@ return [
     'checkout' => [
         'en' => 'Checkout',
         'ar' => 'إتمام الشراء',
+    ],
+    'cart' => [
+        'en' => 'Cart',
+        'ar' => 'السلة',
+    ],
+    'complete' => [
+        'en' => 'Complete',
+        'ar' => 'إكمال',
     ],
     'city' => [
         'en' => 'City',
@@ -1001,6 +1096,14 @@ return [
         'en' => 'Complete your purchase',
         'ar' => 'أكمل عملية الشراء',
     ],
+    'enter_billing_details' => [
+        'en' => 'Enter your billing details',
+        'ar' => 'أدخل تفاصيل الفواتير الخاصة بك',
+    ],
+    'select_payment_method' => [
+        'en' => 'Select your preferred payment method',
+        'ar' => 'اختر طريقة الدفع المفضلة لديك',
+    ],
     'completed' => [
         'en' => 'Completed',
         'ar' => 'مكتمل',
@@ -1020,6 +1123,10 @@ return [
     'coupon_description' => [
         'en' => 'Enter a coupon code to unlock a discount on your order.',
         'ar' => 'أدخل رمز القسيمة للحصول على خصم على طلبك.',
+    ],
+    'course' => [
+        'en' => 'Course',
+        'ar' => 'دورة',
     ],
     'courses' => [
         'en' => 'Courses',
@@ -1436,6 +1543,14 @@ return [
         'en' => 'Your payments are secure and encrypted.',
         'ar' => 'دفعاتك آمنة ومشفرة.',
     ],
+    'sale' => [
+        'en' => 'Sale',
+        'ar' => 'تخفيض',
+    ],
+    'off' => [
+        'en' => 'off',
+        'ar' => 'خصم',
+    ],
     'select_experience' => [
         'en' => 'Select years of experience',
         'ar' => 'اختر سنوات الخبرة',
@@ -1443,6 +1558,22 @@ return [
     'shopping_cart' => [
         'en' => 'Shopping Cart',
         'ar' => 'سلة التسوق',
+    ],
+    'items' => [
+        'en' => 'Items',
+        'ar' => 'العناصر',
+    ],
+    'certified' => [
+        'en' => 'Certified',
+        'ar' => 'معتمد',
+    ],
+    'lifetime_access' => [
+        'en' => 'Lifetime Access',
+        'ar' => 'وصول مدى الحياة',
+    ],
+    'mobile_access' => [
+        'en' => 'Mobile Access',
+        'ar' => 'وصول عبر الجوال',
     ],
     'sign_with_us' => [
         'en' => 'Sign With Us',
@@ -1488,9 +1619,29 @@ return [
         'en' => 'Subtotal',
         'ar' => 'الإجمالي الفرعي',
     ],
+    'tax' => [
+        'en' => 'Tax',
+        'ar' => 'الضريبة',
+    ],
+    'processing' => [
+        'en' => 'Processing...',
+        'ar' => 'جارٍ المعالجة...',
+    ],
     'terms_and_conditions' => [
         'en' => 'Terms & Conditions',
         'ar' => 'الشروط والأحكام',
+    ],
+    'please_select_payment_method' => [
+        'en' => 'Please select a payment method',
+        'ar' => 'يرجى اختيار طريقة الدفع',
+    ],
+    '30_day_money_back' => [
+        'en' => '30-Day Money Back Guarantee',
+        'ar' => 'ضمان استعادة الأموال خلال 30 يومًا',
+    ],
+    'satisfaction_guaranteed' => [
+        'en' => 'Your satisfaction is guaranteed.',
+        'ar' => 'رضاك مضمون.',
     ],
     'thank_you_for_your_purchase' => [
         'en' => 'Thank you for your purchase',
@@ -1717,6 +1868,58 @@ return [
     ],
     'years old' => [
         'ar' => 'عاماً',
+    ],
+    'Course added to cart' => [
+        'en' => 'Course added to cart',
+        'ar' => 'تمت إضافة الدورة إلى السلة',
+    ],
+    'Course added to cart successfully.' => [
+        'en' => 'Course added to cart successfully.',
+        'ar' => 'تمت إضافة الدورة إلى السلة بنجاح.',
+    ],
+    'You can continue shopping or proceed to checkout to complete your purchase.' => [
+        'en' => 'You can continue shopping or proceed to checkout to complete your purchase.',
+        'ar' => 'يمكنك متابعة التسوق أو الانتقال إلى الدفع لإكمال عملية الشراء.',
+    ],
+    'Continue shopping' => [
+        'en' => 'Continue shopping',
+        'ar' => 'متابعة التسوق',
+    ],
+    'Go to checkout' => [
+        'en' => 'Go to checkout',
+        'ar' => 'الانتقال إلى الدفع',
+    ],
+    'Review submitted successfully!' => [
+        'en' => 'Review submitted successfully!',
+        'ar' => 'تم إرسال التقييم بنجاح!',
+    ],
+    'Please select a star rating before submitting your review.' => [
+        'en' => 'Please select a star rating before submitting your review.',
+        'ar' => 'يرجى اختيار تقييم بالنجوم قبل إرسال رأيك.',
+    ],
+    'Unable to submit review. Please try again.' => [
+        'en' => 'Unable to submit review. Please try again.',
+        'ar' => 'تعذر إرسال التقييم. يرجى المحاولة مرة أخرى.',
+    ],
+    'An unexpected error occurred. Please try again later.' => [
+        'en' => 'An unexpected error occurred. Please try again later.',
+        'ar' => 'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى لاحقاً.',
+    ],
+    'Unable to enroll in this course.' => [
+        'en' => 'Unable to enroll in this course.',
+        'ar' => 'تعذر التسجيل في هذه الدورة.',
+    ],
+    'Unable to add course to cart.' => [
+        'en' => 'Unable to add course to cart.',
+        'ar' => 'تعذر إضافة الدورة إلى السلة.',
+    ],
+    'Student' => [
+        'en' => 'Student',
+        'ar' => 'طالب',
+    ],
+    'View all reviews' => [
+        'en' => 'View all reviews',
+        'ar' => 'عرض جميع التقييمات',
     ],
 ];
 

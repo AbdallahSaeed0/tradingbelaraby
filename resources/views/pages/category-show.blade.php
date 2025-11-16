@@ -217,8 +217,9 @@
                                                         {{ custom_trans('go_to_course', 'front') }}
                                                     </a>
                                                 @else
-                                                    <button class="btn btn-success btn-sm enroll-btn"
-                                                        data-course-id="{{ $course->id }}">
+                                                    <button class="btn btn-success btn-sm category-enroll-btn"
+                                                        data-course-id="{{ $course->id }}"
+                                                        data-enroll-type="{{ $course->price > 0 ? 'paid' : 'free' }}">
                                                         <i class="fas fa-graduation-cap me-1"></i>
                                                         {{ custom_trans('enroll_now', 'front') }}
                                                     </button>
@@ -276,6 +277,34 @@
             </div>
         </div>
     </section>
+
+    {{-- Add-to-cart success modal (shared with detail page behavior) --}}
+    <div class="modal fade" id="categoryCartSuccessModal" tabindex="-1"
+        aria-labelledby="categoryCartSuccessModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold" id="categoryCartSuccessModalLabel">
+                        {{ custom_trans('Course added to cart', 'front') }}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-0">
+                        {{ custom_trans('You can continue shopping or proceed to checkout to complete your purchase.', 'front') }}
+                    </p>
+                </div>
+                <div class="modal-footer border-0 d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        {{ custom_trans('Continue shopping', 'front') }}
+                    </button>
+                    <a href="{{ route('checkout.index') }}" class="btn btn-orange fw-bold">
+                        {{ custom_trans('Go to checkout', 'front') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @if (\App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl')
@@ -414,7 +443,7 @@
             });
         }
 
-        // Wishlist functionality
+            // Wishlist functionality
         document.addEventListener('DOMContentLoaded', function() {
             const wishlistButtons = document.querySelectorAll('.wishlist-btn');
 
@@ -472,17 +501,18 @@
                 });
             });
 
-            // Enrollment functionality
-            const enrollButtons = document.querySelectorAll('.enroll-btn');
+            // Enrollment functionality for category page (paid -> cart + modal, free -> direct enroll)
+            const categoryEnrollButtons = document.querySelectorAll('.category-enroll-btn');
 
-            enrollButtons.forEach(button => {
+            categoryEnrollButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const courseId = this.dataset.courseId;
+                    const enrollType = this.dataset.enrollType || 'free';
                     const originalText = this.innerHTML;
 
                     // Disable button and show loading
                     this.disabled = true;
-                    this.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Enrolling...';
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>{{ custom_trans('processing', 'front') }}';
 
                     // Get CSRF token
                     const csrfToken = document.querySelector('meta[name="csrf-token"]');
@@ -493,7 +523,60 @@
                         return;
                     }
 
-                    // Send AJAX request to enroll
+                    const resetButton = () => {
+                        this.disabled = false;
+                        this.innerHTML = originalText;
+                    };
+
+                    // Paid courses: add to cart + show popup
+                    if (enrollType === 'paid') {
+                        fetch(`/cart/add/${courseId}`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Accept': 'application/json',
+                                    'X-CSRF-TOKEN': csrfToken.getAttribute('content')
+                                },
+                                body: JSON.stringify({})
+                            })
+                            .then(response => {
+                                if (!response.ok) {
+                                    if (response.status === 401) {
+                                        window.location.href = '/login';
+                                        return;
+                                    }
+                                    throw new Error(`HTTP error! status: ${response.status}`);
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                if (data && data.success) {
+                                    const modalElement = document.getElementById('categoryCartSuccessModal');
+                                    if (modalElement && typeof bootstrap !== 'undefined') {
+                                        const modal = new bootstrap.Modal(modalElement);
+                                        modal.show();
+                                    } else {
+                                        toastr.success(data.message ||
+                                            '{{ custom_trans('Course added to cart successfully.', 'front') }}');
+                                    }
+                                } else if (data) {
+                                    toastr.info(data.message ||
+                                        '{{ custom_trans('Unable to add course to cart.', 'front') }}');
+                                }
+                                resetButton();
+                            })
+                            .catch(error => {
+                                console.error('Cart add error (category page):', error);
+                                toastr.error(
+                                    '{{ custom_trans('An unexpected error occurred. Please try again later.', 'front') }}'
+                                );
+                                resetButton();
+                            });
+
+                        return;
+                    }
+
+                    // Free courses: direct enroll
                     fetch(`/courses/${courseId}/enroll`, {
                             method: 'POST',
                             headers: {
@@ -515,16 +598,14 @@
                         })
                         .then(data => {
                             if (data && data.success) {
-                                // Show enrolled state first
                                 this.className = 'btn btn-success btn-sm';
-                                this.innerHTML = '<i class="fas fa-check me-1"></i>Enrolled';
+                                this.innerHTML =
+                                    '<i class="fas fa-check me-1"></i>{{ custom_trans('enrolled', 'front') }}';
                                 this.disabled = true;
 
-                                // Show success message
                                 toastr.success(data.message ||
-                                    'Successfully enrolled in course!');
+                                    '{{ custom_trans('Successfully enrolled in course!', 'front') }}');
 
-                                // After 2 seconds, replace with "Go to Course" link
                                 setTimeout(() => {
                                     const goToCourseLink = document.createElement('a');
                                     goToCourseLink.href = `/courses/${courseId}/learn`;
@@ -536,15 +617,13 @@
                                 }, 2000);
                             } else if (data) {
                                 toastr.error(data.message || 'An error occurred');
-                                this.disabled = false;
-                                this.innerHTML = originalText;
+                                resetButton();
                             }
                         })
                         .catch(error => {
-                            console.error('Error:', error);
+                            console.error('Enroll error (category page):', error);
                             toastr.error('An error occurred. Please try again.');
-                            this.disabled = false;
-                            this.innerHTML = originalText;
+                            resetButton();
                         });
                 });
             });

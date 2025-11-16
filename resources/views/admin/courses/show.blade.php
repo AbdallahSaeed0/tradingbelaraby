@@ -295,9 +295,9 @@
                             <a href="{{ route('admin.courses.analytics', $course) }}" class="btn btn-outline-info">
                                 <i class="fa fa-chart-bar me-2"></i>View Analytics
                             </a>
-                            <button class="btn btn-outline-warning">
+                            <a href="{{ route('admin.courses.duplicate', $course) }}" class="btn btn-outline-warning">
                                 <i class="fa fa-copy me-2"></i>Duplicate Course
-                            </button>
+                            </a>
                             <hr>
                             <button class="btn btn-outline-danger" onclick="confirmDelete()">
                                 <i class="fa fa-trash me-2"></i>Delete Course

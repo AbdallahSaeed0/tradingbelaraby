@@ -229,7 +229,7 @@
                     <div class="language-switcher me-3">
                         <div class="dropdown">
                             <button class="btn btn-outline-light dropdown-toggle text-black" type="button"
-                                id="frontendLangDropdown" data-bs-toggle="dropdown" data-bs-auto-close="true"
+                                id="frontendLangDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside"
                                 aria-expanded="false">
                                 <i class="fas fa-globe me-1"></i>
                                 {{ strtoupper($currentLanguage->code) }}
@@ -917,69 +917,6 @@
                 });
             }
 
-            // Language switcher dropdown - Ensure Bootstrap initializes it properly
-            const headerLanguageToggle = document.getElementById('frontendLangDropdown');
-            if (headerLanguageToggle && typeof bootstrap !== 'undefined' && bootstrap.Dropdown) {
-                try {
-                    // Initialize dropdown instance
-                    const dropdownInstance = bootstrap.Dropdown.getOrCreateInstance(headerLanguageToggle);
-                    const dropdownMenu = headerLanguageToggle.nextElementSibling;
-
-                    // Listen for Bootstrap's dropdown events on the button
-                    headerLanguageToggle.addEventListener('show.bs.dropdown', function() {
-                        if (dropdownMenu) {
-                            dropdownMenu.classList.add('show');
-                            dropdownMenu.style.display = 'block';
-                        }
-                    });
-
-                    headerLanguageToggle.addEventListener('shown.bs.dropdown', function() {
-                        if (dropdownMenu) {
-                            dropdownMenu.classList.add('show');
-                            dropdownMenu.style.display = 'block';
-                            dropdownMenu.style.opacity = '1';
-                            dropdownMenu.style.visibility = 'visible';
-                        }
-                    });
-
-                    headerLanguageToggle.addEventListener('hide.bs.dropdown', function() {
-                        if (dropdownMenu) {
-                            dropdownMenu.classList.remove('show');
-                        }
-                    });
-
-                    headerLanguageToggle.addEventListener('hidden.bs.dropdown', function() {
-                        if (dropdownMenu) {
-                            dropdownMenu.classList.remove('show');
-                            dropdownMenu.style.display = 'none';
-                        }
-                    });
-
-                    // Fallback: Manual toggle if Bootstrap doesn't trigger events
-                    headerLanguageToggle.addEventListener('click', function(e) {
-                        setTimeout(() => {
-                            if (dropdownMenu) {
-                                const isShown = dropdownMenu.classList.contains('show');
-                                if (!isShown) {
-                                    // Force show the dropdown
-                                    dropdownMenu.classList.add('show');
-                                    dropdownMenu.style.display = 'block';
-                                    dropdownMenu.style.opacity = '1';
-                                    dropdownMenu.style.visibility = 'visible';
-                                    headerLanguageToggle.setAttribute('aria-expanded', 'true');
-                                } else {
-                                    // Force hide the dropdown
-                                    dropdownMenu.classList.remove('show');
-                                    dropdownMenu.style.display = 'none';
-                                    headerLanguageToggle.setAttribute('aria-expanded', 'false');
-                                }
-                            }
-                        }, 10);
-                    });
-                } catch (e) {
-                    console.error('Error initializing language dropdown:', e);
-                }
-            }
             const wishlistButtons = document.querySelectorAll('.wishlist-btn');
 
             wishlistButtons.forEach(button => {
@@ -1044,17 +981,18 @@
                 });
             });
 
-            // Enrollment functionality
+            // Enrollment functionality for generic course cards (outside detail page)
             const enrollButtons = document.querySelectorAll('.enroll-btn');
 
             enrollButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const courseId = this.dataset.courseId;
+                    const enrollType = this.dataset.enrollType || 'free';
                     const originalText = this.innerHTML;
 
                     // Disable button and show loading
                     this.disabled = true;
-                    this.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Enrolling...';
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Processing...';
 
                     // Get CSRF token
                     const csrfToken = document.querySelector('meta[name="csrf-token"]');
@@ -1065,7 +1003,54 @@
                         return;
                     }
 
-                    // Send AJAX request to enroll
+                    // Helper: handle error UI reset
+                    const resetButton = () => {
+                        this.disabled = false;
+                        this.innerHTML = originalText;
+                    };
+
+                    // Paid courses -> add to cart instead of direct enroll
+                    if (enrollType === 'paid') {
+                        fetch(`/cart/add/${courseId}`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Accept': 'application/json',
+                                    'X-CSRF-TOKEN': csrfToken.getAttribute('content')
+                                },
+                                body: JSON.stringify({})
+                            })
+                            .then(response => {
+                                if (!response.ok) {
+                                    if (response.status === 401) {
+                                        window.location.href = '/login';
+                                        return;
+                                    }
+                                    throw new Error(`HTTP error! status: ${response.status}`);
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                if (data && data.success) {
+                                    toastr.success(data.message ||
+                                        'Course added to cart successfully.');
+                                } else if (data) {
+                                    // Already in cart / already enrolled messages
+                                    toastr.info(data.message ||
+                                        'Unable to add course to cart.');
+                                }
+                                resetButton();
+                            })
+                            .catch(error => {
+                                console.error('Cart add error:', error);
+                                toastr.error('An error occurred while adding course to cart.');
+                                resetButton();
+                            });
+
+                        return; // Skip direct enrollment for paid courses
+                    }
+
+                    // Free courses -> direct enroll
                     fetch(`/courses/${courseId}/enroll`, {
                             method: 'POST',
                             headers: {
@@ -1109,15 +1094,13 @@
                                 }, 2000);
                             } else if (data) {
                                 toastr.error(data.message || 'An error occurred');
-                                this.disabled = false;
-                                this.innerHTML = originalText;
+                                resetButton();
                             }
                         })
                         .catch(error => {
-                            console.error('Error:', error);
+                            console.error('Enroll error:', error);
                             toastr.error('An error occurred. Please try again.');
-                            this.disabled = false;
-                            this.innerHTML = originalText;
+                            resetButton();
                         });
                 });
             });

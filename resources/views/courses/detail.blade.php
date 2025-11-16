@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', ($course->localized_name ?? 'Course') . ' - ' .
-    (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site Name'))
+@section('title', ($course->localized_name ?? custom_trans('Course', 'front')) . ' - ' .
+    (\App\Models\MainContentSettings::getActive()?->site_name ?? custom_trans('Site Name', 'front')))
 
     @push('styles')
         <link rel="stylesheet" href="{{ asset('css/pages/course-detail.css') }}">
@@ -18,12 +18,13 @@
             class="course-banner-bg position-absolute w-100 h-100 top-0 start-0">
         <div class="course-banner-overlay position-absolute w-100 h-100 top-0 start-0"></div>
         <div class="container position-relative py-5 z-3 text-center">
-            <h1 class="display-4 fw-bold text-white mb-3">Course Detail</h1>
+            <h1 class="display-4 fw-bold text-white mb-3">{{ custom_trans('Course detail', 'front') }}</h1>
             <div class="d-flex justify-content-center mb-2">
                 <span class="course-label px-4 py-2 rounded-pill bg-white text-dark fw-semibold shadow">
-                    <a href="{{ route('home', 'front') }}" class="text-dark text-decoration-none hover-primary">Home</a>
+                    <a href="{{ route('home', 'front') }}"
+                        class="text-dark text-decoration-none hover-primary">{{ custom_trans('home', 'front') }}</a>
                     &nbsp;|&nbsp;
-                    Course Details
+                    {{ custom_trans('Course details', 'front') }}
                 </span>
             </div>
         </div>
@@ -40,7 +41,7 @@
                     <img src="{{ $course->image_url }}" class="img-fluid rounded-4 mb-4"
                         alt="{{ $course->localized_name }}">
                     <div class="what-learn-box p-4 rounded-4 border">
-                        <h5 class="fw-bold mb-3">What learn</h5>
+                        <h5 class="fw-bold mb-3">{{ custom_trans('What learn', 'front') }}</h5>
                         @php
                             $localizedLearningObjectives = \App\Helpers\TranslationHelper::getLocalizedArray(
                                 $course->what_to_learn,
@@ -65,7 +66,7 @@
                         @else
                             <div class="text-center text-muted py-3">
                                 <i class="fas fa-info-circle fa-2x mb-2"></i>
-                                <p class="mb-0">Not Found</p>
+                                <p class="mb-0">{{ custom_trans('Not Found', 'front') }}</p>
                             </div>
                         @endif
                     </div>
@@ -79,18 +80,18 @@
                                 <i class="fas fa-info-circle me-2"></i>{{ custom_trans('Not Found', 'front') }}
                             </div>
                         @endif
-                        <h4 class="fw-bold mb-3">Description</h4>
+                        <h4 class="fw-bold mb-3">{{ custom_trans('Description', 'front') }}</h4>
                         @if (!empty($course->localized_description))
                             <div class="mb-4" @if (\App\Helpers\TranslationHelper::getFrontendLanguage()->code === 'ar') dir="rtl" @endif>
                                 {!! $course->localized_description !!}
                             </div>
                         @else
                             <div class="mb-4 text-muted">
-                                <i class="fas fa-info-circle me-2"></i>Not Found
+                                <i class="fas fa-info-circle me-2"></i>{{ custom_trans('Not Found', 'front') }}
                             </div>
                         @endif
                         <!-- FAQ Section -->
-                        <h4 class="fw-bold mb-4">Frequently Asked Questions</h4>
+                        <h4 class="fw-bold mb-4">{{ custom_trans('Frequently Asked Questions', 'front') }}</h4>
                         @php
                             $localizedFaq = \App\Helpers\TranslationHelper::getLocalizedArray(
                                 $course->faq_course,
@@ -138,16 +139,16 @@
                         @else
                             <div class="text-center text-muted py-4">
                                 <i class="fas fa-question-circle fa-2x mb-2"></i>
-                                <p class="mb-0">Not Found</p>
+                                <p class="mb-0">{{ custom_trans('Not Found', 'front') }}</p>
                             </div>
                         @endif
                         <!-- About Instructor Section -->
                         <section class="about-instructor-section mt-5">
                             <h4 class="fw-bold mb-4">
                                 @if ($course->instructors && $course->instructors->count() > 1)
-                                    About Instructors
+                                    {{ custom_trans('About Instructors', 'front') }}
                                 @else
-                                    About Instructor
+                                    {{ custom_trans('About Instructor', 'front') }}
                                 @endif
                             </h4>
                             @if ($course->instructors && $course->instructors->count() > 0)
@@ -167,11 +168,11 @@
                                         </div>
                                         <div class="col">
                                             <div class="fw-bold fs-5 mb-1 text-primary">
-                                                {{ $instructor->name ?? 'Not Found' }}</div>
+                                                {{ $instructor->name ?? custom_trans('Not Found', 'front') }}</div>
                                             <div class="text-muted mb-2 instructor-subtitle">
-                                                {{ $instructor->title ?? 'Instructor' }}</div>
+                                                {{ $instructor->title ?? custom_trans('Instructor', 'front') }}</div>
                                             <div class="text-muted instructor-desc">
-                                                {{ $instructor->bio ?? 'No bio available' }}</div>
+                                                {{ $instructor->bio ?? custom_trans('No bio available', 'front') }}</div>
                                         </div>
                                     </div>
                                 @endforeach
@@ -192,29 +193,31 @@
                                     </div>
                                     <div class="col">
                                         <div class="fw-bold fs-5 mb-1 text-primary">
-                                            {{ $course->instructor->name ?? 'Not Found' }}</div>
+                                            {{ $course->instructor->name ?? custom_trans('Not Found', 'front') }}</div>
                                         <div class="text-muted mb-2 instructor-subtitle">
-                                            {{ $course->instructor->title ?? 'Not Found' }}</div>
+                                            {{ $course->instructor->title ?? custom_trans('Not Found', 'front') }}</div>
                                         <div class="text-muted instructor-desc">
-                                            {{ $course->instructor->bio ?? 'Not Found' }}</div>
+                                            {{ $course->instructor->bio ?? custom_trans('Not Found', 'front') }}</div>
                                     </div>
                                 </div>
                             @else
                                 <div class="text-center text-muted py-4">
                                     <i class="fas fa-user-tie fa-2x mb-2"></i>
-                                    <p class="mb-0">No instructor assigned</p>
+                                    <p class="mb-0">{{ custom_trans('No instructor assigned', 'front') }}</p>
                                 </div>
                             @endif
                         </section>
                         <!-- Student Feedback Section -->
                         <section class="student-feedback-section mt-5">
-                            <h4 class="fw-bold mb-4">Student Feedback</h4>
+                            <h4 class="fw-bold mb-4">{{ custom_trans('Student Feedback', 'front') }}</h4>
                             @if ($course->ratings && $course->ratings->count() > 0)
                                 <div class="row align-items-center g-4">
                                     <div class="col-auto text-center">
                                         <div class="display-4 fw-bold mb-0 feedback-rating">
                                             {{ number_format($course->average_rating ?? 0, 1) }}</div>
-                                        <div class="text-muted feedback-rating-label">Course Rating</div>
+                                        <div class="text-muted feedback-rating-label">
+                                            {{ custom_trans('Course Rating', 'front') }}
+                                        </div>
                                     </div>
                                     <div class="col">
                                         @for ($i = 5; $i >= 1; $i--)
@@ -241,19 +244,57 @@
                             @else
                                 <div class="text-center text-muted py-4">
                                     <i class="fas fa-star fa-2x mb-2"></i>
-                                    <p class="mb-0">Not Found</p>
+                                    <p class="mb-0">{{ custom_trans('Not Found', 'front') }}</p>
                                 </div>
                             @endif
                         </section>
                         <hr class="my-5">
                         <!-- Reviews Section -->
                         <section class="reviews-section mb-5">
-                            <h4 class="fw-bold mb-4">Reviews</h4>
+                            <h4 class="fw-bold mb-4">{{ custom_trans('Reviews', 'front') }}</h4>
+
+                            @if ($course->ratings && $course->ratings->count() > 0)
+                                <div class="mb-4">
+                                    @foreach ($course->ratings->take(5) as $rating)
+                                        <div class="mb-3 pb-3 border-bottom">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <div class="fw-semibold">
+                                                    {{ $rating->user->name ?? custom_trans('Student', 'front') }}
+                                                </div>
+                                                <div class="text-warning">
+                                                    @for ($i = 1; $i <= 5; $i++)
+                                                        <i
+                                                            class="fa fa-star {{ $i <= $rating->rating ? 'text-warning' : 'text-muted' }}"></i>
+                                                    @endfor
+                                                </div>
+                                            </div>
+                                            <div class="text-muted small mb-1">
+                                                {{ $rating->created_at->format('Y-m-d') }}
+                                            </div>
+                                            @if ($rating->review)
+                                                <div>{{ $rating->review }}</div>
+                                            @endif
+                                        </div>
+                                    @endforeach
+
+                                    @if ($course->ratings->count() > 5)
+                                        <div class="text-center">
+                                            <a href="#" onclick="event.preventDefault(); window.location.reload();"
+                                                class="text-decoration-none">
+                                                {{ custom_trans('View all reviews', 'front') }}
+                                            </a>
+                                        </div>
+                                    @endif
+                                </div>
+                            @endif
+
                             <div class="review-stars-list mb-3">
                                 @php $categories = ['learn', 'price', 'value']; @endphp
                                 @foreach ($categories as $cat)
                                     <div class="row align-items-center mb-2 gx-3">
-                                        <div class="col-auto review-label text-capitalize">{{ $cat }}</div>
+                                        <div class="col-auto review-label text-capitalize">
+                                            {{ custom_trans($cat, 'front') }}
+                                        </div>
                                         <div class="col review-stars">
                                             <div class="star-rating" data-category="{{ $cat }}">
                                                 @for ($i = 1; $i <= 5; $i++)
@@ -266,11 +307,14 @@
                                 @endforeach
                             </div>
                             <div class="mb-3">
-                                <label for="reviewText" class="form-label">Write review:</label>
+                                <label for="reviewText" class="form-label">
+                                    {{ custom_trans('Write review:', 'front') }}
+                                </label>
                                 <textarea class="form-control review-textarea" id="reviewText" rows="3" placeholder=""></textarea>
                             </div>
-                            <button class="btn btn-orange px-5 py-2 fw-bold review-submit-btn"
-                                type="button">Submit</button>
+                            <button class="btn btn-orange px-5 py-2 fw-bold review-submit-btn" type="button">
+                                {{ custom_trans('submit', 'front') }}
+                            </button>
                         </section>
 
                         <!-- Q&A Section -->
@@ -280,7 +324,9 @@
                 <!-- Right Side -->
                 <div class="col-lg-4">
                     <div class="course-features-box rounded-4 shadow-sm bg-white mb-4">
-                        <div class="course-features-header p-3 rounded-top-4 text-white fw-bold">Course Features</div>
+                        <div class="course-features-header p-3 rounded-top-4 text-white fw-bold">
+                            {{ custom_trans('Course Features', 'front') }}
+                        </div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item d-flex align-items-center justify-content-between">
                                 <span class="fs-5 text-orange fw-bold">
@@ -335,10 +381,19 @@
                                     <a href="{{ route('courses.learn', $course->id) }}"
                                         class="btn btn-orange w-100 fw-bold mb-3">{{ custom_trans('go_to_course', 'front') }}</a>
                                 @else
-                                    <button class="btn btn-orange w-100 fw-bold mb-3 enroll-btn"
-                                        data-course-id="{{ $course->id }}">
-                                        <i class="fas fa-graduation-cap me-2"></i>{{ custom_trans('enroll_now', 'front') }}
-                                    </button>
+                                    @if ($course->price > 0)
+                                        <button class="btn btn-orange w-100 fw-bold mb-3 detail-enroll-btn"
+                                            data-course-id="{{ $course->id }}" data-enroll-type="paid">
+                                            <i
+                                                class="fas fa-graduation-cap me-2"></i>{{ custom_trans('enroll_now', 'front') }}
+                                        </button>
+                                    @else
+                                        <button class="btn btn-orange w-100 fw-bold mb-3 detail-enroll-btn"
+                                            data-course-id="{{ $course->id }}" data-enroll-type="free">
+                                            <i
+                                                class="fas fa-graduation-cap me-2"></i>{{ custom_trans('enroll_now', 'front') }}
+                                        </button>
+                                    @endif
                                 @endif
                             @else
                                 <a href="{{ route('login', 'front') }}" class="btn btn-orange w-100 fw-bold mb-3">
@@ -412,12 +467,12 @@
                     @if ($course->preview_video_embed_url)
                         <div class="course-preview-video rounded-4 shadow-sm bg-white mb-4">
                             <div class="video-header p-3 rounded-top-4 text-white fw-bold">
-                                <i class="fa fa-play-circle me-2"></i>Course Preview
+                                <i class="fa fa-play-circle me-2"></i>{{ custom_trans('Course Preview', 'front') }}
                             </div>
                             <div class="video-container">
                                 <div class="ratio ratio-16x9">
-                                    <iframe src="{{ $course->preview_video_embed_url }}" title="Course Preview Video"
-                                        frameborder="0"
+                                    <iframe src="{{ $course->preview_video_embed_url }}"
+                                        title="{{ custom_trans('Course Preview Video', 'front') }}" frameborder="0"
                                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                         allowfullscreen>
                                     </iframe>
@@ -429,11 +484,39 @@
             </div>
         </div>
     </section>
+
+    {{-- Add-to-cart success modal --}}
+    <div class="modal fade" id="cartSuccessModal" tabindex="-1" aria-labelledby="cartSuccessModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold" id="cartSuccessModalLabel">
+                        {{ custom_trans('Course added to cart', 'front') }}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-0">
+                        {{ custom_trans('You can continue shopping or proceed to checkout to complete your purchase.', 'front') }}
+                    </p>
+                </div>
+                <div class="modal-footer border-0 d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        {{ custom_trans('Continue shopping', 'front') }}
+                    </button>
+                    <a href="{{ route('checkout.index') }}" class="btn btn-orange fw-bold">
+                        {{ custom_trans('Go to checkout', 'front') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
     <script>
-        // Interactive Star Rating System (copied from HTML)
+        // Interactive Star Rating System + enroll/cart/review handlers
         document.addEventListener('DOMContentLoaded', function() {
             const starRatings = document.querySelectorAll('.star-rating');
             const ratings = {}; // Store ratings for each category
@@ -614,6 +697,175 @@
                         toast.remove();
                     }, 300);
                 }, 3000);
+            }
+
+            // Submit review functionality
+            const reviewSubmitBtn = document.querySelector('.review-submit-btn');
+            const reviewTextarea = document.querySelector('.review-textarea');
+
+            if (reviewSubmitBtn) {
+                reviewSubmitBtn.addEventListener('click', async function() {
+                    const hasAnyRating = (ratings.learn || ratings.price || ratings.value);
+
+                    if (!hasAnyRating) {
+                        showToast(
+                            '{{ custom_trans('Please select a star rating before submitting your review.', 'front') }}',
+                            'info');
+                        return;
+                    }
+
+                    const reviewText = reviewTextarea ? reviewTextarea.value.trim() : '';
+
+                    try {
+                        const response = await fetch(
+                            '{{ route('courses.review.store', $course->id) }}', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Accept': 'application/json',
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                },
+                                body: JSON.stringify({
+                                    review: reviewText,
+                                    content_quality: ratings.learn || null,
+                                    value_for_money: ratings.price || null,
+                                    course_material: ratings.value || null,
+                                }),
+                            });
+
+                        const data = await response.json();
+
+                        if (!response.ok || !data.success) {
+                            const message = data.message ||
+                                '{{ custom_trans('Unable to submit review. Please try again.', 'front') }}';
+                            showToast(message, 'info');
+                            return;
+                        }
+
+                        // Clear local selections for this course
+                        ['learn', 'price', 'value'].forEach(cat => {
+                            localStorage.removeItem(`rating_${cat}`);
+                        });
+
+                        if (reviewTextarea) {
+                            reviewTextarea.value = '';
+                        }
+
+                        showToast('{{ custom_trans('Review submitted successfully!', 'front') }}',
+                            'success');
+
+                        // Optionally, reload to show updated ratings/reviews
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1200);
+                    } catch (error) {
+                        console.error('Review submit error:', error);
+                        showToast(
+                            '{{ custom_trans('An unexpected error occurred. Please try again later.', 'front') }}',
+                            'info');
+                    }
+                });
+            }
+
+            // Enroll button logic (paid -> cart + modal, free -> direct enroll) - detail page only
+            const enrollBtn = document.querySelector('.detail-enroll-btn');
+            if (enrollBtn) {
+                enrollBtn.addEventListener('click', async function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const enrollType = this.dataset.enrollType;
+                    const courseId = this.dataset.courseId;
+
+                    if (!courseId) {
+                        return;
+                    }
+
+                    if (enrollType === 'free') {
+                        // Direct enrollment via JSON
+                        try {
+                            const response = await fetch(
+                                '{{ route('courses.enroll', $course->id) }}', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'Accept': 'application/json',
+                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                    },
+                                    body: JSON.stringify({}),
+                                });
+
+                            const data = await response.json();
+
+                            if (data.success) {
+                                showToast('{{ custom_trans('Enrolled successfully!', 'front') }}',
+                                    'success');
+                                setTimeout(() => {
+                                    window.location.href =
+                                        '{{ route('courses.learn', $course->id) }}';
+                                }, 1000);
+                            } else {
+                                showToast(data.message ||
+                                    '{{ custom_trans('Unable to enroll in this course.', 'front') }}',
+                                    'info');
+                            }
+                        } catch (error) {
+                            console.error('Free enroll error:', error);
+                            showToast(
+                                '{{ custom_trans('An unexpected error occurred. Please try again later.', 'front') }}',
+                                'info');
+                        }
+
+                        return;
+                    }
+
+                    // Paid course: add to cart via AJAX and show modal
+                    try {
+                        console.log('Adding paid course to cart, course ID:', courseId);
+
+                        const response = await fetch('{{ route('cart.add', $course->id) }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            },
+                            body: JSON.stringify({}),
+                        });
+
+                        console.log('Cart add response status:', response.status);
+                        const data = await response.json();
+                        console.log('Cart add response data:', data);
+
+                        if (!data.success) {
+                            showToast(data.message ||
+                                '{{ custom_trans('Unable to add course to cart.', 'front') }}',
+                                'info');
+                            return;
+                        }
+
+                        // Show modal
+                        const modalElement = document.getElementById('cartSuccessModal');
+                        console.log('Modal element found:', !!modalElement);
+
+                        if (modalElement && typeof bootstrap !== 'undefined') {
+                            const modal = new bootstrap.Modal(modalElement);
+                            modal.show();
+                            console.log('Modal shown successfully');
+                        } else {
+                            // Fallback if Bootstrap JS not available
+                            console.log('Bootstrap not available or modal not found, showing toast');
+                            showToast(
+                                '{{ custom_trans('Course added to cart successfully.', 'front') }}',
+                                'success');
+                        }
+                    } catch (error) {
+                        console.error('Add to cart error:', error);
+                        showToast(
+                            '{{ custom_trans('An unexpected error occurred. Please try again later.', 'front') }}',
+                            'info');
+                    }
+                });
             }
 
             // Share functionality

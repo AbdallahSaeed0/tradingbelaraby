@@ -104,7 +104,9 @@
                         <i class="fa fa-graduation-cap me-1"></i>Go to Course
                     </a>
                 @else
-                    <button class="btn btn-orange flex-fill enroll-btn" data-course-id="{{ $course->id }}">
+                    <button class="btn btn-orange flex-fill enroll-btn"
+                        data-course-id="{{ $course->id }}"
+                        data-enroll-type="{{ $course->price > 0 ? 'paid' : 'free' }}">
                         <i class="fa fa-graduation-cap me-1"></i>Enroll
                     </button>
                 @endif
