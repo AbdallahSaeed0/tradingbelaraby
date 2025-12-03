@@ -41,7 +41,7 @@ class CheckoutController extends Controller
     /**
      * Process the checkout
      */
-    public function process(Request $request)
+    public function process(Request $request, TabbyService $tabbyService)
     {
         $request->validate([
             'first_name' => 'required|string|max:255',
@@ -53,7 +53,7 @@ class CheckoutController extends Controller
             'state' => 'required|string|max:255',
             'postal_code' => 'required|string|max:20',
             'country' => 'required|string|max:255',
-            'payment_method' => 'required|in:visa,free',
+            'payment_method' => 'required|in:visa,free,tabby',
         ]);
 
         $user = Auth::user();
@@ -79,7 +79,7 @@ class CheckoutController extends Controller
             return back()->withErrors(['payment_method' => 'Free enrollment is only available for free courses']);
         }
 
-        if ($request->payment_method === 'visa' && $allFree) {
+        if (($request->payment_method === 'visa' || $request->payment_method === 'tabby') && $allFree) {
             return back()->withErrors(['payment_method' => 'Free courses do not require payment']);
         }
 
@@ -113,10 +113,28 @@ class CheckoutController extends Controller
                     'price' => $cartItem->course->price,
                 ]);
 
-                // Enroll user in course
+                // Enroll user in course (pending for Tabby)
+                $enrollmentStatus = ($request->payment_method === 'free') ? 'active' : 'active'; // Default active for visa placeholder?
+                // Actually, for Tabby we want to defer 'active' status or use 'pending' if system supports it.
+                // Assuming system doesn't have 'pending' status logic fully built, we might just not create enrollment yet or create as active?
+                // The prompt says "Our app stores Tabby IDs and statuses against the order."
+                // "Order... can be a DB table... status..."
+                // CourseEnrollment has status.
+                // Let's set it to 'pending' if Tabby.
+
+                if ($request->payment_method === 'tabby') {
+                    // Check if 'pending' is a valid status enum for enrollment?
+                    // CourseEnrollment.php doesn't define enum but uses strings.
+                    // Assuming 'pending' is safe.
+                    // But if the user can access course if record exists, we must be careful.
+                    // CourseEnrollment::scopeActive uses 'active'.
+                    // So 'pending' should be safe (user won't see course).
+                    $enrollmentStatus = 'pending';
+                }
+
                 $user->enrollments()->create([
                     'course_id' => $cartItem->course_id,
-                    'status' => 'active',
+                    'status' => $enrollmentStatus,
                     'enrolled_at' => now(),
                     'progress_percentage' => 0,
                 ]);
@@ -130,6 +148,51 @@ class CheckoutController extends Controller
             if ($request->payment_method === 'free') {
                 return redirect()->route('checkout.success', $order->id)
                     ->with('success', 'Courses enrolled successfully!');
+            } elseif ($request->payment_method === 'tabby') {
+                // Prepare data for Tabby
+                $items = $cartItems->map(function ($item) {
+                     return [
+                         'id' => $item->course_id,
+                         'title' => $item->course->name,
+                         'quantity' => 1,
+                         'unit_price' => $item->course->price,
+                     ];
+                })->toArray();
+
+                $customer = [
+                    'name' => $request->first_name . ' ' . $request->last_name,
+                    'phone' => $request->phone,
+                    'email' => $request->email,
+                ];
+
+                $shippingAddress = [
+                    'city' => $request->city,
+                    'address' => $request->address,
+                    'zip' => $request->postal_code,
+                ];
+
+                try {
+                    $session = $tabbyService->createCheckoutSession($order, $items, $customer, $shippingAddress);
+
+                    // Find web_url
+                    $webUrl = $session['configuration']['available_products']['installments'][0]['web_url'] ?? null;
+                    if (!$webUrl) {
+                        // Try alternative path
+                        $webUrl = $session['configuration']['available_products']['pay_later'][0]['web_url'] ?? null;
+                    }
+
+                    if ($webUrl) {
+                         return redirect()->away($webUrl);
+                    }
+
+                    throw new \Exception('Tabby payment URL not found in response.');
+
+                } catch (\Exception $e) {
+                    // Log error and redirect back
+                    Log::error('Tabby Checkout Error: ' . $e->getMessage());
+                    return redirect()->route('checkout.index')->with('error', 'Unable to initiate Tabby payment: ' . $e->getMessage());
+                }
+
             } else {
                 // For Visa payment, redirect to payment gateway (placeholder)
                 return redirect()->route('checkout.payment', $order->id);
@@ -137,6 +200,7 @@ class CheckoutController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Checkout Process Error: ' . $e->getMessage());
             return back()->with('error', 'An error occurred during checkout. Please try again.');
         }
     }

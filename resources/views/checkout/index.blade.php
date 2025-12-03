@@ -176,6 +176,22 @@
                                             <i class="fab fa-cc-discover fa-2x text-muted"></i>
                                         </div>
                                     </div>
+
+                                    <!-- Tabby Payment Option -->
+                                    <div class="payment-option-card p-4 border rounded-3 position-relative">
+                                        <input type="radio" name="payment_method" value="tabby" id="tabby_payment"
+                                            class="position-absolute top-0 end-0 m-3">
+                                        <div class="payment-icon mb-3">
+                                            <img src="https://cdn.tabby.ai/assets/logo_pink.png" alt="Tabby"
+                                                style="height: 40px;">
+                                        </div>
+                                        <h5 class="fw-bold mb-2">Pay with Tabby</h5>
+                                        <p class="text-muted mb-0 small">
+                                            Split into 4 payments. No interest.</p>
+                                        <div class="selected-badge position-absolute top-0 start-0 m-2 d-none">
+                                            <i class="fas fa-check-circle text-success"></i>
+                                        </div>
+                                    </div>
                                 @endif
 
                                 @if ($allFree && $hasPaid)

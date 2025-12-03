@@ -61,10 +61,10 @@ Route::get('/language/{code}', function($code, \Illuminate\Http\Request $request
     if ($success) {
         \App\Helpers\TranslationHelper::clearCache();
     }
-    
+
     // Get the intended URL from query parameter or referrer, fallback to home
     $intendedUrl = $request->query('redirect');
-    
+
     // If no redirect parameter, try to use referrer
     if (!$intendedUrl) {
         $referer = $request->header('referer');
@@ -77,7 +77,7 @@ Route::get('/language/{code}', function($code, \Illuminate\Http\Request $request
             }
         }
     }
-    
+
     // Validate that the URL is from the same domain to prevent open redirects
     if ($intendedUrl) {
         $appUrl = config('app.url');
@@ -86,7 +86,7 @@ Route::get('/language/{code}', function($code, \Illuminate\Http\Request $request
             return redirect($intendedUrl);
         }
     }
-    
+
     // Fallback to home if no valid redirect URL
     return redirect()->route('home');
 })->name('language.switch');
@@ -202,6 +202,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
     Route::get('/checkout/payment', [CheckoutController::class, 'payment'])->name('checkout.payment');
     Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
+
+    // Tabby Payment Routes
+    Route::get('/tabby/success', [App\Http\Controllers\TabbyController::class, 'success'])->name('tabby.success');
+    Route::get('/tabby/cancel', [App\Http\Controllers\TabbyController::class, 'cancel'])->name('tabby.cancel');
+    Route::get('/tabby/failure', [App\Http\Controllers\TabbyController::class, 'failure'])->name('tabby.failure');
 
     // Purchase routes
     Route::get('/purchases', [PurchaseController::class, 'history'])->name('purchases.history');
