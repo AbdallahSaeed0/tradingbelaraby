@@ -47,6 +47,7 @@ class TestimonialsController extends Controller
      */
     public function store(Request $request)
     {
+        // Custom validation: content or voice is required (at least one)
         $request->validate([
             'name' => 'required|string|max:255',
             'name_ar' => 'nullable|string|max:255',
@@ -54,29 +55,73 @@ class TestimonialsController extends Controller
             'position_ar' => 'nullable|string|max:255',
             'company' => 'required|string|max:255',
             'company_ar' => 'nullable|string|max:255',
-            'content' => 'required|string',
+            'content' => 'nullable|string',
             'content_ar' => 'nullable|string',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'voice' => 'nullable|file|mimes:mp3,wav,m4a,ogg,aac,webm|max:51200',
+            'voice_url' => 'nullable|url',
             'rating' => 'required|integer|min:1|max:5',
             'order' => 'nullable|integer|min:0',
-            'is_active' => 'boolean',
+            'is_active' => 'nullable',
+        ], [
+            'content.required_without' => 'Either content or voice recording is required.',
+            'voice.required_without' => 'Either content or voice recording is required.',
         ]);
 
-        $data = $request->except('avatar');
-        $data['is_active'] = $request->has('is_active');
-
-        // Handle avatar upload
-        if ($request->hasFile('avatar')) {
-            $avatarPath = $request->file('avatar')->store('testimonials', 'public');
-            $data['avatar'] = $avatarPath;
+        // Validate that at least content or voice is provided
+        $hasContent = !empty(trim($request->content ?? '')) || !empty(trim($request->content_ar ?? ''));
+        $hasVoice = $request->hasFile('voice') || !empty(trim($request->voice_url ?? ''));
+        
+        if (!$hasContent && !$hasVoice) {
+            return response()->json([
+                'success' => false,
+                'message' => __('Either content or voice recording (file or Google Drive link) is required.'),
+                'errors' => ['content' => [__('Either content or voice recording (file or Google Drive link) is required.')]]
+            ], 422);
         }
 
-        Testimonial::create($data);
+        // If both voice file and voice_url are provided, prioritize file upload
+        if ($request->hasFile('voice') && $request->filled('voice_url')) {
+            // Clear voice_url if file is uploaded
+            $request->merge(['voice_url' => null]);
+        }
 
-        return response()->json([
-            'success' => true,
-            'message' => __('Testimonial created successfully'),
-        ]);
+        try {
+            $data = $request->except(['avatar', 'voice', 'voice_url']);
+            $data['is_active'] = $request->has('is_active') ? true : false;
+
+            // Handle avatar upload
+            if ($request->hasFile('avatar')) {
+                $avatarPath = $request->file('avatar')->store('testimonials', 'public');
+                $data['avatar'] = $avatarPath;
+            }
+
+            // Handle voice upload (file)
+            if ($request->hasFile('voice')) {
+                $voicePath = $request->file('voice')->store('testimonials/voices', 'public');
+                $data['voice'] = $voicePath;
+            }
+
+            // Handle voice URL (Google Drive link)
+            if ($request->filled('voice_url')) {
+                $data['voice_url'] = $request->voice_url;
+            }
+
+            $testimonial = Testimonial::create($data);
+
+            return response()->json([
+                'success' => true,
+                'message' => __('Testimonial created successfully'),
+                'testimonial' => $testimonial
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Testimonial creation error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => __('An error occurred while creating the testimonial: ') . $e->getMessage(),
+                'errors' => ['general' => [$e->getMessage()]]
+            ], 500);
+        }
     }
 
     /**
@@ -91,16 +136,31 @@ class TestimonialsController extends Controller
             'position_ar' => 'nullable|string|max:255',
             'company' => 'required|string|max:255',
             'company_ar' => 'nullable|string|max:255',
-            'content' => 'required|string',
+            'content' => 'nullable|string',
             'content_ar' => 'nullable|string',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'voice' => 'nullable|file|mimes:mp3,wav,m4a,ogg,aac,webm|max:51200',
+            'voice_url' => 'nullable|url',
             'rating' => 'required|integer|min:1|max:5',
             'order' => 'nullable|integer|min:0',
-            'is_active' => 'boolean',
+            'is_active' => 'nullable',
+            'remove_voice' => 'nullable|boolean',
         ]);
 
-        $data = $request->except('avatar');
-        $data['is_active'] = $request->has('is_active');
+        // Validate that at least content or voice is provided (unless removing voice and keeping existing content)
+        $willHaveContent = !empty(trim($request->content ?? '')) || !empty(trim($request->content_ar ?? '')) || (!empty(trim($testimonial->content ?? '')) || !empty(trim($testimonial->content_ar ?? '')));
+        $willHaveVoice = $request->hasFile('voice') || !empty(trim($request->voice_url ?? '')) || ($testimonial->voice && !$request->has('remove_voice')) || ($testimonial->voice_url && !$request->has('remove_voice'));
+
+        if (!$willHaveContent && !$willHaveVoice) {
+            return response()->json([
+                'success' => false,
+                'message' => __('Either content or voice recording is required.'),
+                'errors' => ['content' => [__('Either content or voice recording is required.')]]
+            ], 422);
+        }
+
+        $data = $request->except(['avatar', 'voice', 'voice_url', 'remove_voice']);
+        $data['is_active'] = $request->has('is_active') ? true : false;
 
         // Handle avatar upload
         if ($request->hasFile('avatar')) {
@@ -111,6 +171,38 @@ class TestimonialsController extends Controller
 
             $avatarPath = $request->file('avatar')->store('testimonials', 'public');
             $data['avatar'] = $avatarPath;
+        }
+
+        // Handle voice upload (file)
+        if ($request->hasFile('voice')) {
+            // Delete old voice file
+            if ($testimonial->voice) {
+                Storage::disk('public')->delete($testimonial->voice);
+            }
+            // Also clear voice_url if uploading a new file
+            $data['voice_url'] = null;
+
+            $voicePath = $request->file('voice')->store('testimonials/voices', 'public');
+            $data['voice'] = $voicePath;
+        }
+
+        // Handle voice URL (Google Drive link)
+        if ($request->filled('voice_url')) {
+            // Delete old voice file if switching to URL
+            if ($testimonial->voice) {
+                Storage::disk('public')->delete($testimonial->voice);
+            }
+            $data['voice'] = null;
+            $data['voice_url'] = $request->voice_url;
+        }
+
+        // Handle voice removal
+        if ($request->has('remove_voice') && $request->remove_voice) {
+            if ($testimonial->voice) {
+                Storage::disk('public')->delete($testimonial->voice);
+            }
+            $data['voice'] = null;
+            $data['voice_url'] = null;
         }
 
         $testimonial->update($data);
@@ -129,6 +221,11 @@ class TestimonialsController extends Controller
         // Delete avatar file
         if ($testimonial->avatar) {
             Storage::disk('public')->delete($testimonial->avatar);
+        }
+
+        // Delete voice file
+        if ($testimonial->voice) {
+            Storage::disk('public')->delete($testimonial->voice);
         }
 
         $testimonial->delete();
@@ -197,10 +294,13 @@ class TestimonialsController extends Controller
                 $message = __('Testimonials deactivated successfully');
                 break;
             case 'delete':
-                // Delete avatar files
+                // Delete avatar and voice files
                 $testimonials->get()->each(function($testimonial) {
                     if ($testimonial->avatar) {
                         Storage::disk('public')->delete($testimonial->avatar);
+                    }
+                    if ($testimonial->voice) {
+                        Storage::disk('public')->delete($testimonial->voice);
                     }
                 });
                 $testimonials->delete();

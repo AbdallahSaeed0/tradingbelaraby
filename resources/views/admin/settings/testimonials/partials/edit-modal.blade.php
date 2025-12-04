@@ -59,8 +59,9 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="edit_content" class="form-label">{{ custom_trans('Content', 'admin') }} *</label>
-                                <textarea class="form-control" id="edit_content" name="content" rows="4" required></textarea>
+                                <label for="edit_content" class="form-label">{{ custom_trans('Content', 'admin') }}</label>
+                                <textarea class="form-control" id="edit_content" name="content" rows="4"></textarea>
+                                <small class="text-muted">{{ custom_trans('Either content or voice recording is required', 'admin') }}</small>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -102,6 +103,40 @@
                         <label class="form-label">{{ custom_trans('Current Avatar', 'admin') }}</label>
                         <div id="edit_current_avatar"></div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label for="edit_voice" class="form-label">{{ custom_trans('Voice Recording', 'admin') }}</label>
+                                <div class="mb-2">
+                                    <label class="form-label small">{{ custom_trans('Upload Audio File', 'admin') }}</label>
+                                    <input type="file" class="form-control" id="edit_voice" name="voice"
+                                        accept="audio/*">
+                                    <small class="text-muted">{{ custom_trans('Upload an audio testimonial (MP3, WAV, M4A, OGG, AAC, WebM - Max 50MB)', 'admin') }}</small>
+                                </div>
+                                <div class="text-center my-2">
+                                    <strong class="text-muted">{{ custom_trans('OR', 'admin') }}</strong>
+                                </div>
+                                <div>
+                                    <label class="form-label small">{{ custom_trans('Google Drive Link', 'admin') }}</label>
+                                    <input type="url" class="form-control" id="edit_voice_url" name="voice_url"
+                                        placeholder="https://drive.google.com/file/d/...">
+                                    <small class="text-muted">{{ custom_trans('Paste a Google Drive share link for the audio file', 'admin') }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3" id="edit_current_voice_container" style="display: none;">
+                        <label class="form-label">{{ custom_trans('Current Voice Recording', 'admin') }}</label>
+                        <div class="d-flex align-items-center gap-3">
+                            <audio id="edit_current_voice_player" controls class="flex-grow-1"></audio>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="edit_remove_voice" name="remove_voice" value="1">
+                                <label class="form-check-label text-danger" for="edit_remove_voice">
+                                    <i class="fas fa-trash me-1"></i>{{ custom_trans('Remove', 'admin') }}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
                     <div class="mb-3">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="edit_is_active" name="is_active">
@@ -123,61 +158,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    $(document).ready(function() {
-        // Edit testimonial form submission
-        $('#editTestimonialForm').on('submit', function(e) {
-            e.preventDefault();
-
-            const testimonialId = $('#edit_testimonial_id').val();
-            const formData = new FormData(this);
-            const submitBtn = $(this).find('button[type="submit"]');
-            const originalText = submitBtn.html();
-
-            // Disable button and show loading
-            submitBtn.prop('disabled', true).html(
-                '<i class="fas fa-spinner fa-spin me-2"></i>{{ custom_trans('Updating...', 'admin') }}');
-
-            $.ajax({
-                url: `/admin/settings/testimonials/${testimonialId}`,
-                method: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    if (response.success) {
-                        toastr.success(response.message);
-                        $('#editTestimonialModal').modal('hide');
-                        setTimeout(function() {
-                            location.reload();
-                        }, 1500);
-                    } else {
-                        if (response.errors) {
-                            Object.keys(response.errors).forEach(function(key) {
-                                toastr.error(response.errors[key][0]);
-                            });
-                        } else {
-                            toastr.error(response.message);
-                        }
-                    }
-                },
-                error: function(xhr) {
-                    if (xhr.responseJSON && xhr.responseJSON.errors) {
-                        Object.keys(xhr.responseJSON.errors).forEach(function(key) {
-                            toastr.error(xhr.responseJSON.errors[key][0]);
-                        });
-                    } else {
-                        toastr.error(
-                            '{{ custom_trans('An error occurred while updating the testimonial', 'admin') }}'
-                            );
-                    }
-                },
-                complete: function() {
-                    // Re-enable button and restore original text
-                    submitBtn.prop('disabled', false).html(originalText);
-                }
-            });
-        });
-    });
-</script>

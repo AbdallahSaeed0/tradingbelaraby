@@ -128,16 +128,16 @@
                                                 {{ custom_trans('featured', 'front') }}
                                             </span>
                                         @endif
-                                        <div class="position-absolute top-0 end-0 m-2">
+                                        <div class="position-absolute top-0 end-0 m-2 d-flex flex-column align-items-end gap-1">
                                             @if ($course->price > 0)
-                                                <span
-                                                    class="badge bg-info text-white">{{ number_format($course->price, 2) }}
-                                                    SAR</span>
                                                 @if ($course->original_price > $course->price)
-                                                    <small class="text-decoration-line-through text-muted d-block">
+                                                    <span class="badge bg-secondary text-white text-decoration-line-through" style="font-size: 0.7rem; opacity: 0.8;">
                                                         {{ number_format($course->original_price, 2) }} SAR
-                                                    </small>
+                                                    </span>
                                                 @endif
+                                                <span class="badge bg-info text-white fw-bold">
+                                                    {{ number_format($course->price, 2) }} SAR
+                                                </span>
                                             @else
                                                 <span class="badge bg-success">{{ custom_trans('free', 'front') }}</span>
                                             @endif

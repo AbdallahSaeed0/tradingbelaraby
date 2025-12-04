@@ -325,6 +325,11 @@
                             <iframe id="vimeoIframe" frameborder="0" allowfullscreen></iframe>
                         </div>
 
+                        <!-- Google Drive Embed -->
+                        <div class="ratio ratio-16x9 d-none-initially" id="googleDrivePlayer">
+                            <iframe id="googleDriveIframe" frameborder="0" allowfullscreen allow="autoplay"></iframe>
+                        </div>
+
                         <!-- File Download for other file types -->
                         <div id="fileDownload" class="file-download-section d-none-initially">
                             <i class="fa fa-file fa-3x text-primary mb-3"></i>
@@ -943,6 +948,7 @@
                         document.getElementById('html5VideoContainer').style.display = 'none';
                         document.getElementById('youtubePlayer').style.display = 'none';
                         document.getElementById('vimeoPlayer').style.display = 'none';
+                        document.getElementById('googleDrivePlayer').style.display = 'none';
                         document.getElementById('fileDownload').style.display = 'none';
 
                         // Determine video type and show appropriate player
@@ -950,6 +956,8 @@
                             showYouTubeVideo(videoSrc);
                         } else if (isVimeoUrl(videoSrc)) {
                             showVimeoVideo(videoSrc);
+                        } else if (isGoogleDriveUrl(videoSrc)) {
+                            showGoogleDriveVideo(videoSrc);
                         } else if (isVideoFile(videoSrc)) {
                             showHTML5Video(videoSrc);
                         } else {
@@ -978,6 +986,10 @@
                 return url.includes('vimeo.com');
             }
 
+            function isGoogleDriveUrl(url) {
+                return url.includes('drive.google.com');
+            }
+
             function isVideoFile(url) {
                 const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi'];
                 return videoExtensions.some(ext => url.toLowerCase().includes(ext));
@@ -997,6 +1009,45 @@
 
                 document.getElementById('vimeoIframe').src = embedUrl;
                 document.getElementById('vimeoPlayer').style.display = 'block';
+            }
+
+            function showGoogleDriveVideo(url) {
+                const embedUrl = convertGoogleDriveUrl(url);
+
+                document.getElementById('googleDriveIframe').src = embedUrl;
+                document.getElementById('googleDrivePlayer').style.display = 'block';
+            }
+
+            function convertGoogleDriveUrl(url) {
+                // If already in preview format, return as is
+                if (url.includes('/preview')) {
+                    return url;
+                }
+
+                let fileId = null;
+
+                // Pattern 1: /file/d/{FILE_ID}/
+                const pattern1 = /\/file\/d\/([a-zA-Z0-9_-]+)/;
+                const match1 = url.match(pattern1);
+                if (match1) {
+                    fileId = match1[1];
+                }
+
+                // Pattern 2: ?id={FILE_ID} or &id={FILE_ID}
+                if (!fileId) {
+                    const pattern2 = /[?&]id=([a-zA-Z0-9_-]+)/;
+                    const match2 = url.match(pattern2);
+                    if (match2) {
+                        fileId = match2[1];
+                    }
+                }
+
+                if (fileId) {
+                    return `https://drive.google.com/file/d/${fileId}/preview`;
+                }
+
+                // Return original URL if pattern not recognized
+                return url;
             }
 
             function showHTML5Video(url) {
@@ -1118,11 +1169,13 @@
                 // Clear iframe sources to stop embedded videos
                 document.getElementById('youtubeIframe').src = '';
                 document.getElementById('vimeoIframe').src = '';
+                document.getElementById('googleDriveIframe').src = '';
 
                 // Hide all players
                 document.getElementById('html5VideoContainer').style.display = 'none';
                 document.getElementById('youtubePlayer').style.display = 'none';
                 document.getElementById('vimeoPlayer').style.display = 'none';
+                document.getElementById('googleDrivePlayer').style.display = 'none';
                 document.getElementById('fileDownload').style.display = 'none';
             });
 

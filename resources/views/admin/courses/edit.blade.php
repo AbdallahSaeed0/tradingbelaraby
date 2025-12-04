@@ -159,21 +159,38 @@
                                     <div class="text-danger small">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="price" class="form-label">Price (SAR)</label>
+                            <div class="col-md-4 mb-3">
+                                <label for="original_price" class="form-label">Original Price (SAR)</label>
+                                <input type="number" class="form-control" id="original_price" name="original_price" step="0.01"
+                                    min="0" value="{{ old('original_price', $course->original_price) }}" placeholder="0.00">
+                                <small class="text-muted">Main price before any discount</small>
+                                @error('original_price')
+                                    <div class="text-danger small">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="price" class="form-label">Discount Price (SAR) <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control" id="price" name="price" step="0.01"
                                     min="0" value="{{ old('price', $course->price) }}" required>
+                                <small class="text-muted">Current selling price (set to 0 for free course)</small>
                                 @error('price')
                                     <div class="text-danger small">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-4 mb-3">
                                 <label for="duration" class="form-label">Duration</label>
                                 <input type="text" class="form-control" id="duration" name="duration"
                                     value="{{ old('duration', $course->duration) }}" placeholder="e.g., 8 weeks, 40 hours">
                                 @error('duration')
                                     <div class="text-danger small">{{ $message }}</div>
                                 @enderror
+                            </div>
+                            <div class="col-md-12 mb-3" id="discount_preview" style="display: none;">
+                                <div class="alert alert-info mb-0">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <strong>Discount Preview:</strong>
+                                    <span id="discount_preview_text"></span>
+                                </div>
                             </div>
                             <div class="col-md-12 mb-3">
                                 <label for="preview_video_url" class="form-label">Preview Video URL
@@ -322,8 +339,9 @@
                                                                             class="form-control form-control-sm lecture-link"
                                                                             name="lectures[{{ $lecture->id }}][video_url]"
                                                                             value="{{ $lecture->video_url }}"
-                                                                            placeholder="Video URL (YouTube, Vimeo, etc.)"
+                                                                            placeholder="Video URL (YouTube, Vimeo, Google Drive)"
                                                                             {{ $lecture->content_type == 'video' ? 'required' : '' }}>
+                                                                        <small class="text-muted d-block mt-1">Supports YouTube, Vimeo, and Google Drive share links</small>
                                                                     </div>
                                                                     <div class="lecture-upload-input"
                                                                         style="display: {{ $lecture->content_type == 'document' ? 'block' : 'none' }};">
@@ -740,7 +758,8 @@
                     <div class="col-md-9">
                         <div class="lecture-url-input">
                             <input type="url" class="form-control form-control-sm lecture-link"
-                                name="lectures[new][video_url]" placeholder="Video URL (YouTube, Vimeo, etc.)" required>
+                                name="lectures[new][video_url]" placeholder="Video URL (YouTube, Vimeo, Google Drive)" required>
+                            <small class="text-muted d-block mt-1">Supports YouTube, Vimeo, and Google Drive share links</small>
                         </div>
                         <div class="lecture-upload-input d-none-initially">
                             <input type="file" class="form-control form-control-sm lecture-file"
@@ -780,6 +799,33 @@
         document.addEventListener('DOMContentLoaded', function() {
             let sectionCounter = 0;
             let lectureCounter = 0;
+
+            // Discount pricing preview functionality
+            const originalPriceInput = document.getElementById('original_price');
+            const priceInput = document.getElementById('price');
+            const discountPreview = document.getElementById('discount_preview');
+            const discountPreviewText = document.getElementById('discount_preview_text');
+
+            function updateDiscountPreview() {
+                const originalPrice = parseFloat(originalPriceInput.value) || 0;
+                const discountPrice = parseFloat(priceInput.value) || 0;
+
+                if (originalPrice > 0 && discountPrice > 0 && originalPrice > discountPrice) {
+                    const discountPercent = Math.round(((originalPrice - discountPrice) / originalPrice) * 100);
+                    const savings = (originalPrice - discountPrice).toFixed(2);
+                    discountPreviewText.innerHTML = `<del class="text-muted">${originalPrice.toFixed(2)} SAR</del> → <strong class="text-success">${discountPrice.toFixed(2)} SAR</strong> (${discountPercent}% off - Save ${savings} SAR)`;
+                    discountPreview.style.display = 'block';
+                } else if (discountPrice === 0) {
+                    discountPreviewText.innerHTML = '<strong class="text-success">Free Course</strong>';
+                    discountPreview.style.display = 'block';
+                } else {
+                    discountPreview.style.display = 'none';
+                }
+            }
+
+            originalPriceInput.addEventListener('input', updateDiscountPreview);
+            priceInput.addEventListener('input', updateDiscountPreview);
+            updateDiscountPreview(); // Initial check
 
             // Image upload functionality
             const imageUploadArea = document.getElementById('imageUploadArea');

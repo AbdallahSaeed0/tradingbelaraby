@@ -57,8 +57,9 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="content" class="form-label">{{ custom_trans('Content', 'admin') }} *</label>
-                                <textarea class="form-control" id="content" name="content" rows="4" required></textarea>
+                                <label for="content" class="form-label">{{ custom_trans('Content', 'admin') }}</label>
+                                <textarea class="form-control" id="content" name="content" rows="4"></textarea>
+                                <small class="text-muted">{{ custom_trans('Either content or voice recording is required', 'admin') }}</small>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -96,6 +97,28 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label for="voice" class="form-label">{{ custom_trans('Voice Recording', 'admin') }}</label>
+                                <div class="mb-2">
+                                    <label class="form-label small">{{ custom_trans('Upload Audio File', 'admin') }}</label>
+                                    <input type="file" class="form-control" id="voice" name="voice"
+                                        accept="audio/*">
+                                    <small class="text-muted">{{ custom_trans('Upload an audio testimonial (MP3, WAV, M4A, OGG, AAC, WebM - Max 50MB)', 'admin') }}</small>
+                                </div>
+                                <div class="text-center my-2">
+                                    <strong class="text-muted">{{ custom_trans('OR', 'admin') }}</strong>
+                                </div>
+                                <div>
+                                    <label class="form-label small">{{ custom_trans('Google Drive Link', 'admin') }}</label>
+                                    <input type="url" class="form-control" id="voice_url" name="voice_url"
+                                        placeholder="https://drive.google.com/file/d/...">
+                                    <small class="text-muted">{{ custom_trans('Paste a Google Drive share link for the audio file', 'admin') }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="mb-3">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="is_active" name="is_active" checked>
@@ -117,61 +140,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    $(document).ready(function() {
-        // Add testimonial form submission
-        $('#addTestimonialForm').on('submit', function(e) {
-            e.preventDefault();
-
-            const formData = new FormData(this);
-            const submitBtn = $(this).find('button[type="submit"]');
-            const originalText = submitBtn.html();
-
-            // Disable button and show loading
-            submitBtn.prop('disabled', true).html(
-                '<i class="fas fa-spinner fa-spin me-2"></i>{{ custom_trans('Saving...', 'admin') }}');
-
-            $.ajax({
-                url: '{{ route('admin.settings.testimonials.store') }}',
-                method: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    if (response.success) {
-                        toastr.success(response.message);
-                        $('#addTestimonialModal').modal('hide');
-                        $('#addTestimonialForm')[0].reset();
-                        setTimeout(function() {
-                            location.reload();
-                        }, 1500);
-                    } else {
-                        if (response.errors) {
-                            Object.keys(response.errors).forEach(function(key) {
-                                toastr.error(response.errors[key][0]);
-                            });
-                        } else {
-                            toastr.error(response.message);
-                        }
-                    }
-                },
-                error: function(xhr) {
-                    if (xhr.responseJSON && xhr.responseJSON.errors) {
-                        Object.keys(xhr.responseJSON.errors).forEach(function(key) {
-                            toastr.error(xhr.responseJSON.errors[key][0]);
-                        });
-                    } else {
-                        toastr.error(
-                            '{{ custom_trans('An error occurred while saving the testimonial', 'admin') }}'
-                            );
-                    }
-                },
-                complete: function() {
-                    // Re-enable button and restore original text
-                    submitBtn.prop('disabled', false).html(originalText);
-                }
-            });
-        });
-    });
-</script>

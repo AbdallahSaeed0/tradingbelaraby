@@ -131,15 +131,29 @@
                                     <small class="text-muted">Click to add multiple instructors to this course</small>
                                 </div>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="price" class="form-label">Price (SAR)</label>
-                                <input type="number" class="form-control" id="price" name="price" step="0.01"
-                                    min="0" value="0" required>
+                            <div class="col-md-4 mb-3">
+                                <label for="original_price" class="form-label">Original Price (SAR)</label>
+                                <input type="number" class="form-control" id="original_price" name="original_price" step="0.01"
+                                    min="0" value="{{ old('original_price', 0) }}" placeholder="0.00">
+                                <small class="text-muted">Main price before any discount</small>
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-4 mb-3">
+                                <label for="price" class="form-label">Discount Price (SAR) <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="price" name="price" step="0.01"
+                                    min="0" value="{{ old('price', 0) }}" required>
+                                <small class="text-muted">Current selling price (set to 0 for free course)</small>
+                            </div>
+                            <div class="col-md-4 mb-3">
                                 <label for="duration" class="form-label">Duration</label>
                                 <input type="text" class="form-control" id="duration" name="duration"
-                                    placeholder="e.g., 8 weeks, 40 hours">
+                                    value="{{ old('duration') }}" placeholder="e.g., 8 weeks, 40 hours">
+                            </div>
+                            <div class="col-md-12 mb-3" id="discount_preview" style="display: none;">
+                                <div class="alert alert-info mb-0">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <strong>Discount Preview:</strong>
+                                    <span id="discount_preview_text"></span>
+                                </div>
                             </div>
                             <div class="col-md-12 mb-3">
                                 <label for="preview_video_url" class="form-label">Preview Video URL (YouTube/Vimeo)</label>
@@ -406,7 +420,8 @@
                     <div class="col-md-9">
                         <div class="lecture-url-input">
                             <input type="url" class="form-control form-control-sm lecture-link"
-                                placeholder="Video URL (YouTube, Vimeo, etc.)" required>
+                                placeholder="Video URL (YouTube, Vimeo, Google Drive)" required>
+                            <small class="text-muted d-block mt-1">Supports YouTube, Vimeo, and Google Drive share links</small>
                         </div>
                         <div class="lecture-upload-input d-none-initially">
                             <input type="file" class="form-control form-control-sm lecture-file"
@@ -444,6 +459,33 @@
         document.addEventListener('DOMContentLoaded', function() {
             let sectionCounter = 0;
             let lectureCounter = 0;
+
+            // Discount pricing preview functionality
+            const originalPriceInput = document.getElementById('original_price');
+            const priceInput = document.getElementById('price');
+            const discountPreview = document.getElementById('discount_preview');
+            const discountPreviewText = document.getElementById('discount_preview_text');
+
+            function updateDiscountPreview() {
+                const originalPrice = parseFloat(originalPriceInput.value) || 0;
+                const discountPrice = parseFloat(priceInput.value) || 0;
+
+                if (originalPrice > 0 && discountPrice > 0 && originalPrice > discountPrice) {
+                    const discountPercent = Math.round(((originalPrice - discountPrice) / originalPrice) * 100);
+                    const savings = (originalPrice - discountPrice).toFixed(2);
+                    discountPreviewText.innerHTML = `<del class="text-muted">${originalPrice.toFixed(2)} SAR</del> → <strong class="text-success">${discountPrice.toFixed(2)} SAR</strong> (${discountPercent}% off - Save ${savings} SAR)`;
+                    discountPreview.style.display = 'block';
+                } else if (discountPrice === 0) {
+                    discountPreviewText.innerHTML = '<strong class="text-success">Free Course</strong>';
+                    discountPreview.style.display = 'block';
+                } else {
+                    discountPreview.style.display = 'none';
+                }
+            }
+
+            originalPriceInput.addEventListener('input', updateDiscountPreview);
+            priceInput.addEventListener('input', updateDiscountPreview);
+            updateDiscountPreview(); // Initial check
 
             // Image upload functionality
             const imageUploadArea = document.getElementById('imageUploadArea');

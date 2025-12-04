@@ -19,6 +19,8 @@ class Testimonial extends Model
         'content',
         'content_ar',
         'avatar',
+        'voice',
+        'voice_url',
         'rating',
         'order',
         'is_active',
@@ -39,6 +41,53 @@ class Testimonial extends Model
 
         // Generate avatar from name using UI Avatars API
         return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&size=200&background=random';
+    }
+
+    /**
+     * Get voice URL for playback (either uploaded file or external URL)
+     * Note: This accessor name conflicts with the database column, so we use a different approach
+     */
+    public function getVoicePlaybackUrlAttribute()
+    {
+        // If voice_url column is set (Google Drive link), return it directly
+        if (!empty($this->attributes['voice_url'] ?? null)) {
+            return $this->attributes['voice_url'];
+        }
+        
+        // Otherwise, return the uploaded file URL
+        if (!empty($this->attributes['voice'] ?? null)) {
+            return asset('storage/' . $this->attributes['voice']);
+        }
+
+        return null;
+    }
+
+    /**
+     * Get voice file URL (only for uploaded files, not external URLs)
+     */
+    public function getVoiceFileUrlAttribute()
+    {
+        if (!empty($this->attributes['voice'] ?? null)) {
+            return asset('storage/' . $this->attributes['voice']);
+        }
+
+        return null;
+    }
+
+    /**
+     * Check if voice is from Google Drive
+     */
+    public function getIsGoogleDriveVoiceAttribute()
+    {
+        return !empty($this->attributes['voice_url'] ?? null);
+    }
+
+    /**
+     * Get the voice URL column value (for Google Drive links)
+     */
+    public function getVoiceUrlColumnAttribute()
+    {
+        return $this->attributes['voice_url'] ?? null;
     }
 
     // Scopes
@@ -70,6 +119,7 @@ class Testimonial extends Model
 
     public function getDisplayContent()
     {
-        return get_current_language_code() === 'ar' && $this->content_ar ? $this->content_ar : $this->content;
+        $content = get_current_language_code() === 'ar' && $this->content_ar ? $this->content_ar : $this->content;
+        return $content ?: null;
     }
 }

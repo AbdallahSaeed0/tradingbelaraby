@@ -205,7 +205,15 @@
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <script>
-        $(document).ready(function() {
+        // Wait for jQuery to be available
+        (function() {
+            function initTestimonials() {
+                if (typeof jQuery === 'undefined') {
+                    setTimeout(initTestimonials, 100);
+                    return;
+                }
+                
+                jQuery(document).ready(function($) {
             let selectedTestimonials = [];
 
             // Debounce function
@@ -407,6 +415,28 @@
                         '<p class="text-muted">{{ custom_trans('No avatar uploaded', 'admin') }}</p>');
                 }
 
+                // Show current voice (file or URL)
+                if (testimonial.voice || testimonial.voice_url) {
+                    $('#edit_current_voice_container').show();
+                    if (testimonial.voice_url) {
+                        // Google Drive or external URL
+                        $('#edit_current_voice_player').attr('src', testimonial.voice_url);
+                        $('#edit_voice_url').val(testimonial.voice_url);
+                    } else if (testimonial.voice) {
+                        // Uploaded file
+                        $('#edit_current_voice_player').attr('src', `/storage/${testimonial.voice}`);
+                    }
+                    $('#edit_remove_voice').prop('checked', false);
+                } else {
+                    $('#edit_current_voice_container').hide();
+                    $('#edit_current_voice_player').attr('src', '');
+                }
+
+                // Clear file inputs
+                $('#edit_voice').val('');
+                $('#edit_voice_url').val('');
+                $('#edit_avatar').val('');
+
                 $('#editTestimonialModal').modal('show');
             });
 
@@ -451,6 +481,167 @@
                     }
                 });
             }
-        });
+
+            // Add testimonial form submission
+            $('#addTestimonialForm').on('submit', function(e) {
+                e.preventDefault();
+
+                const formData = new FormData(this);
+                const submitBtn = $(this).find('button[type="submit"]');
+                const originalText = submitBtn.html();
+
+                // Debug: Log form data
+                console.log('Submitting testimonial form...');
+                for (let pair of formData.entries()) {
+                    console.log(pair[0] + ': ' + (pair[1] instanceof File ? pair[1].name : pair[1]));
+                }
+
+                // Disable button and show loading
+                submitBtn.prop('disabled', true).html(
+                    '<i class="fas fa-spinner fa-spin me-2"></i>{{ custom_trans('Saving...', 'admin') }}');
+
+                $.ajax({
+                    url: '{{ route('admin.settings.testimonials.store') }}',
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if (response.success) {
+                            toastr.success(response.message);
+                            $('#addTestimonialModal').modal('hide');
+                            $('#addTestimonialForm')[0].reset();
+                            setTimeout(function() {
+                                location.reload();
+                            }, 1500);
+                        } else {
+                            if (response.errors) {
+                                Object.keys(response.errors).forEach(function(key) {
+                                    toastr.error(response.errors[key][0]);
+                                });
+                            } else {
+                                toastr.error(response.message || '{{ custom_trans('An error occurred while saving the testimonial', 'admin') }}');
+                            }
+                            submitBtn.prop('disabled', false).html(originalText);
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error('Testimonial save error:', xhr);
+                        
+                        // Handle validation errors (422 status)
+                        if (xhr.status === 422 && xhr.responseJSON) {
+                            if (xhr.responseJSON.errors) {
+                                Object.keys(xhr.responseJSON.errors).forEach(function(key) {
+                                    toastr.error(xhr.responseJSON.errors[key][0]);
+                                });
+                            } else if (xhr.responseJSON.message) {
+                                toastr.error(xhr.responseJSON.message);
+                            }
+                        } 
+                        // Handle custom validation errors
+                        else if (xhr.responseJSON && xhr.responseJSON.message) {
+                            toastr.error(xhr.responseJSON.message);
+                        }
+                        // Handle Laravel validation errors
+                        else if (xhr.responseJSON && xhr.responseJSON.errors) {
+                            Object.keys(xhr.responseJSON.errors).forEach(function(key) {
+                                toastr.error(xhr.responseJSON.errors[key][0]);
+                            });
+                        } 
+                        else {
+                            toastr.error(
+                                '{{ custom_trans('An error occurred while saving the testimonial', 'admin') }}'
+                            );
+                        }
+                        submitBtn.prop('disabled', false).html(originalText);
+                    },
+                    complete: function() {
+                        // Re-enable button and restore original text if not already done
+                        if (!submitBtn.prop('disabled')) {
+                            submitBtn.html(originalText);
+                        }
+                    }
+                });
+            });
+
+            // Edit testimonial form submission
+            $('#editTestimonialForm').on('submit', function(e) {
+                e.preventDefault();
+
+                const testimonialId = $('#edit_testimonial_id').val();
+                const formData = new FormData(this);
+                const submitBtn = $(this).find('button[type="submit"]');
+                const originalText = submitBtn.html();
+
+                // Disable button and show loading
+                submitBtn.prop('disabled', true).html(
+                    '<i class="fas fa-spinner fa-spin me-2"></i>{{ custom_trans('Updating...', 'admin') }}');
+
+                $.ajax({
+                    url: `/admin/settings/testimonials/${testimonialId}`,
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if (response.success) {
+                            toastr.success(response.message);
+                            $('#editTestimonialModal').modal('hide');
+                            setTimeout(function() {
+                                location.reload();
+                            }, 1500);
+                        } else {
+                            if (response.errors) {
+                                Object.keys(response.errors).forEach(function(key) {
+                                    toastr.error(response.errors[key][0]);
+                                });
+                            } else {
+                                toastr.error(response.message);
+                            }
+                            submitBtn.prop('disabled', false).html(originalText);
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error('Testimonial update error:', xhr);
+                        
+                        // Handle validation errors (422 status)
+                        if (xhr.status === 422 && xhr.responseJSON) {
+                            if (xhr.responseJSON.errors) {
+                                Object.keys(xhr.responseJSON.errors).forEach(function(key) {
+                                    toastr.error(xhr.responseJSON.errors[key][0]);
+                                });
+                            } else if (xhr.responseJSON.message) {
+                                toastr.error(xhr.responseJSON.message);
+                            }
+                        } 
+                        // Handle custom validation errors
+                        else if (xhr.responseJSON && xhr.responseJSON.message) {
+                            toastr.error(xhr.responseJSON.message);
+                        }
+                        // Handle Laravel validation errors
+                        else if (xhr.responseJSON && xhr.responseJSON.errors) {
+                            Object.keys(xhr.responseJSON.errors).forEach(function(key) {
+                                toastr.error(xhr.responseJSON.errors[key][0]);
+                            });
+                        } 
+                        else {
+                            toastr.error(
+                                '{{ custom_trans('An error occurred while updating the testimonial', 'admin') }}'
+                            );
+                        }
+                        submitBtn.prop('disabled', false).html(originalText);
+                    },
+                    complete: function() {
+                        // Re-enable button and restore original text if not already done
+                        if (!submitBtn.prop('disabled')) {
+                            submitBtn.html(originalText);
+                        }
+                    }
+                });
+            });
+                });
+            }
+            initTestimonials();
+        })();
     </script>
 @endpush

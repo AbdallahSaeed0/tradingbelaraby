@@ -72,9 +72,14 @@ class CourseController extends Controller
     public function show(Course $course)
     {
         $course->load(['instructor', 'instructors', 'category', 'sections.lectures', 'ratings.user', 'publishedHomework']);
-        $relatedCourses = Course::where('category_id', $course->category_id)
+        $relatedCourses = Course::published()
+            ->where('category_id', $course->category_id)
             ->where('id', '!=', $course->id)
-            ->take(4)->get();
+            ->with(['category', 'instructor', 'instructors', 'ratings'])
+            ->withCount(['enrollments', 'ratings'])
+            ->latest()
+            ->take(12)
+            ->get();
         $totalStudents = $course->enrollments()->count();
         $averageRating = $course->ratings()->avg('rating');
         $totalRatings = $course->ratings()->count();

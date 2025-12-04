@@ -256,16 +256,71 @@ class CourseLecture extends Model
             // Convert YouTube URLs to embed format
             if (str_contains($this->video_url, 'youtube.com/watch')) {
                 $videoId = substr($this->video_url, strrpos($this->video_url, 'v=') + 2);
+                // Remove any additional parameters after video ID
+                if (str_contains($videoId, '&')) {
+                    $videoId = substr($videoId, 0, strpos($videoId, '&'));
+                }
+                return 'https://www.youtube.com/embed/' . $videoId;
+            }
+            // Handle YouTube short URLs (youtu.be)
+            if (str_contains($this->video_url, 'youtu.be/')) {
+                $videoId = substr($this->video_url, strrpos($this->video_url, '/') + 1);
+                // Remove any query parameters
+                if (str_contains($videoId, '?')) {
+                    $videoId = substr($videoId, 0, strpos($videoId, '?'));
+                }
                 return 'https://www.youtube.com/embed/' . $videoId;
             }
             // Convert Vimeo URLs to embed format
             if (str_contains($this->video_url, 'vimeo.com/')) {
                 $videoId = substr($this->video_url, strrpos($this->video_url, '/') + 1);
+                // Remove any query parameters
+                if (str_contains($videoId, '?')) {
+                    $videoId = substr($videoId, 0, strpos($videoId, '?'));
+                }
                 return 'https://player.vimeo.com/video/' . $videoId;
+            }
+            // Convert Google Drive URLs to embed format
+            if (str_contains($this->video_url, 'drive.google.com')) {
+                return $this->convertGoogleDriveUrl($this->video_url);
             }
             return $this->video_url;
         }
         return null;
+    }
+
+    /**
+     * Convert Google Drive URL to embeddable format
+     * Supports:
+     * - https://drive.google.com/file/d/{FILE_ID}/view
+     * - https://drive.google.com/file/d/{FILE_ID}/view?usp=sharing
+     * - https://drive.google.com/open?id={FILE_ID}
+     * - https://drive.google.com/file/d/{FILE_ID}/preview (already embed format)
+     */
+    public function convertGoogleDriveUrl(string $url): ?string
+    {
+        // If already in preview/embed format, return as is
+        if (str_contains($url, '/preview')) {
+            return $url;
+        }
+
+        $fileId = null;
+
+        // Pattern 1: /file/d/{FILE_ID}/
+        if (preg_match('/\/file\/d\/([a-zA-Z0-9_-]+)/', $url, $matches)) {
+            $fileId = $matches[1];
+        }
+        // Pattern 2: ?id={FILE_ID} or &id={FILE_ID}
+        elseif (preg_match('/[?&]id=([a-zA-Z0-9_-]+)/', $url, $matches)) {
+            $fileId = $matches[1];
+        }
+
+        if ($fileId) {
+            return 'https://drive.google.com/file/d/' . $fileId . '/preview';
+        }
+
+        // Return original URL if pattern not recognized
+        return $url;
     }
 
     /**
