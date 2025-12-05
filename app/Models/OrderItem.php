@@ -13,6 +13,7 @@ class OrderItem extends Model
     protected $fillable = [
         'order_id',
         'course_id',
+        'bundle_id',
         'price',
     ];
 
@@ -30,5 +31,21 @@ class OrderItem extends Model
     public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
+    }
+
+    /**
+     * Get the bundle that owns the order item
+     */
+    public function bundle(): BelongsTo
+    {
+        return $this->belongsTo(Bundle::class);
+    }
+
+    /**
+     * Check if this order item is for a bundle
+     */
+    public function isBundle(): bool
+    {
+        return $this->bundle_id !== null;
     }
 }

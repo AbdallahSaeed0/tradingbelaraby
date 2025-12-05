@@ -81,6 +81,10 @@
             @endforelse
         </div>
 
+        <!-- Slider Navigation Buttons -->
+        <div class="swiper-button-next hero-swiper-button-next"></div>
+        <div class="swiper-button-prev hero-swiper-button-prev"></div>
+
         <!-- Slider Pagination -->
         <div class="swiper-pagination hero-swiper-pagination"></div>
     </div>

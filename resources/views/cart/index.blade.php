@@ -17,8 +17,8 @@
                     @if ($cartItems->count() > 0)
                         <div class="mt-3">
                             <span class="badge bg-white text-primary fs-6 px-4 py-2 rounded-pill shadow">
-                                <i class="fas fa-book-open me-2"></i>{{ $cartItems->count() }} 
-                                {{ $cartItems->count() === 1 ? custom_trans('course', 'front') : custom_trans('courses', 'front') }}
+                                <i class="fas fa-shopping-cart me-2"></i>{{ $cartItems->count() }} 
+                                {{ $cartItems->count() === 1 ? custom_trans('item', 'front') : custom_trans('items', 'front') }}
                             </span>
                         </div>
                     @endif
@@ -45,61 +45,97 @@
                         <div class="cart-items">
                             @foreach ($cartItems as $item)
                                 <div class="cart-item bg-white rounded-3 shadow-sm p-4 mb-3 border border-light position-relative overflow-hidden cart-item-animate"
-                                    data-course-id="{{ $item->course->id }}">
+                                    data-item-id="{{ $item->isBundle() ? $item->bundle_id : $item->course_id }}"
+                                    data-item-type="{{ $item->isBundle() ? 'bundle' : 'course' }}">
                                     <div class="cart-item-ribbon position-absolute top-0 end-0"></div>
                                     <div class="row align-items-center">
                                         <div class="col-md-3 mb-3 mb-md-0">
                                             <div class="cart-item-image position-relative">
-                                                <img src="{{ $item->course->image_url }}" alt="{{ $item->course->name }}"
-                                                    class="img-fluid rounded shadow-sm img-h-120 w-100" style="object-fit: cover;">
-                                                @if ($item->course->original_price > $item->course->price && $item->course->price > 0)
-                                                    <div class="position-absolute top-0 start-0 m-2">
-                                                        <span class="badge bg-danger">
-                                                            <i class="fas fa-tag me-1"></i>{{ custom_trans('sale', 'front') }}
-                                                        </span>
-                                                    </div>
+                                                @if($item->isBundle())
+                                                    <img src="{{ $item->bundle->image_url }}" alt="{{ $item->bundle->name }}"
+                                                        class="img-fluid rounded shadow-sm img-h-120 w-100" style="object-fit: cover;">
+                                                    @if ($item->bundle->original_price > $item->bundle->price && $item->bundle->price > 0)
+                                                        <div class="position-absolute top-0 start-0 m-2">
+                                                            <span class="badge bg-danger">
+                                                                <i class="fas fa-tag me-1"></i>{{ custom_trans('sale', 'front') }}
+                                                            </span>
+                                                        </div>
+                                                    @endif
+                                                @else
+                                                    <img src="{{ $item->course->image_url }}" alt="{{ $item->course->name }}"
+                                                        class="img-fluid rounded shadow-sm img-h-120 w-100" style="object-fit: cover;">
+                                                    @if ($item->course->original_price > $item->course->price && $item->course->price > 0)
+                                                        <div class="position-absolute top-0 start-0 m-2">
+                                                            <span class="badge bg-danger">
+                                                                <i class="fas fa-tag me-1"></i>{{ custom_trans('sale', 'front') }}
+                                                            </span>
+                                                        </div>
+                                                    @endif
                                                 @endif
                                             </div>
                                         </div>
                                         <div class="col-md-6 mb-3 mb-md-0">
-                                            <a href="{{ route('courses.show', $item->course->id) }}" class="text-decoration-none">
-                                                <h5 class="fw-bold mb-2 text-dark hover-primary">{{ $item->course->name }}</h5>
-                                            </a>
-                                            <p class="text-muted mb-2 small">{{ Str::limit($item->course->description, 100) }}</p>
-                                            <div class="course-meta">
-                                                <div class="d-flex align-items-center mb-2">
-                                                    <div class="me-3">
-                                                        <i class="fas fa-user text-primary me-1"></i>
-                                                        <small class="text-muted">
-                                                            {{ $item->course->instructor->name ?? custom_trans('Unknown Instructor', 'front') }}
-                                                        </small>
-                                                    </div>
-                                                    <div>
-                                                        <i class="fas fa-star text-warning me-1"></i>
-                                                        <small class="text-muted">{{ number_format($item->course->average_rating ?? 0, 1) }}</small>
+                                            @if($item->isBundle())
+                                                <a href="{{ route('bundles.show', $item->bundle->slug) }}" class="text-decoration-none">
+                                                    <h5 class="fw-bold mb-2 text-dark hover-primary">
+                                                        <i class="fa fa-box me-1"></i>{{ $item->bundle->name }}
+                                                    </h5>
+                                                </a>
+                                                <p class="text-muted mb-2 small">{{ Str::limit($item->bundle->description, 100) }}</p>
+                                                <div class="course-meta">
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <div class="me-3">
+                                                            <i class="fas fa-book text-primary me-1"></i>
+                                                            <small class="text-muted">
+                                                                {{ $item->bundle->courses->count() }} {{ custom_trans('courses', 'front') }}
+                                                            </small>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div class="d-flex align-items-center text-muted small">
-                                                    <i class="fas fa-clock me-1"></i>
-                                                    <span class="me-3">{{ $item->course->duration ?? custom_trans('Not Found', 'front') }}</span>
-                                                    <i class="fas fa-users me-1"></i>
-                                                    <span>{{ $item->course->enrolled_students ?? 0 }} {{ custom_trans('students', 'front') }}</span>
+                                            @else
+                                                <a href="{{ route('courses.show', $item->course->id) }}" class="text-decoration-none">
+                                                    <h5 class="fw-bold mb-2 text-dark hover-primary">{{ $item->course->name }}</h5>
+                                                </a>
+                                                <p class="text-muted mb-2 small">{{ Str::limit($item->course->description, 100) }}</p>
+                                                <div class="course-meta">
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <div class="me-3">
+                                                            <i class="fas fa-user text-primary me-1"></i>
+                                                            <small class="text-muted">
+                                                                {{ $item->course->instructor->name ?? custom_trans('Unknown Instructor', 'front') }}
+                                                            </small>
+                                                        </div>
+                                                        <div>
+                                                            <i class="fas fa-star text-warning me-1"></i>
+                                                            <small class="text-muted">{{ number_format($item->course->average_rating ?? 0, 1) }}</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex align-items-center text-muted small">
+                                                        <i class="fas fa-clock me-1"></i>
+                                                        <span class="me-3">{{ $item->course->duration ?? custom_trans('Not Found', 'front') }}</span>
+                                                        <i class="fas fa-users me-1"></i>
+                                                        <span>{{ $item->course->enrolled_students ?? 0 }} {{ custom_trans('students', 'front') }}</span>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            @endif
                                         </div>
                                         <div class="col-md-3 text-md-end">
                                             <div class="course-price mb-3">
-                                                @if ($item->course->price > 0)
+                                                @php
+                                                    $price = $item->getPrice();
+                                                    $originalPrice = $item->isBundle() ? ($item->bundle->original_price ?? 0) : ($item->course->original_price ?? 0);
+                                                @endphp
+                                                @if ($price > 0)
                                                     <div class="price-display fs-4 fw-bold text-primary mb-1">
-                                                        SAR {{ number_format($item->course->price, 2) }}
+                                                        SAR {{ number_format($price, 2) }}
                                                     </div>
-                                                    @if ($item->course->original_price > $item->course->price)
+                                                    @if ($originalPrice > $price)
                                                         <div class="text-decoration-line-through text-muted small">
-                                                            SAR {{ number_format($item->course->original_price, 2) }}
+                                                            SAR {{ number_format($originalPrice, 2) }}
                                                         </div>
                                                         <div class="text-success small fw-semibold">
                                                             <i class="fas fa-arrow-down me-1"></i>
-                                                            {{ round((($item->course->original_price - $item->course->price) / $item->course->original_price) * 100) }}% {{ custom_trans('off', 'front') }}
+                                                            {{ round((($originalPrice - $price) / $originalPrice) * 100) }}% {{ custom_trans('off', 'front') }}
                                                         </div>
                                                     @endif
                                                 @else
@@ -109,7 +145,8 @@
                                                 @endif
                                             </div>
                                             <button class="btn btn-sm btn-outline-danger remove-cart-btn w-100"
-                                                data-course-id="{{ $item->course->id }}">
+                                                data-item-id="{{ $item->isBundle() ? $item->bundle_id : $item->course_id }}"
+                                                data-item-type="{{ $item->isBundle() ? 'bundle' : 'course' }}">
                                                 <i class="fas fa-trash me-1"></i>{{ custom_trans('remove', 'front') }}
                                             </button>
                                         </div>
@@ -138,7 +175,7 @@
                                 <!-- Items Count -->
                                 <div class="d-flex justify-content-between align-items-center mb-3 p-2 bg-light rounded">
                                     <span class="text-muted">
-                                        <i class="fas fa-book me-2"></i>{{ custom_trans('items', 'front') }}
+                                        <i class="fas fa-shopping-cart me-2"></i>{{ custom_trans('items', 'front') }}
                                     </span>
                                     <span class="fw-semibold">{{ $cartItems->count() }}</span>
                                 </div>
@@ -413,9 +450,13 @@
             removeButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     if (confirm('{{ custom_trans('remove_from_cart_confirm', 'front') }}')) {
-                        const courseId = this.dataset.courseId;
+                        const itemId = this.dataset.itemId;
+                        const itemType = this.dataset.itemType;
+                        const url = itemType === 'bundle' 
+                            ? `/cart/remove-bundle/${itemId}` 
+                            : `/cart/remove/${itemId}`;
 
-                        fetch(`/cart/${courseId}/remove`, {
+                        fetch(url, {
                                 method: 'DELETE',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -434,7 +475,7 @@
                                         location.reload(); // Reload to show empty state
                                     } else {
                                         // Update totals
-                                        updateCartTotals();
+                                        location.reload(); // Reload to update totals
                                     }
 
                                     // Update cart count in header

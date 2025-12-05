@@ -16,6 +16,8 @@ class Order extends Model
         'order_number',
         'subtotal',
         'total',
+        'coupon_id',
+        'discount_amount',
         'payment_method',
         'status',
         'billing_first_name',
@@ -27,6 +29,12 @@ class Order extends Model
         'billing_state',
         'billing_postal_code',
         'billing_country',
+    ];
+
+    protected $casts = [
+        'subtotal' => 'decimal:2',
+        'total' => 'decimal:2',
+        'discount_amount' => 'decimal:2',
     ];
 
     /**
@@ -51,5 +59,13 @@ class Order extends Model
     public function courses()
     {
         return $this->belongsToMany(Course::class, 'order_items');
+    }
+
+    /**
+     * Get the coupon used for this order
+     */
+    public function coupon(): BelongsTo
+    {
+        return $this->belongsTo(Coupon::class);
     }
 }

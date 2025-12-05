@@ -22,6 +22,14 @@
                     class="list-group-item list-group-item-action {{ request()->routeIs('admin.courses.*') ? 'active' : '' }}">
                     <i class="fa fa-book me-2"></i> Courses
                 </a>
+                <a href="{{ route('admin.bundles.index') }}"
+                    class="list-group-item list-group-item-action {{ request()->routeIs('admin.bundles.*') ? 'active' : '' }}">
+                    <i class="fa fa-box me-2"></i> Bundles
+                </a>
+                <a href="{{ route('admin.coupons.index') }}"
+                    class="list-group-item list-group-item-action {{ request()->routeIs('admin.coupons.*') ? 'active' : '' }}">
+                    <i class="fa fa-ticket-alt me-2"></i> Coupons
+                </a>
             @endif
             @if (auth('admin')->user()->hasPermission('manage_quizzes') ||
                     auth('admin')->user()->hasPermission('manage_own_quizzes'))

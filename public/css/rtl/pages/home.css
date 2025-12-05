@@ -896,7 +896,7 @@ footer {
     padding: 0;
     position: relative;
     display: flex;
-    min-height: 1000px;
+    min-height: 800px;
     align-items: center;
 }
 
@@ -904,12 +904,12 @@ footer {
 .hero-swiper {
     width: 100%;
     height: 100%;
-    min-height: 1000px;
+    min-height: 800px;
 }
 
 .hero-slide {
     position: relative;
-    min-height: 1000px;
+    min-height: 800px;
     display: flex;
     align-items: center;
     width: 100%;
@@ -921,7 +921,7 @@ footer {
     background-position: center !important;
     background-repeat: no-repeat !important;
     width: 100%;
-    min-height: 1000px;
+    min-height: 800px;
 }
 
 .hero-slide-overlay {
@@ -964,6 +964,19 @@ footer {
     height: 50px;
     border-radius: 50%;
     transition: all 0.3s ease;
+    z-index: 10;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.hero-swiper-button-next {
+    left: 20px; /* RTL: next button on left */
+}
+
+.hero-swiper-button-prev {
+    right: 20px; /* RTL: prev button on right */
 }
 
 .hero-swiper-button-next:hover,
@@ -974,6 +987,7 @@ footer {
 .hero-swiper-button-next::after,
 .hero-swiper-button-prev::after {
     font-size: 20px;
+    font-weight: bold;
 }
 
 /* Reverse hero swiper button icons for RTL layout */
@@ -1006,11 +1020,11 @@ footer {
     .hero-swiper,
     .hero-slide,
     .hero-slide-bg {
-        min-height: 600px;
+        min-height: 400px;
     }
 
     .hero-colored {
-        min-height: 600px;
+        min-height: 400px;
     }
 }
 
@@ -1018,18 +1032,18 @@ footer {
     .hero-swiper,
     .hero-slide,
     .hero-slide-bg {
-        min-height: 500px;
+        min-height: 350px;
     }
 
     .hero-colored {
-        min-height: 500px;
+        min-height: 350px;
     }
 }
 .hero-flex {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    min-height: 1000px;
+    min-height: 800px;
     padding-top: 40px;
 }
 .hero-content-left {
@@ -1309,7 +1323,7 @@ footer {
     color: #fff;
     z-index: 2;
 }
-.course-img-wrap .badge{
+.course-img-wrap .badge {
     position: absolute;
 }
 .badge-green {

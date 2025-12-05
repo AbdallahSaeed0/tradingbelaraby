@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\Bundle;
 use App\Models\CourseCategory;
 use App\Models\Slider;
 use Illuminate\Http\Request;
@@ -62,6 +63,14 @@ class HomeController extends Controller
             ->limit(8)
             ->get();
 
+        // Fetch published bundles for Subscription Bundles section
+        $subscriptionBundles = Bundle::published()
+            ->with('courses')
+            ->withCount('courses')
+            ->orderBy('created_at', 'desc')
+            ->limit(8)
+            ->get();
+
         // Fetch Live Meeting courses
         $liveMeetingCourses = Course::liveMeeting()
             ->published()
@@ -103,6 +112,7 @@ class HomeController extends Controller
             'popularCourses',
             'topDiscountedCourses',
             'subscriptionBundlesCourses',
+            'subscriptionBundles',
             'liveMeetingCourses',
             'recentCoursesSection',
             'featuredCategories',

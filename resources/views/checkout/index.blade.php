@@ -135,10 +135,10 @@
 
                             @php
                                 $allFree = $cartItems->every(function ($item) {
-                                    return $item->course->price == 0;
+                                    return $item->getPrice() == 0;
                                 });
                                 $hasPaid = $cartItems->some(function ($item) {
-                                    return $item->course->price > 0;
+                                    return $item->getPrice() > 0;
                                 });
                             @endphp
 
@@ -228,21 +228,40 @@
                                         <div class="course-item-summary mb-3 p-3 bg-light rounded-3">
                                             <div class="d-flex gap-3">
                                                 <div class="course-thumb">
-                                                    <img src="{{ $item->course->image_url }}"
-                                                        alt="{{ $item->course->name }}" class="rounded"
-                                                        style="width: 60px; height: 60px; object-fit: cover;">
+                                                    @if($item->isBundle())
+                                                        <img src="{{ $item->bundle->image_url }}"
+                                                            alt="{{ $item->bundle->name }}" class="rounded"
+                                                            style="width: 60px; height: 60px; object-fit: cover;">
+                                                    @else
+                                                        <img src="{{ $item->course->image_url }}"
+                                                            alt="{{ $item->course->name }}" class="rounded"
+                                                            style="width: 60px; height: 60px; object-fit: cover;">
+                                                    @endif
                                                 </div>
                                                 <div class="flex-grow-1">
-                                                    <h6 class="fw-bold mb-1 small">
-                                                        {{ Str::limit($item->course->name, 40) }}</h6>
-                                                    <small class="text-muted d-block mb-2">
-                                                        <i class="fas fa-user me-1"></i>
-                                                        {{ $item->course->instructor->name ?? custom_trans('Unknown Instructor', 'front') }}
-                                                    </small>
+                                                    @if($item->isBundle())
+                                                        <h6 class="fw-bold mb-1 small">
+                                                            <i class="fa fa-box me-1"></i>{{ Str::limit($item->bundle->name, 35) }}
+                                                        </h6>
+                                                        <small class="text-muted d-block mb-2">
+                                                            <i class="fas fa-book me-1"></i>
+                                                            {{ $item->bundle->courses->count() }} {{ custom_trans('courses', 'front') }}
+                                                        </small>
+                                                    @else
+                                                        <h6 class="fw-bold mb-1 small">
+                                                            {{ Str::limit($item->course->name, 40) }}</h6>
+                                                        <small class="text-muted d-block mb-2">
+                                                            <i class="fas fa-user me-1"></i>
+                                                            {{ $item->course->instructor->name ?? custom_trans('Unknown Instructor', 'front') }}
+                                                        </small>
+                                                    @endif
                                                     <div class="d-flex justify-content-between align-items-center">
-                                                        @if ($item->course->price > 0)
+                                                        @php
+                                                            $price = $item->getPrice();
+                                                        @endphp
+                                                        @if ($price > 0)
                                                             <span class="fw-bold text-primary">SAR
-                                                                {{ number_format($item->course->price, 2) }}</span>
+                                                                {{ number_format($price, 2) }}</span>
                                                         @else
                                                             <span
                                                                 class="badge bg-success">{{ custom_trans('free', 'front') }}</span>
@@ -254,14 +273,58 @@
                                     @endforeach
                                 </div>
 
+                                <!-- Coupon Section -->
+                                <div class="coupon-section mb-4 p-3 bg-light rounded-3">
+                                    @if($coupon)
+                                        <div class="alert alert-success mb-2" id="coupon-applied-alert">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <i class="fa fa-check-circle me-2"></i>
+                                                    <strong>{{ $coupon->code }}</strong> {{ custom_trans('applied', 'front') }}
+                                                </div>
+                                                <button type="button" class="btn btn-sm btn-outline-danger remove-coupon-btn">
+                                                    <i class="fa fa-times"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div class="coupon-input-group">
+                                            <label class="form-label small fw-bold mb-2">
+                                                <i class="fa fa-ticket-alt me-1"></i>{{ custom_trans('Have a coupon code?', 'front') }}
+                                            </label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="coupon_code" 
+                                                    placeholder="{{ custom_trans('Enter coupon code', 'front') }}" 
+                                                    style="text-transform: uppercase;">
+                                                <button type="button" class="btn btn-primary apply-coupon-btn">
+                                                    {{ custom_trans('Apply', 'front') }}
+                                                </button>
+                                            </div>
+                                            <div id="coupon-message" class="mt-2 small"></div>
+                                        </div>
+                                    @endif
+                                </div>
+
                                 <hr class="my-3">
 
                                 <!-- Totals -->
                                 <div class="totals-section">
                                     <div class="d-flex justify-content-between mb-3">
                                         <span class="text-muted">{{ custom_trans('subtotal', 'front') }}</span>
-                                        <span class="fw-bold">SAR {{ number_format($subtotal, 2) }}</span>
+                                        <span class="fw-bold subtotal-amount">SAR {{ number_format($subtotal, 2) }}</span>
                                     </div>
+
+                                    @if($discount > 0)
+                                        <div class="d-flex justify-content-between mb-3 p-2 bg-success bg-opacity-10 rounded">
+                                            <span class="text-success">
+                                                <i class="fas fa-tag me-1"></i>{{ custom_trans('Discount', 'front') }}
+                                                @if($coupon)
+                                                    ({{ $coupon->code }})
+                                                @endif
+                                            </span>
+                                            <span class="fw-semibold text-success discount-amount">-SAR {{ number_format($discount, 2) }}</span>
+                                        </div>
+                                    @endif
 
                                     <div class="d-flex justify-content-between mb-3 p-2 bg-light rounded">
                                         <span class="text-muted">
@@ -589,6 +652,92 @@
                     }
                 });
             });
+
+            // Coupon functionality
+            const applyCouponBtn = document.querySelector('.apply-coupon-btn');
+            const removeCouponBtn = document.querySelector('.remove-coupon-btn');
+            const couponCodeInput = document.getElementById('coupon_code');
+            const couponMessage = document.getElementById('coupon-message');
+
+            if (applyCouponBtn) {
+                applyCouponBtn.addEventListener('click', async function() {
+                    const code = couponCodeInput.value.trim().toUpperCase();
+                    
+                    if (!code) {
+                        couponMessage.innerHTML = '<span class="text-danger">Please enter a coupon code</span>';
+                        return;
+                    }
+
+                    applyCouponBtn.disabled = true;
+                    applyCouponBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+                    try {
+                        const response = await fetch('{{ route("checkout.apply-coupon") }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            },
+                            body: JSON.stringify({
+                                coupon_code: code
+                            }),
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            couponMessage.innerHTML = '<span class="text-success">' + data.message + '</span>';
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1000);
+                        } else {
+                            couponMessage.innerHTML = '<span class="text-danger">' + data.message + '</span>';
+                            applyCouponBtn.disabled = false;
+                            applyCouponBtn.innerHTML = '{{ custom_trans("Apply", "front") }}';
+                        }
+                    } catch (error) {
+                        console.error('Coupon error:', error);
+                        couponMessage.innerHTML = '<span class="text-danger">An error occurred. Please try again.</span>';
+                        applyCouponBtn.disabled = false;
+                        applyCouponBtn.innerHTML = '{{ custom_trans("Apply", "front") }}';
+                    }
+                });
+
+                // Allow Enter key to apply coupon
+                if (couponCodeInput) {
+                    couponCodeInput.addEventListener('keypress', function(e) {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            applyCouponBtn.click();
+                        }
+                    });
+                }
+            }
+
+            if (removeCouponBtn) {
+                removeCouponBtn.addEventListener('click', async function() {
+                    try {
+                        const response = await fetch('{{ route("checkout.remove-coupon") }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            },
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            window.location.reload();
+                        }
+                    } catch (error) {
+                        console.error('Remove coupon error:', error);
+                        alert('An error occurred. Please try again.');
+                    }
+                });
+            }
         });
     </script>
 @endpush

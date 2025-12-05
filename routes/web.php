@@ -185,10 +185,16 @@ Route::middleware('auth')->group(function () {
     Route::post('/courses/{course}/complete-lectures', [ProgressController::class, 'completeLectures'])->name('courses.complete-lectures');
     Route::post('/courses/{course}/incomplete-lectures', [ProgressController::class, 'incompleteLectures'])->name('courses.incomplete-lectures');
 
+    // Bundle routes
+    Route::get('/bundles', [App\Http\Controllers\BundlesController::class, 'index'])->name('bundles.index');
+    Route::get('/bundles/{bundle:slug}', [App\Http\Controllers\BundlesController::class, 'show'])->name('bundles.show');
+
     // Cart routes
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart/add/{course}', [CartController::class, 'add'])->name('cart.add');
+    Route::post('/cart/add-bundle/{bundle}', [CartController::class, 'addBundle'])->name('cart.add-bundle');
     Route::delete('/cart/remove/{course}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::delete('/cart/remove-bundle/{bundle}', [CartController::class, 'removeBundle'])->name('cart.remove-bundle');
     Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 
     // Wishlist routes
@@ -199,6 +205,8 @@ Route::middleware('auth')->group(function () {
 
     // Checkout routes
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post('/checkout/apply-coupon', [CheckoutController::class, 'applyCoupon'])->name('checkout.apply-coupon');
+    Route::post('/checkout/remove-coupon', [CheckoutController::class, 'removeCoupon'])->name('checkout.remove-coupon');
     Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
     Route::get('/checkout/payment', [CheckoutController::class, 'payment'])->name('checkout.payment');
     Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
@@ -305,6 +313,12 @@ Route::resource('quizzes.questions', App\Http\Controllers\Admin\QuizQuestionMana
     Route::get('/subscribers/export', [App\Http\Controllers\Admin\SubscriberController::class, 'export'])->name('subscribers.export')->middleware('admin.permission:manage_users');
     Route::post('/subscribers/bulk-delete', [App\Http\Controllers\Admin\SubscriberController::class, 'bulkDelete'])->name('subscribers.bulk-delete')->middleware('admin.permission:manage_users');
     Route::resource('subscribers', App\Http\Controllers\Admin\SubscriberController::class)->only(['index', 'show', 'destroy'])->middleware('admin.permission:manage_users');
+    
+    // Bundle management routes
+    Route::resource('bundles', App\Http\Controllers\Admin\BundlesController::class)->middleware('admin.permission:manage_courses');
+    
+    // Coupon management routes
+    Route::resource('coupons', App\Http\Controllers\Admin\CouponsController::class)->middleware('admin.permission:manage_courses');
 
     // Settings routes
     Route::put('/settings/coming-soon', [App\Http\Controllers\Admin\SettingsController::class, 'updateComingSoon'])->name('settings.coming-soon.update');

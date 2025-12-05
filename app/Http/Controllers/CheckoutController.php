@@ -3,12 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\Bundle;
 use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Coupon;
+use App\Models\CouponUsage;
+use App\Services\Payment\TabbyService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class CheckoutController extends Controller
 {
@@ -23,19 +28,110 @@ class CheckoutController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $cartItems = $user->cartItems()->with('course.category', 'course.instructor')->get();
+        $cartItems = $user->cartItems()->with('course.category', 'course.instructor', 'bundle.courses')->get();
 
         if ($cartItems->isEmpty()) {
             return redirect()->route('cart.index')->with('error', 'Your cart is empty');
         }
 
         $subtotal = $cartItems->sum(function($item) {
-            return $item->course->price;
+            return $item->getPrice();
         });
 
-        $total = $subtotal; // No discount applied initially
+        $discount = 0;
+        $coupon = null;
+        
+        // Check if coupon is stored in session
+        if (session()->has('applied_coupon')) {
+            $couponCode = session('applied_coupon');
+            $coupon = Coupon::where('code', $couponCode)->first();
+            
+            if ($coupon && $coupon->isValidForUser($user) && $coupon->appliesToCart($cartItems)) {
+                $discount = $coupon->calculateDiscountForCart($cartItems);
+            } else {
+                // Remove invalid coupon from session
+                session()->forget('applied_coupon');
+                $coupon = null;
+            }
+        }
 
-        return view('checkout.index', compact('cartItems', 'subtotal', 'total', 'user'));
+        $total = $subtotal - $discount;
+
+        return view('checkout.index', compact('cartItems', 'subtotal', 'total', 'discount', 'coupon', 'user'));
+    }
+
+    /**
+     * Apply coupon to checkout
+     */
+    public function applyCoupon(Request $request)
+    {
+        $request->validate([
+            'coupon_code' => 'required|string|max:50'
+        ]);
+
+        $user = Auth::user();
+        $cartItems = $user->cartItems()->with('course', 'bundle')->get();
+
+        if ($cartItems->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Your cart is empty'
+            ]);
+        }
+
+        $couponCode = strtoupper($request->coupon_code);
+        $coupon = Coupon::where('code', $couponCode)->first();
+
+        if (!$coupon) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid coupon code'
+            ]);
+        }
+
+        if (!$coupon->isValidForUser($user)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'This coupon is not valid for you or has reached its usage limit'
+            ]);
+        }
+
+        if (!$coupon->appliesToCart($cartItems)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'This coupon does not apply to items in your cart'
+            ]);
+        }
+
+        $subtotal = $cartItems->sum(function($item) {
+            return $item->getPrice();
+        });
+
+        $discount = $coupon->calculateDiscountForCart($cartItems);
+        $total = $subtotal - $discount;
+
+        // Store coupon in session
+        session(['applied_coupon' => $couponCode]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Coupon applied successfully!',
+            'discount' => number_format($discount, 2),
+            'total' => number_format($total, 2)
+        ]);
+    }
+
+    /**
+     * Remove coupon from checkout
+     */
+    public function removeCoupon()
+    {
+        session()->forget('applied_coupon');
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Coupon removed successfully'
+        ]);
     }
 
     /**
@@ -57,17 +153,29 @@ class CheckoutController extends Controller
         ]);
 
         $user = Auth::user();
-        $cartItems = $user->cartItems()->with('course')->get();
+        $cartItems = $user->cartItems()->with('course', 'bundle.courses')->get();
 
         if ($cartItems->isEmpty()) {
             return redirect()->route('cart.index')->with('error', 'Your cart is empty');
         }
 
         $subtotal = $cartItems->sum(function($item) {
-            return $item->course->price;
+            return $item->getPrice();
         });
 
-        $total = $subtotal;
+        // Apply coupon if exists
+        $discount = 0;
+        $coupon = null;
+        if (session()->has('applied_coupon')) {
+            $couponCode = session('applied_coupon');
+            $coupon = Coupon::where('code', $couponCode)->first();
+            
+            if ($coupon && $coupon->isValidForUser($user) && $coupon->appliesToCart($cartItems)) {
+                $discount = $coupon->calculateDiscountForCart($cartItems);
+            }
+        }
+
+        $total = $subtotal - $discount;
 
         // Check if all courses are free
         $allFree = $cartItems->every(function($item) {
@@ -92,6 +200,8 @@ class CheckoutController extends Controller
                 'order_number' => 'ORD-' . strtoupper(uniqid()),
                 'subtotal' => $subtotal,
                 'total' => $total,
+                'coupon_id' => $coupon ? $coupon->id : null,
+                'discount_amount' => $discount,
                 'payment_method' => $request->payment_method,
                 'status' => $request->payment_method === 'free' ? 'completed' : 'pending',
                 'billing_first_name' => $request->first_name,
@@ -105,39 +215,68 @@ class CheckoutController extends Controller
                 'billing_country' => $request->country,
             ]);
 
-            // Create order items
+            // Create order items and enrollments
             foreach ($cartItems as $cartItem) {
-                OrderItem::create([
-                    'order_id' => $order->id,
-                    'course_id' => $cartItem->course_id,
-                    'price' => $cartItem->course->price,
-                ]);
+                if ($cartItem->isBundle()) {
+                    // Handle bundle
+                    OrderItem::create([
+                        'order_id' => $order->id,
+                        'bundle_id' => $cartItem->bundle_id,
+                        'price' => $cartItem->bundle->price,
+                    ]);
 
-                // Enroll user in course (pending for Tabby)
-                $enrollmentStatus = ($request->payment_method === 'free') ? 'active' : 'active'; // Default active for visa placeholder?
-                // Actually, for Tabby we want to defer 'active' status or use 'pending' if system supports it.
-                // Assuming system doesn't have 'pending' status logic fully built, we might just not create enrollment yet or create as active?
-                // The prompt says "Our app stores Tabby IDs and statuses against the order."
-                // "Order... can be a DB table... status..."
-                // CourseEnrollment has status.
-                // Let's set it to 'pending' if Tabby.
+                    // Enroll user in all courses in the bundle
+                    $enrollmentStatus = ($request->payment_method === 'free') ? 'active' : 'active';
+                    if ($request->payment_method === 'tabby') {
+                        $enrollmentStatus = 'pending';
+                    }
 
-                if ($request->payment_method === 'tabby') {
-                    // Check if 'pending' is a valid status enum for enrollment?
-                    // CourseEnrollment.php doesn't define enum but uses strings.
-                    // Assuming 'pending' is safe.
-                    // But if the user can access course if record exists, we must be careful.
-                    // CourseEnrollment::scopeActive uses 'active'.
-                    // So 'pending' should be safe (user won't see course).
-                    $enrollmentStatus = 'pending';
+                    foreach ($cartItem->bundle->courses as $course) {
+                        // Check if not already enrolled
+                        if (!$user->enrollments()->where('course_id', $course->id)->exists()) {
+                            $user->enrollments()->create([
+                                'course_id' => $course->id,
+                                'status' => $enrollmentStatus,
+                                'enrolled_at' => now(),
+                                'progress_percentage' => 0,
+                            ]);
+                        }
+                    }
+                } else {
+                    // Handle individual course
+                    OrderItem::create([
+                        'order_id' => $order->id,
+                        'course_id' => $cartItem->course_id,
+                        'price' => $cartItem->course->price,
+                    ]);
+
+                    $enrollmentStatus = ($request->payment_method === 'free') ? 'active' : 'active';
+                    if ($request->payment_method === 'tabby') {
+                        $enrollmentStatus = 'pending';
+                    }
+
+                    $user->enrollments()->create([
+                        'course_id' => $cartItem->course_id,
+                        'status' => $enrollmentStatus,
+                        'enrolled_at' => now(),
+                        'progress_percentage' => 0,
+                    ]);
                 }
+            }
 
-                $user->enrollments()->create([
-                    'course_id' => $cartItem->course_id,
-                    'status' => $enrollmentStatus,
-                    'enrolled_at' => now(),
-                    'progress_percentage' => 0,
+            // Track coupon usage
+            if ($coupon) {
+                CouponUsage::create([
+                    'coupon_id' => $coupon->id,
+                    'user_id' => $user->id,
+                    'order_id' => $order->id,
+                    'used_at' => now(),
                 ]);
+                
+                $coupon->incrementUsage();
+                
+                // Clear coupon from session
+                session()->forget('applied_coupon');
             }
 
             // Clear cart
