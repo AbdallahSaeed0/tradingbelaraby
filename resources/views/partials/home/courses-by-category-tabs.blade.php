@@ -52,28 +52,11 @@
                             @php
                                 $direction = \App\Helpers\TranslationHelper::getFrontendLanguage()->direction ?? 'ltr';
                             @endphp
-                            <!-- Navigation buttons for category slider -->
-                            <div class="d-flex justify-content-end mb-3">
-                                <div class="buts d-flex align-items-center">
-                                    @if ($direction === 'rtl')
-                                        <button class="btn btn-danger me-2 px-4 py-2 rounded-3 swiper-button-prev swiper-button-prev-category-{{ $category->id }}">
-                                            <i class="fas fa-arrow-right"></i>
-                                        </button>
-                                        <button class="btn btn-danger px-4 py-2 rounded-3 swiper-button-next swiper-button-next-category-{{ $category->id }}">
-                                            <i class="fas fa-arrow-left"></i>
-                                        </button>
-                                    @else
-                                        <button class="btn btn-danger me-2 px-4 py-2 rounded-3 swiper-button-prev swiper-button-prev-category-{{ $category->id }}">
-                                            <i class="fas fa-arrow-left"></i>
-                                        </button>
-                                        <button class="btn btn-danger px-4 py-2 rounded-3 swiper-button-next swiper-button-next-category-{{ $category->id }}">
-                                            <i class="fas fa-arrow-right"></i>
-                                        </button>
-                                    @endif
-                                </div>
-                            </div>
                             <!-- Swiper for this category -->
                             <div class="swiper categorySwiper-{{ $category->id }}">
+                                <!-- Navigation buttons for category slider -->
+                                <div class="swiper-button-prev swiper-button-prev-category-{{ $category->id }}"></div>
+                                <div class="swiper-button-next swiper-button-next-category-{{ $category->id }}"></div>
                                 <div class="swiper-wrapper">
                                     @foreach ($categoryCourses as $course)
                                         <div class="swiper-slide">

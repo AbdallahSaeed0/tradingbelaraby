@@ -500,26 +500,12 @@
                     @php
                         $direction = \App\Helpers\TranslationHelper::getFrontendLanguage()->direction ?? 'ltr';
                     @endphp
-                    <div class="buts d-flex align-items-center">
-                        @if ($direction === 'rtl')
-                            <button class="btn btn-danger me-2 px-4 py-2 rounded-3 related-courses-swiper-button-prev">
-                                <i class="fas fa-arrow-right"></i>
-                            </button>
-                            <button class="btn btn-danger px-4 py-2 rounded-3 related-courses-swiper-button-next">
-                                <i class="fas fa-arrow-left"></i>
-                            </button>
-                        @else
-                            <button class="btn btn-danger me-2 px-4 py-2 rounded-3 related-courses-swiper-button-prev">
-                                <i class="fas fa-arrow-left"></i>
-                            </button>
-                            <button class="btn btn-danger px-4 py-2 rounded-3 related-courses-swiper-button-next">
-                                <i class="fas fa-arrow-right"></i>
-                            </button>
-                        @endif
-                    </div>
                 </div>
                 <!-- Swiper -->
                 <div class="swiper relatedCoursesSwiper">
+                    <!-- Navigation buttons -->
+                    <div class="swiper-button-prev related-courses-swiper-button-prev"></div>
+                    <div class="swiper-button-next related-courses-swiper-button-next"></div>
                     <div class="swiper-wrapper">
                         @foreach ($relatedCourses as $relatedCourse)
                             <div class="swiper-slide">

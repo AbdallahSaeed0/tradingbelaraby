@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use App\Models\CourseEnrollment;
+use App\Notifications\CourseEnrollmentNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -66,12 +67,23 @@ class EnrollmentController extends Controller
         }
 
         // Create enrollment (free courses)
-        $user->enrollments()->create([
+        $enrollment = $user->enrollments()->create([
             'course_id' => $course->id,
             'status' => 'active',
             'enrolled_at' => now(),
             'progress_percentage' => 0,
         ]);
+
+        // Send enrollment notification email
+        try {
+            $user->notify(new CourseEnrollmentNotification($course));
+        } catch (\Exception $e) {
+            Log::error('Failed to send enrollment notification', [
+                'user_id' => $user->id,
+                'course_id' => $course->id,
+                'error' => $e->getMessage()
+            ]);
+        }
 
         // Return JSON for AJAX requests, redirect for regular requests
         if ($request->expectsJson()) {

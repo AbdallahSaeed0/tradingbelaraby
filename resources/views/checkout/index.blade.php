@@ -233,9 +233,9 @@
                                                             alt="{{ $item->bundle->name }}" class="rounded"
                                                             style="width: 60px; height: 60px; object-fit: cover;">
                                                     @else
-                                                        <img src="{{ $item->course->image_url }}"
-                                                            alt="{{ $item->course->name }}" class="rounded"
-                                                            style="width: 60px; height: 60px; object-fit: cover;">
+                                                    <img src="{{ $item->course->image_url }}"
+                                                        alt="{{ $item->course->name }}" class="rounded"
+                                                        style="width: 60px; height: 60px; object-fit: cover;">
                                                     @endif
                                                 </div>
                                                 <div class="flex-grow-1">
@@ -248,12 +248,12 @@
                                                             {{ $item->bundle->courses->count() }} {{ custom_trans('courses', 'front') }}
                                                         </small>
                                                     @else
-                                                        <h6 class="fw-bold mb-1 small">
-                                                            {{ Str::limit($item->course->name, 40) }}</h6>
-                                                        <small class="text-muted d-block mb-2">
-                                                            <i class="fas fa-user me-1"></i>
-                                                            {{ $item->course->instructor->name ?? custom_trans('Unknown Instructor', 'front') }}
-                                                        </small>
+                                                    <h6 class="fw-bold mb-1 small">
+                                                        {{ Str::limit($item->course->name, 40) }}</h6>
+                                                    <small class="text-muted d-block mb-2">
+                                                        <i class="fas fa-user me-1"></i>
+                                                        {{ $item->course->instructor->name ?? custom_trans('Unknown Instructor', 'front') }}
+                                                    </small>
                                                     @endif
                                                     <div class="d-flex justify-content-between align-items-center">
                                                         @php

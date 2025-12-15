@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PageController;
@@ -38,6 +39,24 @@ Route::middleware('guest')->group(function () {
     Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
     Route::post('/register', [AuthController::class, 'register'])->name('register.attempt');
 });
+
+// Email Verification Routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/email/verify', function () {
+        return view('auth.verify-email');
+    })->name('verification.notice');
+    
+    Route::get('/email/verify/{id}/{hash}', function (\Illuminate\Foundation\Auth\EmailVerificationRequest $request) {
+        $request->fulfill();
+        return redirect()->route('home')->with('success', 'Your email has been verified successfully!');
+    })->middleware(['signed'])->name('verification.verify');
+    
+    Route::post('/email/verification-notification', function (Request $request) {
+        $request->user()->sendEmailVerificationNotification();
+        return back()->with('success', 'Verification link sent! Please check your email.');
+    })->middleware(['throttle:6,1'])->name('verification.send');
+});
+
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
 // Public pages

@@ -896,7 +896,7 @@ footer {
     padding: 0;
     position: relative;
     display: flex;
-    min-height: 800px;
+    min-height: 700px;
     align-items: center;
 }
 
@@ -904,12 +904,12 @@ footer {
 .hero-swiper {
     width: 100%;
     height: 100%;
-    min-height: 800px;
+    min-height: 700px;
 }
 
 .hero-slide {
     position: relative;
-    min-height: 800px;
+    min-height: 700px;
     display: flex;
     align-items: center;
     width: 100%;
@@ -921,7 +921,7 @@ footer {
     background-position: center !important;
     background-repeat: no-repeat !important;
     width: 100%;
-    min-height: 800px;
+    min-height: 700px;
 }
 
 .hero-slide-overlay {
@@ -959,7 +959,7 @@ footer {
 .hero-swiper-button-next,
 .hero-swiper-button-prev {
     color: #fff;
-    background: rgba(255, 255, 255, 0.2);
+    background: #f15a29 !important;
     width: 50px;
     height: 50px;
     border-radius: 50%;
@@ -972,16 +972,16 @@ footer {
 }
 
 .hero-swiper-button-next {
-    right: 20px;
+    right: 0;
 }
 
 .hero-swiper-button-prev {
-    left: 20px;
+    left: 0;
 }
 
 .hero-swiper-button-next:hover,
 .hero-swiper-button-prev:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: #d94e1f !important;
 }
 
 .hero-swiper-button-next::after,
@@ -1034,7 +1034,7 @@ footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    min-height: 800px;
+    min-height: 700px;
     padding-top: 40px;
 }
 .hero-content-left {
@@ -1383,80 +1383,188 @@ footer {
     bottom: 16px;
     right: 16px;
 }
+/* Unified Swiper Navigation Buttons - Hero Style for All Sliders */
 .courses-section .swiper-button-next,
 .courses-section .swiper-button-prev,
 .courses-by-category-section .swiper-button-next,
-.courses-by-category-section .swiper-button-prev {
-    background: #ff7043 !important;
+.courses-by-category-section .swiper-button-prev,
+.swiper-button-next-bundles,
+.swiper-button-prev-bundles,
+.swiper-button-next-recent,
+.swiper-button-prev-recent,
+.swiper-button-next-live,
+.swiper-button-prev-live,
+.swiper-button-next-discounted,
+.swiper-button-prev-discounted,
+.swiper-button-next-courses,
+.swiper-button-prev-courses,
+.swiper-button-next-category-1,
+.swiper-button-prev-category-1,
+.swiper-button-next-category-2,
+.swiper-button-prev-category-2,
+.swiper-button-next-category-3,
+.swiper-button-prev-category-3,
+.swiper-button-next-category-4,
+.swiper-button-prev-category-4,
+.swiper-button-next-category-5,
+.swiper-button-prev-category-5,
+.swiper-button-next-category-6,
+.swiper-button-prev-category-6,
+.swiper-button-next-instructor,
+.swiper-button-prev-instructor,
+.related-courses-swiper-button-next,
+.related-courses-swiper-button-prev {
     color: #fff !important;
-    border-radius: 8px !important;
-    width: 44px !important;
-    height: 44px !important;
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
+    background: #f15a29 !important;
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 50% !important;
+    transition: all 0.3s ease;
+    z-index: 10;
     position: absolute !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
-    z-index: 10 !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     cursor: pointer;
-    transition: all 0.3s ease;
     margin: 0 !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
 }
 
 .courses-section .swiper-button-next,
-.courses-by-category-section .swiper-button-next {
-    right: 10px !important;
+.courses-by-category-section .swiper-button-next,
+.swiper-button-next-bundles,
+.swiper-button-next-recent,
+.swiper-button-next-live,
+.swiper-button-next-discounted,
+.swiper-button-next-courses,
+.swiper-button-next-category-1,
+.swiper-button-next-category-2,
+.swiper-button-next-category-3,
+.swiper-button-next-category-4,
+.swiper-button-next-category-5,
+.swiper-button-next-category-6,
+.swiper-button-next-instructor,
+.related-courses-swiper-button-next {
+    right: 0 !important;
     left: auto !important;
 }
 
 .courses-section .swiper-button-prev,
-.courses-by-category-section .swiper-button-prev {
-    left: 10px !important;
+.courses-by-category-section .swiper-button-prev,
+.swiper-button-prev-bundles,
+.swiper-button-prev-recent,
+.swiper-button-prev-live,
+.swiper-button-prev-discounted,
+.swiper-button-prev-courses,
+.swiper-button-prev-category-1,
+.swiper-button-prev-category-2,
+.swiper-button-prev-category-3,
+.swiper-button-prev-category-4,
+.swiper-button-prev-category-5,
+.swiper-button-prev-category-6,
+.swiper-button-prev-instructor,
+.related-courses-swiper-button-prev {
+    left: 0 !important;
     right: auto !important;
 }
 
 .courses-section .swiper-button-next:hover,
 .courses-section .swiper-button-prev:hover,
 .courses-by-category-section .swiper-button-next:hover,
-.courses-by-category-section .swiper-button-prev:hover {
+.courses-by-category-section .swiper-button-prev:hover,
+.swiper-button-next-bundles:hover,
+.swiper-button-prev-bundles:hover,
+.swiper-button-next-recent:hover,
+.swiper-button-prev-recent:hover,
+.swiper-button-next-live:hover,
+.swiper-button-prev-live:hover,
+.swiper-button-next-discounted:hover,
+.swiper-button-prev-discounted:hover,
+.swiper-button-next-courses:hover,
+.swiper-button-prev-courses:hover,
+.swiper-button-next-category-1:hover,
+.swiper-button-prev-category-1:hover,
+.swiper-button-next-category-2:hover,
+.swiper-button-prev-category-2:hover,
+.swiper-button-next-category-3:hover,
+.swiper-button-prev-category-3:hover,
+.swiper-button-next-category-4:hover,
+.swiper-button-prev-category-4:hover,
+.swiper-button-next-category-5:hover,
+.swiper-button-prev-category-5:hover,
+.swiper-button-next-category-6:hover,
+.swiper-button-prev-category-6:hover,
+.swiper-button-next-instructor:hover,
+.swiper-button-prev-instructor:hover,
+.related-courses-swiper-button-next:hover,
+.related-courses-swiper-button-prev:hover {
     background: #d94e1f !important;
-    transform: translateY(-50%) scale(1.1) !important;
 }
 
-.courses-section .swiper-button-next:after,
-.courses-section .swiper-button-prev:after,
-.courses-by-category-section .swiper-button-next:after,
-.courses-by-category-section .swiper-button-prev:after {
-    font-size: 0.8em !important;
-    font-weight: 800;
+.courses-section .swiper-button-next::after,
+.courses-section .swiper-button-prev::after,
+.courses-by-category-section .swiper-button-next::after,
+.courses-by-category-section .swiper-button-prev::after,
+.swiper-button-next-bundles::after,
+.swiper-button-prev-bundles::after,
+.swiper-button-next-recent::after,
+.swiper-button-prev-recent::after,
+.swiper-button-next-live::after,
+.swiper-button-prev-live::after,
+.swiper-button-next-discounted::after,
+.swiper-button-prev-discounted::after,
+.swiper-button-next-courses::after,
+.swiper-button-prev-courses::after,
+.swiper-button-next-category-1::after,
+.swiper-button-prev-category-1::after,
+.swiper-button-next-category-2::after,
+.swiper-button-prev-category-2::after,
+.swiper-button-next-category-3::after,
+.swiper-button-prev-category-3::after,
+.swiper-button-next-category-4::after,
+.swiper-button-prev-category-4::after,
+.swiper-button-next-category-5::after,
+.swiper-button-prev-category-5::after,
+.swiper-button-next-category-6::after,
+.swiper-button-prev-category-6::after,
+.swiper-button-next-instructor::after,
+.swiper-button-prev-instructor::after,
+.related-courses-swiper-button-next::after,
+.related-courses-swiper-button-prev::after {
+    font-size: 20px !important;
+    font-weight: bold;
 }
 /* Swiper Container Positioning */
 .swiper {
     position: relative;
 }
 
-/* Additional Swiper Button Positioning Fixes */
-.courses-section .swiper-button-next,
-.courses-by-category-section .swiper-button-next {
-    right: 10px !important;
-    left: auto !important;
-    transform: translateY(-50%) !important;
-}
-
-.courses-section .swiper-button-prev,
-.courses-by-category-section .swiper-button-prev {
-    left: 10px !important;
-    right: auto !important;
-    transform: translateY(-50%) !important;
+/* Position buttons relative to swiper container */
+.courses-section .swiper,
+.courses-by-category-section .swiper {
+    position: relative;
 }
 
 /* Ensure buttons don't inherit any conflicting styles */
 .courses-section .swiper-button-next,
 .courses-section .swiper-button-prev,
 .courses-by-category-section .swiper-button-next,
-.courses-by-category-section .swiper-button-prev {
+.courses-by-category-section .swiper-button-prev,
+.swiper-button-next-bundles,
+.swiper-button-prev-bundles,
+.swiper-button-next-recent,
+.swiper-button-prev-recent,
+.swiper-button-next-live,
+.swiper-button-prev-live,
+.swiper-button-next-discounted,
+.swiper-button-prev-discounted,
+.swiper-button-next-courses,
+.swiper-button-prev-courses,
+.swiper-button-next-instructor,
+.swiper-button-prev-instructor,
+.related-courses-swiper-button-next,
+.related-courses-swiper-button-prev {
     float: none !important;
     clear: none !important;
     direction: ltr !important;
@@ -1467,42 +1575,133 @@ footer {
     .courses-section .swiper-button-next,
     .courses-section .swiper-button-prev,
     .courses-by-category-section .swiper-button-next,
-    .courses-by-category-section .swiper-button-prev {
-        width: 36px !important;
-        height: 36px !important;
+    .courses-by-category-section .swiper-button-prev,
+    .swiper-button-next-bundles,
+    .swiper-button-prev-bundles,
+    .swiper-button-next-recent,
+    .swiper-button-prev-recent,
+    .swiper-button-next-live,
+    .swiper-button-prev-live,
+    .swiper-button-next-discounted,
+    .swiper-button-prev-discounted,
+    .swiper-button-next-courses,
+    .swiper-button-prev-courses {
+        width: 40px !important;
+        height: 40px !important;
     }
 
-    .swiper-button-next {
-        right: 5px !important;
-        left: auto !important;
+    .courses-section .swiper-button-next,
+    .courses-by-category-section .swiper-button-next,
+    .swiper-button-next-bundles,
+    .swiper-button-next-recent,
+    .swiper-button-next-live,
+    .swiper-button-next-discounted,
+    .swiper-button-next-courses,
+    .swiper-button-next-instructor,
+    .related-courses-swiper-button-next {
+        right: 10px !important;
     }
 
-    .swiper-button-prev {
-        left: 5px !important;
-        right: auto !important;
+    .courses-section .swiper-button-prev,
+    .courses-by-category-section .swiper-button-prev,
+    .swiper-button-prev-bundles,
+    .swiper-button-prev-recent,
+    .swiper-button-prev-live,
+    .swiper-button-prev-discounted,
+    .swiper-button-prev-courses,
+    .swiper-button-prev-instructor,
+    .related-courses-swiper-button-prev {
+        left: 10px !important;
     }
 
-    .swiper-button-next:after,
-    .swiper-button-prev:after {
-        font-size: 0.7em !important;
+    .courses-section .swiper-button-next::after,
+    .courses-section .swiper-button-prev::after,
+    .courses-by-category-section .swiper-button-next::after,
+    .courses-by-category-section .swiper-button-prev::after,
+    .swiper-button-next-bundles::after,
+    .swiper-button-prev-bundles::after,
+    .swiper-button-next-recent::after,
+    .swiper-button-prev-recent::after,
+    .swiper-button-next-live::after,
+    .swiper-button-prev-live::after,
+    .swiper-button-next-discounted::after,
+    .swiper-button-prev-discounted::after,
+    .swiper-button-next-courses::after,
+    .swiper-button-prev-courses::after,
+    .swiper-button-next-instructor::after,
+    .swiper-button-prev-instructor::after,
+    .related-courses-swiper-button-next::after,
+    .related-courses-swiper-button-prev::after {
+        font-size: 16px !important;
     }
 }
 
 @media (max-width: 576px) {
-    .swiper-button-next,
-    .swiper-button-prev {
-        width: 32px !important;
-        height: 32px !important;
+    .courses-section .swiper-button-next,
+    .courses-section .swiper-button-prev,
+    .courses-by-category-section .swiper-button-next,
+    .courses-by-category-section .swiper-button-prev,
+    .swiper-button-next-bundles,
+    .swiper-button-prev-bundles,
+    .swiper-button-next-recent,
+    .swiper-button-prev-recent,
+    .swiper-button-next-live,
+    .swiper-button-prev-live,
+    .swiper-button-next-discounted,
+    .swiper-button-prev-discounted,
+    .swiper-button-next-courses,
+    .swiper-button-prev-courses,
+    .swiper-button-next-instructor,
+    .swiper-button-prev-instructor,
+    .related-courses-swiper-button-next,
+    .related-courses-swiper-button-prev {
+        width: 36px !important;
+        height: 36px !important;
     }
 
-    .swiper-button-next {
-        right: 2px !important;
-        left: auto !important;
+    .courses-section .swiper-button-next,
+    .courses-by-category-section .swiper-button-next,
+    .swiper-button-next-bundles,
+    .swiper-button-next-recent,
+    .swiper-button-next-live,
+    .swiper-button-next-discounted,
+    .swiper-button-next-courses,
+    .swiper-button-next-instructor,
+    .related-courses-swiper-button-next {
+        right: 5px !important;
     }
 
-    .swiper-button-prev {
-        left: 2px !important;
-        right: auto !important;
+    .courses-section .swiper-button-prev,
+    .courses-by-category-section .swiper-button-prev,
+    .swiper-button-prev-bundles,
+    .swiper-button-prev-recent,
+    .swiper-button-prev-live,
+    .swiper-button-prev-discounted,
+    .swiper-button-prev-courses,
+    .swiper-button-prev-instructor,
+    .related-courses-swiper-button-prev {
+        left: 5px !important;
+    }
+
+    .courses-section .swiper-button-next::after,
+    .courses-section .swiper-button-prev::after,
+    .courses-by-category-section .swiper-button-next::after,
+    .courses-by-category-section .swiper-button-prev::after,
+    .swiper-button-next-bundles::after,
+    .swiper-button-prev-bundles::after,
+    .swiper-button-next-recent::after,
+    .swiper-button-prev-recent::after,
+    .swiper-button-next-live::after,
+    .swiper-button-prev-live::after,
+    .swiper-button-next-discounted::after,
+    .swiper-button-prev-discounted::after,
+    .swiper-button-next-courses::after,
+    .swiper-button-prev-courses::after,
+    .swiper-button-next-instructor::after,
+    .swiper-button-prev-instructor::after,
+    .related-courses-swiper-button-next::after,
+    .related-courses-swiper-button-prev::after {
+        font-size: 14px !important;
     }
 }
 

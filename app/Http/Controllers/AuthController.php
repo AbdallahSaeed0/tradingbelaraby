@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -29,6 +30,16 @@ class AuthController extends Controller
 
         // Attempt default user guard
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
+            $user = Auth::user();
+            
+            // Check if email is verified
+            if (!$user->hasVerifiedEmail()) {
+                Auth::logout();
+                return back()->withErrors([
+                    'email' => 'Please verify your email address before logging in. Check your inbox for the verification link.',
+                ])->onlyInput('email');
+            }
+            
             $request->session()->regenerate();
             return redirect()->intended(route('home'));
         }
@@ -84,8 +95,10 @@ class AuthController extends Controller
             'password' => Hash::make($data['password']),
         ]);
 
-        Auth::login($user);
+        // Fire the Registered event which will trigger the email verification notification
+        event(new Registered($user));
 
-        return redirect()->route('home');
+        // Don't auto-login, require email verification first
+        return redirect()->route('verification.notice')->with('success', 'Registration successful! Please check your email to verify your account before logging in.');
     }
 }

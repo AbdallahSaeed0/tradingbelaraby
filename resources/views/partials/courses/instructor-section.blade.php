@@ -21,15 +21,14 @@
                 </span>
                 <h2 class="fw-bold mb-3 fs-2-5rem"> {{ custom_trans('Instructor', 'front') }}</h2>
             </div>
-            <div class="buts d-flex align-items-center">
-                <button class="btn btn-danger me-2 px-4 py-2 rounded-3 swiper-button-prev"></button>
-                <button class="btn btn-danger px-4 py-2 rounded-3 swiper-button-next"></button>
-            </div>
         </div>
 
         @if ($instructors->count() > 0)
             <!-- Swiper -->
-            <div class="swiper mySwiper">
+            <div class="swiper instructorSwiper">
+                <!-- Navigation buttons -->
+                <div class="swiper-button-prev swiper-button-prev-instructor"></div>
+                <div class="swiper-button-next swiper-button-next-instructor"></div>
                 <div class="swiper-wrapper">
                     @foreach ($instructors as $instructor)
                         <div class="swiper-slide">
@@ -162,3 +161,35 @@
         @endif
     </div>
 </section>
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        @if ($instructors->count() > 0)
+            new Swiper('.instructorSwiper', {
+                slidesPerView: 1,
+                spaceBetween: 30,
+                loop: {{ $instructors->count() > 3 ? 'true' : 'false' }},
+                navigation: {
+                    nextEl: '.swiper-button-next-instructor',
+                    prevEl: '.swiper-button-prev-instructor',
+                },
+                breakpoints: {
+                    640: {
+                        slidesPerView: 2,
+                    },
+                    768: {
+                        slidesPerView: 2,
+                    },
+                    1024: {
+                        slidesPerView: 3,
+                    },
+                    1200: {
+                        slidesPerView: 4,
+                    }
+                }
+            });
+        @endif
+    });
+</script>
+@endpush

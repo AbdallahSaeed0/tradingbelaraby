@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Coupon;
 use App\Models\CouponUsage;
+use App\Notifications\CourseEnrollmentNotification;
 use App\Services\Payment\TabbyService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -240,27 +241,52 @@ class CheckoutController extends Controller
                                 'enrolled_at' => now(),
                                 'progress_percentage' => 0,
                             ]);
+                            
+                            // Send enrollment notification email
+                            try {
+                                $user->notify(new CourseEnrollmentNotification($course));
+                            } catch (\Exception $e) {
+                                Log::error('Failed to send enrollment notification', [
+                                    'user_id' => $user->id,
+                                    'course_id' => $course->id,
+                                    'error' => $e->getMessage()
+                                ]);
+                            }
                         }
                     }
                 } else {
                     // Handle individual course
-                    OrderItem::create([
-                        'order_id' => $order->id,
-                        'course_id' => $cartItem->course_id,
-                        'price' => $cartItem->course->price,
-                    ]);
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'course_id' => $cartItem->course_id,
+                    'price' => $cartItem->course->price,
+                ]);
 
                     $enrollmentStatus = ($request->payment_method === 'free') ? 'active' : 'active';
-                    if ($request->payment_method === 'tabby') {
-                        $enrollmentStatus = 'pending';
-                    }
+                if ($request->payment_method === 'tabby') {
+                    $enrollmentStatus = 'pending';
+                }
 
-                    $user->enrollments()->create([
+                $enrollment = $user->enrollments()->create([
+                    'course_id' => $cartItem->course_id,
+                    'status' => $enrollmentStatus,
+                    'enrolled_at' => now(),
+                    'progress_percentage' => 0,
+                ]);
+                
+                // Send enrollment notification email
+                try {
+                    $course = Course::find($cartItem->course_id);
+                    if ($course) {
+                        $user->notify(new CourseEnrollmentNotification($course));
+                    }
+                } catch (\Exception $e) {
+                    Log::error('Failed to send enrollment notification', [
+                        'user_id' => $user->id,
                         'course_id' => $cartItem->course_id,
-                        'status' => $enrollmentStatus,
-                        'enrolled_at' => now(),
-                        'progress_percentage' => 0,
+                        'error' => $e->getMessage()
                     ]);
+                }
                 }
             }
 

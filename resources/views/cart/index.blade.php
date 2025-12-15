@@ -62,14 +62,14 @@
                                                         </div>
                                                     @endif
                                                 @else
-                                                    <img src="{{ $item->course->image_url }}" alt="{{ $item->course->name }}"
-                                                        class="img-fluid rounded shadow-sm img-h-120 w-100" style="object-fit: cover;">
-                                                    @if ($item->course->original_price > $item->course->price && $item->course->price > 0)
-                                                        <div class="position-absolute top-0 start-0 m-2">
-                                                            <span class="badge bg-danger">
-                                                                <i class="fas fa-tag me-1"></i>{{ custom_trans('sale', 'front') }}
-                                                            </span>
-                                                        </div>
+                                                <img src="{{ $item->course->image_url }}" alt="{{ $item->course->name }}"
+                                                    class="img-fluid rounded shadow-sm img-h-120 w-100" style="object-fit: cover;">
+                                                @if ($item->course->original_price > $item->course->price && $item->course->price > 0)
+                                                    <div class="position-absolute top-0 start-0 m-2">
+                                                        <span class="badge bg-danger">
+                                                            <i class="fas fa-tag me-1"></i>{{ custom_trans('sale', 'front') }}
+                                                        </span>
+                                                    </div>
                                                     @endif
                                                 @endif
                                             </div>
@@ -93,30 +93,30 @@
                                                     </div>
                                                 </div>
                                             @else
-                                                <a href="{{ route('courses.show', $item->course->id) }}" class="text-decoration-none">
-                                                    <h5 class="fw-bold mb-2 text-dark hover-primary">{{ $item->course->name }}</h5>
-                                                </a>
-                                                <p class="text-muted mb-2 small">{{ Str::limit($item->course->description, 100) }}</p>
-                                                <div class="course-meta">
-                                                    <div class="d-flex align-items-center mb-2">
-                                                        <div class="me-3">
-                                                            <i class="fas fa-user text-primary me-1"></i>
-                                                            <small class="text-muted">
-                                                                {{ $item->course->instructor->name ?? custom_trans('Unknown Instructor', 'front') }}
-                                                            </small>
-                                                        </div>
-                                                        <div>
-                                                            <i class="fas fa-star text-warning me-1"></i>
-                                                            <small class="text-muted">{{ number_format($item->course->average_rating ?? 0, 1) }}</small>
-                                                        </div>
+                                            <a href="{{ route('courses.show', $item->course->id) }}" class="text-decoration-none">
+                                                <h5 class="fw-bold mb-2 text-dark hover-primary">{{ $item->course->name }}</h5>
+                                            </a>
+                                            <p class="text-muted mb-2 small">{{ Str::limit($item->course->description, 100) }}</p>
+                                            <div class="course-meta">
+                                                <div class="d-flex align-items-center mb-2">
+                                                    <div class="me-3">
+                                                        <i class="fas fa-user text-primary me-1"></i>
+                                                        <small class="text-muted">
+                                                            {{ $item->course->instructor->name ?? custom_trans('Unknown Instructor', 'front') }}
+                                                        </small>
                                                     </div>
-                                                    <div class="d-flex align-items-center text-muted small">
-                                                        <i class="fas fa-clock me-1"></i>
-                                                        <span class="me-3">{{ $item->course->duration ?? custom_trans('Not Found', 'front') }}</span>
-                                                        <i class="fas fa-users me-1"></i>
-                                                        <span>{{ $item->course->enrolled_students ?? 0 }} {{ custom_trans('students', 'front') }}</span>
+                                                    <div>
+                                                        <i class="fas fa-star text-warning me-1"></i>
+                                                        <small class="text-muted">{{ number_format($item->course->average_rating ?? 0, 1) }}</small>
                                                     </div>
                                                 </div>
+                                                <div class="d-flex align-items-center text-muted small">
+                                                    <i class="fas fa-clock me-1"></i>
+                                                    <span class="me-3">{{ $item->course->duration ?? custom_trans('Not Found', 'front') }}</span>
+                                                    <i class="fas fa-users me-1"></i>
+                                                    <span>{{ $item->course->enrolled_students ?? 0 }} {{ custom_trans('students', 'front') }}</span>
+                                                </div>
+                                            </div>
                                             @endif
                                         </div>
                                         <div class="col-md-3 text-md-end">
