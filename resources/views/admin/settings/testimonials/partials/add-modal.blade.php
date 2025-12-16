@@ -29,8 +29,8 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="position" class="form-label">{{ custom_trans('Position', 'admin') }} *</label>
-                                <input type="text" class="form-control" id="position" name="position" required>
+                                <label for="position" class="form-label">{{ custom_trans('Position', 'admin') }}</label>
+                                <input type="text" class="form-control" id="position" name="position">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -43,8 +43,8 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="company" class="form-label">{{ custom_trans('Company', 'admin') }} *</label>
-                                <input type="text" class="form-control" id="company" name="company" required>
+                                <label for="company" class="form-label">{{ custom_trans('Company', 'admin') }}</label>
+                                <input type="text" class="form-control" id="company" name="company">
                             </div>
                         </div>
                         <div class="col-md-6">

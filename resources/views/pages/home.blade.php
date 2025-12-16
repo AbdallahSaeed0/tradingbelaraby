@@ -155,7 +155,67 @@
                     }
                 ]
             });
+
+            // Initialize read more functionality for testimonials
+            initTestimonialReadMore();
+            
+            // Reinitialize after slider changes (when navigating slides)
+            $('.testimonial-slider').on('afterChange', function() {
+                initTestimonialReadMore();
+            });
         });
+
+        // Read More/Less functionality for testimonial text
+        function initTestimonialReadMore() {
+            $('.testimonial-text-wrapper').each(function() {
+                const $wrapper = $(this);
+                const $text = $wrapper.find('.testimonial-text');
+                const $btn = $wrapper.find('.btn-read-more');
+                const $readMoreText = $btn.find('.read-more-text');
+                const $readLessText = $btn.find('.read-less-text');
+                
+                // Remove any existing event handlers and reset state
+                $btn.off('click');
+                $text.removeClass('truncated');
+                
+                // Temporarily remove truncated class to measure full height
+                const originalHeight = $text[0].scrollHeight;
+                const lineHeight = parseFloat($text.css('line-height')) || parseFloat(window.getComputedStyle($text[0]).lineHeight);
+                const maxHeight = lineHeight * 4; // 4 lines
+                
+                // If text height exceeds 4 lines, enable read more
+                if (originalHeight > maxHeight) {
+                    $text.addClass('truncated');
+                    $btn.removeClass('d-none');
+                    $readMoreText.removeClass('d-none');
+                    $readLessText.addClass('d-none');
+                    
+                    // Handle read more/less click
+                    $btn.on('click', function(e) {
+                        e.preventDefault();
+                        
+                        if ($text.hasClass('truncated')) {
+                            // Expand
+                            $text.removeClass('truncated');
+                            $readMoreText.addClass('d-none');
+                            $readLessText.removeClass('d-none');
+                        } else {
+                            // Collapse
+                            $text.addClass('truncated');
+                            $readMoreText.removeClass('d-none');
+                            $readLessText.addClass('d-none');
+                            
+                            // Scroll the text into view if needed
+                            $text[0].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        }
+                    });
+                } else {
+                    // Text is short enough, hide the button
+                    $btn.addClass('d-none');
+                    $text.removeClass('truncated');
+                }
+            });
+        }
 
         var videoModal = document.getElementById('videoModal');
         var youtubeVideo = document.getElementById('youtubeVideo');

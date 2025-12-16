@@ -51,9 +51,9 @@ class TestimonialsController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'name_ar' => 'nullable|string|max:255',
-            'position' => 'required|string|max:255',
+            'position' => 'nullable|string|max:255',
             'position_ar' => 'nullable|string|max:255',
-            'company' => 'required|string|max:255',
+            'company' => 'nullable|string|max:255',
             'company_ar' => 'nullable|string|max:255',
             'content' => 'nullable|string',
             'content_ar' => 'nullable|string',
@@ -132,9 +132,9 @@ class TestimonialsController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'name_ar' => 'nullable|string|max:255',
-            'position' => 'required|string|max:255',
+            'position' => 'nullable|string|max:255',
             'position_ar' => 'nullable|string|max:255',
-            'company' => 'required|string|max:255',
+            'company' => 'nullable|string|max:255',
             'company_ar' => 'nullable|string|max:255',
             'content' => 'nullable|string',
             'content_ar' => 'nullable|string',

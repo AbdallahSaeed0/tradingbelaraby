@@ -393,6 +393,7 @@
 .form-check-input {
     width: 3rem;
     height: 1.5rem;
+    float: none !important;
     border-radius: 1rem;
     background-color: #e9ecef;
     border: 2px solid #e9ecef;

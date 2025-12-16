@@ -23,9 +23,15 @@
                         <div class="testimonial-quote mb-3">
                             <i class="fas fa-quote-right fa-2x text-warning"></i>
                         </div>
-                        
+
                         @if ($testimonial->getDisplayContent())
-                            <p class="testimonial-text mb-4">{{ $testimonial->getDisplayContent() }}</p>
+                            <div class="testimonial-text-wrapper mb-4">
+                                <p class="testimonial-text mb-0">{{ $testimonial->getDisplayContent() }}</p>
+                                <button class="btn-read-more btn btn-link p-0 mt-2 text-warning d-none" type="button">
+                                    <span class="read-more-text">{{ custom_trans('Read more', 'front') }}</span>
+                                    <span class="read-less-text d-none">{{ custom_trans('Read less', 'front') }}</span>
+                                </button>
+                            </div>
                         @endif
 
                         <!-- Voice Recording Player -->
@@ -33,16 +39,47 @@
                             <div class="testimonial-voice-wrapper mb-4">
                                 <div class="testimonial-voice-header mb-2">
                                     <i class="fas fa-microphone text-warning me-2"></i>
-                                    <span class="text-muted small">{{ custom_trans('Voice Testimonial', 'front') }}</span>
+                                    <span
+                                        class="text-muted small">{{ custom_trans('Voice Testimonial', 'front') }}</span>
                                 </div>
                                 <div class="testimonial-voice-player">
-                                    <audio controls class="testimonial-audio-player">
-                                        <source src="{{ $testimonial->voice_playback_url }}" type="audio/mpeg">
-                                        <source src="{{ $testimonial->voice_playback_url }}" type="audio/wav">
-                                        <source src="{{ $testimonial->voice_playback_url }}" type="audio/mp4">
-                                        <source src="{{ $testimonial->voice_playback_url }}" type="audio/ogg">
-                                        {{ custom_trans('Your browser does not support the audio element.', 'front') }}
-                                    </audio>
+                                    @php
+                                        $isGoogleDrive =
+                                            strpos($testimonial->voice_playback_url, 'drive.google.com') !== false;
+                                    @endphp
+                                    @if ($isGoogleDrive)
+                                        {{-- Google Drive audio - extract file ID and use direct link --}}
+                                        @php
+                                            preg_match(
+                                                '/\/file\/d\/([a-zA-Z0-9_-]+)/',
+                                                $testimonial->voice_playback_url,
+                                                $matches,
+                                            );
+                                            $fileId = $matches[1] ?? null;
+                                            if ($fileId) {
+                                                // Use direct download link (works if file is publicly shared)
+                                                $audioUrl = 'https://drive.google.com/uc?export=download&id=' . $fileId;
+                                            } else {
+                                                $audioUrl = $testimonial->voice_playback_url;
+                                            }
+                                        @endphp
+                                        <audio controls class="testimonial-audio-player" preload="metadata">
+                                            <source src="{{ $audioUrl }}" type="audio/mpeg">
+                                            <source src="{{ $audioUrl }}" type="audio/wav">
+                                            <source src="{{ $audioUrl }}" type="audio/mp4">
+                                            <source src="{{ $audioUrl }}" type="audio/ogg">
+                                            {{ custom_trans('Your browser does not support the audio element.', 'front') }}
+                                        </audio>
+                                    @else
+                                        {{-- Regular audio file --}}
+                                        <audio controls class="testimonial-audio-player">
+                                            <source src="{{ $testimonial->voice_playback_url }}" type="audio/mpeg">
+                                            <source src="{{ $testimonial->voice_playback_url }}" type="audio/wav">
+                                            <source src="{{ $testimonial->voice_playback_url }}" type="audio/mp4">
+                                            <source src="{{ $testimonial->voice_playback_url }}" type="audio/ogg">
+                                            {{ custom_trans('Your browser does not support the audio element.', 'front') }}
+                                        </audio>
+                                    @endif
                                 </div>
                             </div>
                         @endif
@@ -61,8 +98,18 @@
                                 alt="{{ $testimonial->getDisplayName() }}">
                         </div>
                         <h5 class="mb-0">{{ $testimonial->getDisplayName() }}</h5>
-                        <small class="text-muted">{{ $testimonial->getDisplayPosition() }} at
-                            {{ $testimonial->getDisplayCompany() }}</small>
+                        @if ($testimonial->getDisplayPosition() || $testimonial->getDisplayCompany())
+                            <small class="text-muted">
+                                @if ($testimonial->getDisplayPosition() && $testimonial->getDisplayCompany())
+                                    {{ $testimonial->getDisplayPosition() }} {{ custom_trans('at', 'front') }}
+                                    {{ $testimonial->getDisplayCompany() }}
+                                @elseif ($testimonial->getDisplayPosition())
+                                    {{ $testimonial->getDisplayPosition() }}
+                                @else
+                                    {{ $testimonial->getDisplayCompany() }}
+                                @endif
+                            </small>
+                        @endif
                     </div>
                 @endforeach
             @else
@@ -91,9 +138,15 @@
                         <div class="testimonial-quote mb-3">
                             <i class="fas fa-quote-right fa-2x text-warning"></i>
                         </div>
-                        <p class="testimonial-text mb-4">
-                            {{ custom_trans('It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.', 'front') }}
-                        </p>
+                        <div class="testimonial-text-wrapper mb-4">
+                            <p class="testimonial-text mb-0">
+                                {{ custom_trans('It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.', 'front') }}
+                            </p>
+                            <button class="btn-read-more btn btn-link p-0 mt-2 text-warning d-none" type="button">
+                                <span class="read-more-text">{{ custom_trans('Read more', 'front') }}</span>
+                                <span class="read-less-text d-none">{{ custom_trans('Read less', 'front') }}</span>
+                            </button>
+                        </div>
                         <div class="testimonial-avatar-wrapper d-flex justify-content-center mb-2">
                             <img src="{{ $t['img'] }}" class="testimonial-avatar" alt="{{ $t['name'] }}">
                         </div>

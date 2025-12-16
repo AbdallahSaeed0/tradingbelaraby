@@ -3,6 +3,73 @@
 @section('title', 'Edit Course - ' . $course->name)
 
 @section('content')
+    <!-- Define instructor functions BEFORE the dropdown HTML -->
+    <script>
+        window.selectInstructor = function(id, name, element) {
+            try {
+                const container = document.getElementById('selectedInstructors');
+                if (!container) {
+                    alert('Error: Container not found. ID: selectedInstructors');
+                    return false;
+                }
+                
+                // Check if already selected
+                const existingTag = container.querySelector('[data-id="' + id + '"]');
+                if (existingTag) {
+                    return false; // Already selected
+                }
+                
+                // Create tag
+                const tag = document.createElement('div');
+                tag.className = 'instructor-tag';
+                tag.setAttribute('data-id', id);
+                tag.innerHTML = '<span>' + name + '</span><i class="fa fa-times remove-instructor" onclick="removeInstructor(' + id + ')"></i><input type="hidden" name="instructor_ids[]" value="' + id + '">';
+                container.appendChild(tag);
+                
+                // Mark as selected
+                if (element) {
+                    element.classList.add('selected');
+                }
+                
+                // Show container if it has instructors
+                if (container.children.length > 0) {
+                    container.classList.add('has-instructors');
+                }
+                
+                return false;
+            } catch (e) {
+                alert('Error in selectInstructor: ' + e.message);
+                return false;
+            }
+        };
+        
+        window.removeInstructor = function(id) {
+            try {
+                const container = document.getElementById('selectedInstructors');
+                if (!container) {
+                    return;
+                }
+                
+                const tag = container.querySelector('[data-id="' + id + '"]');
+                if (tag) {
+                    tag.remove();
+                    
+                    // Re-enable the option in dropdown
+                    const option = document.querySelector('.instructor-option[data-id="' + id + '"]');
+                    if (option) {
+                        option.classList.remove('selected');
+                    }
+                    
+                    // Hide container if no instructors
+                    if (container.children.length === 0) {
+                        container.classList.remove('has-instructors');
+                    }
+                }
+            } catch (e) {
+                alert('Error in removeInstructor: ' + e.message);
+            }
+        };
+    </script>
     <div class="container-fluid py-4">
         <!-- Page Header -->
         <div class="row mb-4">
@@ -121,7 +188,7 @@
                                             <i class="fa fa-plus me-2"></i>Add Instructor
                                         </button>
                                         <ul class="dropdown-menu w-100 max-h-300 overflow-auto"
-                                            aria-labelledby="instructorDropdown">
+                                            aria-labelledby="instructorDropdown" id="instructorDropdownMenu">
                                             <li class="px-3 py-2">
                                                 <input type="text" class="form-control form-control-sm"
                                                     id="instructorSearch" placeholder="Search instructors..."
@@ -133,9 +200,10 @@
                                             @foreach ($instructors as $instructor)
                                                 <li>
                                                     <a class="dropdown-item instructor-option {{ in_array($instructor->id, $course->instructors->pluck('id')->toArray()) ? 'selected' : '' }}"
-                                                        href="#" data-id="{{ $instructor->id }}"
+                                                        href="javascript:void(0)" data-id="{{ $instructor->id }}"
                                                         data-name="{{ $instructor->name }}"
-                                                        data-email="{{ $instructor->email ?? '' }}">
+                                                        data-email="{{ $instructor->email ?? '' }}"
+                                                        onclick="selectInstructor({{ $instructor->id }}, '{{ addslashes($instructor->name) }}', this); return false;">
                                                         <div class="d-flex align-items-center">
                                                             <div class="instructor-avatar me-2">
                                                                 {{ strtoupper(substr($instructor->name, 0, 2)) }}
@@ -797,6 +865,7 @@
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function() {
             let sectionCounter = 0;
             let lectureCounter = 0;
 
@@ -1203,11 +1272,21 @@
             // Instructor Selector functionality
             const selectedInstructorsContainer = document.getElementById('selectedInstructors');
             const selectedInstructors = new Set();
+            let instructorDropdownInstance = null;
 
             // Initialize with existing instructors
             document.querySelectorAll('.instructor-tag').forEach(tag => {
                 selectedInstructors.add(tag.dataset.id);
             });
+            
+            // selectInstructor is already defined above, outside DOMContentLoaded
+            
+            // Initialize Bootstrap dropdown instance
+            const instructorDropdown = document.getElementById('instructorDropdown');
+            const instructorDropdownMenu = document.getElementById('instructorDropdownMenu');
+            
+            // Let Bootstrap handle the dropdown naturally, but prevent closing on menu clicks
+            // Don't interfere with Bootstrap's default behavior for opening
 
             // Search functionality
             const instructorSearch = document.getElementById('instructorSearch');
@@ -1235,23 +1314,42 @@
                 });
             }
 
-            // Handle instructor selection
-            document.querySelectorAll('.instructor-option').forEach(option => {
-                option.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const id = this.dataset.id;
-                    const name = this.dataset.name;
-
+            // Additional event handlers as backup (inline onclick should work, but this is backup)
+            document.addEventListener('click', function(e) {
+                const option = e.target.closest('.instructor-option');
+                if (option && option.dataset.id && option.dataset.name) {
+                    const id = option.dataset.id;
+                    const name = option.dataset.name;
+                    
                     if (!selectedInstructors.has(id)) {
+                        e.preventDefault();
+                        e.stopPropagation();
                         selectedInstructors.add(id);
                         addInstructorTag(id, name);
-                        this.classList.add('selected');
+                        option.classList.add('selected');
                         updateRequiredValidation();
                     }
+                }
+            }, true); // Use capture phase
+            
+            // Prevent Bootstrap dropdown from closing when clicking inside menu
+            if (instructorDropdown) {
+                instructorDropdown.addEventListener('hide.bs.dropdown', function(e) {
+                    const clickEvent = e.clickEvent;
+                    if (clickEvent) {
+                        const target = clickEvent.target;
+                        if (target && instructorDropdownMenu && instructorDropdownMenu.contains(target)) {
+                            e.preventDefault();
+                        }
+                    }
                 });
-            });
+            }
 
             function addInstructorTag(id, name) {
+                if (!selectedInstructorsContainer) {
+                    return;
+                }
+                
                 const tag = document.createElement('div');
                 tag.className = 'instructor-tag';
                 tag.dataset.id = id;
@@ -1264,18 +1362,16 @@
                 toggleSelectedContainer();
             }
 
+            // removeInstructor is already defined above, outside DOMContentLoaded
+            // But we can update the selectedInstructors Set here if needed
+            const originalRemoveInstructor = window.removeInstructor;
             window.removeInstructor = function(id) {
-                const tag = selectedInstructorsContainer.querySelector(`[data-id="${id}"]`);
-                if (tag) {
-                    tag.remove();
+                // Call the original function
+                originalRemoveInstructor(id);
+                
+                // Update the Set
+                if (selectedInstructors) {
                     selectedInstructors.delete(id.toString());
-
-                    // Re-enable the option in dropdown
-                    const option = document.querySelector(`.instructor-option[data-id="${id}"]`);
-                    if (option) {
-                        option.classList.remove('selected');
-                    }
-
                     toggleSelectedContainer();
                     updateRequiredValidation();
                 }

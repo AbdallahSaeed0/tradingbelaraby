@@ -49,17 +49,51 @@ class Testimonial extends Model
      */
     public function getVoicePlaybackUrlAttribute()
     {
-        // If voice_url column is set (Google Drive link), return it directly
+        // If voice_url column is set (Google Drive link), convert to playable URL
         if (!empty($this->attributes['voice_url'] ?? null)) {
-            return $this->attributes['voice_url'];
+            return $this->convertGoogleDriveUrl($this->attributes['voice_url']);
         }
-        
+
         // Otherwise, return the uploaded file URL
         if (!empty($this->attributes['voice'] ?? null)) {
             return asset('storage/' . $this->attributes['voice']);
         }
 
         return null;
+    }
+
+    /**
+     * Convert Google Drive share link to direct playable URL
+     */
+    protected function convertGoogleDriveUrl($url)
+    {
+        // Check if it's a Google Drive URL
+        if (strpos($url, 'drive.google.com') !== false) {
+            // Extract file ID from various Google Drive URL formats
+            $fileId = null;
+
+            // Format: https://drive.google.com/file/d/FILE_ID/view...
+            if (preg_match('/\/file\/d\/([a-zA-Z0-9_-]+)/', $url, $matches)) {
+                $fileId = $matches[1];
+            }
+            // Format: https://drive.google.com/open?id=FILE_ID
+            elseif (preg_match('/[?&]id=([a-zA-Z0-9_-]+)/', $url, $matches)) {
+                $fileId = $matches[1];
+            }
+            // Format: https://drive.google.com/uc?id=FILE_ID or /uc?export=download&id=FILE_ID
+            elseif (preg_match('/\/uc\?.*id=([a-zA-Z0-9_-]+)/', $url, $matches)) {
+                $fileId = $matches[1];
+            }
+
+            if ($fileId) {
+                // Use the view/stream URL format which works better with audio/video elements
+                // This format allows direct streaming for publicly shared files
+                return 'https://drive.google.com/uc?export=view&id=' . $fileId;
+            }
+        }
+
+        // Return original URL if not a Google Drive link or couldn't extract ID
+        return $url;
     }
 
     /**

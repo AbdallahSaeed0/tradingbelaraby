@@ -11,7 +11,6 @@
             </div>
             <form id="editTestimonialForm" enctype="multipart/form-data">
                 @csrf
-                @method('PUT')
                 <input type="hidden" id="edit_testimonial_id" name="testimonial_id">
                 <div class="modal-body">
                     <div class="row">
@@ -31,8 +30,8 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="edit_position" class="form-label">{{ custom_trans('Position', 'admin') }} *</label>
-                                <input type="text" class="form-control" id="edit_position" name="position" required>
+                                <label for="edit_position" class="form-label">{{ custom_trans('Position', 'admin') }}</label>
+                                <input type="text" class="form-control" id="edit_position" name="position">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -45,8 +44,8 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="edit_company" class="form-label">{{ custom_trans('Company', 'admin') }} *</label>
-                                <input type="text" class="form-control" id="edit_company" name="company" required>
+                                <label for="edit_company" class="form-label">{{ custom_trans('Company', 'admin') }}</label>
+                                <input type="text" class="form-control" id="edit_company" name="company">
                             </div>
                         </div>
                         <div class="col-md-6">

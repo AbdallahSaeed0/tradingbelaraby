@@ -425,16 +425,17 @@
                     } else if (testimonial.voice) {
                         // Uploaded file
                         $('#edit_current_voice_player').attr('src', `/storage/${testimonial.voice}`);
+                        $('#edit_voice_url').val(''); // Clear URL field if using uploaded file
                     }
                     $('#edit_remove_voice').prop('checked', false);
                 } else {
                     $('#edit_current_voice_container').hide();
                     $('#edit_current_voice_player').attr('src', '');
+                    $('#edit_voice_url').val(''); // Clear URL field if no voice
                 }
 
-                // Clear file inputs
+                // Clear file inputs (but preserve voice_url if it was set above)
                 $('#edit_voice').val('');
-                $('#edit_voice_url').val('');
                 $('#edit_avatar').val('');
 
                 $('#editTestimonialModal').modal('show');
@@ -570,6 +571,11 @@
 
                 const testimonialId = $('#edit_testimonial_id').val();
                 const formData = new FormData(this);
+                
+                // Ensure we're using POST method (route expects POST, not PUT)
+                // Remove any _method field that might have been added
+                formData.delete('_method');
+                
                 const submitBtn = $(this).find('button[type="submit"]');
                 const originalText = submitBtn.html();
 
@@ -579,10 +585,14 @@
 
                 $.ajax({
                     url: `/admin/settings/testimonials/${testimonialId}`,
+                    type: 'POST',
                     method: 'POST',
                     data: formData,
                     processData: false,
                     contentType: false,
+                    headers: {
+                        'X-HTTP-Method-Override': undefined
+                    },
                     success: function(response) {
                         if (response.success) {
                             toastr.success(response.message);
