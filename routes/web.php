@@ -41,21 +41,39 @@ Route::middleware('guest')->group(function () {
 });
 
 // Email Verification Routes
+// Verification notice page (requires auth)
 Route::middleware(['auth'])->group(function () {
     Route::get('/email/verify', function () {
         return view('auth.verify-email');
     })->name('verification.notice');
-    
-    Route::get('/email/verify/{id}/{hash}', function (\Illuminate\Foundation\Auth\EmailVerificationRequest $request) {
-        $request->fulfill();
-        return redirect()->route('home')->with('success', 'Your email has been verified successfully!');
-    })->middleware(['signed'])->name('verification.verify');
-    
+
     Route::post('/email/verification-notification', function (Request $request) {
         $request->user()->sendEmailVerificationNotification();
         return back()->with('success', 'Verification link sent! Please check your email.');
     })->middleware(['throttle:6,1'])->name('verification.send');
 });
+
+// Email verification link (works without auth - uses signed URL for security)
+Route::get('/email/verify/{id}/{hash}', function (\Illuminate\Http\Request $request) {
+    $user = \App\Models\User::findOrFail($request->route('id'));
+
+    if (! hash_equals((string) $request->route('hash'), sha1($user->getEmailForVerification()))) {
+        throw new \Illuminate\Auth\Access\AuthorizationException;
+    }
+
+    if ($user->hasVerifiedEmail()) {
+        return redirect()->route('login')->with('info', 'Your email is already verified. Please log in.');
+    }
+
+    if ($user->markEmailAsVerified()) {
+        event(new \Illuminate\Auth\Events\Verified($user));
+    }
+
+    // Auto-login the user after verification
+    \Illuminate\Support\Facades\Auth::login($user);
+
+    return redirect()->route('home')->with('success', 'Your email has been verified successfully! You are now logged in.');
+})->middleware(['signed'])->name('verification.verify');
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
@@ -332,10 +350,10 @@ Route::resource('quizzes.questions', App\Http\Controllers\Admin\QuizQuestionMana
     Route::get('/subscribers/export', [App\Http\Controllers\Admin\SubscriberController::class, 'export'])->name('subscribers.export')->middleware('admin.permission:manage_users');
     Route::post('/subscribers/bulk-delete', [App\Http\Controllers\Admin\SubscriberController::class, 'bulkDelete'])->name('subscribers.bulk-delete')->middleware('admin.permission:manage_users');
     Route::resource('subscribers', App\Http\Controllers\Admin\SubscriberController::class)->only(['index', 'show', 'destroy'])->middleware('admin.permission:manage_users');
-    
+
     // Bundle management routes
     Route::resource('bundles', App\Http\Controllers\Admin\BundlesController::class)->middleware('admin.permission:manage_courses');
-    
+
     // Coupon management routes
     Route::resource('coupons', App\Http\Controllers\Admin\CouponsController::class)->middleware('admin.permission:manage_courses');
 
