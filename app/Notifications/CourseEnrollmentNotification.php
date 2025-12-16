@@ -12,7 +12,7 @@ class CourseEnrollmentNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    protected $course;
+    public $course;
 
     /**
      * Create a new notification instance.
@@ -38,7 +38,7 @@ class CourseEnrollmentNotification extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         $siteName = \App\Models\MainContentSettings::getActive()?->site_name ?? 'Our Platform';
-        
+
         return (new MailMessage)
                     ->subject('New Course Added to Your Account - ' . $this->course->localized_name)
                     ->greeting('Hello ' . $notifiable->name . '!')
