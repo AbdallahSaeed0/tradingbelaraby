@@ -31,15 +31,15 @@ class AuthController extends Controller
         // Attempt default user guard
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $user = Auth::user();
-            
+
             // Check if email is verified
-            if (!$user->hasVerifiedEmail()) {
+            if (!$user->email_verified_at) {
                 Auth::logout();
                 return back()->withErrors([
                     'email' => 'Please verify your email address before logging in. Check your inbox for the verification link.',
                 ])->onlyInput('email');
             }
-            
+
             $request->session()->regenerate();
             return redirect()->intended(route('home'));
         }
