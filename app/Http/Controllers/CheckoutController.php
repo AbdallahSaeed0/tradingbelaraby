@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 
 class CheckoutController extends Controller
 {
@@ -41,12 +42,12 @@ class CheckoutController extends Controller
 
         $discount = 0;
         $coupon = null;
-        
+
         // Check if coupon is stored in session
         if (session()->has('applied_coupon')) {
             $couponCode = session('applied_coupon');
             $coupon = Coupon::where('code', $couponCode)->first();
-            
+
             if ($coupon && $coupon->isValidForUser($user) && $coupon->appliesToCart($cartItems)) {
                 $discount = $coupon->calculateDiscountForCart($cartItems);
             } else {
@@ -170,7 +171,7 @@ class CheckoutController extends Controller
         if (session()->has('applied_coupon')) {
             $couponCode = session('applied_coupon');
             $coupon = Coupon::where('code', $couponCode)->first();
-            
+
             if ($coupon && $coupon->isValidForUser($user) && $coupon->appliesToCart($cartItems)) {
                 $discount = $coupon->calculateDiscountForCart($cartItems);
             }
@@ -241,10 +242,12 @@ class CheckoutController extends Controller
                                 'enrolled_at' => now(),
                                 'progress_percentage' => 0,
                             ]);
-                            
+
                             // Send enrollment notification email
                             try {
-                                $user->notify(new CourseEnrollmentNotification($course));
+                                $language = Session::get('frontend_locale', config('app.locale'));
+                                $language = in_array($language, ['ar', 'en']) ? $language : 'en';
+                                $user->notify(new CourseEnrollmentNotification($course, $order, $language));
                             } catch (\Exception $e) {
                                 Log::error('Failed to send enrollment notification', [
                                     'user_id' => $user->id,
@@ -273,12 +276,14 @@ class CheckoutController extends Controller
                     'enrolled_at' => now(),
                     'progress_percentage' => 0,
                 ]);
-                
+
                 // Send enrollment notification email
                 try {
                     $course = Course::find($cartItem->course_id);
                     if ($course) {
-                        $user->notify(new CourseEnrollmentNotification($course));
+                        $language = Session::get('frontend_locale', config('app.locale'));
+                        $language = in_array($language, ['ar', 'en']) ? $language : 'en';
+                        $user->notify(new CourseEnrollmentNotification($course, $order, $language));
                     }
                 } catch (\Exception $e) {
                     Log::error('Failed to send enrollment notification', [
@@ -298,9 +303,9 @@ class CheckoutController extends Controller
                     'order_id' => $order->id,
                     'used_at' => now(),
                 ]);
-                
+
                 $coupon->incrementUsage();
-                
+
                 // Clear coupon from session
                 session()->forget('applied_coupon');
             }

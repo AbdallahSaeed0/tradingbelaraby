@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Notifications\VerifyEmailNotification;
+use Illuminate\Support\Facades\Session;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -60,5 +62,17 @@ class User extends Authenticatable implements MustVerifyEmail
     public function lectureCompletions(): HasMany
     {
         return $this->hasMany(\App\Models\LectureCompletion::class);
+    }
+
+    /**
+     * Send the email verification notification.
+     */
+    public function sendEmailVerificationNotification()
+    {
+        // Get user's language preference from session or default to 'en'
+        $language = Session::get('frontend_locale', config('app.locale'));
+        $language = in_array($language, ['ar', 'en']) ? $language : 'en';
+
+        $this->notify(new VerifyEmailNotification($language));
     }
 }

@@ -71,6 +71,182 @@
                 alert('Error in removeInstructor: ' + e.message);
             }
         };
+        
+        // Define addSection function immediately at page load
+        console.log('Defining addSection at top of page...');
+        window.sectionCounter = 0;
+        
+        window.addSection = function() {
+            console.log('addSection function called');
+            const template = document.getElementById('sectionTemplate');
+            if (!template) {
+                console.error('Section template not found');
+                alert('Section template not found. Please refresh the page.');
+                return;
+            }
+            
+            const container = document.getElementById('courseSections');
+            if (!container) {
+                console.error('Course sections container not found');
+                alert('Course sections container not found. Please refresh the page.');
+                return;
+            }
+            
+            const clone = template.content.cloneNode(true);
+            const sectionElement = clone.querySelector('.section-item');
+            
+            if (!sectionElement) {
+                console.error('Section element not found in template');
+                return;
+            }
+
+            window.sectionCounter = (window.sectionCounter || 0) + 1;
+            const sectionIndex = window.sectionCounter;
+            sectionElement.dataset.sectionId = sectionIndex;
+
+            // Set proper names for section inputs
+            const titleInput = sectionElement.querySelector('.section-title');
+            const titleArInput = sectionElement.querySelector('.section-title-ar');
+            const descInput = sectionElement.querySelector('.section-description');
+            const descArInput = sectionElement.querySelector('.section-description-ar');
+            
+            if (titleInput) titleInput.name = `sections[${sectionIndex}][title]`;
+            if (titleArInput) titleArInput.name = `sections[${sectionIndex}][title_ar]`;
+            if (descInput) descInput.name = `sections[${sectionIndex}][description]`;
+            if (descArInput) descArInput.name = `sections[${sectionIndex}][description_ar]`;
+
+            // Append to DOM
+            container.appendChild(clone);
+            
+            // Get the actual element from DOM for event listeners
+            const addedSection = container.querySelector(`[data-section-id="${sectionIndex}"]`);
+            if (addedSection) {
+                // Add event listeners
+                const addLectureBtn = addedSection.querySelector('.add-lecture');
+                const removeSectionBtn = addedSection.querySelector('.remove-section');
+                
+                if (addLectureBtn) {
+                    addLectureBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (typeof window.addLecture === 'function') {
+                            window.addLecture(addedSection);
+                        } else {
+                            console.error('addLecture function not found');
+                        }
+                    });
+                }
+                
+                if (removeSectionBtn) {
+                    removeSectionBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        addedSection.remove();
+                    });
+                }
+            }
+            
+            console.log('Section added successfully!');
+        };
+        
+        console.log('addSection function defined:', typeof window.addSection);
+        
+        // Define addLearningObjective function globally
+        window.learningObjectiveCounter = 0;
+        window.addLearningObjective = function() {
+            const index = window.learningObjectiveCounter++;
+            const container = document.getElementById('learningObjectives');
+            if (!container) return;
+            
+            const objectiveDiv = document.createElement('div');
+            objectiveDiv.className = 'learning-objective mb-3 p-3 border rounded';
+            objectiveDiv.innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="form-label">English Learning Objective</label>
+                        <input type="text" class="form-control" name="what_to_learn[]"
+                               placeholder="Enter learning objective in English">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Arabic Learning Objective</label>
+                        <input type="text" class="form-control" name="what_to_learn_ar[]"
+                               placeholder="أدخل هدف التعلم باللغة العربية" dir="rtl">
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <button type="button" class="btn btn-sm btn-outline-danger remove-learning-objective">
+                        <i class="fa fa-trash me-1"></i>Remove
+                    </button>
+                </div>
+            `;
+            
+            container.appendChild(objectiveDiv);
+            
+            const removeBtn = objectiveDiv.querySelector('.remove-learning-objective');
+            if (removeBtn) {
+                removeBtn.addEventListener('click', function() {
+                    objectiveDiv.remove();
+                });
+            }
+        };
+        
+        // Define addFaqItem function globally
+        window.faqItemCounter = 0;
+        window.addFaqItem = function() {
+            const index = window.faqItemCounter++;
+            const container = document.getElementById('faqItems');
+            if (!container) return;
+            
+            const faqDiv = document.createElement('div');
+            faqDiv.className = 'faq-item mb-4 p-3 border rounded bg-light';
+            faqDiv.innerHTML = `
+                <h6 class="mb-3"><i class="fa fa-question-circle me-2"></i>FAQ Item #${index + 1}</h6>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Question (English)</label>
+                        <input type="text" class="form-control" name="faq_course[${index}][question]"
+                               placeholder="Enter question in English">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Question (Arabic)</label>
+                        <input type="text" class="form-control" name="faq_course_ar[${index}][question]"
+                               placeholder="أدخل السؤال باللغة العربية" dir="rtl">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="form-label">Answer (English)</label>
+                        <textarea class="form-control" name="faq_course[${index}][answer]" rows="3"
+                                  placeholder="Enter answer in English"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Answer (Arabic)</label>
+                        <textarea class="form-control" name="faq_course_ar[${index}][answer]" rows="3"
+                                  placeholder="أدخل الإجابة باللغة العربية" dir="rtl"></textarea>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <button type="button" class="btn btn-sm btn-outline-danger remove-faq-item">
+                        <i class="fa fa-trash me-1"></i>Remove FAQ
+                    </button>
+                </div>
+            `;
+            
+            container.appendChild(faqDiv);
+            
+            const removeBtn = faqDiv.querySelector('.remove-faq-item');
+            if (removeBtn) {
+                removeBtn.addEventListener('click', function() {
+                    faqDiv.remove();
+                });
+            }
+        };
+        
+        console.log('All functions defined:', {
+            addSection: typeof window.addSection,
+            addLearningObjective: typeof window.addLearningObjective,
+            addFaqItem: typeof window.addFaqItem
+        });
     </script>
 
     <div class="container-fluid py-4">
@@ -253,6 +429,64 @@
                                 <button type="button" class="btn btn-sm btn-outline-primary" id="addSection">
                                     <i class="fa fa-plus me-1"></i>Add Section
                                 </button>
+                                <script>
+                                    // Define function and attach event immediately after button
+                                    (function() {
+                                        const btn = document.getElementById('addSection');
+                                        if (btn) {
+                                            btn.addEventListener('click', function(e) {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                
+                                                if (typeof window.addSection === 'function') {
+                                                    window.addSection();
+                                                } else {
+                                                    // Fallback: do it inline
+                                                    console.log('addSection not found, using inline code');
+                                                    const template = document.getElementById('sectionTemplate');
+                                                    const container = document.getElementById('courseSections');
+                                                    
+                                                    if (!template || !container) {
+                                                        alert('Required elements not found. Please refresh the page.');
+                                                        return;
+                                                    }
+                                                    
+                                                    const clone = template.content.cloneNode(true);
+                                                    const sectionElement = clone.querySelector('.section-item');
+                                                    if (!sectionElement) return;
+                                                    
+                                                    window.sectionCounter = (window.sectionCounter || 0) + 1;
+                                                    const idx = window.sectionCounter;
+                                                    sectionElement.dataset.sectionId = idx;
+                                                    
+                                                    const titleInput = sectionElement.querySelector('.section-title');
+                                                    const titleArInput = sectionElement.querySelector('.section-title-ar');
+                                                    const descInput = sectionElement.querySelector('.section-description');
+                                                    const descArInput = sectionElement.querySelector('.section-description-ar');
+                                                    
+                                                    if (titleInput) titleInput.name = `sections[${idx}][title]`;
+                                                    if (titleArInput) titleArInput.name = `sections[${idx}][title_ar]`;
+                                                    if (descInput) descInput.name = `sections[${idx}][description]`;
+                                                    if (descArInput) descArInput.name = `sections[${idx}][description_ar]`;
+                                                    
+                                                    container.appendChild(clone);
+                                                    
+                                                    const addedSection = container.querySelector(`[data-section-id="${idx}"]`);
+                                                    if (addedSection) {
+                                                        const removeBtn = addedSection.querySelector('.remove-section');
+                                                        if (removeBtn) {
+                                                            removeBtn.addEventListener('click', function() {
+                                                                addedSection.remove();
+                                                            });
+                                                        }
+                                                    }
+                                                    
+                                                    console.log('Section added via inline code');
+                                                }
+                                            });
+                                        }
+                                    })();
+                                </script>
                             </div>
                         </div>
                         <div id="courseSections">
@@ -271,6 +505,67 @@
                                 <i class="fa fa-plus me-1"></i>Add Learning Objective
                             </button>
                         </div>
+                        <script>
+                            // Define function and attach event immediately after button
+                            (function() {
+                                const btn = document.getElementById('addLearningObjective');
+                                if (btn) {
+                                    btn.addEventListener('click', function(e) {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        
+                                        if (typeof window.addLearningObjective === 'function') {
+                                            window.addLearningObjective();
+                                        } else {
+                                            // Fallback: do it inline
+                                            console.log('addLearningObjective not found, using inline code');
+                                            const container = document.getElementById('learningObjectives');
+                                            if (!container) {
+                                                alert('Learning objectives container not found.');
+                                                return;
+                                            }
+                                            
+                                            window.learningObjectiveCounter = (window.learningObjectiveCounter || 0) + 1;
+                                            const index = window.learningObjectiveCounter - 1;
+                                            
+                                            const objectiveDiv = document.createElement('div');
+                                            objectiveDiv.className = 'learning-objective mb-3 p-3 border rounded';
+                                            objectiveDiv.innerHTML = `
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">English Learning Objective</label>
+                                                        <input type="text" class="form-control" name="what_to_learn[]"
+                                                               placeholder="Enter learning objective in English">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Arabic Learning Objective</label>
+                                                        <input type="text" class="form-control" name="what_to_learn_ar[]"
+                                                               placeholder="أدخل هدف التعلم باللغة العربية" dir="rtl">
+                                                    </div>
+                                                </div>
+                                                <div class="mt-2">
+                                                    <button type="button" class="btn btn-sm btn-outline-danger remove-learning-objective">
+                                                        <i class="fa fa-trash me-1"></i>Remove
+                                                    </button>
+                                                </div>
+                                            `;
+                                            
+                                            container.appendChild(objectiveDiv);
+                                            
+                                            // Remove learning objective event
+                                            const removeBtn = objectiveDiv.querySelector('.remove-learning-objective');
+                                            if (removeBtn) {
+                                                removeBtn.addEventListener('click', function() {
+                                                    objectiveDiv.remove();
+                                                });
+                                            }
+                                            
+                                            console.log('Learning objective added via inline code');
+                                        }
+                                    });
+                                }
+                            })();
+                        </script>
 
                         <div id="learningObjectives">
                             <!-- Learning objectives will be added here -->
@@ -288,6 +583,80 @@
                                 <i class="fa fa-plus me-1"></i>Add FAQ Item
                             </button>
                         </div>
+                        <script>
+                            // Define function and attach event immediately after button
+                            (function() {
+                                const btn = document.getElementById('addFaqItem');
+                                if (btn) {
+                                    btn.addEventListener('click', function(e) {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        
+                                        if (typeof window.addFaqItem === 'function') {
+                                            window.addFaqItem();
+                                        } else {
+                                            // Fallback: do it inline
+                                            console.log('addFaqItem not found, using inline code');
+                                            const container = document.getElementById('faqItems');
+                                            if (!container) {
+                                                alert('FAQ items container not found.');
+                                                return;
+                                            }
+                                            
+                                            window.faqItemCounter = (window.faqItemCounter || 0) + 1;
+                                            const index = window.faqItemCounter - 1;
+                                            
+                                            const faqDiv = document.createElement('div');
+                                            faqDiv.className = 'faq-item mb-4 p-3 border rounded bg-light';
+                                            faqDiv.innerHTML = `
+                                                <h6 class="mb-3"><i class="fa fa-question-circle me-2"></i>FAQ Item #${index + 1}</h6>
+                                                <div class="row mb-3">
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Question (English)</label>
+                                                        <input type="text" class="form-control" name="faq_course[${index}][question]"
+                                                               placeholder="Enter question in English">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Question (Arabic)</label>
+                                                        <input type="text" class="form-control" name="faq_course_ar[${index}][question]"
+                                                               placeholder="أدخل السؤال باللغة العربية" dir="rtl">
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Answer (English)</label>
+                                                        <textarea class="form-control" name="faq_course[${index}][answer]" rows="3"
+                                                                  placeholder="Enter answer in English"></textarea>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Answer (Arabic)</label>
+                                                        <textarea class="form-control" name="faq_course_ar[${index}][answer]" rows="3"
+                                                                  placeholder="أدخل الإجابة باللغة العربية" dir="rtl"></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="mt-2">
+                                                    <button type="button" class="btn btn-sm btn-outline-danger remove-faq-item">
+                                                        <i class="fa fa-trash me-1"></i>Remove FAQ
+                                                    </button>
+                                                </div>
+                                            `;
+                                            
+                                            container.appendChild(faqDiv);
+                                            
+                                            // Remove FAQ event
+                                            const removeBtn = faqDiv.querySelector('.remove-faq-item');
+                                            if (removeBtn) {
+                                                removeBtn.addEventListener('click', function() {
+                                                    faqDiv.remove();
+                                                });
+                                            }
+                                            
+                                            console.log('FAQ item added via inline code');
+                                        }
+                                    });
+                                }
+                            })();
+                        </script>
 
                         <div id="faqItems">
                             <!-- FAQ items will be added here -->
@@ -533,9 +902,99 @@
 
 @push('scripts')
     <script>
+        console.log('Course form script loading...');
+        
+        // Define variables and functions in global scope so they're available immediately
+        let sectionCounter = 0;
+        let lectureCounter = 0;
+        
+        // Define addSection function globally BEFORE DOMContentLoaded
+        window.addSection = function() {
+            console.log('addSection function called');
+            const template = document.getElementById('sectionTemplate');
+            if (!template) {
+                console.error('Section template not found');
+                alert('Section template not found. Please refresh the page.');
+                return;
+            }
+            
+            const container = document.getElementById('courseSections');
+            if (!container) {
+                console.error('Course sections container not found');
+                alert('Course sections container not found. Please refresh the page.');
+                return;
+            }
+            
+            console.log('Cloning template...');
+            const clone = template.content.cloneNode(true);
+            const sectionElement = clone.querySelector('.section-item');
+            
+            if (!sectionElement) {
+                console.error('Section element not found in template');
+                alert('Section element not found in template.');
+                return;
+            }
+
+            sectionCounter++;
+            const sectionIndex = sectionCounter;
+            sectionElement.dataset.sectionId = sectionIndex;
+            console.log('Created section with index:', sectionIndex);
+
+            // Set proper names for section inputs
+            const titleInput = sectionElement.querySelector('.section-title');
+            const titleArInput = sectionElement.querySelector('.section-title-ar');
+            const descInput = sectionElement.querySelector('.section-description');
+            const descArInput = sectionElement.querySelector('.section-description-ar');
+            
+            if (titleInput) titleInput.name = `sections[${sectionIndex}][title]`;
+            if (titleArInput) titleArInput.name = `sections[${sectionIndex}][title_ar]`;
+            if (descInput) descInput.name = `sections[${sectionIndex}][description]`;
+            if (descArInput) descArInput.name = `sections[${sectionIndex}][description_ar]`;
+
+            // Append to DOM first
+            console.log('Appending section to DOM...');
+            container.appendChild(clone);
+            
+            // Now get the actual element from DOM for event listeners
+            const addedSection = container.querySelector(`[data-section-id="${sectionIndex}"]`);
+            if (!addedSection) {
+                console.error('Added section not found in DOM');
+                alert('Failed to add section. Please try again.');
+                return;
+            }
+
+            console.log('Section added successfully, setting up event listeners...');
+            // Add event listeners using the actual DOM element
+            const addLectureBtn = addedSection.querySelector('.add-lecture');
+            const removeSectionBtn = addedSection.querySelector('.remove-section');
+            
+            if (addLectureBtn) {
+                addLectureBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (typeof window.addLecture === 'function') {
+                        window.addLecture(addedSection);
+                    } else {
+                        console.error('addLecture function not found');
+                    }
+                });
+            }
+            
+            if (removeSectionBtn) {
+                removeSectionBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    addedSection.remove();
+                });
+            }
+            
+            console.log('Section added successfully!');
+        };
+        
+        console.log('addSection function defined:', typeof window.addSection);
+        
         document.addEventListener('DOMContentLoaded', function() {
-            let sectionCounter = 0;
-            let lectureCounter = 0;
+            console.log('DOMContentLoaded fired');
 
             // Discount pricing preview functionality
             const originalPriceInput = document.getElementById('original_price');
@@ -616,24 +1075,24 @@
             }
 
             // Section management
-            document.getElementById('addSection').addEventListener('click', addSection);
-
-            function addSection() {
-                const template = document.getElementById('sectionTemplate');
-                const clone = template.content.cloneNode(true);
-                const sectionElement = clone.querySelector('.section-item');
-
-                sectionCounter++;
-                sectionElement.dataset.sectionId = sectionCounter;
-
-                // Add event listeners
-                clone.querySelector('.add-lecture').addEventListener('click', () => addLecture(sectionElement));
-                clone.querySelector('.remove-section').addEventListener('click', () => sectionElement.remove());
-
-                document.getElementById('courseSections').appendChild(clone);
+            console.log('Setting up section management...');
+            const addSectionBtn = document.getElementById('addSection');
+            console.log('Add Section button:', addSectionBtn);
+            
+            if (addSectionBtn) {
+                console.log('Adding click event listener to Add Section button');
+                addSectionBtn.addEventListener('click', function(e) {
+                    console.log('Add Section button clicked!', e);
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.addSection();
+                });
+            } else {
+                console.error('Add Section button not found');
             }
 
-            function addLecture(sectionElement) {
+            // Make addLecture globally accessible
+            window.addLecture = function(sectionElement) {
                 const template = document.getElementById('lectureTemplate');
                 const clone = template.content.cloneNode(true);
                 const lectureElement = clone.querySelector('.lecture-item');
@@ -667,7 +1126,7 @@
             }
 
             // Add initial section
-            addSection();
+            window.addSection();
 
             // Instructor Selector functionality
             const selectedInstructorsContainer = document.getElementById('selectedInstructors');
@@ -747,6 +1206,37 @@
                     }
                 });
             }
+            
+            // Global event delegation for remove buttons
+            document.addEventListener('click', function(e) {
+                // Handle remove-learning-objective buttons
+                if (e.target.classList.contains('remove-learning-objective') || e.target.closest('.remove-learning-objective')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const btn = e.target.classList.contains('remove-learning-objective') ? e.target : e.target.closest('.remove-learning-objective');
+                    const objective = btn.closest('.learning-objective');
+                    
+                    if (objective) {
+                        objective.remove();
+                        console.log('Learning objective removed');
+                    }
+                }
+                
+                // Handle remove-faq-item buttons
+                if (e.target.classList.contains('remove-faq-item') || e.target.closest('.remove-faq-item')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const btn = e.target.classList.contains('remove-faq-item') ? e.target : e.target.closest('.remove-faq-item');
+                    const faqItem = btn.closest('.faq-item');
+                    
+                    if (faqItem) {
+                        faqItem.remove();
+                        console.log('FAQ item removed');
+                    }
+                }
+            });
 
             function addInstructorTag(id, name) {
                 if (!selectedInstructorsContainer) {
@@ -829,9 +1319,14 @@
             // Learning Objectives management
             let learningObjectiveCounter = 0;
 
-            document.getElementById('addLearningObjective').addEventListener('click', function() {
-                addLearningObjective();
-            });
+            const addLearningObjectiveBtn = document.getElementById('addLearningObjective');
+            if (addLearningObjectiveBtn) {
+                addLearningObjectiveBtn.addEventListener('click', function() {
+                    addLearningObjective();
+                });
+            } else {
+                console.error('Add Learning Objective button not found');
+            }
 
             function addLearningObjective() {
                 const index = learningObjectiveCounter++;
@@ -870,9 +1365,14 @@
             // FAQ Items management
             let faqItemCounter = 0;
 
-            document.getElementById('addFaqItem').addEventListener('click', function() {
-                addFaqItem();
-            });
+            const addFaqItemBtn = document.getElementById('addFaqItem');
+            if (addFaqItemBtn) {
+                addFaqItemBtn.addEventListener('click', function() {
+                    addFaqItem();
+                });
+            } else {
+                console.error('Add FAQ Item button not found');
+            }
 
             function addFaqItem() {
                 const index = faqItemCounter++;

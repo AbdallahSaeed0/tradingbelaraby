@@ -8,6 +8,7 @@ use App\Notifications\CourseEnrollmentNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 
 class EnrollmentController extends Controller
 {
@@ -76,7 +77,9 @@ class EnrollmentController extends Controller
 
         // Send enrollment notification email
         try {
-            $user->notify(new CourseEnrollmentNotification($course));
+            $language = Session::get('frontend_locale', config('app.locale'));
+            $language = in_array($language, ['ar', 'en']) ? $language : 'en';
+            $user->notify(new CourseEnrollmentNotification($course, null, $language));
         } catch (\Exception $e) {
             Log::error('Failed to send enrollment notification', [
                 'user_id' => $user->id,
