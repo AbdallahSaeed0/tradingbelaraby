@@ -136,6 +136,9 @@ class PayPalController extends Controller
                     ]);
                 }
 
+                // Clear cart after successful payment
+                $user->cartItems()->delete();
+
                 DB::commit();
 
                 // Clear session

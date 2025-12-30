@@ -311,12 +311,12 @@ class CheckoutController extends Controller
                 session()->forget('applied_coupon');
             }
 
-            // Clear cart
-            $user->cartItems()->delete();
-
             DB::commit();
 
             if ($request->payment_method === 'free') {
+                // Clear cart for free enrollments
+                $user->cartItems()->delete();
+
                 return redirect()->route('checkout.success', $order->id)
                     ->with('success', 'Courses enrolled successfully!');
             }
@@ -420,13 +420,19 @@ class CheckoutController extends Controller
                     return redirect()->away($approvalUrl);
 
                 } catch (\Exception $e) {
+                    DB::rollBack();
                     // Log error and redirect back
-                    Log::error('PayPal Checkout Error: ' . $e->getMessage());
-                    return redirect()->route('checkout.index')->with('error', 'Unable to initiate PayPal payment: ' . $e->getMessage());
+                    Log::error('PayPal Checkout Error: ' . $e->getMessage(), [
+                        'order_id' => $order->id ?? null,
+                        'user_id' => $user->id,
+                        'trace' => $e->getTraceAsString()
+                    ]);
+                    return redirect()->route('cart.index')->with('error', 'Unable to initiate PayPal payment: ' . $e->getMessage());
                 }
 
             } else {
                 // For Visa payment, redirect to payment gateway (placeholder)
+                // Note: Cart will be cleared after successful payment confirmation
                 return redirect()->route('checkout.payment', $order->id);
             }
 
