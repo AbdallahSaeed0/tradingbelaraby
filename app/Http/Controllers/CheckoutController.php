@@ -11,6 +11,7 @@ use App\Models\Coupon;
 use App\Models\CouponUsage;
 use App\Notifications\CourseEnrollmentNotification;
 use App\Services\Payment\TabbyService;
+use App\Services\Payment\PayPalService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -139,7 +140,7 @@ class CheckoutController extends Controller
     /**
      * Process the checkout
      */
-    public function process(Request $request, TabbyService $tabbyService)
+    public function process(Request $request, TabbyService $tabbyService, PayPalService $paypalService)
     {
         $request->validate([
             'first_name' => 'required|string|max:255',
@@ -151,7 +152,7 @@ class CheckoutController extends Controller
             'state' => 'required|string|max:255',
             'postal_code' => 'required|string|max:20',
             'country' => 'required|string|max:255',
-            'payment_method' => 'required|in:visa,free,tabby',
+            'payment_method' => 'required|in:visa,free,tabby,paypal',
         ]);
 
         $user = Auth::user();
@@ -189,7 +190,7 @@ class CheckoutController extends Controller
             return back()->withErrors(['payment_method' => 'Free enrollment is only available for free courses']);
         }
 
-        if (($request->payment_method === 'visa' || $request->payment_method === 'tabby') && $allFree) {
+        if (in_array($request->payment_method, ['visa', 'tabby', 'paypal']) && $allFree) {
             return back()->withErrors(['payment_method' => 'Free courses do not require payment']);
         }
 
@@ -229,7 +230,7 @@ class CheckoutController extends Controller
 
                     // Enroll user in all courses in the bundle
                     $enrollmentStatus = ($request->payment_method === 'free') ? 'active' : 'active';
-                    if ($request->payment_method === 'tabby') {
+                    if (in_array($request->payment_method, ['tabby', 'paypal'])) {
                         $enrollmentStatus = 'pending';
                     }
 
@@ -266,7 +267,7 @@ class CheckoutController extends Controller
                 ]);
 
                     $enrollmentStatus = ($request->payment_method === 'free') ? 'active' : 'active';
-                if ($request->payment_method === 'tabby') {
+                if (in_array($request->payment_method, ['tabby', 'paypal'])) {
                     $enrollmentStatus = 'pending';
                 }
 
@@ -361,6 +362,64 @@ class CheckoutController extends Controller
                     // Log error and redirect back
                     Log::error('Tabby Checkout Error: ' . $e->getMessage());
                     return redirect()->route('checkout.index')->with('error', 'Unable to initiate Tabby payment: ' . $e->getMessage());
+                }
+
+            } elseif ($request->payment_method === 'paypal') {
+                // Prepare data for PayPal
+                $items = $cartItems->map(function ($item) {
+                    if ($item->isBundle()) {
+                        return [
+                            'id' => $item->bundle_id,
+                            'title' => $item->bundle->title,
+                            'description' => 'Bundle: ' . $item->bundle->title,
+                            'quantity' => 1,
+                            'unit_price' => $item->bundle->price,
+                        ];
+                    } else {
+                        return [
+                            'id' => $item->course_id,
+                            'title' => $item->course->name,
+                            'description' => 'Course: ' . $item->course->name,
+                            'quantity' => 1,
+                            'unit_price' => $item->course->price,
+                        ];
+                    }
+                })->toArray();
+
+                $customer = [
+                    'name' => $request->first_name . ' ' . $request->last_name,
+                    'phone' => $request->phone,
+                    'email' => $request->email,
+                ];
+
+                try {
+                    $paypalOrder = $paypalService->createOrder($order, $items, $customer);
+
+                    // Extract approval URL
+                    $approvalUrl = null;
+                    foreach ($paypalOrder['links'] ?? [] as $link) {
+                        if ($link['rel'] === 'approve') {
+                            $approvalUrl = $link['href'];
+                            break;
+                        }
+                    }
+
+                    if (!$approvalUrl) {
+                        throw new \Exception('PayPal approval URL not found in response.');
+                    }
+
+                    // Store order ID in session for later verification
+                    session(['paypal_order_id' => $order->id]);
+
+                    // Store PayPal order ID in database
+                    $order->update(['payment_gateway_id' => $paypalOrder['id']]);
+
+                    return redirect()->away($approvalUrl);
+
+                } catch (\Exception $e) {
+                    // Log error and redirect back
+                    Log::error('PayPal Checkout Error: ' . $e->getMessage());
+                    return redirect()->route('checkout.index')->with('error', 'Unable to initiate PayPal payment: ' . $e->getMessage());
                 }
 
             } else {

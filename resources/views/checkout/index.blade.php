@@ -192,6 +192,21 @@
                                             <i class="fas fa-check-circle text-success"></i>
                                         </div>
                                     </div>
+
+                                    <!-- PayPal Payment Option -->
+                                    <div class="payment-option-card p-4 border rounded-3 position-relative">
+                                        <input type="radio" name="payment_method" value="paypal" id="paypal_payment"
+                                            class="position-absolute top-0 end-0 m-3">
+                                        <div class="payment-icon mb-3">
+                                            <i class="fab fa-paypal fa-3x text-primary"></i>
+                                        </div>
+                                        <h5 class="fw-bold mb-2">PayPal</h5>
+                                        <p class="text-muted mb-0 small">
+                                            Pay securely with your PayPal account</p>
+                                        <div class="selected-badge position-absolute top-0 start-0 m-2 d-none">
+                                            <i class="fas fa-check-circle text-success"></i>
+                                        </div>
+                                    </div>
                                 @endif
 
                                 @if ($allFree && $hasPaid)

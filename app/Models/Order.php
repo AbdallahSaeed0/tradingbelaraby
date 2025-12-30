@@ -19,6 +19,7 @@ class Order extends Model
         'coupon_id',
         'discount_amount',
         'payment_method',
+        'payment_gateway_id',
         'status',
         'billing_first_name',
         'billing_last_name',
@@ -49,6 +50,14 @@ class Order extends Model
      * Get the order items for the order
      */
     public function orderItems(): HasMany
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
+    /**
+     * Alias for orderItems (for convenience)
+     */
+    public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
     }
