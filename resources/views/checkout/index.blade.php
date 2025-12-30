@@ -53,6 +53,37 @@
         <div class="container">
             <form action="{{ route('checkout.process') }}" method="POST" id="checkoutForm">
                 @csrf
+
+                <!-- Display Validation Errors -->
+                @if ($errors->any())
+                    <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                        <h5 class="alert-heading"><i class="fas fa-exclamation-triangle me-2"></i>Please correct the
+                            following errors:</h5>
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
+                <!-- Display Success Message -->
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
+                <!-- Display Error Message -->
+                @if (session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                        <i class="fas fa-times-circle me-2"></i>{{ session('error') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
                 <div class="row">
                     <!-- Checkout Form -->
                     <div class="col-lg-8 mb-4 mb-lg-0">
@@ -98,17 +129,20 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="city" class="form-label">{{ custom_trans('city', 'front') }} *</label>
+                                    <label for="city" class="form-label">{{ custom_trans('city', 'front') }}
+                                        *</label>
                                     <input type="text" class="form-control" id="city" name="city" required>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="state" class="form-label">{{ custom_trans('state', 'front') }} *</label>
+                                    <label for="state" class="form-label">{{ custom_trans('state', 'front') }}
+                                        *</label>
                                     <input type="text" class="form-control" id="state" name="state" required>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="postal_code" class="form-label">{{ custom_trans('postal_code', 'front') }}
+                                    <label for="postal_code"
+                                        class="form-label">{{ custom_trans('postal_code', 'front') }}
                                         *</label>
                                     <input type="text" class="form-control" id="postal_code" name="postal_code"
                                         required>
@@ -195,16 +229,16 @@
                                     --}}
 
                                     <!-- PayPal Payment Option -->
-                                    <div class="payment-option-card p-4 border rounded-3 position-relative">
+                                    <div class="payment-option-card selected p-4 border rounded-3 position-relative">
                                         <input type="radio" name="payment_method" value="paypal" id="paypal_payment"
-                                            class="position-absolute top-0 end-0 m-3">
+                                            checked class="position-absolute top-0 end-0 m-3">
                                         <div class="payment-icon mb-3">
                                             <i class="fab fa-paypal fa-3x text-primary"></i>
                                         </div>
                                         <h5 class="fw-bold mb-2">PayPal</h5>
                                         <p class="text-muted mb-0 small">
                                             Pay securely with your PayPal account</p>
-                                        <div class="selected-badge position-absolute top-0 start-0 m-2 d-none">
+                                        <div class="selected-badge position-absolute top-0 start-0 m-2">
                                             <i class="fas fa-check-circle text-success"></i>
                                         </div>
                                     </div>
@@ -244,32 +278,34 @@
                                         <div class="course-item-summary mb-3 p-3 bg-light rounded-3">
                                             <div class="d-flex gap-3">
                                                 <div class="course-thumb">
-                                                    @if($item->isBundle())
+                                                    @if ($item->isBundle())
                                                         <img src="{{ $item->bundle->image_url }}"
                                                             alt="{{ $item->bundle->name }}" class="rounded"
                                                             style="width: 60px; height: 60px; object-fit: cover;">
                                                     @else
-                                                    <img src="{{ $item->course->image_url }}"
-                                                        alt="{{ $item->course->name }}" class="rounded"
-                                                        style="width: 60px; height: 60px; object-fit: cover;">
+                                                        <img src="{{ $item->course->image_url }}"
+                                                            alt="{{ $item->course->name }}" class="rounded"
+                                                            style="width: 60px; height: 60px; object-fit: cover;">
                                                     @endif
                                                 </div>
                                                 <div class="flex-grow-1">
-                                                    @if($item->isBundle())
+                                                    @if ($item->isBundle())
                                                         <h6 class="fw-bold mb-1 small">
-                                                            <i class="fa fa-box me-1"></i>{{ Str::limit($item->bundle->name, 35) }}
+                                                            <i
+                                                                class="fa fa-box me-1"></i>{{ Str::limit($item->bundle->name, 35) }}
                                                         </h6>
                                                         <small class="text-muted d-block mb-2">
                                                             <i class="fas fa-book me-1"></i>
-                                                            {{ $item->bundle->courses->count() }} {{ custom_trans('courses', 'front') }}
+                                                            {{ $item->bundle->courses->count() }}
+                                                            {{ custom_trans('courses', 'front') }}
                                                         </small>
                                                     @else
-                                                    <h6 class="fw-bold mb-1 small">
-                                                        {{ Str::limit($item->course->name, 40) }}</h6>
-                                                    <small class="text-muted d-block mb-2">
-                                                        <i class="fas fa-user me-1"></i>
-                                                        {{ $item->course->instructor->name ?? custom_trans('Unknown Instructor', 'front') }}
-                                                    </small>
+                                                        <h6 class="fw-bold mb-1 small">
+                                                            {{ Str::limit($item->course->name, 40) }}</h6>
+                                                        <small class="text-muted d-block mb-2">
+                                                            <i class="fas fa-user me-1"></i>
+                                                            {{ $item->course->instructor->name ?? custom_trans('Unknown Instructor', 'front') }}
+                                                        </small>
                                                     @endif
                                                     <div class="d-flex justify-content-between align-items-center">
                                                         @php
@@ -291,14 +327,16 @@
 
                                 <!-- Coupon Section -->
                                 <div class="coupon-section mb-4 p-3 bg-light rounded-3">
-                                    @if($coupon)
+                                    @if ($coupon)
                                         <div class="alert alert-success mb-2" id="coupon-applied-alert">
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <div>
                                                     <i class="fa fa-check-circle me-2"></i>
-                                                    <strong>{{ $coupon->code }}</strong> {{ custom_trans('applied', 'front') }}
+                                                    <strong>{{ $coupon->code }}</strong>
+                                                    {{ custom_trans('applied', 'front') }}
                                                 </div>
-                                                <button type="button" class="btn btn-sm btn-outline-danger remove-coupon-btn">
+                                                <button type="button"
+                                                    class="btn btn-sm btn-outline-danger remove-coupon-btn">
                                                     <i class="fa fa-times"></i>
                                                 </button>
                                             </div>
@@ -306,11 +344,12 @@
                                     @else
                                         <div class="coupon-input-group">
                                             <label class="form-label small fw-bold mb-2">
-                                                <i class="fa fa-ticket-alt me-1"></i>{{ custom_trans('Have a coupon code?', 'front') }}
+                                                <i
+                                                    class="fa fa-ticket-alt me-1"></i>{{ custom_trans('Have a coupon code?', 'front') }}
                                             </label>
                                             <div class="input-group">
-                                                <input type="text" class="form-control" id="coupon_code" 
-                                                    placeholder="{{ custom_trans('Enter coupon code', 'front') }}" 
+                                                <input type="text" class="form-control" id="coupon_code"
+                                                    placeholder="{{ custom_trans('Enter coupon code', 'front') }}"
                                                     style="text-transform: uppercase;">
                                                 <button type="button" class="btn btn-primary apply-coupon-btn">
                                                     {{ custom_trans('Apply', 'front') }}
@@ -330,15 +369,17 @@
                                         <span class="fw-bold subtotal-amount">SAR {{ number_format($subtotal, 2) }}</span>
                                     </div>
 
-                                    @if($discount > 0)
-                                        <div class="d-flex justify-content-between mb-3 p-2 bg-success bg-opacity-10 rounded">
+                                    @if ($discount > 0)
+                                        <div
+                                            class="d-flex justify-content-between mb-3 p-2 bg-success bg-opacity-10 rounded">
                                             <span class="text-success">
                                                 <i class="fas fa-tag me-1"></i>{{ custom_trans('Discount', 'front') }}
-                                                @if($coupon)
+                                                @if ($coupon)
                                                     ({{ $coupon->code }})
                                                 @endif
                                             </span>
-                                            <span class="fw-semibold text-success discount-amount">-SAR {{ number_format($discount, 2) }}</span>
+                                            <span class="fw-semibold text-success discount-amount">-SAR
+                                                {{ number_format($discount, 2) }}</span>
                                         </div>
                                     @endif
 
@@ -678,9 +719,10 @@
             if (applyCouponBtn) {
                 applyCouponBtn.addEventListener('click', async function() {
                     const code = couponCodeInput.value.trim().toUpperCase();
-                    
+
                     if (!code) {
-                        couponMessage.innerHTML = '<span class="text-danger">Please enter a coupon code</span>';
+                        couponMessage.innerHTML =
+                            '<span class="text-danger">Please enter a coupon code</span>';
                         return;
                     }
 
@@ -688,7 +730,7 @@
                     applyCouponBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
                     try {
-                        const response = await fetch('{{ route("checkout.apply-coupon") }}', {
+                        const response = await fetch('{{ route('checkout.apply-coupon') }}', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -703,20 +745,23 @@
                         const data = await response.json();
 
                         if (data.success) {
-                            couponMessage.innerHTML = '<span class="text-success">' + data.message + '</span>';
+                            couponMessage.innerHTML = '<span class="text-success">' + data.message +
+                                '</span>';
                             setTimeout(() => {
                                 window.location.reload();
                             }, 1000);
                         } else {
-                            couponMessage.innerHTML = '<span class="text-danger">' + data.message + '</span>';
+                            couponMessage.innerHTML = '<span class="text-danger">' + data.message +
+                                '</span>';
                             applyCouponBtn.disabled = false;
-                            applyCouponBtn.innerHTML = '{{ custom_trans("Apply", "front") }}';
+                            applyCouponBtn.innerHTML = '{{ custom_trans('Apply', 'front') }}';
                         }
                     } catch (error) {
                         console.error('Coupon error:', error);
-                        couponMessage.innerHTML = '<span class="text-danger">An error occurred. Please try again.</span>';
+                        couponMessage.innerHTML =
+                            '<span class="text-danger">An error occurred. Please try again.</span>';
                         applyCouponBtn.disabled = false;
-                        applyCouponBtn.innerHTML = '{{ custom_trans("Apply", "front") }}';
+                        applyCouponBtn.innerHTML = '{{ custom_trans('Apply', 'front') }}';
                     }
                 });
 
@@ -734,7 +779,7 @@
             if (removeCouponBtn) {
                 removeCouponBtn.addEventListener('click', async function() {
                     try {
-                        const response = await fetch('{{ route("checkout.remove-coupon") }}', {
+                        const response = await fetch('{{ route('checkout.remove-coupon') }}', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
