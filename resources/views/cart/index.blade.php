@@ -285,7 +285,7 @@
                                 <h5 class="fw-bold mb-3">{{ custom_trans('popular_categories', 'front') }}</h5>
                                 <div class="d-flex flex-wrap gap-2 justify-content-center">
                                     @php
-                                        $popularCategories = \App\Models\Category::withCount('courses')->orderBy('courses_count', 'desc')->take(5)->get();
+                                        $popularCategories = \App\Models\CourseCategory::withCount('courses')->orderBy('courses_count', 'desc')->take(5)->get();
                                     @endphp
                                     @foreach($popularCategories as $category)
                                         <a href="{{ route('categories.show', $category->id) }}" class="btn btn-sm btn-outline-secondary">
