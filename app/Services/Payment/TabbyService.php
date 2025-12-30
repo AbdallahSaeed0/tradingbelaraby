@@ -8,12 +8,12 @@ use Illuminate\Support\Facades\Log;
 
 class TabbyService
 {
-    protected Client $client;
-    protected string $baseUrl;
-    protected string $secretKey;
-    protected string $merchantCode;
-    protected array $urls;
-    protected string $currency;
+    protected ?Client $client = null;
+    protected ?string $baseUrl;
+    protected ?string $secretKey;
+    protected ?string $merchantCode;
+    protected ?array $urls;
+    protected ?string $currency;
 
     public function __construct()
     {
@@ -23,14 +23,17 @@ class TabbyService
         $this->urls = config('tabby.urls');
         $this->currency = config('tabby.currency', 'SAR');
 
-        $this->client = new Client([
-            'base_uri' => $this->baseUrl,
-            'headers' => [
-                'Authorization' => 'Bearer ' . $this->secretKey,
-                'Content-Type' => 'application/json',
-                'Accept' => 'application/json',
-            ],
-        ]);
+        // Only initialize client if credentials are present
+        if ($this->secretKey && $this->baseUrl) {
+            $this->client = new Client([
+                'base_uri' => $this->baseUrl,
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->secretKey,
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                ],
+            ]);
+        }
     }
 
     /**
@@ -45,6 +48,10 @@ class TabbyService
      */
     public function createCheckoutSession(Order $order, array $items, array $customer, array $shippingAddress): array
     {
+        if (!$this->client) {
+            throw new \Exception('Tabby payment service is not configured. Please check your Tabby credentials.');
+        }
+
         $payload = [
             'payment' => [
                 'amount' => (string) number_format($order->total, 2, '.', ''),
@@ -102,6 +109,10 @@ class TabbyService
      */
     public function getPayment(string $paymentId): array
     {
+        if (!$this->client) {
+            throw new \Exception('Tabby payment service is not configured. Please check your Tabby credentials.');
+        }
+
         try {
             $response = $this->client->get("/api/v2/payments/{$paymentId}");
             return json_decode($response->getBody()->getContents(), true);

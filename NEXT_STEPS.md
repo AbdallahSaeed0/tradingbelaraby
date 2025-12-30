@@ -3,12 +3,13 @@
 ## Current Status: Almost Complete! 🎉
 
 ### ✅ Completed:
-- [x] PayPal service and controllers created
-- [x] Routes and webhook endpoint configured
-- [x] Checkout page updated with PayPal option
-- [x] Database migration file created
-- [x] Environment variables added to .env
-- [x] Configuration cache cleared
+
+-   [x] PayPal service and controllers created
+-   [x] Routes and webhook endpoint configured
+-   [x] Checkout page updated with PayPal option
+-   [x] Database migration file created
+-   [x] Environment variables added to .env
+-   [x] Configuration cache cleared
 
 ### 🔄 Remaining Steps:
 
@@ -21,7 +22,8 @@ Your MySQL server is not running. Using Laragon:
 3. Wait until MySQL shows as "Running"
 
 Alternatively, you can start just MySQL:
-- Right-click Laragon tray icon → MySQL → Start
+
+-   Right-click Laragon tray icon → MySQL → Start
 
 ## Step 2: Run Database Migration
 
@@ -34,6 +36,7 @@ php artisan migrate
 This will add the `payment_gateway_id` column to your `orders` table.
 
 **Expected Output:**
+
 ```
 Migration table created successfully.
 Migrating: 2025_12_29_235052_add_payment_gateway_id_to_orders_table
@@ -45,31 +48,34 @@ Migrated:  2025_12_29_235052_add_payment_gateway_id_to_orders_table
 ### A. Setup Webhook in PayPal Dashboard:
 
 1. **Login to PayPal Developer Dashboard**
-   - Go to: https://developer.paypal.com/dashboard/
-   - Login with your PayPal business account
+
+    - Go to: https://developer.paypal.com/dashboard/
+    - Login with your PayPal business account
 
 2. **Navigate to Apps & Credentials**
-   - Select **"Live"** mode (not Sandbox)
-   - Find your app or create one if needed
+
+    - Select **"Live"** mode (not Sandbox)
+    - Find your app or create one if needed
 
 3. **Create Webhook**
-   - Scroll down to **"Webhooks"** section
-   - Click **"Add Webhook"**
-   
+    - Scroll down to **"Webhooks"** section
+    - Click **"Add Webhook"**
 4. **Configure Webhook URL**
-   - **Webhook URL:** `https://yourdomain.com/webhook/paypal`
-   - Replace `yourdomain.com` with your actual production domain
-   - Example: `https://courses.example.com/webhook/paypal`
+
+    - **Webhook URL:** `https://yourdomain.com/webhook/paypal`
+    - Replace `yourdomain.com` with your actual production domain
+    - Example: `https://courses.example.com/webhook/paypal`
 
 5. **Select Event Types** (Check these boxes):
-   - ✅ `Checkout order approved` 
-   - ✅ `Payment capture completed`
-   - ✅ `Payment capture denied`
-   - ✅ `Payment capture refunded`
+
+    - ✅ `Checkout order approved`
+    - ✅ `Payment capture completed`
+    - ✅ `Payment capture denied`
+    - ✅ `Payment capture refunded`
 
 6. **Save Webhook**
-   - Click **"Save"**
-   - Copy the **Webhook ID** that appears
+    - Click **"Save"**
+    - Copy the **Webhook ID** that appears
 
 ### B. Add Webhook ID to .env:
 
@@ -107,6 +113,7 @@ php artisan config:clear
 ## 📋 Quick Reference
 
 ### Your PayPal Configuration:
+
 ```
 Mode: Live (Production)
 Client ID: AaYJYDiJ0ZtLpf6Nbt8Mbvraz0BvS-KAzNWzTmKgULn5Iq0kyd-L45fKpeV58tDm7fKzeYQZ7mvtRhyV
@@ -114,12 +121,14 @@ Currency: SAR (Saudi Riyal)
 ```
 
 ### Important URLs:
-- Success: `/paypal/success`
-- Cancel: `/paypal/cancel`
-- Failure: `/paypal/failure`
-- Webhook: `/webhook/paypal` (POST)
+
+-   Success: `/paypal/success`
+-   Cancel: `/paypal/cancel`
+-   Failure: `/paypal/failure`
+-   Webhook: `/webhook/paypal` (POST)
 
 ### Payment Methods Now Available:
+
 1. ✅ Free Enrollment (for free courses)
 2. ✅ Credit Card / Visa
 3. ✅ Tabby (Buy now, pay later)
@@ -128,18 +137,21 @@ Currency: SAR (Saudi Riyal)
 ## 🐛 Troubleshooting
 
 ### "Migration failed" error:
-- Make sure MySQL is running in Laragon
-- Check database connection in `.env` file
+
+-   Make sure MySQL is running in Laragon
+-   Check database connection in `.env` file
 
 ### "PayPal payment failed" error:
-- Check `storage/logs/laravel.log` for details
-- Verify Client ID and Secret are correct
-- Ensure `PAYPAL_MODE=live`
+
+-   Check `storage/logs/laravel.log` for details
+-   Verify Client ID and Secret are correct
+-   Ensure `PAYPAL_MODE=live`
 
 ### Webhook not working:
-- Webhook only works on public URLs (not localhost)
-- For local testing, use ngrok or similar service
-- Webhook ID must be set in `.env`
+
+-   Webhook only works on public URLs (not localhost)
+-   For local testing, use ngrok or similar service
+-   Webhook ID must be set in `.env`
 
 ## 🎯 Once Complete, You'll Have:
 
@@ -148,9 +160,8 @@ Currency: SAR (Saudi Riyal)
 ✅ Automatic enrollment activation  
 ✅ Email notifications  
 ✅ Support for SAR currency  
-✅ Complete order tracking  
+✅ Complete order tracking
 
 ---
 
 **Ready to Go Live?** Just complete the 4 steps above! 🚀
-

@@ -152,7 +152,7 @@ class CheckoutController extends Controller
             'state' => 'required|string|max:255',
             'postal_code' => 'required|string|max:20',
             'country' => 'required|string|max:255',
-            'payment_method' => 'required|in:visa,free,tabby,paypal',
+            'payment_method' => 'required|in:visa,free,paypal', // Removed 'tabby'
         ]);
 
         $user = Auth::user();
@@ -190,7 +190,7 @@ class CheckoutController extends Controller
             return back()->withErrors(['payment_method' => 'Free enrollment is only available for free courses']);
         }
 
-        if (in_array($request->payment_method, ['visa', 'tabby', 'paypal']) && $allFree) {
+        if (in_array($request->payment_method, ['visa', 'paypal']) && $allFree) {
             return back()->withErrors(['payment_method' => 'Free courses do not require payment']);
         }
 
@@ -230,7 +230,7 @@ class CheckoutController extends Controller
 
                     // Enroll user in all courses in the bundle
                     $enrollmentStatus = ($request->payment_method === 'free') ? 'active' : 'active';
-                    if (in_array($request->payment_method, ['tabby', 'paypal'])) {
+                    if ($request->payment_method === 'paypal') {
                         $enrollmentStatus = 'pending';
                     }
 
@@ -267,7 +267,7 @@ class CheckoutController extends Controller
                 ]);
 
                     $enrollmentStatus = ($request->payment_method === 'free') ? 'active' : 'active';
-                if (in_array($request->payment_method, ['tabby', 'paypal'])) {
+                if ($request->payment_method === 'paypal') {
                     $enrollmentStatus = 'pending';
                 }
 
@@ -319,7 +319,9 @@ class CheckoutController extends Controller
             if ($request->payment_method === 'free') {
                 return redirect()->route('checkout.success', $order->id)
                     ->with('success', 'Courses enrolled successfully!');
-            } elseif ($request->payment_method === 'tabby') {
+            }
+            // Tabby payment commented out - not configured
+            /* elseif ($request->payment_method === 'tabby') {
                 // Prepare data for Tabby
                 $items = $cartItems->map(function ($item) {
                      return [
@@ -364,7 +366,8 @@ class CheckoutController extends Controller
                     return redirect()->route('checkout.index')->with('error', 'Unable to initiate Tabby payment: ' . $e->getMessage());
                 }
 
-            } elseif ($request->payment_method === 'paypal') {
+            } */
+            elseif ($request->payment_method === 'paypal') {
                 // Prepare data for PayPal
                 $items = $cartItems->map(function ($item) {
                     if ($item->isBundle()) {

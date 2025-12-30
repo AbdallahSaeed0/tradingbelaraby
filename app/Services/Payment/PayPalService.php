@@ -9,12 +9,12 @@ use Exception;
 
 class PayPalService
 {
-    protected Client $client;
-    protected string $baseUrl;
-    protected string $clientId;
-    protected string $secret;
-    protected string $currency;
-    protected array $urls;
+    protected ?Client $client = null;
+    protected ?string $baseUrl;
+    protected ?string $clientId;
+    protected ?string $secret;
+    protected ?string $currency;
+    protected ?array $urls;
     protected ?string $webhookId;
     protected ?string $accessToken = null;
     protected ?int $tokenExpiresAt = null;
@@ -28,10 +28,13 @@ class PayPalService
         $this->urls = config('paypal.urls');
         $this->webhookId = config('paypal.webhook_id');
 
-        $this->client = new Client([
-            'base_uri' => $this->baseUrl,
-            'timeout' => 30,
-        ]);
+        // Only initialize client if credentials are present
+        if ($this->baseUrl && $this->clientId && $this->secret) {
+            $this->client = new Client([
+                'base_uri' => $this->baseUrl,
+                'timeout' => 30,
+            ]);
+        }
     }
 
     /**
@@ -42,6 +45,10 @@ class PayPalService
      */
     protected function getAccessToken(): string
     {
+        if (!$this->client) {
+            throw new Exception('PayPal service is not configured. Please check your PayPal credentials in .env file.');
+        }
+
         // Return cached token if still valid
         if ($this->accessToken && $this->tokenExpiresAt && time() < $this->tokenExpiresAt) {
             return $this->accessToken;

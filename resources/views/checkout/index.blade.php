@@ -177,7 +177,7 @@
                                         </div>
                                     </div>
 
-                                    <!-- Tabby Payment Option -->
+                                    {{-- Tabby Payment Option (Commented out - not configured)
                                     <div class="payment-option-card p-4 border rounded-3 position-relative">
                                         <input type="radio" name="payment_method" value="tabby" id="tabby_payment"
                                             class="position-absolute top-0 end-0 m-3">
@@ -192,6 +192,7 @@
                                             <i class="fas fa-check-circle text-success"></i>
                                         </div>
                                     </div>
+                                    --}}
 
                                     <!-- PayPal Payment Option -->
                                     <div class="payment-option-card p-4 border rounded-3 position-relative">
