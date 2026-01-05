@@ -972,11 +972,11 @@ footer {
 }
 
 .hero-swiper-button-next {
-    left: 0; /* RTL: next button on left */
+    right: 0; /* RTL: next button on right */
 }
 
 .hero-swiper-button-prev {
-    right: 0; /* RTL: prev button on right */
+    left: 0; /* RTL: prev button on left */
 }
 
 .hero-swiper-button-next:hover,
@@ -990,13 +990,15 @@ footer {
     font-weight: bold;
 }
 
-/* Reverse hero swiper button icons for RTL layout */
+/* For RTL: buttons positions are swapped, arrows should point correctly */
+/* Next button on right should show right arrow (→), Prev on left should show left arrow (←) */
+/* Swiper default behavior already provides correct arrows, don't flip them */
 .hero-swiper-button-next::after {
-    transform: scaleX(-1) !important; /* Flip the arrow horizontally */
+    /* No transform needed - next button on right shows right arrow (default) */
 }
 
 .hero-swiper-button-prev::after {
-    transform: scaleX(-1) !important; /* Flip the arrow horizontally */
+    /* No transform needed - prev button on left shows left arrow (default) */
 }
 
 /* Hero Swiper Pagination */
@@ -1547,7 +1549,15 @@ footer {
 .related-courses-swiper-button-prev::after {
     font-size: 20px !important;
     font-weight: bold;
-    transform: scaleX(-1) !important; /* Flip arrows for RTL */
+    /* No transform needed - arrows should point in correct direction after position swap */
+}
+
+/* Hero buttons already positioned correctly in RTL, don't flip their arrows */
+.hero-swiper-button-next::after,
+.hero-swiper-button-prev::after {
+    font-size: 20px !important;
+    font-weight: bold;
+    transform: none !important; /* Don't flip hero arrows - positions are already swapped */
 }
 /* Swiper Container Positioning */
 .swiper {
@@ -1561,6 +1571,8 @@ footer {
 }
 
 /* Ensure buttons don't inherit any conflicting styles */
+.hero-swiper-button-next,
+.hero-swiper-button-prev,
 .courses-section .swiper-button-next,
 .courses-section .swiper-button-prev,
 .courses-by-category-section .swiper-button-next,

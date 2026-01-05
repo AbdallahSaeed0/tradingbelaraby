@@ -103,13 +103,22 @@
                                             @endif
                                         </td>
                                         <td>
-                                            @if($bundle->status === 'published')
-                                                <span class="badge bg-success">Published</span>
-                                            @elseif($bundle->status === 'draft')
-                                                <span class="badge bg-warning">Draft</span>
-                                            @else
-                                                <span class="badge bg-secondary">Archived</span>
-                                            @endif
+                                            <span
+                                                class="badge {{ $bundle->status === 'published' ? 'bg-success' : ($bundle->status === 'draft' ? 'bg-warning' : 'bg-secondary') }} status-badge"
+                                                style="cursor: pointer;"
+                                                onclick="showStatusModal({{ $bundle->id }}, '{{ $bundle->status }}', [
+                                                    { value: 'published', label: 'Published' },
+                                                    { value: 'draft', label: 'Draft' },
+                                                    { value: 'archived', label: 'Archived' }
+                                                ], '{{ route('admin.bundles.update_status', $bundle->id) }}')">
+                                                @if($bundle->status === 'published')
+                                                    Published
+                                                @elseif($bundle->status === 'draft')
+                                                    Draft
+                                                @else
+                                                    Archived
+                                                @endif
+                                            </span>
                                         </td>
                                         <td>
                                             @if($bundle->is_featured)
@@ -163,4 +172,8 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    @include('admin.partials.status-modal')
+@endpush
 

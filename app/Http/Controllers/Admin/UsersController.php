@@ -140,6 +140,20 @@ class UsersController extends Controller
         return back()->with('success','Status updated');
     }
 
+    public function updateStatus(Request $request, User $user)
+    {
+        $request->validate([
+            'status' => 'required|in:active,inactive'
+        ]);
+
+        $user->update(['is_active' => $request->status === 'active']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User status updated successfully'
+        ]);
+    }
+
     public function bulkDelete(Request $request)
     {
         $request->validate([

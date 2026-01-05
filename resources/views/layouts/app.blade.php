@@ -689,6 +689,13 @@
                             @endif
                         </div>
                     @endif
+                    <!-- PayPal Payment Method -->
+                    <div class="mt-3">
+                        <p class="text-white-50 small mb-2">{{ custom_trans('We Accept', 'front') }}:</p>
+                        <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg" 
+                             alt="PayPal" 
+                             style="max-width: 120px; height: auto; background: white; padding: 5px; border-radius: 4px;">
+                    </div>
                 </div>
                 <!-- Links -->
                 <div class="col-6 col-sm-6 col-md-2 mb-4 mb-md-0">

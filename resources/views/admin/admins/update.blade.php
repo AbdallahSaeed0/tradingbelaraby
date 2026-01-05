@@ -193,6 +193,27 @@
                                 </div>
                             </div>
 
+                            <!-- About Me Section -->
+                            <div class="row mt-3">
+                                <div class="col-md-12 mb-3">
+                                    <label for="about_me" class="form-label">About Me (English)</label>
+                                    <textarea class="form-control @error('about_me') is-invalid @enderror" id="about_me" name="about_me"
+                                        rows="6" placeholder="Enter about me information in English">{{ old('about_me', $admin->about_me) }}</textarea>
+                                    @error('about_me')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="col-md-12 mb-3">
+                                    <label for="about_me_ar" class="form-label">About Me (Arabic)</label>
+                                    <textarea class="form-control @error('about_me_ar') is-invalid @enderror" id="about_me_ar" name="about_me_ar"
+                                        rows="6" placeholder="أدخل معلومات عني بالعربية" dir="rtl">{{ old('about_me_ar', $admin->about_me_ar) }}</textarea>
+                                    @error('about_me_ar')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
                             <hr>
 
                             <div class="text-end">
@@ -210,8 +231,45 @@
 @endsection
 
 @push('scripts')
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize CKEditor for About Me (English)
+            ClassicEditor
+                .create(document.querySelector('#about_me'), {
+                    toolbar: [
+                        'heading', '|',
+                        'bold', 'italic', 'underline', 'strikethrough', '|',
+                        'fontColor', 'fontBackgroundColor', '|',
+                        'link', '|',
+                        'bulletedList', 'numberedList', '|',
+                        'outdent', 'indent', '|',
+                        'blockQuote', 'insertTable', '|',
+                        'undo', 'redo'
+                    ]
+                })
+                .catch(error => {
+                    console.error('Error initializing CKEditor for about_me:', error);
+                });
+
+            // Initialize CKEditor for About Me (Arabic)
+            ClassicEditor
+                .create(document.querySelector('#about_me_ar'), {
+                    toolbar: [
+                        'heading', '|',
+                        'bold', 'italic', 'underline', 'strikethrough', '|',
+                        'fontColor', 'fontBackgroundColor', '|',
+                        'link', '|',
+                        'bulletedList', 'numberedList', '|',
+                        'outdent', 'indent', '|',
+                        'blockQuote', 'insertTable', '|',
+                        'undo', 'redo'
+                    ],
+                    language: 'ar'
+                })
+                .catch(error => {
+                    console.error('Error initializing CKEditor for about_me_ar:', error);
+                });
             const avatarUploadArea = document.getElementById('avatarUploadArea');
             const avatarInput = document.getElementById('avatar');
             const avatarPreview = document.getElementById('avatarPreview');

@@ -339,6 +339,23 @@ class HomeworkManagementController extends Controller
     }
 
     /**
+     * Update homework status
+     */
+    public function updateStatus(Request $request, Homework $homework)
+    {
+        $request->validate([
+            'status' => 'required|in:published,draft'
+        ]);
+
+        $homework->update(['is_published' => $request->status === 'published']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Homework status updated successfully'
+        ]);
+    }
+
+    /**
      * Duplicate homework
      */
     public function duplicate(Homework $homework)

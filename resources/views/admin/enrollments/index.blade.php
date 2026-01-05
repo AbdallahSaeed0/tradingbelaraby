@@ -283,7 +283,13 @@
                                             $statusClass = $statusClasses[$enrollment->status] ?? 'bg-secondary';
                                         @endphp
                                         <span
-                                            class="badge {{ $statusClass }} status-badge">{{ ucfirst($enrollment->status) }}</span>
+                                            class="badge {{ $statusClass }} status-badge"
+                                            style="cursor: pointer;"
+                                            onclick="showStatusModal({{ $enrollment->id }}, '{{ $enrollment->status }}', [
+                                                { value: 'enrolled', label: 'Enrolled' },
+                                                { value: 'completed', label: 'Completed' },
+                                                { value: 'cancelled', label: 'Cancelled' }
+                                            ], '{{ route('admin.enrollments.update_status', $enrollment->id) }}')">{{ ucfirst($enrollment->status) }}</span>
                                     </td>
                                     <td>
                                         @if ($enrollment->last_activity)
@@ -392,6 +398,7 @@
                 alert('Detailed progress view will be implemented soon!');
             }
         </script>
+        @include('admin.partials.status-modal')
     @endpush
 @endsection
 

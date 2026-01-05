@@ -37,7 +37,12 @@ class AdminTypeController extends Controller
             $query->whereJsonContains('permissions', $permission);
         }
 
-        $adminTypes = $query->ordered()->get();
+        $perPage = (int) $request->get('per_page', 15);
+        $allowedPerPage = [10, 25, 50, 100];
+        if (!in_array($perPage, $allowedPerPage)) {
+            $perPage = 15;
+        }
+        $adminTypes = $query->ordered()->paginate($perPage)->appends($request->query());
 
         // Get available permissions for filter dropdown
         $availablePermissions = $this->getAvailablePermissions();
@@ -174,6 +179,31 @@ class AdminTypeController extends Controller
             'success' => true,
             'message' => 'Admin type status updated successfully.',
             'is_active' => $adminType->is_active
+        ]);
+    }
+
+    /**
+     * Update the status of an admin type
+     */
+    public function updateStatus(Request $request, AdminType $adminType)
+    {
+        // Prevent updating the admin type
+        if ($adminType->isAdminType()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'The admin type cannot be deactivated as it is required for system functionality.'
+            ], 400);
+        }
+
+        $request->validate([
+            'status' => 'required|in:active,inactive'
+        ]);
+
+        $adminType->update(['is_active' => $request->status === 'active']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Admin type status updated successfully'
         ]);
     }
 

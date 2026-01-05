@@ -135,13 +135,24 @@
                                             </small>
                                         </td>
                                         <td>
-                                            @if($coupon->is_active && $coupon->isValid())
-                                                <span class="badge bg-success">Active</span>
-                                            @elseif($coupon->is_active)
-                                                <span class="badge bg-warning">Scheduled</span>
-                                            @else
-                                                <span class="badge bg-secondary">Inactive</span>
-                                            @endif
+                                            @php
+                                                $currentStatus = $coupon->is_active ? 'active' : 'inactive';
+                                            @endphp
+                                            <span
+                                                class="badge {{ $coupon->is_active && $coupon->isValid() ? 'bg-success' : ($coupon->is_active ? 'bg-warning' : 'bg-secondary') }} status-badge"
+                                                style="cursor: pointer;"
+                                                onclick="showStatusModal({{ $coupon->id }}, '{{ $currentStatus }}', [
+                                                    { value: 'active', label: 'Active' },
+                                                    { value: 'inactive', label: 'Inactive' }
+                                                ], '{{ route('admin.coupons.update_status', $coupon->id) }}')">
+                                                @if($coupon->is_active && $coupon->isValid())
+                                                    Active
+                                                @elseif($coupon->is_active)
+                                                    Scheduled
+                                                @else
+                                                    Inactive
+                                                @endif
+                                            </span>
                                         </td>
                                         <td>
                                             <div class="btn-group" role="group">
@@ -187,4 +198,8 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    @include('admin.partials.status-modal')
+@endpush
 

@@ -243,7 +243,11 @@
                                         <td>
                                             <span
                                                 class="badge bg-{{ $quiz->is_published ? 'success' : 'warning' }} status-badge"
-                                                data-quiz-id="{{ $quiz->id }}" class="cursor-pointer">
+                                                style="cursor: pointer;"
+                                                onclick="showStatusModal({{ $quiz->id }}, '{{ $quiz->is_published ? 'published' : 'draft' }}', [
+                                                    { value: 'published', label: 'Published' },
+                                                    { value: 'draft', label: 'Draft' }
+                                                ], '{{ route('admin.quizzes.update_status', $quiz->id) }}')">
                                                 {{ $quiz->is_published ? 'Published' : 'Draft' }}
                                             </span>
                                         </td>
@@ -604,13 +608,7 @@
 
             // Clear filters functionality is handled by the Clear button in the form
 
-            // Status badge click handler
-            document.addEventListener('click', function(e) {
-                if (e.target.classList.contains('status-badge')) {
-                    const quizId = e.target.dataset.quizId;
-                    toggleQuizStatus(quizId, e.target);
-                }
-            });
+            // Status badge click handler removed - now using modal
 
             // Filter functionality
             let searchTimeout;
@@ -642,34 +640,7 @@
                 window.location.href = '{{ route('admin.quizzes.index') }}?' + params.toString();
             }
 
-            function toggleQuizStatus(quizId, badgeElement) {
-                fetch(`{{ route('admin.quizzes.toggle_status', ':id') }}`.replace(':id', quizId), {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json'
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            if (data.is_published) {
-                                badgeElement.textContent = 'Published';
-                                badgeElement.className = 'badge bg-success status-badge';
-                            } else {
-                                badgeElement.textContent = 'Draft';
-                                badgeElement.className = 'badge bg-warning status-badge';
-                            }
-                            badgeElement.dataset.quizId = quizId;
-                            badgeElement.style.cursor = 'pointer';
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Error updating quiz status');
-                    });
-            }
+            // toggleQuizStatus function removed - now using modal
 
             function bulkUpdateStatus(status) {
                 const selectedIds = Array.from(document.querySelectorAll('.row-checkbox:checked'))
@@ -711,5 +682,6 @@
             }
         });
     </script>
+    @include('admin.partials.status-modal')
 @endpush
 

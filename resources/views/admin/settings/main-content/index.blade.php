@@ -129,7 +129,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     @if ($settings->favicon)
-                                        <div class="mb-3">
+                                        <div class="mb-3 current-favicon-container">
                                             <label class="form-label">Current Favicon</label>
                                             <div class="d-flex align-items-center">
                                                 <img src="{{ $settings->favicon_url }}" alt="Current Favicon"
@@ -212,61 +212,6 @@
                                 </div>
                             </div>
 
-                            <!-- Coming Soon Control -->
-                            <div class="row mb-4">
-                                <div class="col-12">
-                                    <div class="card border-warning">
-                                        <div class="card-header bg-warning text-white">
-                                            <h6 class="mb-0">
-                                                <i class="fas fa-clock me-2"></i>
-                                                Coming Soon Mode Control
-                                            </h6>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="row align-items-center">
-                                                <div class="col-md-8">
-                                                    <h6 class="text-warning mb-2">Website Access Control</h6>
-                                                    <p class="text-muted mb-0">
-                                                        When enabled, all visitors will see the coming soon page except
-                                                        admin users.
-                                                        This is useful when you're preparing your website for launch.
-                                                    </p>
-                                                </div>
-                                                <div class="col-md-4 text-end">
-                                                    <div class="coming-soon-status mb-3 justify-center">
-                                                        @php
-                                                            $settings = \App\Models\MainContentSettings::getActive();
-                                                            $comingSoonEnabled = $settings
-                                                                ? $settings->coming_soon_enabled
-                                                                : false;
-                                                        @endphp
-                                                        <div
-                                                            class="alert {{ $comingSoonEnabled ? 'alert-warning' : 'alert-success' }} mb-0 status-box-fit">
-                                                            <i
-                                                                class="fas {{ $comingSoonEnabled ? 'fa-exclamation-triangle' : 'fa-check-circle' }} me-2"></i>
-                                                            <strong>{{ $comingSoonEnabled ? 'ACTIVE' : 'DISABLED' }}</strong>
-                                                        </div>
-                                                    </div>
-                                                    <form action="{{ route('admin.settings.coming-soon.update') }}"
-                                                        method="POST" class="d-inline">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <input type="hidden" name="coming_soon_enabled"
-                                                            value="{{ $comingSoonEnabled ? '0' : '1' }}">
-                                                        <button type="submit"
-                                                            class="btn {{ $comingSoonEnabled ? 'btn-success' : 'btn-warning' }} btn-lg">
-                                                            <i
-                                                                class="fas {{ $comingSoonEnabled ? 'fa-toggle-off' : 'fa-toggle-on' }} me-2"></i>
-                                                            {{ $comingSoonEnabled ? 'Disable Coming Soon' : 'Enable Coming Soon' }}
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
                             <!-- Submit Button -->
                             <div class="row">
                                 <div class="col-12">
@@ -292,6 +237,61 @@
                 </div>
             </div>
         </div>
+
+        <!-- Coming Soon Control - Outside main form to avoid nesting -->
+        <div class="row justify-content-center mt-4">
+            <div class="col-lg-8">
+                <div class="card border-warning">
+                    <div class="card-header bg-warning text-white">
+                        <h6 class="mb-0">
+                            <i class="fas fa-clock me-2"></i>
+                            Coming Soon Mode Control
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h6 class="text-warning mb-2">Website Access Control</h6>
+                                <p class="text-muted mb-0">
+                                    When enabled, all visitors will see the coming soon page except
+                                    admin users.
+                                    This is useful when you're preparing your website for launch.
+                                </p>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <div class="coming-soon-status mb-3 justify-center">
+                                    @php
+                                        $settings = \App\Models\MainContentSettings::getActive();
+                                        $comingSoonEnabled = $settings
+                                            ? $settings->coming_soon_enabled
+                                            : false;
+                                    @endphp
+                                    <div
+                                        class="alert {{ $comingSoonEnabled ? 'alert-warning' : 'alert-success' }} mb-0 status-box-fit">
+                                        <i
+                                            class="fas {{ $comingSoonEnabled ? 'fa-exclamation-triangle' : 'fa-check-circle' }} me-2"></i>
+                                        <strong>{{ $comingSoonEnabled ? 'ACTIVE' : 'DISABLED' }}</strong>
+                                    </div>
+                                </div>
+                                <form action="{{ route('admin.settings.coming-soon.update') }}"
+                                    method="POST" class="d-inline">
+                                    @csrf
+                                    @method('PUT')
+                                    <input type="hidden" name="coming_soon_enabled"
+                                        value="{{ $comingSoonEnabled ? '0' : '1' }}">
+                                    <button type="submit"
+                                        class="btn {{ $comingSoonEnabled ? 'btn-success' : 'btn-warning' }} btn-lg">
+                                        <i
+                                            class="fas {{ $comingSoonEnabled ? 'fa-toggle-off' : 'fa-toggle-on' }} me-2"></i>
+                                        {{ $comingSoonEnabled ? 'Disable Coming Soon' : 'Enable Coming Soon' }}
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
 
@@ -308,15 +308,6 @@
             console.log('Main form found:', mainForm !== null);
             console.log('Save button found:', saveBtn !== null);
 
-            // Add click handler to button for debugging
-            if (saveBtn) {
-                saveBtn.addEventListener('click', function(e) {
-                    console.log('🖱️ Save button clicked!');
-                    console.log('Button type:', saveBtn.type);
-                    console.log('Button form:', saveBtn.form);
-                });
-            }
-
             if (mainForm) {
                 // Check if form has any validation issues
                 console.log('Form validation state:', mainForm.checkValidity ? mainForm.checkValidity() : 'N/A');
@@ -329,6 +320,14 @@
 
                 mainForm.addEventListener('submit', function(e) {
                     console.log('✅ Form is being submitted...');
+
+                    // Check form validity first
+                    if (!this.checkValidity()) {
+                        console.log('❌ Form validation failed');
+                        this.reportValidity();
+                        e.preventDefault();
+                        return false; // Don't submit if invalid
+                    }
 
                     // Show loading state
                     if (saveBtn && btnText && btnLoading) {
@@ -349,8 +348,31 @@
                         }
                     }
 
+                    // Set a timeout to re-enable button if form doesn't submit (fallback)
+                    setTimeout(function() {
+                        if (saveBtn && saveBtn.disabled) {
+                            console.warn('⚠️ Form submission seems stuck, re-enabling button');
+                            saveBtn.disabled = false;
+                            if (btnText && btnLoading) {
+                                btnText.classList.remove('d-none');
+                                btnLoading.classList.add('d-none');
+                            }
+                        }
+                    }, 10000); // 10 seconds timeout
+
                     // Allow form to submit normally (don't prevent default)
                     console.log('🚀 Form will now submit to server...');
+                    // Form will submit naturally - no preventDefault()
+                });
+
+                // Re-enable button if page loads with errors (form was submitted but had validation errors)
+                window.addEventListener('load', function() {
+                    if (saveBtn && btnText && btnLoading) {
+                        // Always re-enable on page load (in case of redirect back with errors)
+                        saveBtn.disabled = false;
+                        btnText.classList.remove('d-none');
+                        btnLoading.classList.add('d-none');
+                    }
                 });
             } else {
                 console.error('❌ Main form NOT found! Check if form ID is correct.');
@@ -503,8 +525,13 @@
                             ${data.message}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         `;
-                            document.querySelector('.container-fluid').insertBefore(alert, document.querySelector(
-                                '.row'));
+                            const container = document.querySelector('.container-fluid');
+                            const firstRow = container.querySelector('.row');
+                            if (firstRow && firstRow.parentNode === container) {
+                                container.insertBefore(alert, firstRow);
+                            } else {
+                                container.insertBefore(alert, container.firstChild);
+                            }
                         } else {
                             alert('Error: ' + data.message);
                         }
@@ -517,7 +544,35 @@
         }
 
         function removeFavicon() {
-            if (confirm('Are you sure you want to remove the current favicon?')) {
+            // Use Bootstrap modal for confirmation
+            const modal = document.createElement('div');
+            modal.className = 'modal fade';
+            modal.setAttribute('tabindex', '-1');
+            modal.innerHTML = `
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Confirm Removal</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to remove the current favicon?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-danger" id="confirmRemoveFavicon">Remove</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            const bsModal = new bootstrap.Modal(modal);
+            bsModal.show();
+            
+            const confirmBtn = document.getElementById('confirmRemoveFavicon');
+            confirmBtn.addEventListener('click', function() {
+                bsModal.hide();
                 fetch('{{ route('admin.settings.main-content.remove-favicon') }}', {
                         method: 'POST',
                         headers: {
@@ -529,9 +584,9 @@
                     .then(data => {
                         if (data.success) {
                             // Remove the favicon display
-                            const currentFavicon = document.querySelector('.current-favicon');
-                            if (currentFavicon) {
-                                currentFavicon.remove();
+                            const currentFaviconContainer = document.querySelector('.current-favicon-container');
+                            if (currentFaviconContainer && currentFaviconContainer.parentNode) {
+                                currentFaviconContainer.parentNode.removeChild(currentFaviconContainer);
                             }
                             // Show success message
                             const alert = document.createElement('div');
@@ -541,8 +596,13 @@
                             ${data.message}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         `;
-                            document.querySelector('.container-fluid').insertBefore(alert, document.querySelector(
-                                '.row'));
+                            const container = document.querySelector('.container-fluid');
+                            const firstRow = container.querySelector('.row');
+                            if (firstRow && firstRow.parentNode === container) {
+                                container.insertBefore(alert, firstRow);
+                            } else {
+                                container.insertBefore(alert, container.firstChild);
+                            }
                         } else {
                             alert('Error: ' + data.message);
                         }
@@ -551,7 +611,18 @@
                         console.error('Error:', error);
                         alert('An error occurred while removing the favicon.');
                     });
-            }
+            });
+            
+            // Remove modal when hidden
+            modal.addEventListener('hidden.bs.modal', function() {
+                if (modal && modal.parentNode === document.body) {
+                    try {
+                        document.body.removeChild(modal);
+                    } catch (e) {
+                        console.log('Modal already removed');
+                    }
+                }
+            });
         }
     </script>
 @endpush

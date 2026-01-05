@@ -107,6 +107,8 @@ class AdminsController extends Controller
             'phone' => 'nullable|string|max:20',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'cover' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'about_me' => 'nullable|string',
+            'about_me_ar' => 'nullable|string',
             'is_active' => 'boolean',
         ]);
 
@@ -156,6 +158,8 @@ class AdminsController extends Controller
             'phone' => 'nullable|string|max:20',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'cover' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'about_me' => 'nullable|string',
+            'about_me_ar' => 'nullable|string',
             'is_active' => 'boolean',
         ]);
 
@@ -219,6 +223,20 @@ class AdminsController extends Controller
 
         return redirect()->route('admin.admins.index')
             ->with('success', 'Admin status updated successfully.');
+    }
+
+    public function updateStatus(Request $request, Admin $admin)
+    {
+        $request->validate([
+            'status' => 'required|in:active,inactive'
+        ]);
+
+        $admin->update(['is_active' => $request->status === 'active']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Admin status updated successfully'
+        ]);
     }
 
     public function active(Admin $admin)

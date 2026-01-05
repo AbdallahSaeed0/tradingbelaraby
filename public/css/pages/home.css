@@ -1384,6 +1384,8 @@ footer {
     right: 16px;
 }
 /* Unified Swiper Navigation Buttons - Hero Style for All Sliders */
+.hero-swiper-button-next,
+.hero-swiper-button-prev,
 .courses-section .swiper-button-next,
 .courses-section .swiper-button-prev,
 .courses-by-category-section .swiper-button-next,
@@ -1431,6 +1433,7 @@ footer {
     justify-content: center;
 }
 
+.hero-swiper-button-next,
 .courses-section .swiper-button-next,
 .courses-by-category-section .swiper-button-next,
 .swiper-button-next-bundles,
@@ -1450,6 +1453,7 @@ footer {
     left: auto !important;
 }
 
+.hero-swiper-button-prev,
 .courses-section .swiper-button-prev,
 .courses-by-category-section .swiper-button-prev,
 .swiper-button-prev-bundles,
@@ -1469,6 +1473,8 @@ footer {
     right: auto !important;
 }
 
+.hero-swiper-button-next:hover,
+.hero-swiper-button-prev:hover,
 .courses-section .swiper-button-next:hover,
 .courses-section .swiper-button-prev:hover,
 .courses-by-category-section .swiper-button-next:hover,
@@ -1502,6 +1508,8 @@ footer {
     background: #d94e1f !important;
 }
 
+.hero-swiper-button-next::after,
+.hero-swiper-button-prev::after,
 .courses-section .swiper-button-next::after,
 .courses-section .swiper-button-prev::after,
 .courses-by-category-section .swiper-button-next::after,

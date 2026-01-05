@@ -67,6 +67,7 @@ class CourseEnrollmentNotification extends Notification implements ShouldQueue
                 'payment_method' => 'Payment Method',
                 'course_price' => 'Course Price',
                 'discount' => 'Discount',
+                'subtotal' => 'Subtotal',
                 'total' => 'Total',
                 'free' => 'Free',
                 'visa' => 'Credit Card',
@@ -86,6 +87,7 @@ class CourseEnrollmentNotification extends Notification implements ShouldQueue
                 'payment_method' => 'طريقة الدفع',
                 'course_price' => 'سعر الدورة',
                 'discount' => 'الخصم',
+                'subtotal' => 'المجموع الفرعي',
                 'total' => 'الإجمالي',
                 'free' => 'مجاني',
                 'visa' => 'بطاقة ائتمان',
@@ -118,25 +120,40 @@ class CourseEnrollmentNotification extends Notification implements ShouldQueue
 
         // Add invoice details if order exists
         if ($this->order) {
-            $orderItem = $this->order->orderItems()
-                ->where('course_id', $this->course->id)
-                ->first();
+            $orderItems = $this->order->orderItems()->with('course')->get();
+            $currency = config('app.currency', 'SAR');
             
-            if ($orderItem) {
-                $mailMessage->line('---')
-                    ->line('**' . $this->getText('invoice_details') . '**')
-                    ->line($this->getText('order_number') . ': ' . $this->order->order_number)
-                    ->line($this->getText('order_date') . ': ' . $this->order->created_at->format('Y-m-d H:i'))
-                    ->line($this->getText('payment_method') . ': ' . $this->getPaymentMethodText($this->order->payment_method))
-                    ->line($this->getText('course_price') . ': $' . number_format($orderItem->price, 2));
-                
-                if ($this->order->discount_amount > 0) {
-                    $mailMessage->line($this->getText('discount') . ': -$' . number_format($this->order->discount_amount, 2));
+            $mailMessage->line('---')
+                ->line('**' . $this->getText('invoice_details') . '**')
+                ->line($this->getText('order_number') . ': ' . $this->order->order_number)
+                ->line($this->getText('order_date') . ': ' . $this->order->created_at->format('Y-m-d H:i'))
+                ->line($this->getText('payment_method') . ': ' . $this->getPaymentMethodText($this->order->payment_method))
+                ->line('');
+            
+            // List all courses in the order
+            foreach ($orderItems as $item) {
+                if ($item->course) {
+                    $itemCourseName = $lang === 'ar' && $item->course->name_ar 
+                        ? $item->course->name_ar 
+                        : $item->course->name;
+                    $mailMessage->line($itemCourseName . ': ' . number_format($item->price, 2) . ' ' . $currency);
+                } elseif ($item->bundle) {
+                    $itemBundleName = $lang === 'ar' && $item->bundle->name_ar 
+                        ? $item->bundle->name_ar 
+                        : $item->bundle->name;
+                    $mailMessage->line($itemBundleName . ': ' . number_format($item->price, 2) . ' ' . $currency);
                 }
-                
-                $mailMessage->line('**' . $this->getText('total') . ': $' . number_format($this->order->total, 2) . '**')
-                    ->line('---');
             }
+            
+            $mailMessage->line('---')
+                ->line($this->getText('subtotal') . ': ' . number_format($this->order->subtotal, 2) . ' ' . $currency);
+            
+            if ($this->order->discount_amount > 0) {
+                $mailMessage->line($this->getText('discount') . ': -' . number_format($this->order->discount_amount, 2) . ' ' . $currency);
+            }
+            
+            $mailMessage->line('**' . $this->getText('total') . ': ' . number_format($this->order->total, 2) . ' ' . $currency . '**')
+                ->line('---');
         } else {
             // For free courses without order
             $mailMessage->line($this->getText('course_price') . ': ' . $this->getText('free'));

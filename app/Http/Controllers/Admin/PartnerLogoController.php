@@ -89,4 +89,18 @@ class PartnerLogoController extends Controller
         return redirect()->route('admin.partner-logos.index')
             ->with('success', 'Partner logo deleted successfully.');
     }
+
+    public function updateStatus(Request $request, PartnerLogo $partnerLogo)
+    {
+        $request->validate([
+            'status' => 'required|in:active,inactive'
+        ]);
+
+        $partnerLogo->update(['is_active' => $request->status === 'active']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Partner logo status updated successfully'
+        ]);
+    }
 }

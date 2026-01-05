@@ -193,7 +193,11 @@
                                     <td>
                                         <span
                                             class="badge status-badge bg-{{ $admin->is_active ? 'success' : 'secondary' }}"
-                                            onclick="toggleStatus({{ $admin->id }})">
+                                            style="cursor: pointer;"
+                                            onclick="showStatusModal({{ $admin->id }}, '{{ $admin->is_active ? 'active' : 'inactive' }}', [
+                                                { value: 'active', label: 'Active' },
+                                                { value: 'inactive', label: 'Inactive' }
+                                            ], '{{ route('admin.admins.update_status', $admin->id) }}')">
                                             {{ $admin->is_active ? 'Active' : 'Inactive' }}
                                         </span>
                                     </td>
@@ -324,6 +328,7 @@
                 }
             }
         </script>
+        @include('admin.partials.status-modal')
     @endpush
 @endsection
 

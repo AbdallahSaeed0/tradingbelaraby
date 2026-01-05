@@ -57,10 +57,19 @@
                                         <span class="badge bg-info">{{ strtoupper($language->direction) }}</span>
                                     </td>
                                     <td>
-                                        @if ($language->is_active)
+                                        @if ($language->is_default)
                                             <span class="badge bg-success">Active</span>
+                                            <small class="d-block text-muted">Default</small>
                                         @else
-                                            <span class="badge bg-secondary">Inactive</span>
+                                            <span
+                                                class="badge {{ $language->is_active ? 'bg-success' : 'bg-secondary' }} status-badge"
+                                                style="cursor: pointer;"
+                                                onclick="showStatusModal({{ $language->id }}, '{{ $language->is_active ? 'active' : 'inactive' }}', [
+                                                    { value: 'active', label: 'Active' },
+                                                    { value: 'inactive', label: 'Inactive' }
+                                                ], '{{ route('admin.languages.update_status', $language->id) }}')">
+                                                {{ $language->is_active ? 'Active' : 'Inactive' }}
+                                            </span>
                                         @endif
                                     </td>
                                     <td>
@@ -144,3 +153,7 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    @include('admin.partials.status-modal')
+@endpush

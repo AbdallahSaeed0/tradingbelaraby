@@ -182,6 +182,20 @@ class BlogCategoryController extends Controller
         return back()->with('success', 'Category status updated successfully');
     }
 
+    public function updateStatus(Request $request, BlogCategory $category)
+    {
+        $request->validate([
+            'status' => 'required|in:active,inactive'
+        ]);
+
+        $category->update(['status' => $request->status]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Category status updated successfully'
+        ]);
+    }
+
     public function analytics()
     {
         $totalCategories = BlogCategory::count();

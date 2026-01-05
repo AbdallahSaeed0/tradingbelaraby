@@ -378,6 +378,23 @@ class LiveClassManagementController extends Controller
     }
 
     /**
+     * Update live class status
+     */
+    public function updateStatus(Request $request, LiveClass $liveClass)
+    {
+        $request->validate([
+            'status' => 'required|in:scheduled,live,completed,cancelled'
+        ]);
+
+        $liveClass->update(['status' => $request->status]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Live class status updated successfully'
+        ]);
+    }
+
+    /**
      * View live class registrations
      */
     public function registrations(LiveClass $liveClass, Request $request)

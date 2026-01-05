@@ -292,6 +292,24 @@ class BlogsController extends Controller
         return back()->with('success', 'Blog status updated successfully');
     }
 
+    public function updateStatus(Request $request, Blog $blog)
+    {
+        $request->validate([
+            'status' => 'required|in:published,draft,archived'
+        ]);
+
+        $blog->update(['status' => $request->status]);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Blog status updated successfully'
+            ]);
+        }
+
+        return back()->with('success', 'Blog status updated successfully');
+    }
+
     public function toggleFeatured(Blog $blog)
     {
         $blog->update(['is_featured' => !$blog->is_featured]);

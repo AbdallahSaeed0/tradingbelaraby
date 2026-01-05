@@ -9,7 +9,8 @@
         </div>
         <div class="row justify-content-center g-4">
             @php
-                $blogs = \App\Models\Blog::with(['author', 'category'])
+                $blogs = \App\Models\Blog::published()
+                    ->with(['author', 'category'])
                     ->latest()
                     ->take(3)
                     ->get();

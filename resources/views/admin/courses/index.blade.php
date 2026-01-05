@@ -322,7 +322,13 @@
                                             $statusClass = $statusClasses[$course->status] ?? 'bg-secondary';
                                         @endphp
                                         <span
-                                            class="badge {{ $statusClass }} status-badge">{{ ucfirst($course->status) }}</span>
+                                            class="badge {{ $statusClass }} status-badge"
+                                            style="cursor: pointer;"
+                                            onclick="showStatusModal({{ $course->id }}, '{{ $course->status }}', [
+                                                { value: 'published', label: 'Published' },
+                                                { value: 'draft', label: 'Draft' },
+                                                { value: 'archived', label: 'Archived' }
+                                            ], '{{ route('admin.courses.update_status', $course->id) }}')">{{ ucfirst($course->status) }}</span>
                                     </td>
                                     <td>
                                         <span>{{ $course->created_at->format('M d, Y') }}</span>
@@ -703,5 +709,7 @@
             }
         }
     </script>
+
+    @include('admin.partials.status-modal')
 @endpush
 

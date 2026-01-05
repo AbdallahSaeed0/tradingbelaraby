@@ -45,10 +45,6 @@
                                         </span>
                                     @endif
 
-                                    @if ($course->instructor)
-                                        <img src="{{ $course->instructor->avatar ?? 'https://randomuser.me/api/portraits/men/32.jpg' }}"
-                                            class="author-avatar" alt="{{ $course->instructor->name }}">
-                                    @endif
 
                                     <div class="course-hover-icons">
                                         <button class="icon-btn wishlist-btn" data-course-id="{{ $course->id }}">

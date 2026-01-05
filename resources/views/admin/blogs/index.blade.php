@@ -213,7 +213,8 @@
                                     <td>
                                         <span
                                             class="badge status-badge bg-{{ $blog->status === 'published' ? 'success' : ($blog->status === 'draft' ? 'warning' : 'secondary') }}"
-                                            onclick="toggleStatus({{ $blog->id }})">
+                                            style="cursor: pointer;"
+                                            onclick="showBlogStatusModal({{ $blog->id }}, '{{ $blog->status }}')">
                                             {{ ucfirst($blog->status) }}
                                         </span>
                                     </td>
@@ -326,6 +327,8 @@
 
 @endsection
 
+@include('admin.partials.status-modal')
+
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -434,32 +437,15 @@
                 }
             };
 
-            // Toggle status
-            window.toggleStatus = function(blogId) {
-                if (confirm('Are you sure you want to toggle the status of this blog?')) {
-                    const csrfToken = document.querySelector('meta[name="csrf-token"]');
-                    if (!csrfToken) {
-                        alert('CSRF token not found. Please refresh the page.');
-                        return;
-                    }
-
-                    fetch(`/admin/blogs/${blogId}/toggle-status`, {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': csrfToken.getAttribute('content'),
-                            'Content-Type': 'application/json',
-                        },
-                    }).then(response => {
-                        if (response.ok) {
-                            location.reload();
-                        } else {
-                            alert('Error updating blog status');
-                        }
-                    }).catch(error => {
-                        console.error('Error:', error);
-                        alert('Error updating blog status');
-                    });
-                }
+            // Show status modal for blogs
+            window.showBlogStatusModal = function(blogId, currentStatus) {
+                const availableStatuses = [
+                    { value: 'published', label: 'Published' },
+                    { value: 'draft', label: 'Draft' },
+                    { value: 'archived', label: 'Archived' }
+                ];
+                const updateUrl = `/admin/blogs/${blogId}/update-status`;
+                window.showStatusModal(blogId, currentStatus, availableStatuses, updateUrl);
             };
 
             // Toggle featured

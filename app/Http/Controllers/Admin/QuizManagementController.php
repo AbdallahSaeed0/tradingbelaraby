@@ -915,6 +915,23 @@ class QuizManagementController extends Controller
     }
 
     /**
+     * Update quiz status
+     */
+    public function updateStatus(Request $request, Quiz $quiz)
+    {
+        $request->validate([
+            'status' => 'required|in:published,draft'
+        ]);
+
+        $quiz->update(['is_published' => $request->status === 'published']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Quiz status updated successfully'
+        ]);
+    }
+
+    /**
      * Import quizzes from Excel file
      */
     public function import(Request $request)

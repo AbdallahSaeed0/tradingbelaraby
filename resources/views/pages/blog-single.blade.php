@@ -67,13 +67,13 @@
                         <!-- Blog Tags -->
                         @php $tags = $blog->getTagsArray(); @endphp
                         @if (!empty($tags))
-                            <div class="blog-tags mb-4">
+                            <div class="blog-tags mb-4" style="word-wrap: break-word; overflow-wrap: break-word;">
                                 <h6 class="text-muted mb-2">
                                     <i class="fas fa-tags me-1"></i> Tags:
                                 </h6>
-                                <div class="d-flex flex-wrap gap-2">
+                                <div class="d-flex flex-wrap gap-2" style="max-width: 100%;">
                                     @foreach ($tags as $tag)
-                                        <span class="badge bg-primary">{{ $tag }}</span>
+                                        <span class="badge bg-primary" style="white-space: normal; word-break: break-word;">{{ $tag }}</span>
                                     @endforeach
                                 </div>
                             </div>

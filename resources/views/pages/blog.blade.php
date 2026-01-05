@@ -175,7 +175,52 @@
                         <!-- Pagination -->
                         @if ($blogs->hasPages())
                             <div class="d-flex justify-content-center mt-5">
-                                {{ $blogs->appends(request()->query())->links() }}
+                                <nav aria-label="Blog pagination">
+                                    <ul class="pagination pagination-lg">
+                                        {{-- Previous Page Link --}}
+                                        @if ($blogs->onFirstPage())
+                                            <li class="page-item disabled">
+                                                <span class="page-link" aria-label="Previous">
+                                                    <i class="fas fa-chevron-left"></i>
+                                                </span>
+                                            </li>
+                                        @else
+                                            <li class="page-item">
+                                                <a class="page-link" href="{{ $blogs->appends(request()->query())->previousPageUrl() }}" aria-label="Previous">
+                                                    <i class="fas fa-chevron-left"></i>
+                                                </a>
+                                            </li>
+                                        @endif
+
+                                        {{-- Pagination Elements --}}
+                                        @foreach ($blogs->getUrlRange(1, $blogs->lastPage()) as $page => $url)
+                                            @if ($page == $blogs->currentPage())
+                                                <li class="page-item active">
+                                                    <span class="page-link">{{ $page }}</span>
+                                                </li>
+                                            @else
+                                                <li class="page-item">
+                                                    <a class="page-link" href="{{ $blogs->appends(request()->query())->url($page) }}">{{ $page }}</a>
+                                                </li>
+                                            @endif
+                                        @endforeach
+
+                                        {{-- Next Page Link --}}
+                                        @if ($blogs->hasMorePages())
+                                            <li class="page-item">
+                                                <a class="page-link" href="{{ $blogs->appends(request()->query())->nextPageUrl() }}" aria-label="Next">
+                                                    <i class="fas fa-chevron-right"></i>
+                                                </a>
+                                            </li>
+                                        @else
+                                            <li class="page-item disabled">
+                                                <span class="page-link" aria-label="Next">
+                                                    <i class="fas fa-chevron-right"></i>
+                                                </span>
+                                            </li>
+                                        @endif
+                                    </ul>
+                                </nav>
                             </div>
                         @endif
                     @else

@@ -164,5 +164,19 @@ class CouponsController extends Controller
         return redirect()->route('admin.coupons.index')
             ->with('success', 'Coupon deleted successfully.');
     }
+
+    public function updateStatus(Request $request, Coupon $coupon)
+    {
+        $request->validate([
+            'status' => 'required|in:active,inactive'
+        ]);
+
+        $coupon->update(['is_active' => $request->status === 'active']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Coupon status updated successfully'
+        ]);
+    }
 }
 

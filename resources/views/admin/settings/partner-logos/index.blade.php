@@ -67,11 +67,15 @@
                                             </td>
                                             <td>{{ $logo->order }}</td>
                                             <td>
-                                                @if ($logo->is_active)
-                                                    <span class="badge bg-success">Active</span>
-                                                @else
-                                                    <span class="badge bg-secondary">Inactive</span>
-                                                @endif
+                                                <span
+                                                    class="badge {{ $logo->is_active ? 'bg-success' : 'bg-secondary' }} status-badge"
+                                                    style="cursor: pointer;"
+                                                    onclick="showStatusModal({{ $logo->id }}, '{{ $logo->is_active ? 'active' : 'inactive' }}', [
+                                                        { value: 'active', label: 'Active' },
+                                                        { value: 'inactive', label: 'Inactive' }
+                                                    ], '{{ route('admin.partner-logos.update_status', $logo->id) }}')">
+                                                    {{ $logo->is_active ? 'Active' : 'Inactive' }}
+                                                </span>
                                             </td>
                                             <td>
                                                 <a href="{{ route('admin.partner-logos.edit', $logo) }}"
@@ -106,3 +110,7 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    @include('admin.partials.status-modal')
+@endpush

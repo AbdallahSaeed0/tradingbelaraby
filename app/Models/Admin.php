@@ -18,6 +18,8 @@ class Admin extends Authenticatable
         'phone',
         'avatar',
         'cover',
+        'about_me',
+        'about_me_ar',
         'is_active',
     ];
 
@@ -120,5 +122,25 @@ class Admin extends Authenticatable
     public function isEmployee()
     {
         return $this->isType('employee');
+    }
+
+    /**
+     * Get localized about_me based on current language
+     */
+    public function getLocalizedAboutMe(): ?string
+    {
+        $currentLanguage = \App\Helpers\TranslationHelper::getCurrentLanguage();
+        if ($currentLanguage && $currentLanguage->code === 'ar' && $this->about_me_ar) {
+            return $this->about_me_ar;
+        }
+        return $this->about_me;
+    }
+
+    /**
+     * Get bio (alias for about_me for backward compatibility)
+     */
+    public function getBioAttribute(): ?string
+    {
+        return $this->getLocalizedAboutMe();
     }
 }

@@ -172,7 +172,12 @@
                                             <div class="text-muted mb-2 instructor-subtitle">
                                                 {{ $instructor->title ?? custom_trans('Instructor', 'front') }}</div>
                                             <div class="text-muted instructor-desc">
-                                                {{ $instructor->bio ?? custom_trans('No bio available', 'front') }}</div>
+                                                @if ($instructor->getLocalizedAboutMe())
+                                                    {!! $instructor->getLocalizedAboutMe() !!}
+                                                @else
+                                                    {{ custom_trans('No bio available', 'front') }}
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
                                 @endforeach
@@ -197,7 +202,12 @@
                                         <div class="text-muted mb-2 instructor-subtitle">
                                             {{ $course->instructor->title ?? custom_trans('Not Found', 'front') }}</div>
                                         <div class="text-muted instructor-desc">
-                                            {{ $course->instructor->bio ?? custom_trans('Not Found', 'front') }}</div>
+                                            @if ($course->instructor->getLocalizedAboutMe())
+                                                {!! $course->instructor->getLocalizedAboutMe() !!}
+                                            @else
+                                                {{ custom_trans('No bio available', 'front') }}
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
                             @else

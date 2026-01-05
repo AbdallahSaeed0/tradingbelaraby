@@ -138,7 +138,8 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center justify-content-between">
                             <div>
-                                <span class="fw-bold text-warning" id="selectedCount">0</span> {{ custom_trans('users selected', 'admin') }}
+                                <span class="fw-bold text-warning" id="selectedCount">0</span>
+                                {{ custom_trans('users selected', 'admin') }}
                             </div>
                             <div>
                                 <button type="button" class="btn btn-danger" id="bulkDeleteBtn" disabled>
@@ -214,7 +215,12 @@
                                     </td>
                                     <td>
                                         <span
-                                            class="badge {{ $user->is_active ? 'bg-success' : 'bg-danger' }} status-badge">
+                                            class="badge {{ $user->is_active ? 'bg-success' : 'bg-danger' }} status-badge"
+                                            style="cursor: pointer;"
+                                            onclick="showStatusModal({{ $user->id }}, '{{ $user->is_active ? 'active' : 'inactive' }}', [
+                                                { value: 'active', label: 'Active' },
+                                                { value: 'inactive', label: 'Inactive' }
+                                            ], '{{ route('admin.users.update_status', $user->id) }}')">
                                             {{ $user->is_active ? 'Active' : 'Inactive' }}
                                         </span>
                                     </td>
@@ -584,5 +590,5 @@
             });
         });
     </script>
+    @include('admin.partials.status-modal')
 @endpush
-

@@ -217,11 +217,15 @@
                                         </div>
                                     </td>
                                     <td>
-                                        @if ($subscriber->status === 'active')
-                                            <span class="badge bg-success">{{ custom_trans('Active', 'admin') }}</span>
-                                        @else
-                                            <span class="badge bg-warning">{{ custom_trans('Inactive', 'admin') }}</span>
-                                        @endif
+                                        <span
+                                            class="badge {{ $subscriber->status === 'active' ? 'bg-success' : 'bg-warning' }} status-badge"
+                                            style="cursor: pointer;"
+                                            onclick="showStatusModal({{ $subscriber->id }}, '{{ $subscriber->status }}', [
+                                                { value: 'active', label: '{{ custom_trans('Active', 'admin') }}' },
+                                                { value: 'inactive', label: '{{ custom_trans('Inactive', 'admin') }}' }
+                                            ], '{{ route('admin.settings.newsletters.update-status', $subscriber->id) }}')">
+                                            {{ $subscriber->status === 'active' ? custom_trans('Active', 'admin') : custom_trans('Inactive', 'admin') }}
+                                        </span>
                                     </td>
                                     <td>
                                         <small class="text-muted">
@@ -604,5 +608,7 @@
                 });
             }
         });
-    </script>@endpush
+    </script>
+    @include('admin.partials.status-modal')
+@endpush
 

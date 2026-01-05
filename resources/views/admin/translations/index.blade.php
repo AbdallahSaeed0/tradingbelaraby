@@ -71,12 +71,25 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label for="key" class="form-label">Search Key</label>
                         <input type="text" class="form-control" id="key" name="key"
                             value="{{ request('key') }}" placeholder="Search translation keys...">
                     </div>
-                    <div class="col-md-3 d-flex align-items-end">
+                    <div class="col-md-2">
+                        <label for="per_page" class="form-label">Per Page</label>
+                        <select class="form-select" id="per_page" name="per_page"
+                            onchange="document.querySelector('form').submit();">
+                            @php
+                                $perPage = (int) request('per_page', 15);
+                            @endphp
+                            <option value="10" {{ $perPage === 10 ? 'selected' : '' }}>10 per page</option>
+                            <option value="25" {{ $perPage === 25 ? 'selected' : '' }}>25 per page</option>
+                            <option value="50" {{ $perPage === 50 ? 'selected' : '' }}>50 per page</option>
+                            <option value="100" {{ $perPage === 100 ? 'selected' : '' }}>100 per page</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-primary">
                                 <i class="fa fa-search me-2"></i>Filter
@@ -159,8 +172,13 @@
                 </div>
 
                 @if ($translations->hasPages())
-                    <div class="d-flex justify-content-center mt-4">
-                        {{ $translations->links() }}
+                    <div class="d-flex align-items-center justify-content-between mt-4">
+                        <div class="text-muted">
+                            Showing {{ $translations->firstItem() }} to {{ $translations->lastItem() }} of {{ $translations->total() }} results
+                        </div>
+                        <div class="d-flex align-items-center">
+                            {{ $translations->links('pagination::bootstrap-5') }}
+                        </div>
                     </div>
                 @endif
             </div>

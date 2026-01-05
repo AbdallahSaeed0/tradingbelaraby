@@ -28,7 +28,7 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <div>
-                                <h4 class="mb-0">{{ $adminTypes->count() }}</h4>
+                                <h4 class="mb-0">{{ $adminTypes->total() }}</h4>
                                 <p class="mb-0">
                                     {{ request()->hasAny(['search', 'status', 'permission']) ? 'Filtered' : 'Total' }} Types
                                 </p>
@@ -169,7 +169,7 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0"><i class="fa fa-list me-2"></i>Admin Types List</h5>
                 <div class="text-muted d-flex align-items-center">
-                    <small id="results-count">{{ $adminTypes->count() }} result{{ $adminTypes->count() !== 1 ? 's' : '' }}
+                    <small id="results-count">{{ $adminTypes->total() }} result{{ $adminTypes->total() !== 1 ? 's' : '' }}
                         found</small>
                     <div id="loading-indicator" class="ms-2 d-none">
                         <i class="fa fa-spinner fa-spin text-primary"></i>
@@ -246,14 +246,15 @@
                                                 <span class="badge bg-success">Active</span>
                                                 <small class="d-block text-muted">System Type</small>
                                             @else
-                                                <div class="status-toggle-wrapper" data-id="{{ $type->id }}">
-                                                    <div class="status-toggle {{ $type->is_active ? 'active' : 'inactive' }}"
-                                                        data-id="{{ $type->id }}">
-                                                        <div class="toggle-slider"></div>
-                                                        <span
-                                                            class="status-text">{{ $type->is_active ? 'Active' : 'Inactive' }}</span>
-                                                    </div>
-                                                </div>
+                                                <span
+                                                    class="badge {{ $type->is_active ? 'bg-success' : 'bg-danger' }} status-badge"
+                                                    style="cursor: pointer;"
+                                                    onclick="showStatusModal({{ $type->id }}, '{{ $type->is_active ? 'active' : 'inactive' }}', [
+                                                        { value: 'active', label: 'Active' },
+                                                        { value: 'inactive', label: 'Inactive' }
+                                                    ], '{{ route('admin.admin-types.update_status', $type->id) }}')">
+                                                    {{ $type->is_active ? 'Active' : 'Inactive' }}
+                                                </span>
                                             @endif
                                         </td>
                                         <td>
@@ -468,5 +469,6 @@
             });
         }
     </script>
+    @include('admin.partials.status-modal')
 @endpush
 

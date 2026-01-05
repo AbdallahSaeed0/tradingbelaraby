@@ -25,7 +25,7 @@
             <!-- Slider Management Card -->
             <div class="col-xl-4 col-lg-6 col-md-10 mb-4">
                 <div class="card settings-card">
-                    <div class="card-body text-center p-5">
+                    <div class="card-body text-center p-4">
                         <div class="settings-icon mb-4">
                             <div class="icon-wrapper">
                                 <i class="fas fa-images fa-4x text-primary"></i>
@@ -69,7 +69,7 @@
             <!-- Features Section Management Card -->
             <div class="col-xl-4 col-lg-6 col-md-10">
                 <div class="card settings-card">
-                    <div class="card-body text-center p-5">
+                    <div class="card-body text-center p-4">
                         <div class="settings-icon mb-4">
                             <div class="icon-wrapper">
                                 <i class="fas fa-star fa-4x text-warning"></i>
@@ -113,7 +113,7 @@
             <!-- Hero Features Section Management -->
             <div class="col-xl-4 col-lg-6 col-md-10">
                 <div class="card settings-card">
-                    <div class="card-body text-center p-5">
+                    <div class="card-body text-center p-4">
                         <div class="settings-icon mb-4">
                             <div class="icon-wrapper">
                                 <i class="fas fa-sliders-h fa-4x text-info"></i>
@@ -157,7 +157,7 @@
             <!-- About University Section Management -->
             <div class="col-xl-4 col-lg-6 col-md-10">
                 <div class="card settings-card">
-                    <div class="card-body text-center p-5">
+                    <div class="card-body text-center p-4">
                         <div class="settings-icon mb-4">
                             <div class="icon-wrapper">
                                 <i class="fas fa-university fa-4x text-success"></i>
@@ -201,7 +201,7 @@
             <!-- FAQ Section Management -->
             <div class="col-xl-4 col-lg-6 col-md-10">
                 <div class="card settings-card">
-                    <div class="card-body text-center p-5">
+                    <div class="card-body text-center p-4">
                         <div class="settings-icon mb-4">
                             <div class="icon-wrapper">
                                 <i class="fas fa-question-circle fa-4x text-warning"></i>
@@ -245,7 +245,7 @@
             <!-- Content Management -->
             <div class="col-xl-4 col-lg-6 col-md-10">
                 <div class="card settings-card">
-                    <div class="card-body text-center p-5">
+                    <div class="card-body text-center p-4">
                         <div class="settings-icon mb-4">
                             <div class="icon-wrapper">
                                 <i class="fas fa-cogs fa-4x text-primary"></i>
@@ -289,7 +289,7 @@
             <!-- Testimonials Management -->
             <div class="col-xl-4 col-lg-6 col-md-10">
                 <div class="card settings-card">
-                    <div class="card-body text-center p-5">
+                    <div class="card-body text-center p-4">
                         <div class="settings-icon mb-4">
                             <div class="icon-wrapper">
                                 <i class="fas fa-quote-left fa-4x text-success"></i>
@@ -333,7 +333,7 @@
             <!-- Features Split Section Management -->
             <div class="col-xl-4 col-lg-6 col-md-10">
                 <div class="card settings-card">
-                    <div class="card-body text-center p-5">
+                    <div class="card-body text-center p-4">
                         <div class="settings-icon mb-4">
                             <div class="icon-wrapper">
                                 <i class="fas fa-puzzle-piece fa-4x text-info"></i>
@@ -377,7 +377,7 @@
             <!-- Partner Logos Management -->
             <div class="col-xl-4 col-lg-6 col-md-10">
                 <div class="card settings-card">
-                    <div class="card-body text-center p-5">
+                    <div class="card-body text-center p-4">
                         <div class="settings-icon mb-4">
                             <div class="icon-wrapper">
                                 <i class="fas fa-handshake fa-4x text-primary"></i>
@@ -421,7 +421,7 @@
             <!-- Info Split Section Management -->
             <div class="col-xl-4 col-lg-6 col-md-10">
                 <div class="card settings-card">
-                    <div class="card-body text-center p-5">
+                    <div class="card-body text-center p-4">
                         <div class="settings-icon mb-4">
                             <div class="icon-wrapper">
                                 <i class="fas fa-info-circle fa-4x text-secondary"></i>
@@ -465,7 +465,7 @@
             <!-- Newsletter Management -->
             <div class="col-xl-4 col-lg-6 col-md-10">
                 <div class="card settings-card">
-                    <div class="card-body text-center p-5">
+                    <div class="card-body text-center p-4">
                         <div class="settings-icon mb-4">
                             <div class="icon-wrapper">
                                 <i class="fas fa-newspaper fa-4x text-danger"></i>
@@ -509,7 +509,7 @@
             <!-- Main Content Management -->
             <div class="col-xl-4 col-lg-6 col-md-10">
                 <div class="card settings-card">
-                    <div class="card-body text-center p-5">
+                    <div class="card-body text-center p-4">
                         <div class="settings-icon mb-4">
                             <div class="icon-wrapper">
                                 <i class="fas fa-cog fa-4x text-primary"></i>
@@ -553,7 +553,7 @@
             <!-- Terms and Conditions Management -->
             <div class="col-xl-4 col-lg-6 col-md-10">
                 <div class="card settings-card">
-                    <div class="card-body text-center p-5">
+                    <div class="card-body text-center p-4">
                         <div class="settings-icon mb-4">
                             <div class="icon-wrapper">
                                 <i class="fas fa-file-contract fa-4x text-secondary"></i>
@@ -597,7 +597,7 @@
             <!-- Contact Management -->
             <div class="col-xl-4 col-lg-6 col-md-10">
                 <div class="card settings-card">
-                    <div class="card-body text-center p-5">
+                    <div class="card-body text-center p-4">
                         <div class="settings-icon mb-4">
                             <div class="icon-wrapper">
                                 <i class="fas fa-address-book fa-4x text-success"></i>

@@ -278,7 +278,11 @@
                                             <td>
                                                 <span
                                                     class="badge status-badge bg-{{ $hw->is_published ? 'success' : 'secondary' }}"
-                                                    onclick="toggleStatus({{ $hw->id }})">
+                                                    style="cursor: pointer;"
+                                                    onclick="showStatusModal({{ $hw->id }}, '{{ $hw->is_published ? 'published' : 'draft' }}', [
+                                                        { value: 'published', label: 'Published' },
+                                                        { value: 'draft', label: 'Draft' }
+                                                    ], '{{ route('admin.homework.update_status', $hw->id) }}')">
                                                     {{ $hw->is_published ? 'Published' : 'Draft' }}
                                                 </span>
                                             </td>
@@ -553,29 +557,7 @@
             });
 
             // Toggle status
-            function toggleStatus(homeworkId) {
-                if (confirm('Are you sure you want to toggle the status of this homework?')) {
-                    fetch(`/admin/homework/${homeworkId}/toggle-status`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                            }
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                location.reload();
-                            } else {
-                                alert('Error: ' + data.message);
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('Error updating status');
-                        });
-                }
-            }
+            // toggleStatus function removed - now using modal
 
             // Duplicate homework
             function duplicateHomework(homeworkId) {
@@ -702,7 +684,8 @@
                         });
                 }
             }
-        </script>
-    @endpush
+    </script>
+    @include('admin.partials.status-modal')
+@endpush
 @endsection
 

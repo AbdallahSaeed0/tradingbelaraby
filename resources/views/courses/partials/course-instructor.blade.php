@@ -12,10 +12,10 @@
                         </a>
                     </h4>
                     <p class="text-muted mb-0">{{ $instructor->email ?? '' }}</p>
-                    @if ($instructor->bio)
-                        <p class="instructor-description mt-2">
-                            {{ $instructor->bio }}
-                        </p>
+                    @if ($instructor->getLocalizedAboutMe())
+                        <div class="instructor-description mt-2">
+                            {!! $instructor->getLocalizedAboutMe() !!}
+                        </div>
                     @endif
                 </div>
             </div>
@@ -36,8 +36,10 @@
                 <p class="text-muted mb-0">{{ $course->instructor->email ?? '' }}</p>
             </div>
         </div>
-        <p class="instructor-description">
-            {{ $course->instructor->bio }}
-        </p>
+        @if ($course->instructor->getLocalizedAboutMe())
+            <div class="instructor-description">
+                {!! $course->instructor->getLocalizedAboutMe() !!}
+            </div>
+        @endif
     @endif
 </div>

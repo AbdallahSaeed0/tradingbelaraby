@@ -135,6 +135,28 @@ class LanguageController extends Controller
             ->with('success', 'Language status updated successfully.');
     }
 
+    public function updateStatus(Request $request, Language $language)
+    {
+        // Don't allow deactivating default language
+        if ($language->is_default && $request->status === 'inactive') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cannot deactivate the default language.'
+            ], 400);
+        }
+
+        $request->validate([
+            'status' => 'required|in:active,inactive'
+        ]);
+
+        $language->update(['is_active' => $request->status === 'active']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Language status updated successfully'
+        ]);
+    }
+
     /**
      * Set language as default
      */

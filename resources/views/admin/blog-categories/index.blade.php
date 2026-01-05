@@ -225,7 +225,11 @@
                                             <td>
                                                 <span
                                                     class="badge status-badge bg-{{ $category->status === 'active' ? 'success' : 'secondary' }}"
-                                                    onclick="toggleStatus({{ $category->id }})">
+                                                    style="cursor: pointer;"
+                                                    onclick="showStatusModal({{ $category->id }}, '{{ $category->status }}', [
+                                                        { value: 'active', label: 'Active' },
+                                                        { value: 'inactive', label: 'Inactive' }
+                                                    ], '{{ route('admin.blog-categories.update_status', $category->id) }}')">
                                                     {{ ucfirst($category->status) }}
                                                 </span>
                                             </td>
@@ -413,24 +417,7 @@
                 bulkDeleteModal.show();
             };
 
-            // Toggle status
-            window.toggleStatus = function(categoryId) {
-                if (confirm('Are you sure you want to toggle the status of this category?')) {
-                    fetch(`/admin/blog-categories/${categoryId}/toggle-status`, {
-                            method: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
-                                    .getAttribute('content'),
-                                'Content-Type': 'application/json',
-                            },
-                        }).then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                location.reload();
-                            }
-                        });
-                }
-            };
+            // toggleStatus function removed - now using modal
 
             // Delete category
             window.deleteCategory = function(categoryId) {
@@ -465,5 +452,6 @@
             };
         });
     </script>
+    @include('admin.partials.status-modal')
 @endpush
 

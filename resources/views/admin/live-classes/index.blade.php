@@ -228,7 +228,13 @@
                                             <td>
                                                 <span
                                                     class="badge status-badge bg-{{ $liveClass->status == 'scheduled' ? 'primary' : ($liveClass->status == 'live' ? 'success' : ($liveClass->status == 'completed' ? 'secondary' : 'danger')) }}"
-                                                    onclick="toggleStatus({{ $liveClass->id }})">
+                                                    style="cursor: pointer;"
+                                                    onclick="showStatusModal({{ $liveClass->id }}, '{{ $liveClass->status }}', [
+                                                        { value: 'scheduled', label: 'Scheduled' },
+                                                        { value: 'live', label: 'Live' },
+                                                        { value: 'completed', label: 'Completed' },
+                                                        { value: 'cancelled', label: 'Cancelled' }
+                                                    ], '{{ route('admin.live-classes.update_status', $liveClass->id) }}')">
                                                     {{ ucfirst($liveClass->status) }}
                                                 </span>
                                             </td>
@@ -502,6 +508,7 @@
                 }
             }
         </script>
+        @include('admin.partials.status-modal')
     @endpush
 @endsection
 

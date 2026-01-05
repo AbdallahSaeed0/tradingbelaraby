@@ -327,8 +327,10 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
 
     // Admin management routes
     Route::resource('admins', App\Http\Controllers\Admin\AdminsController::class)->middleware('admin.permission:manage_admins');
+    Route::post('/admins/{admin}/update-status', [App\Http\Controllers\Admin\AdminsController::class, 'updateStatus'])->name('admins.update_status')->middleware('admin.permission:manage_admins');
     Route::resource('admin-types', App\Http\Controllers\Admin\AdminTypeController::class)->middleware('admin.permission:manage_admins');
     Route::post('/admin-types/{adminType}/toggle-status', [App\Http\Controllers\Admin\AdminTypeController::class, 'toggleStatus'])->name('admin-types.toggle_status')->middleware('admin.permission:manage_admins');
+    Route::post('/admin-types/{adminType}/update-status', [App\Http\Controllers\Admin\AdminTypeController::class, 'updateStatus'])->name('admin-types.update_status')->middleware('admin.permission:manage_admins');
     Route::delete('/users/bulk-delete', [App\Http\Controllers\Admin\UsersController::class, 'bulkDelete'])->name('users.bulk-delete');
     Route::resource('users', App\Http\Controllers\Admin\UsersController::class)->middleware('admin.permission:manage_users');
     Route::resource('categories', App\Http\Controllers\Admin\CategoriesController::class)->middleware('admin.permission:manage_categories');
@@ -337,7 +339,9 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
         ->name('courses.duplicate')
         ->middleware('admin.permission:manage_courses,manage_own_courses');
     Route::resource('enrollments', App\Http\Controllers\Admin\EnrollmentsController::class)->middleware('admin.permission:manage_enrollments');
+    Route::post('/enrollments/{enrollment}/update-status', [App\Http\Controllers\Admin\EnrollmentsController::class, 'updateStatus'])->name('enrollments.update_status')->middleware('admin.permission:manage_enrollments');
     Route::resource('homework', App\Http\Controllers\Admin\HomeworkManagementController::class)->middleware('admin.permission:manage_homework,manage_own_homework');
+    Route::post('/homework/{homework}/update-status', [App\Http\Controllers\Admin\HomeworkManagementController::class, 'updateStatus'])->name('homework.update_status')->middleware('admin.permission:manage_homework,manage_own_homework');
     Route::resource('quizzes', App\Http\Controllers\Admin\QuizManagementController::class)->middleware('admin.permission:manage_quizzes,manage_own_quizzes');
     Route::get('/quizzes/get-sections/{course}', [App\Http\Controllers\Admin\QuizManagementController::class, 'getSections'])->name('quizzes.get-sections');
     Route::get('/quizzes/get-lectures/{course}', [App\Http\Controllers\Admin\QuizManagementController::class, 'getLectures'])->name('quizzes.get-lectures');
@@ -346,6 +350,7 @@ Route::resource('quizzes.questions', App\Http\Controllers\Admin\QuizQuestionMana
     Route::get('/live-classes/{liveClass}/registrations', [App\Http\Controllers\Admin\LiveClassManagementController::class, 'registrations'])->name('live-classes.registrations')->middleware('admin.permission:manage_live_classes,manage_own_live_classes');
     Route::get('/live-classes/{liveClass}/analytics', [App\Http\Controllers\Admin\LiveClassManagementController::class, 'analytics'])->name('live-classes.analytics')->middleware('admin.permission:manage_live_classes,manage_own_live_classes');
     Route::post('/live-classes/{liveClass}/toggle-status', [App\Http\Controllers\Admin\LiveClassManagementController::class, 'toggleStatus'])->name('live-classes.toggle_status')->middleware('admin.permission:manage_live_classes,manage_own_live_classes');
+    Route::post('/live-classes/{liveClass}/update-status', [App\Http\Controllers\Admin\LiveClassManagementController::class, 'updateStatus'])->name('live-classes.update_status')->middleware('admin.permission:manage_live_classes,manage_own_live_classes');
     Route::get('/live-classes/{liveClass}/duplicate', [App\Http\Controllers\Admin\LiveClassManagementController::class, 'duplicate'])->name('live-classes.duplicate')->middleware('admin.permission:manage_live_classes,manage_own_live_classes');
     Route::post('/live-classes/bulk-delete', [App\Http\Controllers\Admin\LiveClassManagementController::class, 'bulkDelete'])->name('live-classes.bulk_delete')->middleware('admin.permission:manage_live_classes,manage_own_live_classes');
     Route::post('/live-classes/bulk-update-status', [App\Http\Controllers\Admin\LiveClassManagementController::class, 'bulkUpdateStatus'])->name('live-classes.bulk_update_status')->middleware('admin.permission:manage_live_classes,manage_own_live_classes');
@@ -361,13 +366,16 @@ Route::resource('quizzes.questions', App\Http\Controllers\Admin\QuizQuestionMana
 
     // Bundle management routes
     Route::resource('bundles', App\Http\Controllers\Admin\BundlesController::class)->middleware('admin.permission:manage_courses');
+    Route::post('/bundles/{bundle}/update-status', [App\Http\Controllers\Admin\BundlesController::class, 'updateStatus'])->name('bundles.update_status')->middleware('admin.permission:manage_courses');
 
     // Coupon management routes
     Route::resource('coupons', App\Http\Controllers\Admin\CouponsController::class)->middleware('admin.permission:manage_courses');
+    Route::post('/coupons/{coupon}/update-status', [App\Http\Controllers\Admin\CouponsController::class, 'updateStatus'])->name('coupons.update_status')->middleware('admin.permission:manage_courses');
 
     // Settings routes
     Route::put('/settings/coming-soon', [App\Http\Controllers\Admin\SettingsController::class, 'updateComingSoon'])->name('settings.coming-soon.update');
     Route::resource('partner-logos', App\Http\Controllers\Admin\PartnerLogoController::class);
+    Route::post('/partner-logos/{partnerLogo}/update-status', [App\Http\Controllers\Admin\PartnerLogoController::class, 'updateStatus'])->name('partner-logos.update_status');
 
     // Admin analytics routes
     Route::get('/courses/{course}/analytics', [App\Http\Controllers\Admin\CoursesController::class, 'analytics'])->name('courses.analytics')->middleware('admin.permission:view_analytics,view_own_analytics');
@@ -388,6 +396,7 @@ Route::resource('quizzes.questions', App\Http\Controllers\Admin\QuizQuestionMana
     Route::get('/courses/template', [App\Http\Controllers\Admin\CoursesController::class, 'downloadTemplate'])->name('courses.template');
     Route::post('/courses/bulk-delete', [App\Http\Controllers\Admin\CoursesController::class, 'bulkDelete'])->name('courses.bulk_delete');
     Route::post('/courses/bulk-update-status', [App\Http\Controllers\Admin\CoursesController::class, 'bulkUpdateStatus'])->name('courses.bulk_update_status');
+    Route::post('/courses/{course}/update-status', [App\Http\Controllers\Admin\CoursesController::class, 'updateStatus'])->name('courses.update_status');
     Route::get('/homework/{homework}/analytics', [App\Http\Controllers\Admin\HomeworkManagementController::class, 'analytics'])->name('homework.analytics')->middleware('admin.permission:view_analytics,view_own_analytics');
     Route::get('/homework/{homework}/submissions', [App\Http\Controllers\Admin\HomeworkManagementController::class, 'submissions'])->name('homework.submissions');
     Route::post('/homework/submissions/{submission}/grade', [App\Http\Controllers\Admin\HomeworkManagementController::class, 'gradeSubmission'])->name('homework.submissions.grade');
@@ -400,6 +409,7 @@ Route::resource('quizzes.questions', App\Http\Controllers\Admin\QuizQuestionMana
     Route::post('/quizzes/bulk-delete', [App\Http\Controllers\Admin\QuizManagementController::class, 'bulkDelete'])->name('quizzes.bulk_delete');
     Route::post('/quizzes/bulk-update-status', [App\Http\Controllers\Admin\QuizManagementController::class, 'bulkUpdateStatus'])->name('quizzes.bulk_update_status');
     Route::post('/quizzes/{quiz}/toggle-status', [App\Http\Controllers\Admin\QuizManagementController::class, 'toggleStatus'])->name('quizzes.toggle_status');
+    Route::post('/quizzes/{quiz}/update-status', [App\Http\Controllers\Admin\QuizManagementController::class, 'updateStatus'])->name('quizzes.update_status');
     Route::get('/quizzes/{quiz}/duplicate', [App\Http\Controllers\Admin\QuizManagementController::class, 'duplicate'])->name('quizzes.duplicate');
     Route::get('/questions-answers/{question}/analytics', [App\Http\Controllers\Admin\QuestionsAnswersManagementController::class, 'analytics'])->name('questions-answers.analytics')->middleware('admin.permission:view_analytics,view_own_analytics');
 
@@ -416,11 +426,15 @@ Route::resource('quizzes.questions', App\Http\Controllers\Admin\QuizQuestionMana
     // Additional admin routes
     Route::get('/categories/data', [App\Http\Controllers\Admin\CategoriesController::class, 'data'])->name('categories.data');
     Route::post('/users/{user}/toggle-active', [App\Http\Controllers\Admin\UsersController::class, 'toggleActive'])->name('users.toggle-active');
+    Route::post('/users/{user}/update-status', [App\Http\Controllers\Admin\UsersController::class, 'updateStatus'])->name('users.update_status');
     Route::post('/users/{user}/active', [App\Http\Controllers\Admin\UsersController::class, 'active'])->name('users.active');
     Route::get('/blog-categories/analytics', [App\Http\Controllers\Admin\BlogCategoryController::class, 'analytics'])->name('blog-categories.analytics')->middleware('admin.permission:view_analytics');
+    Route::post('/blog-categories/{category}/toggle-status', [App\Http\Controllers\Admin\BlogCategoryController::class, 'toggleStatus'])->name('blog-categories.toggle_status');
+    Route::post('/blog-categories/{category}/update-status', [App\Http\Controllers\Admin\BlogCategoryController::class, 'updateStatus'])->name('blog-categories.update_status');
     Route::post('/blog-categories/bulk-delete', [App\Http\Controllers\Admin\BlogCategoryController::class, 'bulkDelete'])->name('blog-categories.bulk_delete');
     Route::get('/blogs/analytics', [App\Http\Controllers\Admin\BlogsController::class, 'analytics'])->name('blogs.analytics')->middleware('admin.permission:view_analytics');
-    Route::post('/blogs/{blog}/toggle-status', [App\Http\Controllers\Admin\BlogsController::class, 'toggleStatus'])->name('blogs.toggle_status');
+        Route::post('/blogs/{blog}/toggle-status', [App\Http\Controllers\Admin\BlogsController::class, 'toggleStatus'])->name('blogs.toggle_status');
+        Route::post('/blogs/{blog}/update-status', [App\Http\Controllers\Admin\BlogsController::class, 'updateStatus'])->name('blogs.update_status');
     Route::post('/blogs/{blog}/toggle-featured', [App\Http\Controllers\Admin\BlogsController::class, 'toggleFeatured'])->name('blogs.toggle_featured');
     Route::post('/blogs/bulk-delete', [App\Http\Controllers\Admin\BlogsController::class, 'bulkDelete'])->name('blogs.bulk_delete');
     Route::post('/translations/clear-cache', [App\Http\Controllers\Admin\TranslationController::class, 'clearCache'])->name('translations.clear_cache');
@@ -428,6 +442,7 @@ Route::resource('quizzes.questions', App\Http\Controllers\Admin\QuizQuestionMana
     Route::get('/translations/export', [App\Http\Controllers\Admin\TranslationController::class, 'export'])->name('translations.export');
     Route::post('/languages/{language}/default', [App\Http\Controllers\Admin\LanguageController::class, 'setDefault'])->name('languages.default');
     Route::post('/languages/{language}/toggle-status', [App\Http\Controllers\Admin\LanguageController::class, 'toggleActive'])->name('languages.toggle-status');
+    Route::post('/languages/{language}/update-status', [App\Http\Controllers\Admin\LanguageController::class, 'updateStatus'])->name('languages.update_status');
 
     // Features routes
     Route::get('/settings/features', [App\Http\Controllers\Admin\FeaturesController::class, 'index'])->name('settings.features.index');

@@ -1043,6 +1043,20 @@ class CoursesController extends Controller
             ->with('success', "Successfully updated status for {$updated} courses.");
     }
 
+    public function updateStatus(Request $request, Course $course)
+    {
+        $request->validate([
+            'status' => 'required|in:published,draft,archived'
+        ]);
+
+        $course->update(['status' => $request->status]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Course status updated successfully'
+        ]);
+    }
+
     public function downloadTemplate()
     {
         $filename = 'courses_import_template.csv';

@@ -41,7 +41,7 @@
 @endif
 
 <!-- Trader Registration Form Section -->
-<section class="contact-form-section py-5 bg-gradient-primary">
+<section class="contact-form-section py-5 bg-gradient-primary" style="display: none;">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-8">

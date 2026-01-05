@@ -214,5 +214,19 @@ class BundlesController extends Controller
         return redirect()->route('admin.bundles.index')
             ->with('success', 'Bundle deleted successfully.');
     }
+
+    public function updateStatus(Request $request, Bundle $bundle)
+    {
+        $request->validate([
+            'status' => 'required|in:published,draft,archived'
+        ]);
+
+        $bundle->update(['status' => $request->status]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Bundle status updated successfully'
+        ]);
+    }
 }
 

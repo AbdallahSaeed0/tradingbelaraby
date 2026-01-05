@@ -44,10 +44,6 @@
                                     </span>
                                 @endif
 
-                                @if ($course->instructor)
-                                    <img src="{{ $course->instructor->avatar ?? 'https://randomuser.me/api/portraits/men/32.jpg' }}"
-                                        class="author-avatar" alt="{{ $course->instructor->name }}">
-                                @endif
 
                                 <div class="course-hover-icons">
                                     <button class="icon-btn wishlist-btn" data-course-id="{{ $course->id }}">
@@ -85,8 +81,6 @@
                                 <span class="price-badge">
                                     <span class="discounted">99.99 SAR</span>
                                 </span>
-                                <img src="https://randomuser.me/api/portraits/men/32.jpg" class="author-avatar"
-                                    alt="author">
                                 <div class="course-hover-icons">
                                     <button class="icon-btn"><i class="fas fa-heart"></i></button>
                                     <button class="icon-btn"><i class="fa-regular fa-bell"></i></button>

@@ -42,6 +42,14 @@
                                 <p class="mb-0">{{ custom_trans('Rating', 'front') }}</p>
                             </div>
                         </div>
+                        @if ($instructor->getLocalizedAboutMe())
+                            <div class="instructor-about mt-4">
+                                <h5 class="mb-3">{{ custom_trans('About Me', 'front') }}</h5>
+                                <div class="instructor-about-content">
+                                    {!! $instructor->getLocalizedAboutMe() !!}
+                                </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
