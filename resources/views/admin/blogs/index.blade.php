@@ -133,13 +133,6 @@
                                 Featured</option>
                         </select>
                     </div>
-                    <div class="col-md-2">
-                        <select class="form-select" id="perPageFilter">
-                            <option value="15" {{ $per == 15 ? 'selected' : '' }}>15 per page</option>
-                            <option value="25" {{ $per == 25 ? 'selected' : '' }}>25 per page</option>
-                            <option value="50" {{ $per == 50 ? 'selected' : '' }}>50 per page</option>
-                        </select>
-                    </div>
                     <div class="col-md-1">
                         <button class="btn btn-outline-secondary w-100" id="clearFilters">
                             <i class="fa fa-refresh"></i>
@@ -293,11 +286,101 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="d-flex justify-content-end">
-                            {{ $blogs->appends(request()->query())->links() }}
-                        </div>
+                        @if ($blogs->hasPages())
+                            <nav aria-label="Blogs pagination">
+                                <ul class="pagination pagination-sm justify-content-end mb-0">
+                                    {{-- Previous Page Link --}}
+                                    @if ($blogs->onFirstPage())
+                                        <li class="page-item disabled">
+                                            <span class="page-link">
+                                                <i class="fa fa-chevron-left"></i>
+                                            </span>
+                                        </li>
+                                    @else
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $blogs->previousPageUrl() }}"
+                                                aria-label="Previous">
+                                                <i class="fa fa-chevron-left"></i>
+                                            </a>
+                                        </li>
+                                    @endif
+
+                                    {{-- First Page --}}
+                                    @if ($blogs->currentPage() > 3)
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $blogs->url(1) }}">1</a>
+                                        </li>
+                                        @if ($blogs->currentPage() > 4)
+                                            <li class="page-item disabled">
+                                                <span class="page-link">...</span>
+                                            </li>
+                                        @endif
+                                    @endif
+
+                                    {{-- Pagination Elements --}}
+                                    @foreach ($blogs->getUrlRange(max(1, $blogs->currentPage() - 2), min($blogs->lastPage(), $blogs->currentPage() + 2)) as $page => $url)
+                                        @if ($page == $blogs->currentPage())
+                                            <li class="page-item active">
+                                                <span class="page-link">{{ $page }}</span>
+                                            </li>
+                                        @else
+                                            <li class="page-item">
+                                                <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                                            </li>
+                                        @endif
+                                    @endforeach
+
+                                    {{-- Last Page --}}
+                                    @if ($blogs->currentPage() < $blogs->lastPage() - 2)
+                                        @if ($blogs->currentPage() < $blogs->lastPage() - 3)
+                                            <li class="page-item disabled">
+                                                <span class="page-link">...</span>
+                                            </li>
+                                        @endif
+                                        <li class="page-item">
+                                            <a class="page-link"
+                                                href="{{ $blogs->url($blogs->lastPage()) }}">{{ $blogs->lastPage() }}</a>
+                                        </li>
+                                    @endif
+
+                                    {{-- Next Page Link --}}
+                                    @if ($blogs->hasMorePages())
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $blogs->nextPageUrl() }}" aria-label="Next">
+                                                <i class="fa fa-chevron-right"></i>
+                                            </a>
+                                        </li>
+                                    @else
+                                        <li class="page-item disabled">
+                                            <span class="page-link">
+                                                <i class="fa fa-chevron-right"></i>
+                                            </span>
+                                        </li>
+                                    @endif
+                                </ul>
+                            </nav>
+                        @else
+                            <div class="text-end text-muted small">
+                                Page 1 of 1
+                            </div>
+                        @endif
                     </div>
                 </div>
+                {{-- Page Info --}}
+                @if ($blogs->hasPages())
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <div class="text-center">
+                                <small class="text-muted">
+                                    Page {{ $blogs->currentPage() }} of {{ $blogs->lastPage() }}
+                                    @if ($blogs->total() > 0)
+                                        ({{ number_format($blogs->total()) }} total blogs)
+                                    @endif
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
@@ -331,6 +414,14 @@
 
 @push('scripts')
     <script>
+        // Change per page function
+        function changePerPage(value) {
+            const url = new URL(window.location);
+            url.searchParams.set('per_page', value);
+            url.searchParams.delete('page'); // Reset to first page
+            window.location.href = url.toString();
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             const selectAll = document.getElementById('selectAll');
             const blogCheckboxes = document.querySelectorAll('.blog-checkbox');
@@ -338,7 +429,6 @@
             const categoryFilter = document.getElementById('categoryFilter');
             const statusFilter = document.getElementById('statusFilter');
             const featuredFilter = document.getElementById('featuredFilter');
-            const perPageFilter = document.getElementById('perPageFilter');
             const clearFilters = document.getElementById('clearFilters');
             const bulkDeleteModal = new bootstrap.Modal(document.getElementById('bulkDeleteModal'));
 

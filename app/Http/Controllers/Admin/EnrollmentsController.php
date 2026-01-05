@@ -77,7 +77,14 @@ class EnrollmentsController extends Controller
                 break;
         }
 
-        $enrollments = $query->paginate(20);
+        // Pagination size (default 15, user-controllable)
+        $perPage = (int) $request->get('per_page', 15);
+        $allowedPerPage = [10, 15, 25, 50, 100];
+        if (!in_array($perPage, $allowedPerPage)) {
+            $perPage = 15;
+        }
+
+        $enrollments = $query->paginate($perPage)->appends($request->query());
 
         // Calculate stats
         $stats = [

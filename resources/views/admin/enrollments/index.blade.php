@@ -337,24 +337,132 @@
                 </div>
 
                 <!-- Pagination -->
-                <div class="row mt-3">
+                <div class="row align-items-center mt-3">
                     <div class="col-md-6">
-                        <small class="text-muted">
-                            Showing {{ $enrollments->count() }} of {{ $enrollments->total() }} enrollments
-                        </small>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="d-flex justify-content-end">
-                            {{ $enrollments->links() }}
+                        <div class="d-flex align-items-center">
+                            <span class="text-muted me-3">Showing {{ $enrollments->firstItem() ?? 0 }} to
+                                {{ $enrollments->lastItem() ?? 0 }} of {{ $enrollments->total() }} entries</span>
+                            <div class="d-flex align-items-center">
+                                <label class="form-label me-2 mb-0 small">Per page:</label>
+                                <select class="form-select form-select-sm w-auto" onchange="changePerPage(this.value)">
+                                    <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
+                                    <option value="15" {{ request('per_page') == 15 || !request('per_page') ? 'selected' : '' }}>15</option>
+                                    <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                    <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                                    <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
+                    <div class="col-md-6">
+                        @if ($enrollments->hasPages())
+                            <nav aria-label="Enrollments pagination">
+                                <ul class="pagination pagination-sm justify-content-end mb-0">
+                                    {{-- Previous Page Link --}}
+                                    @if ($enrollments->onFirstPage())
+                                        <li class="page-item disabled">
+                                            <span class="page-link">
+                                                <i class="fa fa-chevron-left"></i>
+                                            </span>
+                                        </li>
+                                    @else
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $enrollments->previousPageUrl() }}"
+                                                aria-label="Previous">
+                                                <i class="fa fa-chevron-left"></i>
+                                            </a>
+                                        </li>
+                                    @endif
+
+                                    {{-- First Page --}}
+                                    @if ($enrollments->currentPage() > 3)
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $enrollments->url(1) }}">1</a>
+                                        </li>
+                                        @if ($enrollments->currentPage() > 4)
+                                            <li class="page-item disabled">
+                                                <span class="page-link">...</span>
+                                            </li>
+                                        @endif
+                                    @endif
+
+                                    {{-- Pagination Elements --}}
+                                    @foreach ($enrollments->getUrlRange(max(1, $enrollments->currentPage() - 2), min($enrollments->lastPage(), $enrollments->currentPage() + 2)) as $page => $url)
+                                        @if ($page == $enrollments->currentPage())
+                                            <li class="page-item active">
+                                                <span class="page-link">{{ $page }}</span>
+                                            </li>
+                                        @else
+                                            <li class="page-item">
+                                                <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                                            </li>
+                                        @endif
+                                    @endforeach
+
+                                    {{-- Last Page --}}
+                                    @if ($enrollments->currentPage() < $enrollments->lastPage() - 2)
+                                        @if ($enrollments->currentPage() < $enrollments->lastPage() - 3)
+                                            <li class="page-item disabled">
+                                                <span class="page-link">...</span>
+                                            </li>
+                                        @endif
+                                        <li class="page-item">
+                                            <a class="page-link"
+                                                href="{{ $enrollments->url($enrollments->lastPage()) }}">{{ $enrollments->lastPage() }}</a>
+                                        </li>
+                                    @endif
+
+                                    {{-- Next Page Link --}}
+                                    @if ($enrollments->hasMorePages())
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $enrollments->nextPageUrl() }}" aria-label="Next">
+                                                <i class="fa fa-chevron-right"></i>
+                                            </a>
+                                        </li>
+                                    @else
+                                        <li class="page-item disabled">
+                                            <span class="page-link">
+                                                <i class="fa fa-chevron-right"></i>
+                                            </span>
+                                        </li>
+                                    @endif
+                                </ul>
+                            </nav>
+                        @else
+                            <div class="text-end text-muted small">
+                                Page 1 of 1
+                            </div>
+                        @endif
+                    </div>
                 </div>
+                {{-- Page Info --}}
+                @if ($enrollments->hasPages())
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <div class="text-center">
+                                <small class="text-muted">
+                                    Page {{ $enrollments->currentPage() }} of {{ $enrollments->lastPage() }}
+                                    @if ($enrollments->total() > 0)
+                                        ({{ number_format($enrollments->total()) }} total enrollments)
+                                    @endif
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
 
     @push('scripts')
         <script>
+            // Change per page function
+            function changePerPage(value) {
+                const url = new URL(window.location);
+                url.searchParams.set('per_page', value);
+                url.searchParams.delete('page'); // Reset to first page
+                window.location.href = url.toString();
+            }
             // Auto-submit form on filter change
             document.getElementById('courseFilter').addEventListener('change', function() {
                 document.getElementById('filterForm').submit();

@@ -6,6 +6,8 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Models\User;
 
 class AuthController extends Controller
@@ -83,6 +85,62 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
+        // Honeypot check - if this field is filled, it's a bot
+        if ($request->filled('website')) {
+            Log::warning('Spam registration attempt detected (honeypot)', [
+                'ip' => $request->ip(),
+                'email' => $request->email
+            ]);
+            return back()->withErrors(['email' => 'Registration failed. Please try again.'])->withInput();
+        }
+
+        // Time-based validation - form must take at least 3 seconds to fill
+        $formStartTime = $request->input('form_start_time');
+        if ($formStartTime && (time() - (int)$formStartTime) < 3) {
+            Log::warning('Spam registration attempt detected (too fast)', [
+                'ip' => $request->ip(),
+                'email' => $request->email,
+                'time_taken' => time() - (int)$formStartTime
+            ]);
+            return back()->withErrors(['email' => 'Registration failed. Please take your time filling the form.'])->withInput();
+        }
+
+        // IP-based rate limiting - check if this IP has registered too many accounts recently
+        $ip = $request->ip();
+        
+        // Check for multiple registrations from same email prefix in last hour (common spam pattern)
+        $emailPrefix = explode('@', $request->email)[0] ?? '';
+        $similarRegistrations = User::where('created_at', '>=', now()->subHour())
+            ->where('email', 'like', $emailPrefix . '@%')
+            ->count();
+
+        if ($similarRegistrations >= 2) {
+            Log::warning('Spam registration attempt detected (too many similar emails)', [
+                'ip' => $ip,
+                'email' => $request->email,
+                'count' => $similarRegistrations
+            ]);
+            return back()->withErrors(['email' => 'Too many registration attempts. Please try again later.'])->withInput();
+        }
+
+        // Check for suspicious email patterns (common spam patterns)
+        $email = $request->email;
+        $suspiciousPatterns = [
+            '/^[a-z0-9]+([._-][a-z0-9]+)*@(10minutemail|guerrillamail|tempmail|mailinator|throwaway|trashmail|temp-mail)\./i',
+            '/^test\d+@/i',
+            '/^user\d+@/i',
+        ];
+
+        foreach ($suspiciousPatterns as $pattern) {
+            if (preg_match($pattern, $email)) {
+                Log::warning('Spam registration attempt detected (suspicious email)', [
+                    'ip' => $ip,
+                    'email' => $email
+                ]);
+                return back()->withErrors(['email' => 'Please use a valid email address.'])->withInput();
+            }
+        }
+
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],

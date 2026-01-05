@@ -566,9 +566,16 @@
                 inputField.addEventListener('keydown', function(e) {
                     if (e.key === 'Enter') {
                         e.preventDefault();
-                        const tag = e.target.value.trim();
-                        if (tag) {
-                            addTag(container, tag);
+                        const inputValue = e.target.value.trim();
+                        if (inputValue) {
+                            // Split by comma or space, then add each tag
+                            const tags = inputValue.split(/[,\s]+/).filter(tag => tag.trim() !== '');
+                            tags.forEach(tag => {
+                                const trimmedTag = tag.trim();
+                                if (trimmedTag) {
+                                    addTag(container, trimmedTag);
+                                }
+                            });
                             e.target.value = '';
                             updateHiddenInput();
                         }

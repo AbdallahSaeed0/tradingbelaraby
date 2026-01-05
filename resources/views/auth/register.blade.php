@@ -13,8 +13,15 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('register.attempt') }}" class="card p-4 shadow-sm">
+        <form method="POST" action="{{ route('register.attempt') }}" class="card p-4 shadow-sm" id="registerForm">
             @csrf
+            <input type="hidden" name="form_start_time" value="{{ time() }}">
+            
+            {{-- Honeypot field - hidden from users but bots will fill it --}}
+            <div style="position: absolute; left: -9999px; opacity: 0; pointer-events: none;" aria-hidden="true">
+                <label for="website">Website (leave blank)</label>
+                <input type="text" name="website" id="website" tabindex="-1" autocomplete="off">
+            </div>
 
             <div class="mb-3">
                 <label for="name" class="form-label">Name</label>
@@ -49,9 +56,41 @@
                     class="form-control">
             </div>
 
-            <button type="submit" class="btn btn-primary w-100">Register</button>
+            <button type="submit" class="btn btn-primary w-100" id="submitBtn">Register</button>
         </form>
 
         <p class="text-center mt-3">Already have an account? <a href="{{ route('login') }}">Login here</a></p>
     </div>
+
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('registerForm');
+            const submitBtn = document.getElementById('submitBtn');
+            let formStartTime = Date.now();
+            
+            // Update form start time when form is loaded
+            const startTimeInput = form.querySelector('input[name="form_start_time"]');
+            if (startTimeInput) {
+                startTimeInput.value = Math.floor(formStartTime / 1000);
+            }
+
+            // Prevent double submission
+            form.addEventListener('submit', function(e) {
+                const timeTaken = (Date.now() - formStartTime) / 1000;
+                
+                // Minimum 3 seconds validation (also checked server-side)
+                if (timeTaken < 3) {
+                    e.preventDefault();
+                    alert('Please take your time filling out the form. Registration forms should take at least a few seconds to complete.');
+                    return false;
+                }
+
+                // Disable submit button to prevent double submission
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin me-2"></i>Registering...';
+            });
+        });
+    </script>
+    @endpush
 @endsection
