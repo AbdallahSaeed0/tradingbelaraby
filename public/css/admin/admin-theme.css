@@ -1,0 +1,762 @@
+/* Admin Theme - Light/Dark Mode */
+
+/* CSS Variables - Light Mode (Default) */
+:root {
+    --admin-bg: #f4f6f9;
+    --admin-card-bg: #ffffff;
+    --admin-sidebar-bg: #ffffff;
+    --admin-navbar-bg: #ffffff;
+    --admin-text: #333333;
+    --admin-text-secondary: #6c757d;
+    --admin-text-muted: #6c757d;
+    --admin-border: #dee2e6;
+    --admin-border-light: #e9ecef;
+    --admin-shadow: rgba(0, 0, 0, 0.05);
+    --admin-shadow-hover: rgba(0, 0, 0, 0.1);
+    --admin-input-bg: #ffffff;
+    --admin-input-border: #ced4da;
+    --admin-input-text: #212529;
+    --admin-dropdown-bg: #ffffff;
+    --admin-dropdown-text: #212529;
+    --admin-dropdown-hover: #f8f9fa;
+    --admin-table-bg: #ffffff;
+    --admin-table-stripe: #f8f9fa;
+    --admin-table-border: #dee2e6;
+    --admin-active-bg: #eef2ff;
+    --admin-active-text: #4e73df;
+}
+
+/* CSS Variables - Dark Mode */
+[data-theme="dark"] {
+    --admin-bg: #1a1d29;
+    --admin-card-bg: #2d3142;
+    --admin-sidebar-bg: #252836;
+    --admin-navbar-bg: #2d3142;
+    --admin-text: #e4e6eb;
+    --admin-text-secondary: #b0b3b8;
+    --admin-text-muted: #8a8d91;
+    --admin-border: #3d4153;
+    --admin-border-light: #3d4153;
+    --admin-shadow: rgba(0, 0, 0, 0.3);
+    --admin-shadow-hover: rgba(0, 0, 0, 0.5);
+    --admin-input-bg: #3d4153;
+    --admin-input-border: #4a4f63;
+    --admin-input-text: #e4e6eb;
+    --admin-dropdown-bg: #2d3142;
+    --admin-dropdown-text: #e4e6eb;
+    --admin-dropdown-hover: #3d4153;
+    --admin-table-bg: #2d3142;
+    --admin-table-stripe: #252836;
+    --admin-table-border: #3d4153;
+    --admin-active-bg: #3d4153;
+    --admin-active-text: #6c9fff;
+    
+    /* Override Bootstrap table variables */
+    --bs-table-bg: #2d3142 !important;
+    --bs-table-striped-bg: #252836 !important;
+    --bs-table-hover-bg: #252836 !important;
+    --bs-table-border-color: #3d4153 !important;
+    --bs-table-color: #e4e6eb !important;
+}
+
+/* Body and Main Background */
+body {
+    background-color: var(--admin-bg) !important;
+    color: var(--admin-text);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Navbar */
+.navbar {
+    background-color: var(--admin-navbar-bg) !important;
+    border-bottom: 1px solid var(--admin-border);
+    color: var(--admin-text);
+}
+
+.navbar .nav-link {
+    color: var(--admin-text) !important;
+}
+
+.navbar .nav-link:hover {
+    color: var(--admin-active-text) !important;
+}
+
+.navbar .btn-outline-secondary {
+    background-color: var(--admin-card-bg);
+    border-color: var(--admin-border);
+    color: var(--admin-text);
+}
+
+.navbar .btn-outline-secondary:hover {
+    background-color: var(--admin-active-bg);
+    border-color: var(--admin-border);
+    color: var(--admin-text);
+}
+
+/* Theme Toggle Button */
+#themeToggle {
+    color: var(--admin-text) !important;
+    border: none;
+    background: transparent;
+}
+
+#themeToggle:hover {
+    color: var(--admin-active-text) !important;
+}
+
+/* Sidebar */
+.offcanvas {
+    background-color: var(--admin-sidebar-bg) !important;
+    color: var(--admin-text);
+}
+
+.offcanvas-header {
+    border-bottom: 1px solid var(--admin-border);
+}
+
+.offcanvas-title {
+    color: var(--admin-text);
+}
+
+.offcanvas .list-group-item {
+    background-color: transparent;
+    border-color: var(--admin-border);
+    color: var(--admin-text);
+}
+
+.offcanvas .list-group-item:hover {
+    background-color: var(--admin-dropdown-hover);
+    color: var(--admin-text);
+}
+
+.offcanvas .list-group-item.active {
+    background-color: var(--admin-active-bg) !important;
+    color: var(--admin-active-text) !important;
+}
+
+.offcanvas .list-group-item.bg-light {
+    background-color: var(--admin-dropdown-hover) !important;
+    color: var(--admin-text-muted);
+}
+
+/* Cards - Override Bootstrap card variables */
+.card {
+    --bs-card-bg: var(--admin-card-bg) !important;
+    --bs-card-border-color: var(--admin-border) !important;
+    --bs-card-color: var(--admin-text) !important;
+    background-color: var(--admin-card-bg) !important;
+    border-color: var(--admin-border) !important;
+    color: var(--admin-text) !important;
+    box-shadow: 0 1px 3px var(--admin-shadow) !important;
+}
+
+.card > * {
+    background-color: var(--admin-card-bg) !important;
+    color: var(--admin-text) !important;
+}
+
+.card * {
+    color: var(--admin-text) !important;
+}
+
+.card-header {
+    --bs-card-cap-bg: var(--admin-card-bg) !important;
+    --bs-card-cap-color: var(--admin-text) !important;
+    background-color: var(--admin-card-bg) !important;
+    border-bottom-color: var(--admin-border) !important;
+    color: var(--admin-text) !important;
+}
+
+.card-header > * {
+    background-color: transparent !important;
+    color: var(--admin-text) !important;
+}
+
+.card-header * {
+    color: var(--admin-text) !important;
+}
+
+.card-title {
+    color: var(--admin-text) !important;
+}
+
+.card-body {
+    background-color: var(--admin-card-bg) !important;
+    color: var(--admin-text) !important;
+}
+
+.card-body > * {
+    color: var(--admin-text) !important;
+}
+
+.card-body * {
+    color: var(--admin-text) !important;
+}
+
+.card-body p,
+.card-body span,
+.card-body div:not(.form-control):not(.form-select):not(.btn):not(.badge):not(.table) {
+    color: var(--admin-text) !important;
+}
+
+.card-footer {
+    --bs-card-cap-bg: var(--admin-card-bg) !important;
+    --bs-card-cap-color: var(--admin-text) !important;
+    background-color: var(--admin-card-bg) !important;
+    border-top-color: var(--admin-border) !important;
+    color: var(--admin-text) !important;
+}
+
+.card-footer > * {
+    background-color: transparent !important;
+    color: var(--admin-text) !important;
+}
+
+.card-footer * {
+    color: var(--admin-text) !important;
+}
+
+/* Stat Cards */
+.stat-card {
+    background-color: var(--admin-card-bg) !important;
+    box-shadow: 0 1px 3px var(--admin-shadow);
+}
+
+.stat-card:hover {
+    box-shadow: 0 4px 12px var(--admin-shadow-hover);
+}
+
+/* Tables - Override Bootstrap table variables */
+.table {
+    --bs-table-bg: var(--admin-table-bg) !important;
+    --bs-table-striped-bg: var(--admin-table-stripe) !important;
+    --bs-table-hover-bg: var(--admin-table-stripe) !important;
+    --bs-table-border-color: var(--admin-table-border) !important;
+    --bs-table-color: var(--admin-text) !important;
+    color: var(--admin-text) !important;
+    background-color: var(--admin-table-bg) !important;
+}
+
+.table > :not(caption) > * > * {
+    background-color: var(--admin-table-bg) !important;
+    color: var(--admin-text) !important;
+    border-color: var(--admin-border) !important;
+}
+
+.table * {
+    color: var(--admin-text) !important;
+}
+
+.table thead {
+    background-color: var(--admin-dropdown-hover) !important;
+}
+
+.table thead > tr > * {
+    background-color: var(--admin-dropdown-hover) !important;
+    border-bottom-color: var(--admin-border) !important;
+    color: var(--admin-text) !important;
+}
+
+.table thead th {
+    background-color: var(--admin-dropdown-hover) !important;
+    border-bottom-color: var(--admin-border) !important;
+    color: var(--admin-text) !important;
+}
+
+.table thead th * {
+    color: var(--admin-text) !important;
+}
+
+.table tbody {
+    background-color: var(--admin-table-bg) !important;
+}
+
+.table tbody > tr > * {
+    background-color: var(--admin-table-bg) !important;
+    color: var(--admin-text) !important;
+    border-color: var(--admin-border) !important;
+}
+
+.table tbody tr {
+    background-color: var(--admin-table-bg) !important;
+    border-bottom-color: var(--admin-border) !important;
+}
+
+.table tbody tr > * {
+    background-color: var(--admin-table-bg) !important;
+    color: var(--admin-text) !important;
+}
+
+.table tbody tr * {
+    color: var(--admin-text) !important;
+}
+
+.table tbody tr:hover {
+    background-color: var(--admin-table-stripe) !important;
+}
+
+.table tbody tr:hover > * {
+    background-color: var(--admin-table-stripe) !important;
+    color: var(--admin-text) !important;
+}
+
+.table tbody tr:hover * {
+    color: var(--admin-text) !important;
+}
+
+.table tbody tr:nth-child(even) {
+    background-color: var(--admin-table-stripe) !important;
+}
+
+.table tbody tr:nth-child(even) > * {
+    background-color: var(--admin-table-stripe) !important;
+    color: var(--admin-text) !important;
+}
+
+.table tbody tr:nth-child(even) * {
+    color: var(--admin-text) !important;
+}
+
+.table td,
+.table th {
+    border-color: var(--admin-border) !important;
+    color: var(--admin-text) !important;
+    background-color: inherit !important;
+}
+
+.table td *,
+.table th * {
+    color: var(--admin-text) !important;
+}
+
+/* Table variants */
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+    background-color: var(--admin-table-bg) !important;
+    color: var(--admin-text) !important;
+}
+
+.table-striped > tbody > tr:nth-of-type(even) > * {
+    background-color: var(--admin-table-stripe) !important;
+    color: var(--admin-text) !important;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: var(--admin-table-bg) !important;
+}
+
+.table-striped tbody tr:nth-of-type(even) {
+    background-color: var(--admin-table-stripe) !important;
+}
+
+.table-hover > tbody > tr:hover > * {
+    background-color: var(--admin-table-stripe) !important;
+    color: var(--admin-text) !important;
+}
+
+.table-hover tbody tr:hover {
+    background-color: var(--admin-table-stripe) !important;
+    color: var(--admin-text) !important;
+}
+
+/* Forms */
+.form-control,
+.form-select {
+    background-color: var(--admin-input-bg);
+    border-color: var(--admin-input-border);
+    color: var(--admin-input-text);
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: var(--admin-input-bg);
+    border-color: var(--admin-active-text);
+    color: var(--admin-input-text);
+    box-shadow: 0 0 0 0.2rem rgba(108, 159, 255, 0.25);
+}
+
+.form-label {
+    color: var(--admin-text);
+}
+
+.form-text {
+    color: var(--admin-text-muted);
+}
+
+.input-group-text {
+    background-color: var(--admin-dropdown-hover);
+    border-color: var(--admin-input-border);
+    color: var(--admin-text);
+}
+
+/* Buttons */
+.btn-outline-secondary {
+    border-color: var(--admin-border);
+    color: var(--admin-text);
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--admin-dropdown-hover);
+    border-color: var(--admin-border);
+    color: var(--admin-text);
+}
+
+/* Dropdowns */
+.dropdown-menu {
+    background-color: var(--admin-dropdown-bg);
+    border-color: var(--admin-border);
+    box-shadow: 0 4px 12px var(--admin-shadow-hover);
+}
+
+.dropdown-item {
+    color: var(--admin-dropdown-text);
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: var(--admin-dropdown-hover);
+    color: var(--admin-dropdown-text);
+}
+
+.dropdown-item.active,
+.dropdown-item:active {
+    background-color: var(--admin-active-bg);
+    color: var(--admin-active-text);
+}
+
+.dropdown-header {
+    color: var(--admin-text-muted);
+}
+
+.dropdown-divider {
+    border-color: var(--admin-border);
+}
+
+/* Alerts */
+.alert {
+    border-color: var(--admin-border);
+}
+
+.alert-success {
+    background-color: rgba(25, 135, 84, 0.1);
+    border-color: rgba(25, 135, 84, 0.3);
+    color: var(--admin-text);
+}
+
+.alert-danger {
+    background-color: rgba(220, 53, 69, 0.1);
+    border-color: rgba(220, 53, 69, 0.3);
+    color: var(--admin-text);
+}
+
+.alert-warning {
+    background-color: rgba(255, 193, 7, 0.1);
+    border-color: rgba(255, 193, 7, 0.3);
+    color: var(--admin-text);
+}
+
+.alert-info {
+    background-color: rgba(13, 202, 240, 0.1);
+    border-color: rgba(13, 202, 240, 0.3);
+    color: var(--admin-text);
+}
+
+/* Badges */
+.badge {
+    color: #ffffff;
+}
+
+/* Breadcrumbs */
+.breadcrumb {
+    background-color: transparent;
+}
+
+.breadcrumb-item a {
+    color: var(--admin-active-text);
+}
+
+.breadcrumb-item.active {
+    color: var(--admin-text-muted);
+}
+
+/* Pagination */
+.pagination .page-link {
+    background-color: var(--admin-card-bg);
+    border-color: var(--admin-border);
+    color: var(--admin-text);
+}
+
+.pagination .page-link:hover {
+    background-color: var(--admin-dropdown-hover);
+    border-color: var(--admin-border);
+    color: var(--admin-text);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--admin-active-bg);
+    border-color: var(--admin-active-text);
+    color: var(--admin-active-text);
+}
+
+.pagination .page-item.disabled .page-link {
+    background-color: var(--admin-card-bg);
+    border-color: var(--admin-border);
+    color: var(--admin-text-muted);
+}
+
+/* Modals */
+.modal-content {
+    background-color: var(--admin-card-bg);
+    border-color: var(--admin-border);
+    color: var(--admin-text);
+}
+
+.modal-header {
+    border-bottom-color: var(--admin-border);
+}
+
+.modal-footer {
+    border-top-color: var(--admin-border);
+}
+
+.modal-body {
+    color: var(--admin-text);
+}
+
+/* Text Colors */
+.text-muted {
+    color: var(--admin-text-muted) !important;
+}
+
+.text-secondary {
+    color: var(--admin-text-secondary) !important;
+}
+
+/* Background Colors */
+.bg-light {
+    background-color: var(--admin-bg) !important;
+}
+
+.bg-white {
+    background-color: var(--admin-card-bg) !important;
+}
+
+/* Borders */
+.border {
+    border-color: var(--admin-border) !important;
+}
+
+.border-top {
+    border-top-color: var(--admin-border) !important;
+}
+
+.border-bottom {
+    border-bottom-color: var(--admin-border) !important;
+}
+
+.border-start {
+    border-left-color: var(--admin-border) !important;
+}
+
+.border-end {
+    border-right-color: var(--admin-border) !important;
+}
+
+/* Shadows */
+.shadow-sm {
+    box-shadow: 0 1px 3px var(--admin-shadow) !important;
+}
+
+.shadow {
+    box-shadow: 0 4px 12px var(--admin-shadow) !important;
+}
+
+/* Settings Cards */
+.settings-card {
+    background-color: var(--admin-card-bg) !important;
+    border-color: var(--admin-border) !important;
+    color: var(--admin-text) !important;
+}
+
+.settings-card * {
+    color: var(--admin-text);
+}
+
+.settings-card:hover {
+    border-color: var(--admin-active-text) !important;
+}
+
+.settings-card .card-title,
+.settings-card .card-text,
+.settings-card .feature-item {
+    color: var(--admin-text) !important;
+}
+
+/* Icon Shapes */
+.icon-shape {
+    color: #ffffff;
+}
+
+/* Stat Icons */
+.stat-icon {
+    color: #ffffff;
+}
+
+/* Profile Dropdown */
+.profile-dropdown {
+    color: var(--admin-text);
+}
+
+/* Page Title Box */
+.page-title-box {
+    color: var(--admin-text);
+}
+
+.page-title {
+    color: var(--admin-text);
+}
+
+/* Code Blocks */
+code {
+    background-color: var(--admin-dropdown-hover);
+    color: var(--admin-text);
+    border: 1px solid var(--admin-border);
+}
+
+/* Input Groups */
+.input-group .form-control {
+    background-color: var(--admin-input-bg);
+    border-color: var(--admin-input-border);
+    color: var(--admin-input-text);
+}
+
+/* Select Elements */
+select.form-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23e4e6eb' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+}
+
+[data-theme="light"] select.form-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23333' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+}
+
+/* CKEditor and Rich Text Editors */
+.ck-editor__editable {
+    background-color: var(--admin-input-bg) !important;
+    color: var(--admin-input-text) !important;
+}
+
+.ck-editor__editable * {
+    color: var(--admin-input-text) !important;
+}
+
+.ck-editor__editable_inline {
+    background-color: var(--admin-input-bg) !important;
+    border-color: var(--admin-border) !important;
+    color: var(--admin-input-text) !important;
+}
+
+.ck.ck-editor {
+    color: var(--admin-text) !important;
+}
+
+.ck.ck-toolbar {
+    background-color: var(--admin-dropdown-hover) !important;
+    border-color: var(--admin-border) !important;
+}
+
+.ck.ck-toolbar .ck-button {
+    color: var(--admin-text) !important;
+}
+
+.ck.ck-toolbar .ck-button:hover {
+    background-color: var(--admin-active-bg) !important;
+}
+
+/* Additional Card and Content Styling */
+.container-fluid .card,
+main .card {
+    background-color: var(--admin-card-bg) !important;
+    color: var(--admin-text) !important;
+}
+
+.container-fluid .card *,
+main .card * {
+    color: var(--admin-text);
+}
+
+.container-fluid .card h1,
+.container-fluid .card h2,
+.container-fluid .card h3,
+.container-fluid .card h4,
+.container-fluid .card h5,
+.container-fluid .card h6,
+main .card h1,
+main .card h2,
+main .card h3,
+main .card h4,
+main .card h5,
+main .card h6 {
+    color: var(--admin-text) !important;
+}
+
+.container-fluid .card .text-muted,
+main .card .text-muted {
+    color: var(--admin-text-muted) !important;
+}
+
+/* Form Cards */
+.card .form-label,
+.card label {
+    color: var(--admin-text) !important;
+}
+
+.card .form-control,
+.card .form-select {
+    background-color: var(--admin-input-bg) !important;
+    border-color: var(--admin-input-border) !important;
+    color: var(--admin-input-text) !important;
+}
+
+/* Table in Cards */
+.card .table {
+    background-color: var(--admin-table-bg) !important;
+    color: var(--admin-text) !important;
+}
+
+.card .table thead th {
+    background-color: var(--admin-dropdown-hover) !important;
+    color: var(--admin-text) !important;
+}
+
+.card .table tbody tr {
+    background-color: var(--admin-table-bg) !important;
+}
+
+.card .table tbody tr:hover {
+    background-color: var(--admin-table-stripe) !important;
+}
+
+.card .table td,
+.card .table th {
+    color: var(--admin-text) !important;
+    border-color: var(--admin-border) !important;
+}
+
+/* Scrollbar Styling (Optional) */
+[data-theme="dark"] ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+    background: var(--admin-bg);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: var(--admin-border);
+    border-radius: 5px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+    background: var(--admin-text-muted);
+}
+

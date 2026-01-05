@@ -1,24 +1,25 @@
 /* Admin dashboard custom styles */
 
 body {
-    background: #f4f6f9;
+    background: var(--admin-bg, #f4f6f9);
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .navbar {
-    background: #ffffff;
+    background: var(--admin-navbar-bg, #ffffff);
 }
 
 .stat-card {
-    background: #ffffff;
+    background: var(--admin-card-bg, #ffffff);
     border: none;
     border-radius: 0.75rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 3px var(--admin-shadow, rgba(0, 0, 0, 0.05));
     transition: transform 0.2s ease;
 }
 
 .stat-card:hover {
     transform: translateY(-4px);
+    box-shadow: 0 4px 12px var(--admin-shadow-hover, rgba(0, 0, 0, 0.1));
 }
 
 .stat-icon {
@@ -61,16 +62,16 @@ body {
     object-fit: cover;
 }
 
-/* Sidebar active link for light theme */
+/* Sidebar active link */
 .offcanvas .list-group-item.active {
-    background: #eef2ff;
-    color: #4e73df;
+    background: var(--admin-active-bg, #eef2ff);
+    color: var(--admin-active-text, #4e73df);
     font-weight: 600;
 }
 
-/* Ensure sidebar links use dark text */
+/* Ensure sidebar links use appropriate text color */
 .offcanvas .list-group-item {
-    color: #333;
+    color: var(--admin-text, #333);
 }
 
 /* Dropdown animation */
@@ -102,7 +103,7 @@ body {
         position: static !important;
         transform: none !important;
         visibility: visible !important;
-        border-right: 1px solid rgba(0, 0, 0, 0.1);
+        border-right: 1px solid var(--admin-border, rgba(0, 0, 0, 0.1));
         width: 15% !important;
         --bs-offcanvas-width: 15% !important;
         max-width: 15% !important;
@@ -161,19 +162,19 @@ body {
 
 /* Custom table styling */
 .table-custom thead {
-    background-color: #eef2f7;
+    background-color: var(--admin-dropdown-hover, #eef2f7);
 }
 
 .table-custom thead th {
     font-weight: 600;
     font-size: 0.875rem;
     text-transform: uppercase;
-    color: #6c757d;
-    border-bottom: 2px solid #dee2e6;
+    color: var(--admin-text-muted, #6c757d);
+    border-bottom: 2px solid var(--admin-border, #dee2e6);
 }
 
 .table-custom tbody tr:hover {
-    background-color: #f8f9fc;
+    background-color: var(--admin-table-stripe, #f8f9fc);
 }
 
 .table-custom td,

@@ -41,14 +41,14 @@
 }
 
 .card-header {
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #dee2e6;
+    background-color: var(--admin-card-bg, #f8f9fa);
+    border-bottom: 1px solid var(--admin-border, #dee2e6);
 }
 
 .card-title {
     margin-bottom: 0;
     font-weight: 600;
-    color: #2c3e50;
+    color: var(--admin-text, #2c3e50);
 }
 
 /* Dashboard Item Images and Icons */

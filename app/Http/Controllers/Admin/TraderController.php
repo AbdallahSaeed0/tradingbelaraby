@@ -139,4 +139,15 @@ class TraderController extends Controller
         return redirect()->back()
             ->with('success', "Successfully deleted {$count} trader(s).");
     }
+
+    public function toggleStatus(Trader $trader)
+    {
+        $trader->is_active = !$trader->is_active;
+        $trader->save();
+
+        $status = $trader->is_active ? 'activated' : 'deactivated';
+
+        return redirect()->back()
+            ->with('success', "Trader {$status} successfully.");
+    }
 }

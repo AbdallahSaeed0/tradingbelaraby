@@ -6,7 +6,7 @@
 }
 
 .ck-editor__editable_inline {
-    border: 1px solid #dee2e6;
+    border: 1px solid var(--admin-border, #dee2e6);
     border-radius: 4px;
 }
 
@@ -25,14 +25,15 @@
 /* Form Labels */
 .form-label {
     font-weight: 500;
-    color: #495057;
+    color: var(--admin-text, #495057);
     margin-bottom: 0.5rem;
 }
 
 /* Input Groups */
 .input-group-text {
-    background-color: #e9ecef;
-    border: 1px solid #ced4da;
+    background-color: var(--admin-dropdown-hover, #e9ecef);
+    border: 1px solid var(--admin-input-border, #ced4da);
+    color: var(--admin-text, #495057);
 }
 
 /* File Upload */
@@ -60,7 +61,7 @@
 /* Form Text Helper */
 .form-text {
     font-size: 0.875rem;
-    color: #6c757d;
+    color: var(--admin-text-muted, #6c757d);
     margin-top: 0.25rem;
 }
 

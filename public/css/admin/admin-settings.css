@@ -2,20 +2,20 @@
 
 /* Settings Card */
 .card.settings-card {
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 15px var(--admin-shadow, rgba(0, 0, 0, 0.08));
     height: 100%;
     display: flex;
     flex-direction: column;
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--admin-border-light, rgba(0, 0, 0, 0.05));
     border-radius: 12px;
     transition: all 0.3s ease;
     overflow: hidden;
 }
 
 .card.settings-card:hover {
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 8px 30px var(--admin-shadow-hover, rgba(0, 0, 0, 0.12));
     transform: translateY(-5px);
-    border-color: rgba(13, 110, 253, 0.2);
+    border-color: var(--admin-active-text, rgba(13, 110, 253, 0.2));
 }
 
 .card.settings-card .card-body {
@@ -34,21 +34,21 @@
 .card.settings-card .card-title {
     font-size: 1.5rem;
     font-weight: 600;
-    color: #2c3e50;
+    color: var(--admin-text, #2c3e50);
     margin-bottom: 1rem;
 }
 
 .card.settings-card .card-text {
     font-size: 0.95rem;
     line-height: 1.6;
-    color: #6c757d;
+    color: var(--admin-text-muted, #6c757d);
     margin-bottom: 1.5rem;
 }
 
 .card.settings-card .feature-item {
     padding: 0.5rem 0;
     font-size: 0.9rem;
-    color: #495057;
+    color: var(--admin-text, #495057);
     display: flex;
     align-items: center;
 }
@@ -107,7 +107,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, rgba(13, 110, 253, 0.1) 0%, rgba(13, 110, 253, 0.05) 100%);
+    background: linear-gradient(
+        135deg,
+        rgba(13, 110, 253, 0.1) 0%,
+        rgba(13, 110, 253, 0.05) 100%
+    );
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     position: relative;
@@ -130,27 +134,51 @@
 
 /* Icon color-specific backgrounds */
 .settings-icon .icon-wrapper:has(.text-primary) {
-    background: linear-gradient(135deg, rgba(13, 110, 253, 0.15) 0%, rgba(13, 110, 253, 0.08) 100%);
+    background: linear-gradient(
+        135deg,
+        rgba(13, 110, 253, 0.15) 0%,
+        rgba(13, 110, 253, 0.08) 100%
+    );
 }
 
 .settings-icon .icon-wrapper:has(.text-warning) {
-    background: linear-gradient(135deg, rgba(255, 193, 7, 0.15) 0%, rgba(255, 193, 7, 0.08) 100%);
+    background: linear-gradient(
+        135deg,
+        rgba(255, 193, 7, 0.15) 0%,
+        rgba(255, 193, 7, 0.08) 100%
+    );
 }
 
 .settings-icon .icon-wrapper:has(.text-info) {
-    background: linear-gradient(135deg, rgba(13, 202, 240, 0.15) 0%, rgba(13, 202, 240, 0.08) 100%);
+    background: linear-gradient(
+        135deg,
+        rgba(13, 202, 240, 0.15) 0%,
+        rgba(13, 202, 240, 0.08) 100%
+    );
 }
 
 .settings-icon .icon-wrapper:has(.text-success) {
-    background: linear-gradient(135deg, rgba(25, 135, 84, 0.15) 0%, rgba(25, 135, 84, 0.08) 100%);
+    background: linear-gradient(
+        135deg,
+        rgba(25, 135, 84, 0.15) 0%,
+        rgba(25, 135, 84, 0.08) 100%
+    );
 }
 
 .settings-icon .icon-wrapper:has(.text-danger) {
-    background: linear-gradient(135deg, rgba(220, 53, 69, 0.15) 0%, rgba(220, 53, 69, 0.08) 100%);
+    background: linear-gradient(
+        135deg,
+        rgba(220, 53, 69, 0.15) 0%,
+        rgba(220, 53, 69, 0.08) 100%
+    );
 }
 
 .settings-icon .icon-wrapper:has(.text-secondary) {
-    background: linear-gradient(135deg, rgba(108, 117, 125, 0.15) 0%, rgba(108, 117, 125, 0.08) 100%);
+    background: linear-gradient(
+        135deg,
+        rgba(108, 117, 125, 0.15) 0%,
+        rgba(108, 117, 125, 0.08) 100%
+    );
 }
 
 /* Preview Buttons */

@@ -178,13 +178,6 @@ Route::get('/blog/{blog:slug}', [BlogController::class, 'show'])->name('blog.sho
 
 // Trader registration routes
 Route::post('/traders', [App\Http\Controllers\TraderController::class, 'store'])->name('traders.store');
-
-// Admin trader management routes
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('traders/export', [App\Http\Controllers\Admin\TraderController::class, 'export'])->name('traders.export');
-    Route::delete('traders/bulk-delete', [App\Http\Controllers\Admin\TraderController::class, 'bulkDelete'])->name('traders.bulk-delete');
-    Route::resource('traders', App\Http\Controllers\Admin\TraderController::class)->only(['index', 'show', 'destroy']);
-});
 Route::post('/courses/{course}/enroll', [EnrollmentController::class, 'enroll'])->name('courses.enroll');
 Route::get('/category/{category:slug}', [CourseController::class, 'category'])->name('category.show');
 Route::get('/categories/{category:slug}', [CourseController::class, 'category'])->name('categories.show'); // Alias for layout compatibility
@@ -363,6 +356,12 @@ Route::resource('quizzes.questions', App\Http\Controllers\Admin\QuizQuestionMana
     Route::get('/subscribers/export', [App\Http\Controllers\Admin\SubscriberController::class, 'export'])->name('subscribers.export')->middleware('admin.permission:manage_users');
     Route::post('/subscribers/bulk-delete', [App\Http\Controllers\Admin\SubscriberController::class, 'bulkDelete'])->name('subscribers.bulk-delete')->middleware('admin.permission:manage_users');
     Route::resource('subscribers', App\Http\Controllers\Admin\SubscriberController::class)->only(['index', 'show', 'destroy'])->middleware('admin.permission:manage_users');
+    
+    // Trader management routes
+    Route::get('/traders/export', [App\Http\Controllers\Admin\TraderController::class, 'export'])->name('traders.export')->middleware('admin.permission:manage_users');
+    Route::delete('/traders/bulk-delete', [App\Http\Controllers\Admin\TraderController::class, 'bulkDelete'])->name('traders.bulk-delete')->middleware('admin.permission:manage_users');
+    Route::patch('/traders/{trader}/toggle-status', [App\Http\Controllers\Admin\TraderController::class, 'toggleStatus'])->name('traders.toggle-status')->middleware('admin.permission:manage_users');
+    Route::resource('traders', App\Http\Controllers\Admin\TraderController::class)->only(['index', 'show', 'destroy'])->middleware('admin.permission:manage_users');
 
     // Bundle management routes
     Route::resource('bundles', App\Http\Controllers\Admin\BundlesController::class)->middleware('admin.permission:manage_courses');

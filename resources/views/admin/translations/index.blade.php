@@ -78,8 +78,7 @@
                     </div>
                     <div class="col-md-2">
                         <label for="per_page" class="form-label">Per Page</label>
-                        <select class="form-select" id="per_page" name="per_page"
-                            onchange="document.querySelector('form').submit();">
+                        <select class="form-select" id="per_page" name="per_page" onchange="changePerPage(this.value)">
                             @php
                                 $perPage = (int) request('per_page', 15);
                             @endphp
@@ -272,6 +271,13 @@
 
 @push('scripts')
     <script>
+        // Change per page function
+        function changePerPage(value) {
+            const url = new URL(window.location);
+            url.searchParams.set('per_page', value);
+            url.searchParams.delete('page'); // Reset to first page
+            window.location.href = url.toString();
+        }
         function importTranslations() {
             const fileInput = document.getElementById('import_file');
             const languageSelect = document.getElementById('import_language_id');

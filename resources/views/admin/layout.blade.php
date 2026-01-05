@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ \App\Helpers\TranslationHelper::getCurrentLanguage()->code }}"
-    dir="{{ \App\Helpers\TranslationHelper::getCurrentLanguage()->direction }}">
+    dir="{{ \App\Helpers\TranslationHelper::getCurrentLanguage()->direction }}" data-theme="light">
 
 <head>
     <meta charset="utf-8" />
@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="{{ asset('admin/pages-ltr/admin.css') }}">
 
     <!-- Admin Styles -->
+    <link rel="stylesheet" href="{{ asset('css/admin/admin-theme.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/admin-common.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/admin-dashboard.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/admin-forms.css') }}">
@@ -47,6 +48,12 @@
                     <a class="nav-link" href="{{ url('/') }}" target="_blank">
                         <i class="fa fa-globe"></i>
                     </a>
+                </li>
+                <!-- Theme Toggle -->
+                <li class="nav-item me-3">
+                    <button class="btn btn-link nav-link p-0" id="themeToggle" type="button" title="Toggle theme">
+                        <i class="fa fa-moon" id="themeIcon"></i>
+                    </button>
                 </li>
                 <!-- Admin Language Switcher -->
                 <li class="nav-item me-3">
@@ -187,6 +194,53 @@
     @stack('scripts')
 
     <script>
+        // Theme Management
+        (function() {
+            // Initialize theme on page load
+            function initTheme() {
+                const savedTheme = localStorage.getItem('adminTheme') || 'light';
+                setTheme(savedTheme);
+            }
+
+            // Set theme
+            function setTheme(theme) {
+                document.documentElement.setAttribute('data-theme', theme);
+                const themeIcon = document.getElementById('themeIcon');
+                if (themeIcon) {
+                    if (theme === 'dark') {
+                        themeIcon.className = 'fa fa-sun';
+                        themeIcon.parentElement.setAttribute('title', 'Switch to light mode');
+                    } else {
+                        themeIcon.className = 'fa fa-moon';
+                        themeIcon.parentElement.setAttribute('title', 'Switch to dark mode');
+                    }
+                }
+                localStorage.setItem('adminTheme', theme);
+            }
+
+            // Toggle theme
+            function toggleTheme() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                setTheme(newTheme);
+            }
+
+            // Initialize on DOM ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initTheme);
+            } else {
+                initTheme();
+            }
+
+            // Attach toggle button event
+            document.addEventListener('DOMContentLoaded', function() {
+                const themeToggle = document.getElementById('themeToggle');
+                if (themeToggle) {
+                    themeToggle.addEventListener('click', toggleTheme);
+                }
+            });
+        })();
+
         // Toastr configuration
         toastr.options = {
             "closeButton": true,

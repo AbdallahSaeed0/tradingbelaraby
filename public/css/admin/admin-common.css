@@ -52,7 +52,7 @@
 .page-title {
     font-size: 1.5rem;
     font-weight: 600;
-    color: #2c3e50;
+    color: var(--admin-text, #2c3e50);
     margin-bottom: 0.5rem;
 }
 
