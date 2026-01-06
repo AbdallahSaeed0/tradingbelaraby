@@ -1,0 +1,36 @@
+/* Admin Forms - Dark Mode Styles */
+
+/* Input Placeholders - Light in Dark Mode - Handled globally in admin-theme.css */
+
+/* Form Controls Dark Mode */
+.form-control,
+.form-select {
+    border-color: var(--admin-border, #3d4153) !important;
+    background-color: var(--admin-input-bg, #3d4153) !important;
+    color: var(--admin-input-text, #e4e6eb) !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--admin-active-text, #6c9fff) !important;
+    background-color: var(--admin-input-bg, #3d4153) !important;
+    color: var(--admin-input-text, #e4e6eb) !important;
+}
+
+/* Input Group Text */
+.input-group-text {
+    background-color: var(--admin-dropdown-hover, #3d4153) !important;
+    border-color: var(--admin-input-border, #4a4f63) !important;
+    color: var(--admin-text, #e4e6eb) !important;
+}
+
+/* Form Labels */
+.form-label {
+    color: var(--admin-text, #e4e6eb) !important;
+}
+
+/* Form Text Helper */
+.form-text {
+    color: var(--admin-text-muted, #8a8d91) !important;
+}
+

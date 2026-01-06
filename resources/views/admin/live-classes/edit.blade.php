@@ -3,6 +3,32 @@
 @section('title', 'Edit Live Class')
 
 @section('content')
+    <style>
+        /* Force placeholder color in dark mode - Highest priority */
+        html[data-theme="dark"] input::placeholder,
+        html[data-theme="dark"] input::-webkit-input-placeholder,
+        html[data-theme="dark"] input::-moz-placeholder,
+        html[data-theme="dark"] input:-ms-input-placeholder,
+        html[data-theme="dark"] input:-moz-placeholder,
+        html[data-theme="dark"] textarea::placeholder,
+        html[data-theme="dark"] textarea::-webkit-input-placeholder,
+        html[data-theme="dark"] textarea::-moz-placeholder,
+        html[data-theme="dark"] textarea:-ms-input-placeholder,
+        html[data-theme="dark"] textarea:-moz-placeholder,
+        html[data-theme="dark"] .form-control::placeholder,
+        html[data-theme="dark"] .form-control::-webkit-input-placeholder,
+        html[data-theme="dark"] .form-control::-moz-placeholder,
+        html[data-theme="dark"] .form-control:-ms-input-placeholder,
+        html[data-theme="dark"] .form-control:-moz-placeholder,
+        html[data-theme="dark"] .input-group input::placeholder,
+        html[data-theme="dark"] .input-group input::-webkit-input-placeholder,
+        html[data-theme="dark"] .input-group input::-moz-placeholder,
+        html[data-theme="dark"] .input-group input:-ms-input-placeholder,
+        html[data-theme="dark"] .input-group input:-moz-placeholder {
+            color: #d0d3d8 !important;
+            opacity: 1 !important;
+        }
+    </style>
     <div class="container-fluid py-4">
         <!-- Page Header -->
         <div class="row mb-4">

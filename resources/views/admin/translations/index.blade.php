@@ -47,38 +47,38 @@
         <!-- Filters -->
         <div class="card shadow-sm mb-4">
             <div class="card-body">
-                <form method="GET" action="{{ route('admin.translations.index') }}" class="row g-3">
+                <form method="GET" action="{{ route('admin.translations.index') }}" id="filterForm" class="row g-3">
                     <div class="col-md-3">
                         <label for="language_id" class="form-label">Language</label>
-                        <select class="form-select" id="language_id" name="language_id">
-                            <option value="">All Languages</option>
-                            @foreach ($languages as $language)
-                                <option value="{{ $language->id }}"
-                                    {{ request('language_id') == $language->id ? 'selected' : '' }}>
-                                    {{ $language->name }} ({{ $language->code }})
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="group" class="form-label">Group</label>
-                        <select class="form-select" id="group" name="group">
-                            <option value="">All Groups</option>
-                            @foreach ($groups as $group)
-                                <option value="{{ $group }}" {{ request('group') == $group ? 'selected' : '' }}>
-                                    {{ ucfirst($group) }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label for="key" class="form-label">Search Key</label>
-                        <input type="text" class="form-control" id="key" name="key"
-                            value="{{ request('key') }}" placeholder="Search translation keys...">
-                    </div>
-                    <div class="col-md-2">
-                        <label for="per_page" class="form-label">Per Page</label>
-                        <select class="form-select" id="per_page" name="per_page" onchange="changePerPage(this.value)">
+                        <select class="form-select" id="languageFilter" name="language_id">
+                                <option value="">All Languages</option>
+                                @foreach ($languages as $language)
+                                    <option value="{{ $language->id }}"
+                                        {{ request('language_id') == $language->id ? 'selected' : '' }}>
+                                        {{ $language->name }} ({{ $language->code }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="group" class="form-label">Group</label>
+                            <select class="form-select" id="groupFilter" name="group">
+                                <option value="">All Groups</option>
+                                @foreach ($groups as $group)
+                                    <option value="{{ $group }}" {{ request('group') == $group ? 'selected' : '' }}>
+                                        {{ ucfirst($group) }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="key" class="form-label">Search Key</label>
+                            <input type="text" class="form-control" id="searchInput" name="key"
+                                value="{{ request('key') }}" placeholder="Search translation keys...">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="per_page" class="form-label">Per Page</label>
+                            <select class="form-select" id="perPageFilter" name="per_page">
                             @php
                                 $perPage = (int) request('per_page', 15);
                             @endphp
@@ -93,9 +93,9 @@
                             <button type="submit" class="btn btn-primary">
                                 <i class="fa fa-search me-2"></i>Filter
                             </button>
-                            <a href="{{ route('admin.translations.index') }}" class="btn btn-outline-secondary">
+                            <button type="button" class="btn btn-outline-secondary" id="clearFiltersBtn">
                                 <i class="fa fa-times me-2"></i>Clear
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </form>
@@ -106,9 +106,14 @@
         <div class="card shadow-sm">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover table-striped">
                         <thead>
                             <tr>
+                                <th width="50">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="selectAll">
+                                    </div>
+                                </th>
                                 <th>Translation Key</th>
                                 <th>Translation Value</th>
                                 <th>Language</th>
@@ -119,6 +124,11 @@
                         <tbody>
                             @forelse($translations as $translation)
                                 <tr>
+                                    <td>
+                                        <div class="form-check">
+                                            <input class="form-check-input translation-checkbox" type="checkbox" value="{{ $translation->id }}">
+                                        </div>
+                                    </td>
                                     <td>
                                         <code>{{ $translation->translation_key }}</code>
                                     </td>
@@ -158,7 +168,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center py-4">
+                                    <td colspan="6" class="text-center py-4">
                                         <p>No translations found for the selected filters.</p>
                                         <a href="{{ route('admin.translations.create') }}" class="btn btn-primary">
                                             Add First Translation
@@ -170,16 +180,38 @@
                     </table>
                 </div>
 
-                @if ($translations->hasPages())
-                    <div class="d-flex align-items-center justify-content-between mt-4">
-                        <div class="text-muted">
-                            Showing {{ $translations->firstItem() }} to {{ $translations->lastItem() }} of {{ $translations->total() }} results
-                        </div>
+                <div class="row mt-3">
+                    <div class="col-md-6">
                         <div class="d-flex align-items-center">
-                            {{ $translations->links('pagination::bootstrap-5') }}
+                            <div class="d-flex align-items-center me-3">
+                                <label class="form-label me-2 mb-0 small">Per page:</label>
+                                <select class="form-select form-select-sm w-auto" id="perPageSelect" onchange="changePerPage(this.value)">
+                                    @php
+                                        $perPage = (int) request('per_page', 10);
+                                    @endphp
+                                    <option value="10" {{ $perPage === 10 ? 'selected' : '' }}>10</option>
+                                    <option value="20" {{ $perPage === 20 ? 'selected' : '' }}>20</option>
+                                    <option value="50" {{ $perPage === 50 ? 'selected' : '' }}>50</option>
+                                    <option value="100" {{ $perPage === 100 ? 'selected' : '' }}>100</option>
+                                    <option value="500" {{ $perPage === 500 ? 'selected' : '' }}>500</option>
+                                    <option value="1000" {{ $perPage === 1000 ? 'selected' : '' }}>1000</option>
+                                </select>
+                            </div>
+                            @if ($translations->hasPages())
+                                <div class="text-muted ms-3">
+                                    Showing {{ $translations->firstItem() }} to {{ $translations->lastItem() }} of {{ $translations->total() }} results
+                                </div>
+                            @endif
                         </div>
                     </div>
-                @endif
+                    <div class="col-md-6">
+                        @if ($translations->hasPages())
+                            <div class="d-flex justify-content-end">
+                                {{ $translations->links('pagination::bootstrap-5') }}
+                            </div>
+                        @endif
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -271,13 +303,124 @@
 
 @push('scripts')
     <script>
-        // Change per page function
-        function changePerPage(value) {
-            const url = new URL(window.location);
-            url.searchParams.set('per_page', value);
-            url.searchParams.delete('page'); // Reset to first page
-            window.location.href = url.toString();
-        }
+        document.addEventListener('DOMContentLoaded', function() {
+            // Change per page function
+            function changePerPage(value) {
+                // Use AJAX to update
+                const formData = new FormData(document.getElementById('filterForm'));
+                formData.set('per_page', value);
+                performAjaxSearch();
+            }
+
+            // Initialize variables for AJAX search
+            let searchTimeout;
+            const searchInput = document.getElementById('searchInput');
+            const tableBody = document.querySelector('.table tbody');
+            const paginationContainer = document.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
+
+            // AJAX search function
+            function performAjaxSearch() {
+                const formData = new FormData(document.getElementById('filterForm'));
+                const params = new URLSearchParams(formData);
+
+                // Show loading state
+                if (tableBody) {
+                    tableBody.innerHTML = '<tr><td colspan="6" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
+                }
+
+                fetch(`{{ route('admin.translations.index') }}?${params.toString()}`, {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'text/html'
+                        }
+                    })
+                    .then(response => response.text())
+                    .then(html => {
+                        // Create a temporary container to parse the HTML
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = html;
+
+                        // Extract table body
+                        const newTableBody = tempDiv.querySelector('.table tbody');
+                        const newPagination = tempDiv.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
+
+                        if (newTableBody && tableBody) {
+                            tableBody.innerHTML = newTableBody.innerHTML;
+                        }
+
+                        if (newPagination && paginationContainer) {
+                            paginationContainer.innerHTML = newPagination.innerHTML;
+                        }
+
+                        // Update URL without reload
+                        const newUrl = `{{ route('admin.translations.index') }}?${params.toString()}`;
+                        window.history.pushState({}, '', newUrl);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        if (tableBody) {
+                            tableBody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-danger">Error loading data. Please try again.</td></tr>';
+                        }
+                    });
+            }
+
+            // Prevent form submission - use AJAX instead
+            document.getElementById('filterForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                performAjaxSearch();
+            });
+
+            // Dropdown filters - use AJAX
+            document.getElementById('languageFilter').addEventListener('change', function() {
+                performAjaxSearch();
+            });
+
+            document.getElementById('groupFilter').addEventListener('change', function() {
+                performAjaxSearch();
+            });
+
+            document.getElementById('perPageFilter').addEventListener('change', function() {
+                performAjaxSearch();
+            });
+
+            // Clear filters button - use AJAX
+            const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+            if (clearFiltersBtn) {
+                clearFiltersBtn.addEventListener('click', function() {
+                    // Clear all form fields
+                    document.getElementById('searchInput').value = '';
+                    document.getElementById('languageFilter').value = '';
+                    document.getElementById('groupFilter').value = '';
+                    document.getElementById('perPageFilter').value = '15';
+
+                    // Update URL without parameters
+                    window.history.pushState({}, '', '{{ route('admin.translations.index') }}');
+
+                    // Perform AJAX search with cleared filters
+                    performAjaxSearch();
+                });
+            }
+
+            // Search with debounce - AJAX only
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        performAjaxSearch();
+                    }, 500);
+                });
+
+                // Prevent form submission on Enter key in search
+                searchInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        clearTimeout(searchTimeout);
+                        performAjaxSearch();
+                    }
+                });
+            }
+        });
         function importTranslations() {
             const fileInput = document.getElementById('import_file');
             const languageSelect = document.getElementById('import_language_id');

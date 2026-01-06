@@ -1,0 +1,28 @@
+/* Admin Analytics - Dark Mode Styles */
+
+.stat-number {
+    color: var(--admin-text, #e4e6eb) !important;
+}
+
+.stat-label {
+    color: var(--admin-text-muted, #8a8d91) !important;
+}
+
+.metric-card {
+    background: var(--admin-card-bg, #2d3142) !important;
+    border-color: var(--admin-border, #3d4153) !important;
+    color: var(--admin-text, #e4e6eb) !important;
+}
+
+.metric-value {
+    color: var(--admin-text, #e4e6eb) !important;
+}
+
+.metric-label {
+    color: var(--admin-text-muted, #8a8d91) !important;
+}
+
+.trend-neutral {
+    color: var(--admin-text-muted, #8a8d91) !important;
+}
+

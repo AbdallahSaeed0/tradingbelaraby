@@ -24,6 +24,7 @@
     --admin-table-border: #dee2e6;
     --admin-active-bg: #eef2ff;
     --admin-active-text: #4e73df;
+    --admin-placeholder-color: #6c757d;
 }
 
 /* CSS Variables - Dark Mode */
@@ -50,7 +51,8 @@
     --admin-table-border: #3d4153;
     --admin-active-bg: #3d4153;
     --admin-active-text: #6c9fff;
-    
+    --admin-placeholder-color: #d0d3d8;
+
     /* Override Bootstrap table variables */
     --bs-table-bg: #2d3142 !important;
     --bs-table-striped-bg: #252836 !important;
@@ -195,7 +197,8 @@ body {
 
 .card-body p,
 .card-body span,
-.card-body div:not(.form-control):not(.form-select):not(.btn):not(.badge):not(.table) {
+.card-body
+    div:not(.form-control):not(.form-select):not(.btn):not(.badge):not(.table) {
     color: var(--admin-text) !important;
 }
 
@@ -254,18 +257,10 @@ body {
 .table thead > tr > * {
     background-color: var(--admin-dropdown-hover) !important;
     border-bottom-color: var(--admin-border) !important;
-    color: var(--admin-text) !important;
+    color: #212529 !important;
 }
 
-.table thead th {
-    background-color: var(--admin-dropdown-hover) !important;
-    border-bottom-color: var(--admin-border) !important;
-    color: var(--admin-text) !important;
-}
-
-.table thead th * {
-    color: var(--admin-text) !important;
-}
+/* Table header styles moved to admin-tables.css for better organization */
 
 .table tbody {
     background-color: var(--admin-table-bg) !important;
@@ -460,9 +455,15 @@ body {
     color: var(--admin-text);
 }
 
-/* Badges */
-.badge {
-    color: #ffffff;
+/* Badges - White text for colored backgrounds, dark text for light backgrounds */
+.badge:not(.bg-white):not(.bg-light):not(.text-dark) {
+    color: #ffffff !important;
+}
+
+/* Badges with white/light backgrounds should have dark text in light mode */
+.badge.bg-white,
+.badge.bg-light {
+    color: #212529 !important;
 }
 
 /* Breadcrumbs */
@@ -722,10 +723,7 @@ main .card .text-muted {
     color: var(--admin-text) !important;
 }
 
-.card .table thead th {
-    background-color: var(--admin-dropdown-hover) !important;
-    color: var(--admin-text) !important;
-}
+/* Table header styles consolidated in admin-tables.css */
 
 .card .table tbody tr {
     background-color: var(--admin-table-bg) !important;
@@ -760,3 +758,74 @@ main .card .text-muted {
     background: var(--admin-text-muted);
 }
 
+/* Input Placeholders - Light in Dark Mode */
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] input::-webkit-input-placeholder,
+html[data-theme="dark"] input::-moz-placeholder,
+html[data-theme="dark"] input:-ms-input-placeholder,
+html[data-theme="dark"] input:-moz-placeholder,
+html[data-theme="dark"] textarea::placeholder,
+html[data-theme="dark"] textarea::-webkit-input-placeholder,
+html[data-theme="dark"] textarea::-moz-placeholder,
+html[data-theme="dark"] textarea:-ms-input-placeholder,
+html[data-theme="dark"] textarea:-moz-placeholder,
+html[data-theme="dark"] select::placeholder,
+html[data-theme="dark"] select::-webkit-input-placeholder,
+html[data-theme="dark"] select::-moz-placeholder,
+html[data-theme="dark"] select:-ms-input-placeholder,
+html[data-theme="dark"] select:-moz-placeholder,
+html[data-theme="dark"] input.form-control::placeholder,
+html[data-theme="dark"] input.form-control::-webkit-input-placeholder,
+html[data-theme="dark"] input.form-control::-moz-placeholder,
+html[data-theme="dark"] input.form-control:-ms-input-placeholder,
+html[data-theme="dark"] input.form-control:-moz-placeholder,
+html[data-theme="dark"] textarea.form-control::placeholder,
+html[data-theme="dark"] textarea.form-control::-webkit-input-placeholder,
+html[data-theme="dark"] textarea.form-control::-moz-placeholder,
+html[data-theme="dark"] textarea.form-control:-ms-input-placeholder,
+html[data-theme="dark"] textarea.form-control:-moz-placeholder,
+html[data-theme="dark"] .form-control::placeholder,
+html[data-theme="dark"] .form-control::-webkit-input-placeholder,
+html[data-theme="dark"] .form-control::-moz-placeholder,
+html[data-theme="dark"] .form-control:-ms-input-placeholder,
+html[data-theme="dark"] .form-control:-moz-placeholder,
+html[data-theme="dark"] .input-group input::placeholder,
+html[data-theme="dark"] .input-group input::-webkit-input-placeholder,
+html[data-theme="dark"] .input-group input::-moz-placeholder,
+html[data-theme="dark"] .input-group input:-ms-input-placeholder,
+html[data-theme="dark"] .input-group input:-moz-placeholder,
+html[data-theme="dark"] .input-group .form-control::placeholder,
+html[data-theme="dark"] .input-group .form-control::-webkit-input-placeholder,
+html[data-theme="dark"] .input-group .form-control::-moz-placeholder,
+html[data-theme="dark"] .input-group .form-control:-ms-input-placeholder,
+html[data-theme="dark"] .input-group .form-control:-moz-placeholder,
+html[data-theme="dark"] input[type="text"]::placeholder,
+html[data-theme="dark"] input[type="text"]::-webkit-input-placeholder,
+html[data-theme="dark"] input[type="text"]::-moz-placeholder,
+html[data-theme="dark"] input[type="text"]:-ms-input-placeholder,
+html[data-theme="dark"] input[type="text"]:-moz-placeholder,
+html[data-theme="dark"] input[type="search"]::placeholder,
+html[data-theme="dark"] input[type="search"]::-webkit-input-placeholder,
+html[data-theme="dark"] input[type="search"]::-moz-placeholder,
+html[data-theme="dark"] input[type="search"]:-ms-input-placeholder,
+html[data-theme="dark"] input[type="search"]:-moz-placeholder {
+    color: var(--admin-placeholder-color, #d0d3d8) !important;
+    opacity: 1 !important;
+}
+
+/* Card Shadows in Dark Mode - Lighter shadows */
+[data-theme="dark"] .card {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+}
+
+[data-theme="dark"] .card.shadow-sm {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+}
+
+[data-theme="dark"] .card.shadow {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
+}
+
+[data-theme="dark"] .card.shadow-lg {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
+}

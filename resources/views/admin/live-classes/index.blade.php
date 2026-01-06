@@ -3,6 +3,55 @@
 @section('title', 'Live Classes Management')
 
 @section('content')
+    <style>
+        /* Force placeholder color in dark mode - Using brighter color */
+        html[data-theme="dark"] input#searchInput::placeholder,
+        html[data-theme="dark"] input#searchInput::-webkit-input-placeholder,
+        html[data-theme="dark"] input#searchInput::-moz-placeholder,
+        html[data-theme="dark"] input#searchInput:-ms-input-placeholder,
+        html[data-theme="dark"] input#searchInput:-moz-placeholder,
+        html[data-theme="dark"] .input-group input::placeholder,
+        html[data-theme="dark"] .input-group input::-webkit-input-placeholder,
+        html[data-theme="dark"] .input-group input::-moz-placeholder,
+        html[data-theme="dark"] .input-group input:-ms-input-placeholder,
+        html[data-theme="dark"] .input-group input:-moz-placeholder,
+        html[data-theme="dark"] .input-group .form-control::placeholder,
+        html[data-theme="dark"] .input-group .form-control::-webkit-input-placeholder,
+        html[data-theme="dark"] .input-group .form-control::-moz-placeholder,
+        html[data-theme="dark"] .input-group .form-control:-ms-input-placeholder,
+        html[data-theme="dark"] .input-group .form-control:-moz-placeholder {
+            color: #d0d3d8 !important;
+            opacity: 1 !important;
+        }
+    </style>
+    <script>
+        // Direct fix for search input
+        (function() {
+            function fixSearchInput() {
+                const searchInput = document.getElementById('searchInput');
+                if (searchInput && document.documentElement.getAttribute('data-theme') === 'dark') {
+                    const styleId = 'search-input-ph-fix';
+                    if (!document.getElementById(styleId)) {
+                        const style = document.createElement('style');
+                        style.id = styleId;
+                        style.textContent = `
+                            #searchInput::placeholder { color: #d0d3d8 !important; opacity: 1 !important; }
+                            #searchInput::-webkit-input-placeholder { color: #d0d3d8 !important; opacity: 1 !important; }
+                            #searchInput::-moz-placeholder { color: #d0d3d8 !important; opacity: 1 !important; }
+                            #searchInput:-ms-input-placeholder { color: #d0d3d8 !important; opacity: 1 !important; }
+                        `;
+                        document.head.appendChild(style);
+                    }
+                }
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', fixSearchInput);
+            } else {
+                fixSearchInput();
+            }
+            setTimeout(fixSearchInput, 500);
+        })();
+    </script>
     <div class="container-fluid py-4">
         <!-- Page Header -->
         <div class="row mb-4">
@@ -101,7 +150,7 @@
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fa fa-search"></i></span>
                                 <input type="text" class="form-control" name="search" placeholder="Search classes..."
-                                    id="searchInput" value="{{ request('search') }}">
+                                    id="searchInput" value="{{ request('search') }}" autocomplete="off">
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -146,9 +195,9 @@
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fa fa-search me-1"></i>Filter
                                 </button>
-                                <a href="{{ route('admin.live-classes.index') }}" class="btn btn-outline-secondary">
+                                <button type="button" class="btn btn-outline-secondary" id="clearFiltersBtn">
                                     <i class="fa fa-refresh me-1"></i>Clear
-                                </a>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -156,17 +205,7 @@
             </div>
         </div>
 
-        <!-- View Toggle Buttons -->
-        <div class="d-flex gap-2 mb-3">
-            <button class="btn btn-outline-primary btn-sm" id="gridView">
-                <i class="fa fa-th"></i>
-            </button>
-            <button class="btn btn-outline-primary btn-sm active" id="listView">
-                <i class="fa fa-list"></i>
-            </button>
-        </div>
-
-        <!-- Live Classes Grid/List -->
+        <!-- Live Classes Table -->
         <div id="liveClassContainer">
             <!-- List View -->
             <div id="listViewContainer">
@@ -176,8 +215,10 @@
                             <table class="table table-hover table-striped">
                                 <thead>
                                     <tr>
-                                        <th>
-                                            <input type="checkbox" id="selectAll">
+                                        <th width="50">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="selectAll">
+                                            </div>
                                         </th>
                                         <th>Name</th>
                                         <th>Course</th>
@@ -197,8 +238,10 @@
                                             data-status="{{ $liveClass->status }}"
                                             data-instructor="{{ $liveClass->instructor_id }}">
                                             <td>
-                                                <input type="checkbox" class="class-checkbox"
-                                                    value="{{ $liveClass->id }}">
+                                                <div class="form-check">
+                                                    <input class="form-check-input class-checkbox" type="checkbox"
+                                                        value="{{ $liveClass->id }}">
+                                                </div>
                                             </td>
                                             <td>
                                                 <div class="d-flex align-items-center">
@@ -290,27 +333,45 @@
                         </div>
 
                         <!-- Bulk Actions -->
-                        <div class="row mt-3">
+                        <div class="row mt-3" id="bulkActionsContainer" style="display: none !important;">
                             <div class="col-md-6">
-                                <div class="d-flex gap-2">
-                                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="bulkDelete()">
-                                        <i class="fa fa-trash me-1"></i>Delete Selected
-                                    </button>
-                                    <div class="dropdown">
-                                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
-                                            data-bs-toggle="dropdown">
-                                            <i class="fa fa-cog me-1"></i>Bulk Actions
+                                <div class="d-flex align-items-center">
+                                    <div class="d-flex align-items-center me-3">
+                                        <label class="form-label me-2 mb-0 small">Per page:</label>
+                                        <select class="form-select form-select-sm w-auto" id="perPageSelect"
+                                            onchange="changePerPage(this.value)">
+                                            @php
+                                                $perPage = (int) request('per_page', 10);
+                                            @endphp
+                                            <option value="10" {{ $perPage === 10 ? 'selected' : '' }}>10</option>
+                                            <option value="20" {{ $perPage === 20 ? 'selected' : '' }}>20</option>
+                                            <option value="50" {{ $perPage === 50 ? 'selected' : '' }}>50</option>
+                                            <option value="100" {{ $perPage === 100 ? 'selected' : '' }}>100</option>
+                                            <option value="500" {{ $perPage === 500 ? 'selected' : '' }}>500</option>
+                                            <option value="1000" {{ $perPage === 1000 ? 'selected' : '' }}>1000</option>
+                                        </select>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button type="button" class="btn btn-outline-danger btn-sm"
+                                            onclick="bulkDelete()">
+                                            <i class="fa fa-trash me-1"></i>Delete Selected
                                         </button>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="#"
-                                                    onclick="bulkUpdateStatus('scheduled')">Mark as Scheduled</a></li>
-                                            <li><a class="dropdown-item" href="#"
-                                                    onclick="bulkUpdateStatus('live')">Mark as Live</a></li>
-                                            <li><a class="dropdown-item" href="#"
-                                                    onclick="bulkUpdateStatus('completed')">Mark as Completed</a></li>
-                                            <li><a class="dropdown-item" href="#"
-                                                    onclick="bulkUpdateStatus('cancelled')">Mark as Cancelled</a></li>
-                                        </ul>
+                                        <div class="dropdown">
+                                            <button class="btn btn-outline-secondary btn-sm dropdown-toggle"
+                                                type="button" data-bs-toggle="dropdown">
+                                                <i class="fa fa-cog me-1"></i>Bulk Actions
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#"
+                                                        onclick="bulkUpdateStatus('scheduled')">Mark as Scheduled</a></li>
+                                                <li><a class="dropdown-item" href="#"
+                                                        onclick="bulkUpdateStatus('live')">Mark as Live</a></li>
+                                                <li><a class="dropdown-item" href="#"
+                                                        onclick="bulkUpdateStatus('completed')">Mark as Completed</a></li>
+                                                <li><a class="dropdown-item" href="#"
+                                                        onclick="bulkUpdateStatus('cancelled')">Mark as Cancelled</a></li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -328,35 +389,219 @@
 
     @push('scripts')
         <script>
+            // Function to toggle bulk actions visibility
+            function toggleBulkActions() {
+                const checkboxes = document.querySelectorAll('.class-checkbox:checked');
+                const bulkActionsContainer = document.getElementById('bulkActionsContainer');
+                if (bulkActionsContainer) {
+                    if (checkboxes.length > 0) {
+                        bulkActionsContainer.style.display = '';
+                    } else {
+                        bulkActionsContainer.style.display = 'none';
+                    }
+                }
+            }
+
+            // Initialize - hide bulk actions on page load
+            toggleBulkActions();
+
             // Select all functionality
-            document.getElementById('selectAll').addEventListener('change', function() {
-                const checkboxes = document.querySelectorAll('.class-checkbox');
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = this.checked;
+            const selectAllCheckbox = document.getElementById('selectAll');
+            if (selectAllCheckbox) {
+                selectAllCheckbox.addEventListener('change', function() {
+                    const checkboxes = document.querySelectorAll('.class-checkbox');
+                    checkboxes.forEach(checkbox => {
+                        checkbox.checked = this.checked;
+                    });
+                    toggleBulkActions();
                 });
+            }
+
+            // Individual checkbox change handlers
+            document.addEventListener('change', function(e) {
+                if (e.target.classList.contains('class-checkbox')) {
+                    const selectAll = document.getElementById('selectAll');
+                    const checkboxes = document.querySelectorAll('.class-checkbox');
+                    const checkedBoxes = document.querySelectorAll('.class-checkbox:checked');
+
+                    // Update select all checkbox state
+                    if (selectAll) {
+                        selectAll.checked = checkboxes.length === checkedBoxes.length;
+                        selectAll.indeterminate = checkedBoxes.length > 0 && checkedBoxes.length < checkboxes.length;
+                    }
+
+                    toggleBulkActions();
+                }
             });
 
-            // Auto-submit form on filter change
-            document.getElementById('statusFilter').addEventListener('change', function() {
-                document.getElementById('filterForm').submit();
+            // Change per page function
+            function changePerPage(value) {
+                const url = new URL(window.location);
+                url.searchParams.set('per_page', value);
+                url.searchParams.delete('page'); // Reset to first page
+                // Use AJAX to update
+                const formData = new FormData(document.getElementById('filterForm'));
+                formData.set('per_page', value);
+                const params = new URLSearchParams(formData);
+                performAjaxSearch();
+            }
+
+            // Initialize variables for AJAX search
+            let searchTimeout;
+            const searchInput = document.getElementById('searchInput');
+            const tableBody = document.querySelector('.table tbody');
+            const paginationContainer = document.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
+            const tableContainer = document.getElementById('listViewContainer');
+
+            // AJAX search function
+            function performAjaxSearch() {
+                const formData = new FormData(document.getElementById('filterForm'));
+                const params = new URLSearchParams(formData);
+
+                // Show loading state
+                if (tableBody) {
+                    tableBody.innerHTML =
+                        '<tr><td colspan="9" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
+                }
+
+                fetch(`{{ route('admin.live-classes.index') }}?${params.toString()}`, {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'text/html'
+                        }
+                    })
+                    .then(response => response.text())
+                    .then(html => {
+                        // Create a temporary container to parse the HTML
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = html;
+
+                        // Extract table body
+                        const newTableBody = tempDiv.querySelector('.table tbody');
+                        const newPagination = tempDiv.querySelector(
+                            '.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
+                        const newBulkActions = tempDiv.querySelector('.row.mt-3 .col-md-6:first-child');
+
+                        if (newTableBody && tableBody) {
+                            tableBody.innerHTML = newTableBody.innerHTML;
+                        }
+
+                        if (newPagination && paginationContainer) {
+                            paginationContainer.innerHTML = newPagination.innerHTML;
+                        }
+
+                        if (newBulkActions) {
+                            const bulkActionsContainer = document.querySelector('.row.mt-3 .col-md-6:first-child');
+                            if (bulkActionsContainer) {
+                                bulkActionsContainer.innerHTML = newBulkActions.innerHTML;
+                            }
+                        }
+
+                        // Update URL without reload
+                        const newUrl = `{{ route('admin.live-classes.index') }}?${params.toString()}`;
+                        window.history.pushState({}, '', newUrl);
+
+                        // Re-attach event listeners for checkboxes
+                        const selectAllCheckbox = document.getElementById('selectAll');
+                        if (selectAllCheckbox) {
+                            // Remove old listener and add new one
+                            const newSelectAll = selectAllCheckbox.cloneNode(true);
+                            selectAllCheckbox.parentNode.replaceChild(newSelectAll, selectAllCheckbox);
+
+                            newSelectAll.addEventListener('change', function() {
+                                const checkboxes = document.querySelectorAll('.class-checkbox');
+                                checkboxes.forEach(checkbox => {
+                                    checkbox.checked = this.checked;
+                                });
+                                toggleBulkActions();
+                            });
+                        }
+
+                        // Re-attach individual checkbox listeners
+                        document.querySelectorAll('.class-checkbox').forEach(checkbox => {
+                            checkbox.addEventListener('change', function() {
+                                const selectAll = document.getElementById('selectAll');
+                                const allCheckboxes = document.querySelectorAll('.class-checkbox');
+                                const checkedBoxes = document.querySelectorAll('.class-checkbox:checked');
+
+                                if (selectAll) {
+                                    selectAll.checked = allCheckboxes.length === checkedBoxes.length;
+                                    selectAll.indeterminate = checkedBoxes.length > 0 && checkedBoxes
+                                        .length < allCheckboxes.length;
+                                }
+
+                                toggleBulkActions();
+                            });
+                        });
+
+                        // Hide bulk actions if no checkboxes are selected
+                        toggleBulkActions();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        if (tableBody) {
+                            tableBody.innerHTML =
+                                '<tr><td colspan="9" class="text-center py-4 text-danger">Error loading data. Please try again.</td></tr>';
+                        }
+                    });
+            }
+
+            // Prevent form submission - use AJAX instead
+            document.getElementById('filterForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                performAjaxSearch();
             });
 
+            // Dropdown filters - use AJAX
             document.getElementById('courseFilter').addEventListener('change', function() {
-                document.getElementById('filterForm').submit();
+                performAjaxSearch();
+            });
+
+            document.getElementById('statusFilter').addEventListener('change', function() {
+                performAjaxSearch();
             });
 
             document.getElementById('instructorFilter').addEventListener('change', function() {
-                document.getElementById('filterForm').submit();
+                performAjaxSearch();
             });
 
-            // Search with debounce
-            let searchTimeout;
-            document.getElementById('searchInput').addEventListener('input', function() {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    document.getElementById('filterForm').submit();
-                }, 500);
-            });
+            // Clear filters button - use AJAX
+            const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+            if (clearFiltersBtn) {
+                clearFiltersBtn.addEventListener('click', function() {
+                    // Clear all form fields
+                    document.getElementById('searchInput').value = '';
+                    document.getElementById('courseFilter').value = '';
+                    document.getElementById('statusFilter').value = '';
+                    document.getElementById('instructorFilter').value = '';
+
+                    // Update URL without parameters
+                    window.history.pushState({}, '', '{{ route('admin.live-classes.index') }}');
+
+                    // Perform AJAX search with cleared filters
+                    performAjaxSearch();
+                });
+            }
+
+            // Search with debounce - AJAX only
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        performAjaxSearch();
+                    }, 500);
+                });
+
+                // Prevent form submission on Enter key in search
+                searchInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        clearTimeout(searchTimeout);
+                        performAjaxSearch();
+                    }
+                });
+            }
 
             // Toggle status
             function toggleStatus(classId) {
@@ -458,6 +703,11 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
+                                // Uncheck all checkboxes and hide bulk actions
+                                document.querySelectorAll('.class-checkbox').forEach(cb => cb.checked = false);
+                                const selectAll = document.getElementById('selectAll');
+                                if (selectAll) selectAll.checked = false;
+                                toggleBulkActions();
                                 location.reload();
                             } else {
                                 alert('Error: ' + data.message);
@@ -496,6 +746,11 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
+                                // Uncheck all checkboxes and hide bulk actions
+                                document.querySelectorAll('.class-checkbox').forEach(cb => cb.checked = false);
+                                const selectAll = document.getElementById('selectAll');
+                                if (selectAll) selectAll.checked = false;
+                                toggleBulkActions();
                                 location.reload();
                             } else {
                                 alert('Error: ' + data.message);
@@ -511,4 +766,3 @@
         @include('admin.partials.status-modal')
     @endpush
 @endsection
-

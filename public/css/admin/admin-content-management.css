@@ -379,7 +379,11 @@
     overflow: hidden;
 }
 
-.table thead th {
+/* Specific table styles for content management - only apply to specific tables */
+#sliders-table thead th,
+#features-table thead th,
+#hero-features-table thead th,
+#faqs-table thead th {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border: none;
@@ -401,8 +405,9 @@
     border-radius: 20px;
 }
 
-/* Form Switch Styling */
-.form-check-input {
+/* Form Switch Styling - Only for switches, not table checkboxes */
+.form-switch .form-check-input,
+.form-check-input[type="checkbox"][role="switch"] {
     width: 3rem;
     height: 1.5rem;
     float: none !important;
@@ -412,9 +417,22 @@
     transition: all 0.3s ease;
 }
 
-.form-check-input:checked {
+.form-switch .form-check-input:checked,
+.form-check-input[type="checkbox"][role="switch"]:checked {
     background-color: #28a745;
     border-color: #28a745;
+}
+
+/* Table checkboxes should use default size */
+.table .form-check-input,
+.table input[type="checkbox"] {
+    width: 1em;
+    height: 1em;
+    margin-top: 0.25em;
+    vertical-align: top;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25em;
 }
 
 /* Stats Cards - Contact Forms */
@@ -603,7 +621,7 @@
     border: none;
     padding: 1rem;
     font-weight: 600;
-    color: #495057;
+    color: #212529;
     text-transform: uppercase;
     font-size: 0.85rem;
     letter-spacing: 0.5px;
@@ -744,7 +762,7 @@
 
 #features-table thead th.enhanced-header {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    color: #495057;
+    color: #212529;
     text-transform: uppercase;
     font-size: 0.85rem;
     letter-spacing: 0.5px;

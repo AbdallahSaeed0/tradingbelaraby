@@ -1,0 +1,52 @@
+/* Admin Tables - Dark Mode Styles */
+
+/* Table Header - Dark Mode */
+.table thead th {
+    background-color: var(--admin-dropdown-hover, #3d4153) !important;
+    color: var(--admin-text, #e4e6eb) !important;
+    border-bottom-color: var(--admin-border, #3d4153) !important;
+}
+
+.table thead th * {
+    color: var(--admin-text, #e4e6eb) !important;
+}
+
+/* Table checkboxes - Dark Mode */
+.table input[type="checkbox"],
+.table .form-check-input {
+    background-color: var(--admin-card-bg, #2d3142);
+    border-color: var(--admin-border, #3d4153);
+}
+
+.table input[type="checkbox"]:checked,
+.table .form-check-input:checked {
+    background-color: var(--admin-primary, #667eea);
+    border-color: var(--admin-primary, #667eea);
+}
+
+.table-hover tbody tr:hover {
+    background-color: var(--admin-table-stripe, #252836) !important;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: var(--admin-table-bg, #2d3142) !important;
+}
+
+.course-stats,
+.quiz-stats,
+.blog-stats,
+.homework-stats,
+.live-class-stats {
+    color: var(--admin-text-muted, #8a8d91) !important;
+}
+
+.quiz-card,
+.blog-card,
+.homework-card,
+.live-class-card,
+.qa-stat-card {
+    border-color: var(--admin-border, #3d4153) !important;
+    background-color: var(--admin-card-bg, #2d3142) !important;
+    color: var(--admin-text, #e4e6eb) !important;
+}
+

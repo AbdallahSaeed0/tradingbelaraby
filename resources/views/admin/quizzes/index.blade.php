@@ -132,9 +132,9 @@
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fa fa-search me-1"></i>Filter
                                 </button>
-                                <a href="{{ route('admin.quizzes.index') }}" class="btn btn-outline-secondary">
+                                <button type="button" class="btn btn-outline-secondary" id="clearFiltersBtn">
                                     <i class="fa fa-refresh me-1"></i>Clear
-                                </a>
+                                </button>
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -156,49 +156,9 @@
         <div id="quizContainer">
             <!-- List View -->
             <div class="card" id="listViewContainer">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Quizzes</h5>
-                    <div class="d-flex align-items-center">
-                        <button class="btn btn-sm btn-outline-danger me-2 d-none-initially" id="bulkDelete">
-                            <i class="fa fa-trash me-1"></i>Delete Selected
-                        </button>
-                        <div class="dropdown me-2 d-none-initially" id="bulkStatusDropdown">
-                            <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button"
-                                data-bs-toggle="dropdown">
-                                <i class="fa fa-toggle-on me-1"></i>Change Status
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#" onclick="bulkUpdateStatus('published')">
-                                        <i class="fa fa-check me-2"></i>Publish Selected
-                                    </a></li>
-                                <li><a class="dropdown-item" href="#" onclick="bulkUpdateStatus('draft')">
-                                        <i class="fa fa-clock me-2"></i>Set as Draft
-                                    </a></li>
-                            </ul>
-                        </div>
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
-                                data-bs-toggle="dropdown">
-                                <i class="fa fa-download me-1"></i>Export
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item"
-                                        href="{{ route('admin.quizzes.export_list', ['format' => 'csv']) }}">
-                                        <i class="fa fa-file-csv me-2"></i>CSV
-                                    </a>
-                                </li>
-                                <li><a class="dropdown-item"
-                                        href="{{ route('admin.quizzes.export_list', ['format' => 'excel']) }}">
-                                        <i class="fa fa-file-excel me-2"></i>Excel
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body p-0">
+                <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-custom mb-0">
+                        <table class="table table-hover table-striped">
                             <thead>
                                 <tr>
                                     <th width="50">
@@ -318,35 +278,59 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
-                <div class="card-footer">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="text-muted">
-                            @if ($quizzes->count() > 0)
-                                Showing {{ $quizzes->firstItem() }} to {{ $quizzes->lastItem() }} of
-                                {{ $quizzes->total() }} entries
-                            @else
-                                No entries found
-                            @endif
+
+                    <!-- Bulk Actions -->
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <div class="d-flex align-items-center me-3">
+                                    <label class="form-label me-2 mb-0 small">Per page:</label>
+                                    <select class="form-select form-select-sm w-auto" id="perPageSelect" onchange="changePerPage(this.value)">
+                                        @php
+                                            $perPage = (int) request('per_page', 10);
+                                        @endphp
+                                        <option value="10" {{ $perPage === 10 ? 'selected' : '' }}>10</option>
+                                        <option value="20" {{ $perPage === 20 ? 'selected' : '' }}>20</option>
+                                        <option value="50" {{ $perPage === 50 ? 'selected' : '' }}>50</option>
+                                        <option value="100" {{ $perPage === 100 ? 'selected' : '' }}>100</option>
+                                        <option value="500" {{ $perPage === 500 ? 'selected' : '' }}>500</option>
+                                        <option value="1000" {{ $perPage === 1000 ? 'selected' : '' }}>1000</option>
+                                    </select>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-sm btn-outline-danger me-2 d-none-initially" id="bulkDelete">
+                                        <i class="fa fa-trash me-1"></i>Delete Selected
+                                    </button>
+                                    <div class="dropdown me-2 d-none-initially" id="bulkStatusDropdown">
+                                        <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button"
+                                            data-bs-toggle="dropdown">
+                                            <i class="fa fa-toggle-on me-1"></i>Change Status
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="#" onclick="bulkUpdateStatus('published')">
+                                                    <i class="fa fa-check me-2"></i>Publish Selected
+                                                </a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="bulkUpdateStatus('draft')">
+                                                    <i class="fa fa-clock me-2"></i>Set as Draft
+                                                </a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        @if ($quizzes->hasPages())
-                            <nav>
-                                {{ $quizzes->links('pagination::bootstrap-4') }}
-                            </nav>
-                        @endif
+                        <div class="col-md-6">
+                            <div class="d-flex justify-content-end">
+                                @if ($quizzes->hasPages())
+                                    {{ $quizzes->links('pagination::bootstrap-5') }}
+                                @endif
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Grid View -->
             <div class="card d-none-initially" id="gridViewContainer">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Quizzes Grid</h5>
-                    <div class="d-flex align-items-center">
-                        <span class="text-muted me-3">Showing {{ $quizzes->firstItem() }} to {{ $quizzes->lastItem() }}
-                            of {{ $quizzes->total() }} entries</span>
-                    </div>
-                </div>
                 <div class="card-body">
                     <div class="row g-4">
                         @forelse($quizzes as $quiz)
@@ -525,107 +509,207 @@
                 gridViewBtn.classList.remove('active');
             });
 
-            // Auto-submit form on filter change
-            document.getElementById('statusFilter').addEventListener('change', function() {
-                document.getElementById('filterForm').submit();
-            });
+            // Setup checkboxes function
+            function setupCheckboxes() {
+                const selectAllCheckbox = document.getElementById('selectAll');
+                const rowCheckboxes = document.querySelectorAll('.row-checkbox');
+                const bulkDeleteBtn = document.getElementById('bulkDelete');
+                const bulkStatusDropdown = document.getElementById('bulkStatusDropdown');
 
-            document.getElementById('courseFilter').addEventListener('change', function() {
-                document.getElementById('filterForm').submit();
-            });
-
-            // Search with debounce
-            let searchTimeout;
-            document.getElementById('searchInput').addEventListener('input', function() {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    document.getElementById('filterForm').submit();
-                }, 500);
-            });
-
-            // Select all functionality
-            const selectAllCheckbox = document.getElementById('selectAll');
-            const rowCheckboxes = document.querySelectorAll('.row-checkbox');
-            const bulkDeleteBtn = document.getElementById('bulkDelete');
-
-            selectAllCheckbox.addEventListener('change', function() {
-                rowCheckboxes.forEach(checkbox => {
-                    checkbox.checked = this.checked;
-                });
-                toggleBulkActions();
-            });
-
-            rowCheckboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
-                    const checkedCount = document.querySelectorAll('.row-checkbox:checked').length;
-                    selectAllCheckbox.checked = checkedCount === rowCheckboxes.length;
-                    selectAllCheckbox.indeterminate = checkedCount > 0 && checkedCount <
-                        rowCheckboxes.length;
-                    toggleBulkActions();
-                });
-            });
-
-            // Bulk delete functionality
-            bulkDeleteBtn.addEventListener('click', function() {
-                const selectedIds = Array.from(document.querySelectorAll('.row-checkbox:checked'))
-                    .map(checkbox => checkbox.value);
-
-                if (selectedIds.length === 0) {
-                    alert('Please select at least one quiz');
-                    return;
-                }
-
-                if (confirm('Are you sure you want to delete the selected quiz(zes)?')) {
-                    const form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = '{{ route('admin.quizzes.bulk_delete') }}';
-
-                    const csrfToken = document.createElement('input');
-                    csrfToken.type = 'hidden';
-                    csrfToken.name = '_token';
-                    csrfToken.value = '{{ csrf_token() }}';
-                    form.appendChild(csrfToken);
-
-                    selectedIds.forEach(id => {
-                        const input = document.createElement('input');
-                        input.type = 'hidden';
-                        input.name = 'quiz_ids[]';
-                        input.value = id;
-                        form.appendChild(input);
+                if (selectAllCheckbox) {
+                    selectAllCheckbox.addEventListener('change', function() {
+                        rowCheckboxes.forEach(checkbox => {
+                            checkbox.checked = this.checked;
+                        });
+                        toggleBulkActions();
                     });
-
-                    document.body.appendChild(form);
-                    form.submit();
                 }
-            });
 
-            function toggleBulkActions() {
-                const checkedCount = document.querySelectorAll('.row-checkbox:checked').length;
-                bulkDeleteBtn.style.display = checkedCount > 0 ? 'inline-block' : 'none';
-                document.getElementById('bulkStatusDropdown').style.display = checkedCount > 0 ? 'inline-block' :
-                    'none';
+                rowCheckboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', function() {
+                        const selectAll = document.getElementById('selectAll');
+                        const allCheckboxes = document.querySelectorAll('.row-checkbox');
+                        const checkedCount = document.querySelectorAll('.row-checkbox:checked').length;
+                        if (selectAll) {
+                            selectAll.checked = checkedCount === allCheckboxes.length;
+                            selectAll.indeterminate = checkedCount > 0 && checkedCount < allCheckboxes.length;
+                        }
+                        toggleBulkActions();
+                    });
+                });
+
+                function toggleBulkActions() {
+                    const checkedCount = document.querySelectorAll('.row-checkbox:checked').length;
+                    if (bulkDeleteBtn) {
+                        bulkDeleteBtn.style.display = checkedCount > 0 ? 'inline-block' : 'none';
+                    }
+                    if (bulkStatusDropdown) {
+                        bulkStatusDropdown.style.display = checkedCount > 0 ? 'inline-block' : 'none';
+                    }
+                }
+                toggleBulkActions();
+            }
+            setupCheckboxes();
+
+            // Change per page function
+            function changePerPage(value) {
+                // Use AJAX to update
+                const formData = new FormData(document.getElementById('filterForm'));
+                formData.set('per_page', value);
+                performAjaxSearch();
             }
 
-            // Clear filters functionality is handled by the Clear button in the form
-
-            // Status badge click handler removed - now using modal
-
-            // Filter functionality
+            // Initialize variables for AJAX search
             let searchTimeout;
-            document.getElementById('searchInput').addEventListener('input', function() {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    applyFilters();
-                }, 500);
+            const searchInput = document.getElementById('searchInput');
+            const tableBody = document.querySelector('#listViewContainer .table tbody');
+            const paginationContainer = document.querySelector('#listViewContainer .row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
+
+            // AJAX search function
+            function performAjaxSearch() {
+                const formData = new FormData(document.getElementById('filterForm'));
+                const params = new URLSearchParams(formData);
+
+                // Show loading state
+                if (tableBody) {
+                    tableBody.innerHTML = '<tr><td colspan="7" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
+                }
+
+                fetch(`{{ route('admin.quizzes.index') }}?${params.toString()}`, {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'text/html'
+                        }
+                    })
+                    .then(response => response.text())
+                    .then(html => {
+                        // Create a temporary container to parse the HTML
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = html;
+
+                        // Extract table body
+                        const newTableBody = tempDiv.querySelector('#listViewContainer .table tbody');
+                        const newPagination = tempDiv.querySelector('#listViewContainer .row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
+                        const newBulkActions = tempDiv.querySelector('#listViewContainer .row.mt-3 .col-md-6:first-child');
+
+                        if (newTableBody && tableBody) {
+                            tableBody.innerHTML = newTableBody.innerHTML;
+                        }
+
+                        if (newPagination && paginationContainer) {
+                            paginationContainer.innerHTML = newPagination.innerHTML;
+                        }
+
+                        if (newBulkActions) {
+                            const bulkActionsContainer = document.querySelector('#listViewContainer .row.mt-3 .col-md-6:first-child');
+                            if (bulkActionsContainer) {
+                                bulkActionsContainer.innerHTML = newBulkActions.innerHTML;
+                            }
+                        }
+
+                        // Update URL without reload
+                        const newUrl = `{{ route('admin.quizzes.index') }}?${params.toString()}`;
+                        window.history.pushState({}, '', newUrl);
+
+                        // Re-attach event listeners
+                        setupCheckboxes();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        if (tableBody) {
+                            tableBody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-danger">Error loading data. Please try again.</td></tr>';
+                        }
+                    });
+            }
+
+            // Prevent form submission - use AJAX instead
+            document.getElementById('filterForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                performAjaxSearch();
+            });
+
+            // Dropdown filters - use AJAX
+            document.getElementById('statusFilter').addEventListener('change', function() {
+                performAjaxSearch();
             });
 
             document.getElementById('courseFilter').addEventListener('change', function() {
-                applyFilters();
+                performAjaxSearch();
             });
 
-            document.getElementById('statusFilter').addEventListener('change', function() {
-                applyFilters();
-            });
+            // Clear filters button - use AJAX
+            const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+            if (clearFiltersBtn) {
+                clearFiltersBtn.addEventListener('click', function() {
+                    // Clear all form fields
+                    document.getElementById('searchInput').value = '';
+                    document.getElementById('statusFilter').value = '';
+                    document.getElementById('courseFilter').value = '';
+
+                    // Update URL without parameters
+                    window.history.pushState({}, '', '{{ route('admin.quizzes.index') }}');
+
+                    // Perform AJAX search with cleared filters
+                    performAjaxSearch();
+                });
+            }
+
+            // Search with debounce - AJAX only
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        performAjaxSearch();
+                    }, 500);
+                });
+
+                // Prevent form submission on Enter key in search
+                searchInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        clearTimeout(searchTimeout);
+                        performAjaxSearch();
+                    }
+                });
+            }
+
+            // Bulk delete functionality
+            const bulkDeleteBtn = document.getElementById('bulkDelete');
+            if (bulkDeleteBtn) {
+                bulkDeleteBtn.addEventListener('click', function() {
+                    const selectedIds = Array.from(document.querySelectorAll('.row-checkbox:checked'))
+                        .map(checkbox => checkbox.value);
+
+                    if (selectedIds.length === 0) {
+                        alert('Please select at least one quiz');
+                        return;
+                    }
+
+                    if (confirm('Are you sure you want to delete the selected quiz(zes)?')) {
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = '{{ route('admin.quizzes.bulk_delete') }}';
+
+                        const csrfToken = document.createElement('input');
+                        csrfToken.type = 'hidden';
+                        csrfToken.name = '_token';
+                        csrfToken.value = '{{ csrf_token() }}';
+                        form.appendChild(csrfToken);
+
+                        selectedIds.forEach(id => {
+                            const input = document.createElement('input');
+                            input.type = 'hidden';
+                            input.name = 'quiz_ids[]';
+                            input.value = id;
+                            form.appendChild(input);
+                        });
+
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                });
+            }
 
             function applyFilters() {
                 const search = document.getElementById('searchInput').value;

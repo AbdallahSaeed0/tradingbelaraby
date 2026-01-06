@@ -43,7 +43,7 @@
                     <div class="col-md-4">
                         <label for="search_filter" class="form-label">{{ custom_trans('Search', 'admin') }}</label>
                         <input type="text" class="form-control form-control-lg" id="search_filter" name="search"
-                            value="{{ request('search', 'admin') }}" placeholder="{{ custom_trans('Search by title, subtitle...', 'admin') }}"
+                            value="{{ request('search') }}" placeholder="{{ custom_trans('Search by title, subtitle...', 'admin') }}"
                             autocomplete="off">
                     </div>
                     <div class="col-md-3">
@@ -89,7 +89,7 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-hover" id="hero-features-table">
+                    <table class="table table-hover table-striped" id="hero-features-table">
                         <thead>
                             <tr>
                                 <th width="50">

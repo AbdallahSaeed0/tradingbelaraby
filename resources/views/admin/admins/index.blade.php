@@ -140,9 +140,9 @@
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fa fa-search me-1"></i>Filter
                                 </button>
-                                <a href="{{ route('admin.admins.index') }}" class="btn btn-outline-secondary">
+                                <button type="button" class="btn btn-outline-secondary" id="clearFiltersBtn">
                                     <i class="fa fa-refresh me-1"></i>Clear
-                                </a>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -157,6 +157,11 @@
                     <table class="table table-hover table-striped">
                         <thead>
                             <tr>
+                                <th width="50">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="selectAll">
+                                    </div>
+                                </th>
                                 <th>#</th>
                                 <th>Name</th>
                                 <th>Email</th>
@@ -170,6 +175,11 @@
                         <tbody>
                             @forelse($admins as $admin)
                                 <tr>
+                                    <td>
+                                        <div class="form-check">
+                                            <input class="form-check-input admin-checkbox" type="checkbox" value="{{ $admin->id }}">
+                                        </div>
+                                    </td>
                                     <td>{{ $admins->firstItem() + $loop->index }}</td>
                                     <td>
                                         <div class="d-flex align-items-center">
@@ -224,7 +234,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center py-4">
+                                    <td colspan="9" class="text-center py-4">
                                         <div class="text-muted">
                                             <i class="fa fa-users fa-3x mb-3"></i>
                                             <h5>No admins found</h5>
@@ -256,27 +266,122 @@
 
     @push('scripts')
         <script>
-            // Auto-submit form on filter change
+            // Change per page function
+            function changePerPage(value) {
+                // Use AJAX to update
+                const formData = new FormData(document.getElementById('filterForm'));
+                formData.set('per_page', value);
+                performAjaxSearch();
+            }
+
+            // Initialize variables for AJAX search
+            let searchTimeout;
+            const searchInput = document.getElementById('searchInput');
+            const tableBody = document.querySelector('.table tbody');
+            const paginationContainer = document.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
+
+            // AJAX search function
+            function performAjaxSearch() {
+                const formData = new FormData(document.getElementById('filterForm'));
+                const params = new URLSearchParams(formData);
+
+                // Show loading state
+                if (tableBody) {
+                    tableBody.innerHTML = '<tr><td colspan="9" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
+                }
+
+                fetch(`{{ route('admin.admins.index') }}?${params.toString()}`, {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'text/html'
+                        }
+                    })
+                    .then(response => response.text())
+                    .then(html => {
+                        // Create a temporary container to parse the HTML
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = html;
+
+                        // Extract table body
+                        const newTableBody = tempDiv.querySelector('.table tbody');
+                        const newPagination = tempDiv.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
+
+                        if (newTableBody && tableBody) {
+                            tableBody.innerHTML = newTableBody.innerHTML;
+                        }
+
+                        if (newPagination && paginationContainer) {
+                            paginationContainer.innerHTML = newPagination.innerHTML;
+                        }
+
+                        // Update URL without reload
+                        const newUrl = `{{ route('admin.admins.index') }}?${params.toString()}`;
+                        window.history.pushState({}, '', newUrl);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        if (tableBody) {
+                            tableBody.innerHTML = '<tr><td colspan="9" class="text-center py-4 text-danger">Error loading data. Please try again.</td></tr>';
+                        }
+                    });
+            }
+
+            // Prevent form submission - use AJAX instead
+            document.getElementById('filterForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                performAjaxSearch();
+            });
+
+            // Dropdown filters - use AJAX
             document.getElementById('typeFilter').addEventListener('change', function() {
-                document.getElementById('filterForm').submit();
+                performAjaxSearch();
             });
 
             document.getElementById('statusFilter').addEventListener('change', function() {
-                document.getElementById('filterForm').submit();
+                performAjaxSearch();
             });
 
             document.getElementById('sortFilter').addEventListener('change', function() {
-                document.getElementById('filterForm').submit();
+                performAjaxSearch();
             });
 
-            // Search with debounce
-            let searchTimeout;
-            document.getElementById('searchInput').addEventListener('input', function() {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    document.getElementById('filterForm').submit();
-                }, 500);
-            });
+            // Clear filters button - use AJAX
+            const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+            if (clearFiltersBtn) {
+                clearFiltersBtn.addEventListener('click', function() {
+                    // Clear all form fields
+                    document.getElementById('searchInput').value = '';
+                    document.getElementById('typeFilter').value = '';
+                    document.getElementById('statusFilter').value = '';
+                    document.getElementById('sortFilter').value = 'latest';
+
+                    // Update URL without parameters
+                    window.history.pushState({}, '', '{{ route('admin.admins.index') }}');
+
+                    // Perform AJAX search with cleared filters
+                    performAjaxSearch();
+                });
+            }
+
+            // Search with debounce - AJAX only
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        performAjaxSearch();
+                    }, 500);
+                });
+
+                // Prevent form submission on Enter key in search
+                searchInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        clearTimeout(searchTimeout);
+                        performAjaxSearch();
+                    }
+                });
+            }
 
             // Toggle status
             function toggleStatus(adminId) {

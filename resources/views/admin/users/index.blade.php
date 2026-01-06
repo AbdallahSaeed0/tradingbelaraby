@@ -86,7 +86,7 @@
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fa fa-search"></i></span>
                                 <input type="text" class="form-control" name="search" placeholder="Search users..."
-                                    id="searchInput" value="{{ request('search', 'admin') }}">
+                                    id="searchInput" value="{{ request('search') }}">
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -121,9 +121,9 @@
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fa fa-search me-1"></i>Filter
                                 </button>
-                                <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary">
+                                <button type="button" class="btn btn-outline-secondary" id="clearFiltersBtn">
                                     <i class="fa fa-refresh me-1"></i>Clear
-                                </a>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -131,42 +131,12 @@
             </div>
         </div>
 
-        <!-- Bulk Actions -->
-        <div class="row mb-4 d-none-initially" id="bulkActions">
-            <div class="col-12">
-                <div class="card shadow-sm border-warning">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div>
-                                <span class="fw-bold text-warning" id="selectedCount">0</span>
-                                {{ custom_trans('users selected', 'admin') }}
-                            </div>
-                            <div>
-                                <button type="button" class="btn btn-danger" id="bulkDeleteBtn" disabled>
-                                    <i class="fas fa-trash me-1"></i>{{ custom_trans('Delete Selected', 'admin') }}
-                                </button>
-                                <button type="button" class="btn btn-outline-secondary ms-2" id="clearSelection">
-                                    <i class="fas fa-times me-1"></i>{{ custom_trans('Clear Selection', 'admin') }}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- Users Table -->
         <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Users List</h5>
-                <div class="d-flex align-items-center">
-                    <span class="text-muted me-3">Showing {{ $users->firstItem() }} to {{ $users->lastItem() }} of
-                        {{ $users->total() }} entries</span>
-                </div>
-            </div>
-            <div class="card-body p-0">
+            <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-custom mb-0">
+                    <table class="table table-hover table-striped">
                         <thead>
                             <tr>
                                 <th width="50">
@@ -291,126 +261,118 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
-            <div class="card-footer">
-                <!-- Enhanced Pagination -->
-                <div class="row align-items-center">
+
+                <!-- Bulk Actions -->
+                <div class="row mt-3">
                     <div class="col-md-6">
                         <div class="d-flex align-items-center">
-                            <span class="text-muted me-3">Showing {{ $users->firstItem() ?? 0 }} to
-                                {{ $users->lastItem() ?? 0 }} of {{ $users->total() }} entries</span>
-                            <div class="d-flex align-items-center">
+                            <div class="d-flex align-items-center me-3">
                                 <label class="form-label me-2 mb-0 small">Per page:</label>
-                                <select class="form-select form-select-sm w-auto" onchange="changePerPage(this.value)">
-                                    <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
-                                    <option value="15"
-                                        {{ request('per_page') == 15 || !request('per_page') ? 'selected' : '' }}>15
-                                    </option>
-                                    <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
-                                    <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
-                                    <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                                <select class="form-select form-select-sm w-auto" id="perPageSelect" onchange="changePerPage(this.value)">
+                                    @php
+                                        $perPage = (int) request('per_page', 10);
+                                    @endphp
+                                    <option value="10" {{ $perPage === 10 ? 'selected' : '' }}>10</option>
+                                    <option value="20" {{ $perPage === 20 ? 'selected' : '' }}>20</option>
+                                    <option value="50" {{ $perPage === 50 ? 'selected' : '' }}>50</option>
+                                    <option value="100" {{ $perPage === 100 ? 'selected' : '' }}>100</option>
+                                    <option value="500" {{ $perPage === 500 ? 'selected' : '' }}>500</option>
+                                    <option value="1000" {{ $perPage === 1000 ? 'selected' : '' }}>1000</option>
                                 </select>
+                            </div>
+                            <div id="bulkActions" style="display: none;">
+                                <button type="button" class="btn btn-danger btn-sm" id="bulkDeleteBtn">
+                                    <i class="fas fa-trash me-1"></i>{{ custom_trans('Delete Selected', 'admin') }}
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm ms-2" id="clearSelection">
+                                    <i class="fas fa-times me-1"></i>{{ custom_trans('Clear Selection', 'admin') }}
+                                </button>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <!-- Custom Pagination -->
-                        @if ($users->hasPages())
-                            <nav aria-label="Users pagination">
-                                <ul class="pagination pagination-sm justify-content-end mb-0">
-                                    {{-- Previous Page Link --}}
-                                    @if ($users->onFirstPage())
-                                        <li class="page-item disabled">
-                                            <span class="page-link">
-                                                <i class="fa fa-chevron-left"></i>
-                                            </span>
-                                        </li>
-                                    @else
-                                        <li class="page-item">
-                                            <a class="page-link" href="{{ $users->previousPageUrl() }}"
-                                                aria-label="Previous">
-                                                <i class="fa fa-chevron-left"></i>
-                                            </a>
-                                        </li>
-                                    @endif
-
-                                    {{-- First Page --}}
-                                    @if ($users->currentPage() > 3)
-                                        <li class="page-item">
-                                            <a class="page-link" href="{{ $users->url(1) }}">1</a>
-                                        </li>
-                                        @if ($users->currentPage() > 4)
+                        <div class="d-flex justify-content-end align-items-center">
+                            @if ($users->hasPages())
+                                <nav aria-label="Users pagination">
+                                    <ul class="pagination pagination-sm justify-content-end mb-0">
+                                        {{-- Previous Page Link --}}
+                                        @if ($users->onFirstPage())
                                             <li class="page-item disabled">
-                                                <span class="page-link">...</span>
-                                            </li>
-                                        @endif
-                                    @endif
-
-                                    {{-- Pagination Elements --}}
-                                    @foreach ($users->getUrlRange(max(1, $users->currentPage() - 2), min($users->lastPage(), $users->currentPage() + 2)) as $page => $url)
-                                        @if ($page == $users->currentPage())
-                                            <li class="page-item active">
-                                                <span class="page-link">{{ $page }}</span>
+                                                <span class="page-link">
+                                                    <i class="fa fa-chevron-left"></i>
+                                                </span>
                                             </li>
                                         @else
                                             <li class="page-item">
-                                                <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                                                <a class="page-link" href="{{ $users->previousPageUrl() }}"
+                                                    aria-label="Previous">
+                                                    <i class="fa fa-chevron-left"></i>
+                                                </a>
                                             </li>
                                         @endif
-                                    @endforeach
 
-                                    {{-- Last Page --}}
-                                    @if ($users->currentPage() < $users->lastPage() - 2)
-                                        @if ($users->currentPage() < $users->lastPage() - 3)
+                                        {{-- First Page --}}
+                                        @if ($users->currentPage() > 3)
+                                            <li class="page-item">
+                                                <a class="page-link" href="{{ $users->url(1) }}">1</a>
+                                            </li>
+                                            @if ($users->currentPage() > 4)
+                                                <li class="page-item disabled">
+                                                    <span class="page-link">...</span>
+                                                </li>
+                                            @endif
+                                        @endif
+
+                                        {{-- Pagination Elements --}}
+                                        @foreach ($users->getUrlRange(max(1, $users->currentPage() - 2), min($users->lastPage(), $users->currentPage() + 2)) as $page => $url)
+                                            @if ($page == $users->currentPage())
+                                                <li class="page-item active">
+                                                    <span class="page-link">{{ $page }}</span>
+                                                </li>
+                                            @else
+                                                <li class="page-item">
+                                                    <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                                                </li>
+                                            @endif
+                                        @endforeach
+
+                                        {{-- Last Page --}}
+                                        @if ($users->currentPage() < $users->lastPage() - 2)
+                                            @if ($users->currentPage() < $users->lastPage() - 3)
+                                                <li class="page-item disabled">
+                                                    <span class="page-link">...</span>
+                                                </li>
+                                            @endif
+                                            <li class="page-item">
+                                                <a class="page-link"
+                                                    href="{{ $users->url($users->lastPage()) }}">{{ $users->lastPage() }}</a>
+                                            </li>
+                                        @endif
+
+                                        {{-- Next Page Link --}}
+                                        @if ($users->hasMorePages())
+                                            <li class="page-item">
+                                                <a class="page-link" href="{{ $users->nextPageUrl() }}" aria-label="Next">
+                                                    <i class="fa fa-chevron-right"></i>
+                                                </a>
+                                            </li>
+                                        @else
                                             <li class="page-item disabled">
-                                                <span class="page-link">...</span>
+                                                <span class="page-link">
+                                                    <i class="fa fa-chevron-right"></i>
+                                                </span>
                                             </li>
                                         @endif
-                                        <li class="page-item">
-                                            <a class="page-link"
-                                                href="{{ $users->url($users->lastPage()) }}">{{ $users->lastPage() }}</a>
-                                        </li>
-                                    @endif
-
-                                    {{-- Next Page Link --}}
-                                    @if ($users->hasMorePages())
-                                        <li class="page-item">
-                                            <a class="page-link" href="{{ $users->nextPageUrl() }}" aria-label="Next">
-                                                <i class="fa fa-chevron-right"></i>
-                                            </a>
-                                        </li>
-                                    @else
-                                        <li class="page-item disabled">
-                                            <span class="page-link">
-                                                <i class="fa fa-chevron-right"></i>
-                                            </span>
-                                        </li>
-                                    @endif
-                                </ul>
-                            </nav>
-                        @else
-                            <div class="text-end text-muted small">
-                                Page 1 of 1
-                            </div>
-                        @endif
-                    </div>
-                </div>
-
-                {{-- Page Info --}}
-                @if ($users->hasPages())
-                    <div class="row mt-2">
-                        <div class="col-12">
-                            <div class="text-center">
-                                <small class="text-muted">
-                                    Page {{ $users->currentPage() }} of {{ $users->lastPage() }}
-                                    @if ($users->total() > 0)
-                                        ({{ number_format($users->total()) }} total users)
-                                    @endif
-                                </small>
-                            </div>
+                                    </ul>
+                                </nav>
+                            @else
+                                <div class="text-end text-muted small">
+                                    Page 1 of 1
+                                </div>
+                            @endif
                         </div>
                     </div>
-                @endif
+                </div>
             </div>
         </div>
     </div>
@@ -420,55 +382,193 @@
     <script>
         // Change per page function
         function changePerPage(value) {
-            const url = new URL(window.location);
-            url.searchParams.set('per_page', value);
-            url.searchParams.delete('page'); // Reset to first page
-            window.location.href = url.toString();
+            // Use AJAX to update
+            const formData = new FormData(document.getElementById('filterForm'));
+            formData.set('per_page', value);
+            const params = new URLSearchParams(formData);
+            performAjaxSearch();
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            // Auto-submit form on filter change
+            // Initialize variables for AJAX search
+            let searchTimeout;
+            const searchInput = document.getElementById('searchInput');
+            const tableBody = document.querySelector('.table tbody');
+            const paginationContainer = document.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
+
+            // AJAX search function
+            function performAjaxSearch() {
+                const formData = new FormData(document.getElementById('filterForm'));
+                const params = new URLSearchParams(formData);
+
+                // Show loading state
+                if (tableBody) {
+                    tableBody.innerHTML = '<tr><td colspan="8" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
+                }
+
+                fetch(`{{ route('admin.users.index') }}?${params.toString()}`, {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'text/html'
+                        }
+                    })
+                    .then(response => response.text())
+                    .then(html => {
+                        // Create a temporary container to parse the HTML
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = html;
+
+                        // Extract table body
+                        const newTableBody = tempDiv.querySelector('.table tbody');
+                        const newPagination = tempDiv.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
+                        const newBulkActions = tempDiv.querySelector('.row.mt-3 .col-md-6:first-child');
+
+                        if (newTableBody && tableBody) {
+                            tableBody.innerHTML = newTableBody.innerHTML;
+                        }
+
+                        if (newPagination && paginationContainer) {
+                            paginationContainer.innerHTML = newPagination.innerHTML;
+                        }
+
+                        if (newBulkActions) {
+                            const bulkActionsContainer = document.querySelector('.row.mt-3 .col-md-6:first-child');
+                            if (bulkActionsContainer) {
+                                bulkActionsContainer.innerHTML = newBulkActions.innerHTML;
+                            }
+                        }
+
+                        // Update URL without reload
+                        const newUrl = `{{ route('admin.users.index') }}?${params.toString()}`;
+                        window.history.pushState({}, '', newUrl);
+
+                        // Re-attach event listeners
+                        setupCheckboxes();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        if (tableBody) {
+                            tableBody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-danger">Error loading data. Please try again.</td></tr>';
+                        }
+                    });
+            }
+
+            // Setup checkboxes function
+            function setupCheckboxes() {
+                const selectAllCheckbox = document.getElementById('selectAll');
+                const rowCheckboxes = document.querySelectorAll('.row-checkbox');
+
+                if (selectAllCheckbox) {
+                    selectAllCheckbox.addEventListener('change', function() {
+                        rowCheckboxes.forEach(checkbox => {
+                            checkbox.checked = this.checked;
+                        });
+                        updateBulkActions();
+                    });
+                }
+
+                rowCheckboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', function() {
+                        const checkedCount = document.querySelectorAll('.row-checkbox:checked').length;
+                        if (selectAllCheckbox) {
+                            selectAllCheckbox.checked = checkedCount === rowCheckboxes.length;
+                            selectAllCheckbox.indeterminate = checkedCount > 0 && checkedCount < rowCheckboxes.length;
+                        }
+                        updateBulkActions();
+                    });
+                });
+                updateBulkActions();
+            }
+
+            // Prevent form submission - use AJAX instead
+            document.getElementById('filterForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                performAjaxSearch();
+            });
+
+            // Auto-trigger filters with AJAX
             document.getElementById('statusFilter').addEventListener('change', function() {
-                document.getElementById('filterForm').submit();
+                performAjaxSearch();
             });
 
             document.getElementById('roleFilter').addEventListener('change', function() {
-                document.getElementById('filterForm').submit();
+                performAjaxSearch();
             });
 
             document.getElementById('sortFilter').addEventListener('change', function() {
-                document.getElementById('filterForm').submit();
+                performAjaxSearch();
             });
 
-            // Search with debounce
-            let searchTimeout;
-            document.getElementById('searchInput').addEventListener('input', function() {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    document.getElementById('filterForm').submit();
-                }, 500);
-            });
+            // Clear filters button - use AJAX
+            const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+            if (clearFiltersBtn) {
+                clearFiltersBtn.addEventListener('click', function() {
+                    // Clear all form fields
+                    document.getElementById('searchInput').value = '';
+                    document.getElementById('statusFilter').value = '';
+                    document.getElementById('roleFilter').value = '';
+                    document.getElementById('sortFilter').value = 'latest';
 
-            // Select all functionality
-            const selectAllCheckbox = document.getElementById('selectAll');
-            const rowCheckboxes = document.querySelectorAll('.row-checkbox');
+                    // Update URL without parameters
+                    window.history.pushState({}, '', '{{ route('admin.users.index') }}');
 
-            selectAllCheckbox.addEventListener('change', function() {
+                    // Perform AJAX search with cleared filters
+                    performAjaxSearch();
+                });
+            }
+
+            // Search with debounce - AJAX only
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        performAjaxSearch();
+                    }, 500);
+                });
+
+                // Prevent form submission on Enter key in search
+                searchInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        clearTimeout(searchTimeout);
+                        performAjaxSearch();
+                    }
+                });
+            }
+
+            // Setup checkboxes (called initially and after AJAX updates)
+            function setupCheckboxes() {
+                const selectAllCheckbox = document.getElementById('selectAll');
+                const rowCheckboxes = document.querySelectorAll('.row-checkbox');
+
+                if (selectAllCheckbox) {
+                    // Remove old listener and add new one
+                    const newSelectAll = selectAllCheckbox.cloneNode(true);
+                    selectAllCheckbox.parentNode.replaceChild(newSelectAll, selectAllCheckbox);
+
+                    newSelectAll.addEventListener('change', function() {
+                        rowCheckboxes.forEach(checkbox => {
+                            checkbox.checked = this.checked;
+                        });
+                        updateBulkActions();
+                    });
+                }
+
                 rowCheckboxes.forEach(checkbox => {
-                    checkbox.checked = this.checked;
+                    checkbox.addEventListener('change', function() {
+                        const selectAll = document.getElementById('selectAll');
+                        const checkedCount = document.querySelectorAll('.row-checkbox:checked').length;
+                        if (selectAll) {
+                            selectAll.checked = checkedCount === rowCheckboxes.length;
+                            selectAll.indeterminate = checkedCount > 0 && checkedCount < rowCheckboxes.length;
+                        }
+                        updateBulkActions();
+                    });
                 });
                 updateBulkActions();
-            });
-
-            rowCheckboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
-                    const checkedCount = document.querySelectorAll('.row-checkbox:checked').length;
-                    selectAllCheckbox.checked = checkedCount === rowCheckboxes.length;
-                    selectAllCheckbox.indeterminate = checkedCount > 0 && checkedCount <
-                        rowCheckboxes.length;
-                    updateBulkActions();
-                });
-            });
+            }
+            setupCheckboxes();
 
             // Update bulk actions visibility
             function updateBulkActions() {

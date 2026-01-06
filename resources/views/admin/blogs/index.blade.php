@@ -98,47 +98,54 @@
         <!-- Filters -->
         <div class="card mb-4">
             <div class="card-body">
-                <div class="row g-3">
-                    <div class="col-md-3">
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fa fa-search"></i></span>
-                            <input type="text" class="form-control" placeholder="Search blogs..." id="searchInput"
-                                value="{{ $search }}">
+                <form method="GET" action="{{ route('admin.blogs.index') }}" id="filterForm">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa fa-search"></i></span>
+                                <input type="text" class="form-control" name="search" placeholder="Search blogs..." id="searchInput"
+                                    value="{{ request('search', $search ?? '') }}">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select" name="category" id="categoryFilter">
+                                <option value="">All Categories</option>
+                                @foreach ($categories as $cat)
+                                    <option value="{{ $cat->id }}" {{ request('category', $category ?? '') == $cat->id ? 'selected' : '' }}>
+                                        {{ $cat->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select" name="status" id="statusFilter">
+                                <option value="">All Status</option>
+                                <option value="published" {{ request('status', $status ?? '') == 'published' ? 'selected' : '' }}>Published</option>
+                                <option value="draft" {{ request('status', $status ?? '') == 'draft' ? 'selected' : '' }}>Draft</option>
+                                <option value="archived" {{ request('status', $status ?? '') == 'archived' ? 'selected' : '' }}>Archived</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select" name="featured" id="featuredFilter">
+                                <option value="">All Posts</option>
+                                <option value="featured" {{ request('featured') == 'featured' ? 'selected' : '' }}>Featured
+                                </option>
+                                <option value="not_featured" {{ request('featured') == 'not_featured' ? 'selected' : '' }}>Not
+                                    Featured</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa fa-search me-1"></i>Filter
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" id="clearFiltersBtn">
+                                    <i class="fa fa-refresh me-1"></i>Clear
+                                </button>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-2">
-                        <select class="form-select" id="categoryFilter">
-                            <option value="">All Categories</option>
-                            @foreach ($categories as $cat)
-                                <option value="{{ $cat->id }}" {{ $category == $cat->id ? 'selected' : '' }}>
-                                    {{ $cat->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <select class="form-select" id="statusFilter">
-                            <option value="">All Status</option>
-                            <option value="published" {{ $status == 'published' ? 'selected' : '' }}>Published</option>
-                            <option value="draft" {{ $status == 'draft' ? 'selected' : '' }}>Draft</option>
-                            <option value="archived" {{ $status == 'archived' ? 'selected' : '' }}>Archived</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <select class="form-select" id="featuredFilter">
-                            <option value="">All Posts</option>
-                            <option value="featured" {{ request('featured') == 'featured' ? 'selected' : '' }}>Featured
-                            </option>
-                            <option value="not_featured" {{ request('featured') == 'not_featured' ? 'selected' : '' }}>Not
-                                Featured</option>
-                        </select>
-                    </div>
-                    <div class="col-md-1">
-                        <button class="btn btn-outline-secondary w-100" id="clearFilters">
-                            <i class="fa fa-refresh"></i>
-                        </button>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
 
@@ -146,11 +153,13 @@
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover table-striped">
                         <thead>
                             <tr>
-                                <th>
-                                    <input type="checkbox" id="selectAll">
+                                <th width="50">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="selectAll">
+                                    </div>
                                 </th>
                                 <th>Blog Post</th>
                                 <th>Category</th>
@@ -168,7 +177,9 @@
                                     data-category="{{ $blog->category_id }}" data-status="{{ $blog->status }}"
                                     data-featured="{{ $blog->is_featured ? 'featured' : 'not_featured' }}">
                                     <td>
-                                        <input type="checkbox" class="blog-checkbox" value="{{ $blog->id }}">
+                                        <div class="form-check">
+                                            <input class="form-check-input blog-checkbox" type="checkbox" value="{{ $blog->id }}">
+                                        </div>
                                     </td>
                                     <td>
                                         <div class="d-flex align-items-center">
@@ -257,130 +268,133 @@
                     </table>
                 </div>
 
-                <!-- Bulk Actions -->
-                <div class="row mt-3">
-                    <div class="col-md-6">
-                        <div class="d-flex gap-2">
-                            <button type="button" class="btn btn-outline-danger btn-sm" onclick="bulkDelete()">
-                                <i class="fa fa-trash me-1"></i>Delete Selected
-                            </button>
-                            <div class="dropdown">
-                                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
-                                    data-bs-toggle="dropdown">
-                                    <i class="fa fa-cog me-1"></i>Bulk Actions
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#"
-                                            onclick="bulkUpdateStatus('published')">Publish</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="bulkUpdateStatus('draft')">Mark
-                                            as Draft</a></li>
-                                    <li><a class="dropdown-item" href="#"
-                                            onclick="bulkUpdateStatus('archived')">Archive</a></li>
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
-                                    <li><a class="dropdown-item" href="#" onclick="bulkToggleFeatured()">Toggle
-                                            Featured</a></li>
-                                </ul>
+                        <!-- Bulk Actions -->
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center">
+                                    <div class="d-flex align-items-center me-3">
+                                        <label class="form-label me-2 mb-0 small">Per page:</label>
+                                        <select class="form-select form-select-sm w-auto" id="perPageSelect" onchange="changePerPage(this.value)">
+                                            @php
+                                                $perPage = (int) request('per_page', 10);
+                                            @endphp
+                                            <option value="10" {{ $perPage === 10 ? 'selected' : '' }}>10</option>
+                                            <option value="20" {{ $perPage === 20 ? 'selected' : '' }}>20</option>
+                                            <option value="50" {{ $perPage === 50 ? 'selected' : '' }}>50</option>
+                                            <option value="100" {{ $perPage === 100 ? 'selected' : '' }}>100</option>
+                                            <option value="500" {{ $perPage === 500 ? 'selected' : '' }}>500</option>
+                                            <option value="1000" {{ $perPage === 1000 ? 'selected' : '' }}>1000</option>
+                                        </select>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="bulkDelete()">
+                                            <i class="fa fa-trash me-1"></i>Delete Selected
+                                        </button>
+                                        <div class="dropdown">
+                                            <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
+                                                data-bs-toggle="dropdown">
+                                                <i class="fa fa-cog me-1"></i>Bulk Actions
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#"
+                                                        onclick="bulkUpdateStatus('published')">Publish</a></li>
+                                                <li><a class="dropdown-item" href="#" onclick="bulkUpdateStatus('draft')">Mark
+                                                        as Draft</a></li>
+                                                <li><a class="dropdown-item" href="#"
+                                                        onclick="bulkUpdateStatus('archived')">Archive</a></li>
+                                                <li>
+                                                    <hr class="dropdown-divider">
+                                                </li>
+                                                <li><a class="dropdown-item" href="#" onclick="bulkToggleFeatured()">Toggle
+                                                        Featured</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
                     <div class="col-md-6">
-                        @if ($blogs->hasPages())
-                            <nav aria-label="Blogs pagination">
-                                <ul class="pagination pagination-sm justify-content-end mb-0">
-                                    {{-- Previous Page Link --}}
-                                    @if ($blogs->onFirstPage())
-                                        <li class="page-item disabled">
-                                            <span class="page-link">
-                                                <i class="fa fa-chevron-left"></i>
-                                            </span>
-                                        </li>
-                                    @else
-                                        <li class="page-item">
-                                            <a class="page-link" href="{{ $blogs->previousPageUrl() }}"
-                                                aria-label="Previous">
-                                                <i class="fa fa-chevron-left"></i>
-                                            </a>
-                                        </li>
-                                    @endif
-
-                                    {{-- First Page --}}
-                                    @if ($blogs->currentPage() > 3)
-                                        <li class="page-item">
-                                            <a class="page-link" href="{{ $blogs->url(1) }}">1</a>
-                                        </li>
-                                        @if ($blogs->currentPage() > 4)
+                        <div class="d-flex justify-content-end">
+                            @if ($blogs->hasPages())
+                                <nav aria-label="Blogs pagination">
+                                    <ul class="pagination pagination-sm justify-content-end mb-0">
+                                        {{-- Previous Page Link --}}
+                                        @if ($blogs->onFirstPage())
                                             <li class="page-item disabled">
-                                                <span class="page-link">...</span>
-                                            </li>
-                                        @endif
-                                    @endif
-
-                                    {{-- Pagination Elements --}}
-                                    @foreach ($blogs->getUrlRange(max(1, $blogs->currentPage() - 2), min($blogs->lastPage(), $blogs->currentPage() + 2)) as $page => $url)
-                                        @if ($page == $blogs->currentPage())
-                                            <li class="page-item active">
-                                                <span class="page-link">{{ $page }}</span>
+                                                <span class="page-link">
+                                                    <i class="fa fa-chevron-left"></i>
+                                                </span>
                                             </li>
                                         @else
                                             <li class="page-item">
-                                                <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                                                <a class="page-link" href="{{ $blogs->previousPageUrl() }}"
+                                                    aria-label="Previous">
+                                                    <i class="fa fa-chevron-left"></i>
+                                                </a>
                                             </li>
                                         @endif
-                                    @endforeach
 
-                                    {{-- Last Page --}}
-                                    @if ($blogs->currentPage() < $blogs->lastPage() - 2)
-                                        @if ($blogs->currentPage() < $blogs->lastPage() - 3)
+                                        {{-- First Page --}}
+                                        @if ($blogs->currentPage() > 3)
+                                            <li class="page-item">
+                                                <a class="page-link" href="{{ $blogs->url(1) }}">1</a>
+                                            </li>
+                                            @if ($blogs->currentPage() > 4)
+                                                <li class="page-item disabled">
+                                                    <span class="page-link">...</span>
+                                                </li>
+                                            @endif
+                                        @endif
+
+                                        {{-- Pagination Elements --}}
+                                        @foreach ($blogs->getUrlRange(max(1, $blogs->currentPage() - 2), min($blogs->lastPage(), $blogs->currentPage() + 2)) as $page => $url)
+                                            @if ($page == $blogs->currentPage())
+                                                <li class="page-item active">
+                                                    <span class="page-link">{{ $page }}</span>
+                                                </li>
+                                            @else
+                                                <li class="page-item">
+                                                    <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                                                </li>
+                                            @endif
+                                        @endforeach
+
+                                        {{-- Last Page --}}
+                                        @if ($blogs->currentPage() < $blogs->lastPage() - 2)
+                                            @if ($blogs->currentPage() < $blogs->lastPage() - 3)
+                                                <li class="page-item disabled">
+                                                    <span class="page-link">...</span>
+                                                </li>
+                                            @endif
+                                            <li class="page-item">
+                                                <a class="page-link"
+                                                    href="{{ $blogs->url($blogs->lastPage()) }}">{{ $blogs->lastPage() }}</a>
+                                            </li>
+                                        @endif
+
+                                        {{-- Next Page Link --}}
+                                        @if ($blogs->hasMorePages())
+                                            <li class="page-item">
+                                                <a class="page-link" href="{{ $blogs->nextPageUrl() }}" aria-label="Next">
+                                                    <i class="fa fa-chevron-right"></i>
+                                                </a>
+                                            </li>
+                                        @else
                                             <li class="page-item disabled">
-                                                <span class="page-link">...</span>
+                                                <span class="page-link">
+                                                    <i class="fa fa-chevron-right"></i>
+                                                </span>
                                             </li>
                                         @endif
-                                        <li class="page-item">
-                                            <a class="page-link"
-                                                href="{{ $blogs->url($blogs->lastPage()) }}">{{ $blogs->lastPage() }}</a>
-                                        </li>
-                                    @endif
-
-                                    {{-- Next Page Link --}}
-                                    @if ($blogs->hasMorePages())
-                                        <li class="page-item">
-                                            <a class="page-link" href="{{ $blogs->nextPageUrl() }}" aria-label="Next">
-                                                <i class="fa fa-chevron-right"></i>
-                                            </a>
-                                        </li>
-                                    @else
-                                        <li class="page-item disabled">
-                                            <span class="page-link">
-                                                <i class="fa fa-chevron-right"></i>
-                                            </span>
-                                        </li>
-                                    @endif
-                                </ul>
-                            </nav>
-                        @else
-                            <div class="text-end text-muted small">
-                                Page 1 of 1
-                            </div>
-                        @endif
-                    </div>
-                </div>
-                {{-- Page Info --}}
-                @if ($blogs->hasPages())
-                    <div class="row mt-2">
-                        <div class="col-12">
-                            <div class="text-center">
-                                <small class="text-muted">
-                                    Page {{ $blogs->currentPage() }} of {{ $blogs->lastPage() }}
-                                    @if ($blogs->total() > 0)
-                                        ({{ number_format($blogs->total()) }} total blogs)
-                                    @endif
-                                </small>
-                            </div>
+                                    </ul>
+                                </nav>
+                            @else
+                                <div class="text-end text-muted small">
+                                    Page 1 of 1
+                                </div>
+                            @endif
                         </div>
                     </div>
-                @endif
+                </div>
             </div>
         </div>
     </div>
@@ -416,76 +430,147 @@
     <script>
         // Change per page function
         function changePerPage(value) {
-            const url = new URL(window.location);
-            url.searchParams.set('per_page', value);
-            url.searchParams.delete('page'); // Reset to first page
-            window.location.href = url.toString();
+            // Use AJAX to update
+            const formData = new FormData(document.getElementById('filterForm'));
+            formData.set('per_page', value);
+            performAjaxSearch();
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            const selectAll = document.getElementById('selectAll');
-            const blogCheckboxes = document.querySelectorAll('.blog-checkbox');
-            const searchInput = document.getElementById('searchInput');
-            const categoryFilter = document.getElementById('categoryFilter');
-            const statusFilter = document.getElementById('statusFilter');
-            const featuredFilter = document.getElementById('featuredFilter');
-            const clearFilters = document.getElementById('clearFilters');
-            const bulkDeleteModal = new bootstrap.Modal(document.getElementById('bulkDeleteModal'));
+            // Setup checkboxes function
+            function setupCheckboxes() {
+                const selectAll = document.getElementById('selectAll');
+                const blogCheckboxes = document.querySelectorAll('.blog-checkbox');
 
-            // Select all functionality
-            selectAll.addEventListener('change', function() {
-                blogCheckboxes.forEach(checkbox => {
-                    checkbox.checked = this.checked;
-                });
+                if (selectAll) {
+                    selectAll.addEventListener('change', function() {
+                        blogCheckboxes.forEach(checkbox => {
+                            checkbox.checked = this.checked;
+                        });
+                    });
+                }
+            }
+            setupCheckboxes();
+
+            // Initialize variables for AJAX search
+            let searchTimeout;
+            const searchInput = document.getElementById('searchInput');
+            const tableBody = document.querySelector('.table tbody');
+            const paginationContainer = document.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
+
+            // AJAX search function
+            function performAjaxSearch() {
+                const formData = new FormData(document.getElementById('filterForm'));
+                const params = new URLSearchParams(formData);
+
+                // Show loading state
+                if (tableBody) {
+                    tableBody.innerHTML = '<tr><td colspan="8" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
+                }
+
+                fetch(`{{ route('admin.blogs.index') }}?${params.toString()}`, {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'text/html'
+                        }
+                    })
+                    .then(response => response.text())
+                    .then(html => {
+                        // Create a temporary container to parse the HTML
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = html;
+
+                        // Extract table body
+                        const newTableBody = tempDiv.querySelector('.table tbody');
+                        const newPagination = tempDiv.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
+                        const newBulkActions = tempDiv.querySelector('.row.mt-3 .col-md-6:first-child');
+
+                        if (newTableBody && tableBody) {
+                            tableBody.innerHTML = newTableBody.innerHTML;
+                        }
+
+                        if (newPagination && paginationContainer) {
+                            paginationContainer.innerHTML = newPagination.innerHTML;
+                        }
+
+                        if (newBulkActions) {
+                            const bulkActionsContainer = document.querySelector('.row.mt-3 .col-md-6:first-child');
+                            if (bulkActionsContainer) {
+                                bulkActionsContainer.innerHTML = newBulkActions.innerHTML;
+                            }
+                        }
+
+                        // Update URL without reload
+                        const newUrl = `{{ route('admin.blogs.index') }}?${params.toString()}`;
+                        window.history.pushState({}, '', newUrl);
+
+                        // Re-attach event listeners
+                        setupCheckboxes();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        if (tableBody) {
+                            tableBody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-danger">Error loading data. Please try again.</td></tr>';
+                        }
+                    });
+            }
+
+            // Prevent form submission - use AJAX instead
+            document.getElementById('filterForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                performAjaxSearch();
             });
 
-            // Filter functionality
-            function filterBlogs() {
-                const searchTerm = searchInput.value.toLowerCase();
-                const category = categoryFilter.value;
-                const status = statusFilter.value;
-                const featured = featuredFilter.value;
+            // Dropdown filters - use AJAX
+            document.getElementById('categoryFilter').addEventListener('change', function() {
+                performAjaxSearch();
+            });
 
-                const rows = document.querySelectorAll('.blog-row');
+            document.getElementById('statusFilter').addEventListener('change', function() {
+                performAjaxSearch();
+            });
 
-                rows.forEach(row => {
-                    const searchData = row.dataset.search;
-                    const rowCategory = row.dataset.category;
-                    const rowStatus = row.dataset.status;
-                    const rowFeatured = row.dataset.featured;
+            document.getElementById('featuredFilter').addEventListener('change', function() {
+                performAjaxSearch();
+            });
 
-                    let show = true;
+            // Clear filters button - use AJAX
+            const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+            if (clearFiltersBtn) {
+                clearFiltersBtn.addEventListener('click', function() {
+                    // Clear all form fields
+                    document.getElementById('searchInput').value = '';
+                    document.getElementById('categoryFilter').value = '';
+                    document.getElementById('statusFilter').value = '';
+                    document.getElementById('featuredFilter').value = '';
 
-                    if (searchTerm && !searchData.includes(searchTerm)) show = false;
-                    if (category && rowCategory !== category) show = false;
-                    if (status && rowStatus !== status) show = false;
-                    if (featured && rowFeatured !== featured) show = false;
+                    // Update URL without parameters
+                    window.history.pushState({}, '', '{{ route('admin.blogs.index') }}');
 
-                    row.style.display = show ? '' : 'none';
+                    // Perform AJAX search with cleared filters
+                    performAjaxSearch();
                 });
             }
 
-            // Event listeners for filters
-            searchInput.addEventListener('input', filterBlogs);
-            categoryFilter.addEventListener('change', filterBlogs);
-            statusFilter.addEventListener('change', filterBlogs);
-            featuredFilter.addEventListener('change', filterBlogs);
+            // Search with debounce - AJAX only
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        performAjaxSearch();
+                    }, 500);
+                });
 
-            // Clear filters
-            clearFilters.addEventListener('click', function() {
-                searchInput.value = '';
-                categoryFilter.value = '';
-                statusFilter.value = '';
-                featuredFilter.value = '';
-                filterBlogs();
-            });
-
-            // Per page filter
-            perPageFilter.addEventListener('change', function() {
-                const url = new URL(window.location);
-                url.searchParams.set('per_page', this.value);
-                window.location.href = url.toString();
-            });
+                // Prevent form submission on Enter key in search
+                searchInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        clearTimeout(searchTimeout);
+                        performAjaxSearch();
+                    }
+                });
+            }
 
             // Bulk delete functionality
             window.bulkDelete = function() {

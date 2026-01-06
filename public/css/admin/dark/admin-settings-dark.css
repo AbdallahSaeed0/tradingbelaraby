@@ -1,0 +1,10 @@
+/* Admin Settings - Dark Mode Styles */
+
+.settings-section-header {
+    border-bottom-color: var(--admin-border, #3d4153) !important;
+}
+
+.current-logo {
+    background-color: var(--admin-dropdown-hover, #3d4153) !important;
+}
+

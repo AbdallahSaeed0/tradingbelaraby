@@ -61,9 +61,9 @@ class LiveClassManagementController extends Controller
         ];
 
         $courses = Course::all();
-                    $instructors = Admin::whereHas('adminType', function($query) {
-                $query->where('name', 'instructor');
-            })->get();
+        $instructors = Admin::whereHas('adminType', function($query) {
+            $query->where('name', 'instructor');
+        })->get();
 
         return view('admin.live-classes.index', compact('liveClasses', 'stats', 'courses', 'instructors'));
     }

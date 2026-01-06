@@ -41,8 +41,19 @@
     padding: 0.375rem 0.75rem;
 }
 
-/* Form Switch */
-.form-check-input {
+/* Form Switch - Only for switches, not table checkboxes */
+.form-switch .form-check-input,
+.form-check-input[type="checkbox"][role="switch"] {
+    cursor: pointer;
+}
+
+/* Table checkboxes - standard size */
+.table .form-check-input,
+.table input[type="checkbox"] {
+    width: 1em;
+    height: 1em;
+    margin-top: 0.25em;
+    vertical-align: top;
     cursor: pointer;
 }
 

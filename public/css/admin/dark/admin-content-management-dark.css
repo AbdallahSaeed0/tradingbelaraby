@@ -1,0 +1,384 @@
+/* Admin Content Management - Dark Mode Styles */
+
+/* Card Shadows - Lighter in Dark Mode */
+[data-theme="dark"] .card {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+}
+
+[data-theme="dark"] .card.shadow-sm {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+}
+
+[data-theme="dark"] .card.shadow {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
+}
+
+[data-theme="dark"] .card.shadow-lg {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Section Items and Light Backgrounds */
+.section-item {
+    background: var(--admin-dropdown-hover, #3d4153) !important;
+    border-color: var(--admin-border, #3d4153) !important;
+    color: var(--admin-text, #e4e6eb) !important;
+}
+
+.image-upload-area.dragover {
+    background-color: var(--admin-dropdown-hover, #3d4153) !important;
+    border-color: var(--admin-active-text, #6c9fff) !important;
+}
+
+.lecture-item:hover {
+    background-color: var(--admin-dropdown-hover, #3d4153) !important;
+}
+
+.learn-item {
+    background: var(--admin-dropdown-hover, #3d4153) !important;
+    border-color: var(--admin-border, #3d4153) !important;
+    color: var(--admin-text, #e4e6eb) !important;
+}
+
+/* Instructor Selector */
+.instructor-selector .selected-instructors.has-instructors {
+    background: var(--admin-dropdown-hover, #3d4153) !important;
+    border-color: var(--admin-border, #3d4153) !important;
+}
+
+.instructor-option:hover {
+    background-color: var(--admin-dropdown-hover, #3d4153) !important;
+}
+
+.instructor-option.selected {
+    background-color: var(--admin-active-bg, #3d4153) !important;
+}
+
+/* Content Preview */
+.content-preview {
+    background: var(--admin-dropdown-hover, #3d4153) !important;
+    color: var(--admin-text, #e4e6eb) !important;
+}
+
+/* Media Upload Area */
+.media-upload-area:hover {
+    background-color: var(--admin-dropdown-hover, #3d4153) !important;
+    border-color: var(--admin-active-text, #6c9fff) !important;
+}
+
+.media-upload-area.dragover {
+    background-color: var(--admin-active-bg, #3d4153) !important;
+    border-color: var(--admin-active-text, #6c9fff) !important;
+}
+
+/* Multilingual Field Tabs */
+.multilingual-field .nav-tabs .nav-link:hover {
+    border-color: var(--admin-border, #3d4153) var(--admin-border, #3d4153) var(--admin-border, #3d4153) !important;
+}
+
+.multilingual-field .nav-tabs .nav-link.active {
+    background-color: var(--admin-card-bg, #2d3142) !important;
+    border-color: var(--admin-border, #3d4153) var(--admin-border, #3d4153) var(--admin-card-bg, #2d3142) !important;
+    color: var(--admin-text, #e4e6eb) !important;
+}
+
+.multilingual-field .tab-content {
+    border-color: var(--admin-border, #3d4153) !important;
+    background-color: var(--admin-card-bg, #2d3142) !important;
+    color: var(--admin-text, #e4e6eb) !important;
+}
+
+/* Form Controls */
+.form-control,
+.form-select {
+    border-color: var(--admin-border, #3d4153) !important;
+    background-color: var(--admin-input-bg, #3d4153) !important;
+    color: var(--admin-input-text, #e4e6eb) !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--admin-active-text, #6c9fff) !important;
+    background-color: var(--admin-input-bg, #3d4153) !important;
+    color: var(--admin-input-text, #e4e6eb) !important;
+}
+
+/* Input Placeholders - Light in Dark Mode */
+input.form-control::placeholder,
+input.form-control::-webkit-input-placeholder,
+input.form-control::-moz-placeholder,
+input.form-control:-ms-input-placeholder,
+input.form-control:-moz-placeholder,
+textarea.form-control::placeholder,
+textarea.form-control::-webkit-input-placeholder,
+textarea.form-control::-moz-placeholder,
+textarea.form-control:-ms-input-placeholder,
+textarea.form-control:-moz-placeholder,
+.form-control::placeholder,
+.form-control::-webkit-input-placeholder,
+.form-control::-moz-placeholder,
+.form-control:-ms-input-placeholder,
+.form-control:-moz-placeholder {
+    color: var(--admin-text-muted, #8a8d91) !important;
+    opacity: 1 !important;
+}
+
+/* More specific selectors for different input types */
+input[type="text"].form-control::placeholder,
+input[type="text"].form-control::-webkit-input-placeholder,
+input[type="text"].form-control::-moz-placeholder,
+input[type="text"].form-control:-ms-input-placeholder,
+input[type="text"].form-control:-moz-placeholder,
+input[type="search"].form-control::placeholder,
+input[type="search"].form-control::-webkit-input-placeholder,
+input[type="search"].form-control::-moz-placeholder,
+input[type="search"].form-control:-ms-input-placeholder,
+input[type="search"].form-control:-moz-placeholder {
+    color: var(--admin-text-muted, #8a8d91) !important;
+    opacity: 1 !important;
+}
+
+/* Input Group Text */
+.input-group-text {
+    background: var(--admin-dropdown-hover, #3d4153) !important;
+    border-color: var(--admin-border, #3d4153) !important;
+    color: var(--admin-text, #e4e6eb) !important;
+}
+
+/* Tables */
+.table {
+    background: var(--admin-table-bg, #2d3142) !important;
+    color: var(--admin-text, #e4e6eb) !important;
+}
+
+/* Table header styles consolidated in admin-tables-dark.css */
+/* Specific table styles for content management tables */
+#sliders-table thead th,
+#features-table thead th,
+#hero-features-table thead th,
+#faqs-table thead th {
+    background: var(--admin-dropdown-hover, #3d4153) !important;
+    color: var(--admin-text, #e4e6eb) !important;
+    border-color: var(--admin-border, #3d4153) !important;
+}
+
+.table tbody tr:hover {
+    background: var(--admin-table-stripe, #252836) !important;
+}
+
+.table tbody td {
+    border-color: var(--admin-border, #3d4153) !important;
+    color: var(--admin-text, #e4e6eb) !important;
+}
+
+/* Section Card */
+.section-card .section-header {
+    background: var(--admin-dropdown-hover, #3d4153) !important;
+    border-bottom-color: var(--admin-border, #3d4153) !important;
+    color: var(--admin-text, #e4e6eb) !important;
+}
+
+.section-card .section-content {
+    background: var(--admin-card-bg, #2d3142) !important;
+    color: var(--admin-text, #e4e6eb) !important;
+}
+
+/* Filter Card */
+.filter-card {
+    background: linear-gradient(135deg, var(--admin-card-bg, #2d3142) 0%, var(--admin-dropdown-hover, #3d4153) 100%) !important;
+}
+
+.filter-card .card-body {
+    background: var(--admin-card-bg, #2d3142) !important;
+    color: var(--admin-text, #e4e6eb) !important;
+}
+
+/* Table Card */
+.table-card .card-header {
+    background: linear-gradient(135deg, var(--admin-dropdown-hover, #3d4153) 0%, var(--admin-border, #3d4153) 100%) !important;
+    border-bottom-color: var(--admin-border, #3d4153) !important;
+    color: var(--admin-text, #e4e6eb) !important;
+}
+
+.table-card .header-title {
+    color: var(--admin-text, #e4e6eb) !important;
+}
+
+/* Sliders Table */
+#sliders-table thead th {
+    background: linear-gradient(135deg, var(--admin-dropdown-hover, #3d4153) 0%, var(--admin-border, #3d4153) 100%) !important;
+    color: var(--admin-text, #e4e6eb) !important;
+}
+
+#sliders-table tbody tr {
+    border-bottom-color: var(--admin-border, #3d4153) !important;
+}
+
+#sliders-table tbody tr:hover {
+    background: var(--admin-table-stripe, #252836) !important;
+}
+
+/* Features Table */
+#features-table {
+    background: var(--admin-table-bg, #2d3142) !important;
+}
+
+#features-table thead th.enhanced-header {
+    background: linear-gradient(135deg, var(--admin-dropdown-hover, #3d4153) 0%, var(--admin-border, #3d4153) 100%) !important;
+    color: var(--admin-text, #e4e6eb) !important;
+}
+
+#features-table tbody tr:hover {
+    background: var(--admin-table-stripe, #252836) !important;
+}
+
+#features-table tbody td {
+    border-bottom-color: var(--admin-border, #3d4153) !important;
+}
+
+/* Hero Features Table */
+#hero-features-table {
+    background: var(--admin-table-bg, #2d3142) !important;
+}
+
+#hero-features-table tbody tr {
+    border-bottom-color: var(--admin-border, #3d4153) !important;
+}
+
+#hero-features-table tbody tr:hover {
+    background: var(--admin-table-stripe, #252836) !important;
+}
+
+/* FAQs Table */
+#faqs-table {
+    background: var(--admin-table-bg, #2d3142) !important;
+}
+
+#faqs-table tbody tr:hover {
+    background: var(--admin-table-stripe, #252836) !important;
+}
+
+#faqs-table tbody td {
+    border-bottom-color: var(--admin-border, #3d4153) !important;
+}
+
+/* All borders */
+.lecture-item,
+.section-item {
+    border-color: var(--admin-border, #3d4153) !important;
+}
+
+.media-upload-area {
+    border-color: var(--admin-border, #3d4153) !important;
+}
+
+.section-card {
+    border-color: var(--admin-border, #3d4153) !important;
+}
+
+.course-card {
+    border-color: var(--admin-border, #3d4153) !important;
+}
+
+/* Text colors */
+.drag-handle {
+    color: var(--admin-text-muted, #8a8d91) !important;
+}
+
+.drag-handle:hover {
+    color: var(--admin-text, #e4e6eb) !important;
+}
+
+/* Settings Section Header */
+.settings-section-header {
+    border-bottom-color: var(--admin-border, #3d4153) !important;
+}
+
+/* Current Logo */
+.current-logo {
+    background-color: var(--admin-dropdown-hover, #3d4153) !important;
+}
+
+/* Form Select Large */
+.form-select-lg,
+.form-control-lg {
+    border-color: var(--admin-border, #3d4153) !important;
+    background-color: var(--admin-input-bg, #3d4153) !important;
+    color: var(--admin-input-text, #e4e6eb) !important;
+}
+
+.form-select-lg:focus,
+.form-control-lg:focus {
+    border-color: var(--admin-active-text, #6c9fff) !important;
+}
+
+/* All text elements */
+.form-section,
+.form-section *,
+.section-header h5,
+.image-upload-area,
+.section-item,
+.lecture-item,
+.learn-item,
+.content-builder,
+.form-section h5,
+.form-section h6 {
+    color: var(--admin-text, #e4e6eb) !important;
+}
+
+/* Override hardcoded shadows in dark mode */
+[data-theme="dark"] .filter-card,
+[data-theme="dark"] .table-card,
+[data-theme="dark"] .course-card,
+[data-theme="dark"] .section-card,
+[data-theme="dark"] .content-card,
+[data-theme="dark"] .main-content-card,
+[data-theme="dark"] .features-card,
+[data-theme="dark"] .faqs-card {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+}
+
+[data-theme="dark"] .filter-card:hover,
+[data-theme="dark"] .table-card:hover,
+[data-theme="dark"] .course-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Gradient backgrounds - keep gradients but adjust colors */
+.page-title-box {
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%) !important;
+}
+
+.content-card .card-header,
+.main-content-card .card-header,
+.features-card .card-header,
+.faqs-card .card-header {
+    background: var(--admin-card-bg, #2d3142) !important;
+    border-bottom-color: var(--admin-border, #3d4153) !important;
+}
+
+.content-card .card-body,
+.main-content-card .card-body,
+.features-card .card-body,
+.faqs-card .card-body {
+    background: var(--admin-card-bg, #2d3142) !important;
+    color: var(--admin-text, #e4e6eb) !important;
+}
+
+/* Filter card gradient */
+.filter-card.gradient {
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%) !important;
+}
+
+.table-card.gradient .card-header {
+    background: var(--admin-card-bg, #2d3142) !important;
+    border-bottom-color: var(--admin-border, #3d4153) !important;
+}
+
+/* Table headers with gradients - keep readable */
+#features-table thead th,
+#hero-features-table thead th,
+#faqs-table thead th {
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%) !important;
+    color: var(--admin-text, #e4e6eb) !important;
+}
+

@@ -1,5 +1,10 @@
 <thead class="table-light">
     <tr>
+        <th width="50">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="selectAll">
+            </div>
+        </th>
         <th>#</th>
         <th>Image</th>
         <th>Name</th>
@@ -12,6 +17,11 @@
 <tbody>
     @foreach ($categories as $cat)
         <tr>
+            <td>
+                <div class="form-check">
+                    <input class="form-check-input category-checkbox" type="checkbox" value="{{ $cat->id }}">
+                </div>
+            </td>
             <td>{{ $categories->firstItem() + $loop->index }}</td>
             <td>
                 @if ($cat->image)
@@ -75,13 +85,3 @@
         </tr>
     @endforeach
 </tbody>
-<tfoot>
-    <tr>
-        <td colspan="7" class="p-2">
-            <div class="d-flex justify-content-between">
-                <small>Showing {{ $categories->count() }} of {{ $categories->total() }} categories</small>
-                {{ $categories->links() }}
-            </div>
-        </td>
-    </tr>
-</tfoot>

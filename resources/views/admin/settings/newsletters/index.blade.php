@@ -178,7 +178,7 @@
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover mb-0" id="subscribers-table">
+                    <table class="table table-hover table-striped" id="subscribers-table">
                         <thead>
                             <tr>
                                 <th width="30">

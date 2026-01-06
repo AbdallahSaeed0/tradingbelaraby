@@ -31,9 +31,14 @@
         <div class="card shadow-sm">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover table-striped">
                         <thead>
                             <tr>
+                                <th width="50">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="selectAll">
+                                    </div>
+                                </th>
                                 <th>Name</th>
                                 <th>Native Name</th>
                                 <th>Code</th>
@@ -46,6 +51,11 @@
                         <tbody>
                             @forelse($languages as $language)
                                 <tr>
+                                    <td>
+                                        <div class="form-check">
+                                            <input class="form-check-input language-checkbox" type="checkbox" value="{{ $language->id }}">
+                                        </div>
+                                    </td>
                                     <td>
                                         <strong>{{ $language->name }}</strong>
                                     </td>
@@ -132,7 +142,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="text-center py-4">
+                                    <td colspan="8" class="text-center py-4">
                                         <p class="text-muted mb-0">No languages found.</p>
                                         <a href="{{ route('admin.languages.create') }}" class="btn btn-primary mt-2">
                                             Add First Language
@@ -144,16 +154,47 @@
                     </table>
                 </div>
 
-                @if ($languages->hasPages())
-                    <div class="d-flex justify-content-center mt-4">
-                        {{ $languages->links() }}
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center">
+                            <div class="d-flex align-items-center me-3">
+                                <label class="form-label me-2 mb-0 small">Per page:</label>
+                                <select class="form-select form-select-sm w-auto" id="perPageSelect" onchange="changePerPage(this.value)">
+                                    @php
+                                        $perPage = (int) request('per_page', 10);
+                                    @endphp
+                                    <option value="10" {{ $perPage === 10 ? 'selected' : '' }}>10</option>
+                                    <option value="20" {{ $perPage === 20 ? 'selected' : '' }}>20</option>
+                                    <option value="50" {{ $perPage === 50 ? 'selected' : '' }}>50</option>
+                                    <option value="100" {{ $perPage === 100 ? 'selected' : '' }}>100</option>
+                                    <option value="500" {{ $perPage === 500 ? 'selected' : '' }}>500</option>
+                                    <option value="1000" {{ $perPage === 1000 ? 'selected' : '' }}>1000</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
-                @endif
+                    <div class="col-md-6">
+                        @if ($languages->hasPages())
+                            <div class="d-flex justify-content-end">
+                                {{ $languages->links() }}
+                            </div>
+                        @endif
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 @endsection
 
 @push('scripts')
+    <script>
+        // Change per page function
+        function changePerPage(value) {
+            const url = new URL(window.location);
+            url.searchParams.set('per_page', value);
+            url.searchParams.delete('page'); // Reset to first page
+            window.location.href = url.toString();
+        }
+    </script>
     @include('admin.partials.status-modal')
 @endpush

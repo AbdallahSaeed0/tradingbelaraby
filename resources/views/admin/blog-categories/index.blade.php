@@ -98,44 +98,52 @@
         <!-- Filters -->
         <div class="card mb-4">
             <div class="card-body">
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fa fa-search"></i></span>
-                            <input type="text" class="form-control" placeholder="Search categories..." id="searchInput"
-                                value="{{ $search }}">
+                <form method="GET" action="{{ route('admin.blog-categories.index') }}" id="filterForm">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa fa-search"></i></span>
+                                <input type="text" class="form-control" name="search" placeholder="Search categories..." id="searchInput"
+                                    value="{{ request('search', $search ?? '') }}">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select" name="status" id="statusFilter">
+                                <option value="">All Status</option>
+                                <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
+                                <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select" name="blogs" id="blogsFilter">
+                                <option value="">All Categories</option>
+                                <option value="with_blogs" {{ request('blogs') == 'with_blogs' ? 'selected' : '' }}>With Blogs
+                                </option>
+                                <option value="without_blogs" {{ request('blogs') == 'without_blogs' ? 'selected' : '' }}>
+                                    Without Blogs</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select" name="per_page" id="perPageFilter">
+                                <option value="15" {{ request('per_page', $per ?? 15) == 15 ? 'selected' : '' }}>15 per page</option>
+                                <option value="25" {{ request('per_page', $per ?? 15) == 25 ? 'selected' : '' }}>25 per page</option>
+                                <option value="50" {{ request('per_page', $per ?? 15) == 50 ? 'selected' : '' }}>50 per page</option>
+                                <option value="100" {{ request('per_page', $per ?? 15) == 100 ? 'selected' : '' }}>100 per page</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa fa-search me-1"></i>Filter
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" id="clearFiltersBtn">
+                                    <i class="fa fa-refresh me-1"></i>Clear
+                                </button>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-2">
-                        <select class="form-select" id="statusFilter">
-                            <option value="">All Status</option>
-                            <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
-                            <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive
-                            </option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <select class="form-select" id="blogsFilter">
-                            <option value="">All Categories</option>
-                            <option value="with_blogs" {{ request('blogs') == 'with_blogs' ? 'selected' : '' }}>With Blogs
-                            </option>
-                            <option value="without_blogs" {{ request('blogs') == 'without_blogs' ? 'selected' : '' }}>
-                                Without Blogs</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <select class="form-select" id="perPageFilter">
-                            <option value="15" {{ $per == 15 ? 'selected' : '' }}>15 per page</option>
-                            <option value="25" {{ $per == 25 ? 'selected' : '' }}>25 per page</option>
-                            <option value="50" {{ $per == 50 ? 'selected' : '' }}>50 per page</option>
-                            <option value="100" {{ $per == 100 ? 'selected' : '' }}>100 per page</option>
-                        </select>
-                    </div>
-                    <div class="col-md-1">
-                        <button class="btn btn-outline-secondary w-100" id="clearFilters">
-                            <i class="fa fa-refresh"></i>
-                        </button>
-                    </div>
+                </form>
                     <div class="col-md-1">
                         <div class="d-flex gap-2">
                             <button class="btn btn-outline-primary btn-sm" id="gridView">
@@ -157,11 +165,13 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table table-hover table-striped">
                                 <thead>
                                     <tr>
-                                        <th>
-                                            <input type="checkbox" id="selectAll">
+                                        <th width="50">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="selectAll">
+                                            </div>
                                         </th>
                                         <th>Category</th>
                                         <th>Description</th>
@@ -179,8 +189,10 @@
                                             data-status="{{ $category->status }}"
                                             data-blogs="{{ $category->blogs_count > 0 ? 'with_blogs' : 'without_blogs' }}">
                                             <td>
-                                                <input type="checkbox" class="category-checkbox"
-                                                    value="{{ $category->id }}">
+                                                <div class="form-check">
+                                                    <input class="form-check-input category-checkbox" type="checkbox"
+                                                        value="{{ $category->id }}">
+                                                </div>
                                             </td>
                                             <td>
                                                 <div class="d-flex align-items-center">
@@ -285,21 +297,37 @@
                         <!-- Bulk Actions -->
                         <div class="row mt-3">
                             <div class="col-md-6">
-                                <div class="d-flex gap-2">
-                                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="bulkDelete()">
-                                        <i class="fa fa-trash me-1"></i>Delete Selected
-                                    </button>
-                                    <div class="dropdown">
-                                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
-                                            data-bs-toggle="dropdown">
-                                            <i class="fa fa-cog me-1"></i>Bulk Actions
+                                <div class="d-flex align-items-center">
+                                    <div class="d-flex align-items-center me-3">
+                                        <label class="form-label me-2 mb-0 small">Per page:</label>
+                                        <select class="form-select form-select-sm w-auto" id="perPageSelect" onchange="changePerPage(this.value)">
+                                            @php
+                                                $perPage = (int) request('per_page', 10);
+                                            @endphp
+                                            <option value="10" {{ $perPage === 10 ? 'selected' : '' }}>10</option>
+                                            <option value="20" {{ $perPage === 20 ? 'selected' : '' }}>20</option>
+                                            <option value="50" {{ $perPage === 50 ? 'selected' : '' }}>50</option>
+                                            <option value="100" {{ $perPage === 100 ? 'selected' : '' }}>100</option>
+                                            <option value="500" {{ $perPage === 500 ? 'selected' : '' }}>500</option>
+                                            <option value="1000" {{ $perPage === 1000 ? 'selected' : '' }}>1000</option>
+                                        </select>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="bulkDelete()">
+                                            <i class="fa fa-trash me-1"></i>Delete Selected
                                         </button>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="#"
-                                                    onclick="bulkUpdateStatus('active')">Activate</a></li>
-                                            <li><a class="dropdown-item" href="#"
-                                                    onclick="bulkUpdateStatus('inactive')">Deactivate</a></li>
-                                        </ul>
+                                        <div class="dropdown">
+                                            <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
+                                                data-bs-toggle="dropdown">
+                                                <i class="fa fa-cog me-1"></i>Bulk Actions
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#"
+                                                        onclick="bulkUpdateStatus('active')">Activate</a></li>
+                                                <li><a class="dropdown-item" href="#"
+                                                        onclick="bulkUpdateStatus('inactive')">Deactivate</a></li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -354,48 +382,148 @@
             const clearFilters = document.getElementById('clearFilters');
             const bulkDeleteModal = new bootstrap.Modal(document.getElementById('bulkDeleteModal'));
 
-            // Select all functionality
-            selectAll.addEventListener('change', function() {
-                categoryCheckboxes.forEach(checkbox => {
-                    checkbox.checked = this.checked;
-                });
+
+            // Change per page function
+            function changePerPage(value) {
+                // Use AJAX to update
+                const formData = new FormData(document.getElementById('filterForm'));
+                formData.set('per_page', value);
+                performAjaxSearch();
+            }
+
+            // Initialize variables for AJAX search
+            let searchTimeout;
+            const tableBody = document.querySelector('.table tbody');
+            const paginationContainer = document.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
+
+            // AJAX search function
+            function performAjaxSearch() {
+                const formData = new FormData(document.getElementById('filterForm'));
+                const params = new URLSearchParams(formData);
+
+                // Show loading state
+                if (tableBody) {
+                    tableBody.innerHTML = '<tr><td colspan="7" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
+                }
+
+                fetch(`{{ route('admin.blog-categories.index') }}?${params.toString()}`, {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'text/html'
+                        }
+                    })
+                    .then(response => response.text())
+                    .then(html => {
+                        // Create a temporary container to parse the HTML
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = html;
+
+                        // Extract table body
+                        const newTableBody = tempDiv.querySelector('.table tbody');
+                        const newPagination = tempDiv.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
+                        const newBulkActions = tempDiv.querySelector('.row.mt-3 .col-md-6:first-child');
+
+                        if (newTableBody && tableBody) {
+                            tableBody.innerHTML = newTableBody.innerHTML;
+                        }
+
+                        if (newPagination && paginationContainer) {
+                            paginationContainer.innerHTML = newPagination.innerHTML;
+                        }
+
+                        if (newBulkActions) {
+                            const bulkActionsContainer = document.querySelector('.row.mt-3 .col-md-6:first-child');
+                            if (bulkActionsContainer) {
+                                bulkActionsContainer.innerHTML = newBulkActions.innerHTML;
+                            }
+                        }
+
+                        // Update URL without reload
+                        const newUrl = `{{ route('admin.blog-categories.index') }}?${params.toString()}`;
+                        window.history.pushState({}, '', newUrl);
+
+                        // Re-attach event listeners
+                        setupCheckboxes();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        if (tableBody) {
+                            tableBody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-danger">Error loading data. Please try again.</td></tr>';
+                        }
+                    });
+            }
+
+            // Setup checkboxes function
+            function setupCheckboxes() {
+                const selectAll = document.getElementById('selectAll');
+                const categoryCheckboxes = document.querySelectorAll('.category-checkbox');
+
+                if (selectAll) {
+                    selectAll.addEventListener('change', function() {
+                        categoryCheckboxes.forEach(checkbox => {
+                            checkbox.checked = this.checked;
+                        });
+                    });
+                }
+            }
+            setupCheckboxes();
+
+            // Prevent form submission - use AJAX instead
+            document.getElementById('filterForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                performAjaxSearch();
             });
 
-            // Filter functionality
-            function filterCategories() {
-                const searchTerm = searchInput.value.toLowerCase();
-                const status = statusFilter.value;
-                const blogs = blogsFilter.value;
+            // Dropdown filters - use AJAX
+            document.getElementById('statusFilter').addEventListener('change', function() {
+                performAjaxSearch();
+            });
 
-                const rows = document.querySelectorAll('.category-row');
+            document.getElementById('blogsFilter').addEventListener('change', function() {
+                performAjaxSearch();
+            });
 
-                rows.forEach(row => {
-                    const searchData = row.dataset.search;
-                    const rowStatus = row.dataset.status;
-                    const rowBlogs = row.dataset.blogs;
+            document.getElementById('perPageFilter').addEventListener('change', function() {
+                performAjaxSearch();
+            });
 
-                    let show = true;
+            // Clear filters button - use AJAX
+            const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+            if (clearFiltersBtn) {
+                clearFiltersBtn.addEventListener('click', function() {
+                    // Clear all form fields
+                    document.getElementById('searchInput').value = '';
+                    document.getElementById('statusFilter').value = '';
+                    document.getElementById('blogsFilter').value = '';
+                    document.getElementById('perPageFilter').value = '15';
 
-                    if (searchTerm && !searchData.includes(searchTerm)) show = false;
-                    if (status && rowStatus !== status) show = false;
-                    if (blogs && rowBlogs !== blogs) show = false;
+                    // Update URL without parameters
+                    window.history.pushState({}, '', '{{ route('admin.blog-categories.index') }}');
 
-                    row.style.display = show ? '' : 'none';
+                    // Perform AJAX search with cleared filters
+                    performAjaxSearch();
                 });
             }
 
-            // Event listeners for filters
-            searchInput.addEventListener('input', filterCategories);
-            statusFilter.addEventListener('change', filterCategories);
-            blogsFilter.addEventListener('change', filterCategories);
+            // Search with debounce - AJAX only
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        performAjaxSearch();
+                    }, 500);
+                });
 
-            // Clear filters
-            clearFilters.addEventListener('click', function() {
-                searchInput.value = '';
-                statusFilter.value = '';
-                blogsFilter.value = '';
-                filterCategories();
-            });
+                // Prevent form submission on Enter key in search
+                searchInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        clearTimeout(searchTimeout);
+                        performAjaxSearch();
+                    }
+                });
+            }
 
             // Per page filter
             perPageFilter.addEventListener('change', function() {

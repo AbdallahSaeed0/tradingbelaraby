@@ -118,7 +118,7 @@
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
-                            <table class="table table-hover mb-0" id="sliders-table">
+                            <table class="table table-hover table-striped" id="sliders-table">
                                 <thead>
                                     <tr>
                                         <th width="30">

@@ -193,9 +193,9 @@
                     </div>
                     <div class="row mt-3">
                         <div class="col-md-12">
-                            <a href="{{ route('admin.enrollments.index') }}" class="btn btn-outline-secondary">
+                            <button type="button" class="btn btn-outline-secondary" id="clearFiltersBtn">
                                 <i class="fa fa-refresh me-1"></i>Clear Filters
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </form>
@@ -209,6 +209,11 @@
                     <table class="table table-hover table-striped">
                         <thead>
                             <tr>
+                                <th width="50">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="selectAll">
+                                    </div>
+                                </th>
                                 <th>Student</th>
                                 <th>Course</th>
                                 <th>Enrollment Date</th>
@@ -221,6 +226,11 @@
                         <tbody>
                             @forelse($enrollments as $enrollment)
                                 <tr>
+                                    <td>
+                                        <div class="form-check">
+                                            <input class="form-check-input enrollment-checkbox" type="checkbox" value="{{ $enrollment->id }}">
+                                        </div>
+                                    </td>
                                     <td>
                                         <div class="d-flex align-items-center">
                                             @if ($enrollment->user->avatar)
@@ -323,7 +333,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="text-center py-4">
+                                    <td colspan="8" class="text-center py-4">
                                         <div class="text-muted">
                                             <i class="fa fa-users fa-3x mb-3"></i>
                                             <h5>No enrollments found</h5>
@@ -337,24 +347,27 @@
                 </div>
 
                 <!-- Pagination -->
-                <div class="row align-items-center mt-3">
+                <div class="row mt-3">
                     <div class="col-md-6">
                         <div class="d-flex align-items-center">
-                            <span class="text-muted me-3">Showing {{ $enrollments->firstItem() ?? 0 }} to
-                                {{ $enrollments->lastItem() ?? 0 }} of {{ $enrollments->total() }} entries</span>
-                            <div class="d-flex align-items-center">
+                            <div class="d-flex align-items-center me-3">
                                 <label class="form-label me-2 mb-0 small">Per page:</label>
-                                <select class="form-select form-select-sm w-auto" onchange="changePerPage(this.value)">
-                                    <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
-                                    <option value="15" {{ request('per_page') == 15 || !request('per_page') ? 'selected' : '' }}>15</option>
-                                    <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
-                                    <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
-                                    <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                                <select class="form-select form-select-sm w-auto" id="perPageSelect" onchange="changePerPage(this.value)">
+                                    @php
+                                        $perPage = (int) request('per_page', 10);
+                                    @endphp
+                                    <option value="10" {{ $perPage === 10 ? 'selected' : '' }}>10</option>
+                                    <option value="20" {{ $perPage === 20 ? 'selected' : '' }}>20</option>
+                                    <option value="50" {{ $perPage === 50 ? 'selected' : '' }}>50</option>
+                                    <option value="100" {{ $perPage === 100 ? 'selected' : '' }}>100</option>
+                                    <option value="500" {{ $perPage === 500 ? 'selected' : '' }}>500</option>
+                                    <option value="1000" {{ $perPage === 1000 ? 'selected' : '' }}>1000</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
+                        <div class="d-flex justify-content-end">
                         @if ($enrollments->hasPages())
                             <nav aria-label="Enrollments pagination">
                                 <ul class="pagination pagination-sm justify-content-end mb-0">
@@ -433,6 +446,7 @@
                                 Page 1 of 1
                             </div>
                         @endif
+                        </div>
                     </div>
                 </div>
                 {{-- Page Info --}}
@@ -458,36 +472,124 @@
         <script>
             // Change per page function
             function changePerPage(value) {
-                const url = new URL(window.location);
-                url.searchParams.set('per_page', value);
-                url.searchParams.delete('page'); // Reset to first page
-                window.location.href = url.toString();
+                // Use AJAX to update
+                const formData = new FormData(document.getElementById('filterForm'));
+                formData.set('per_page', value);
+                performAjaxSearch();
             }
-            // Auto-submit form on filter change
+            // Initialize variables for AJAX search
+            let searchTimeout;
+            const searchInput = document.getElementById('searchInput');
+            const tableBody = document.querySelector('.table tbody');
+            const paginationContainer = document.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
+
+            // AJAX search function
+            function performAjaxSearch() {
+                const formData = new FormData(document.getElementById('filterForm'));
+                const params = new URLSearchParams(formData);
+
+                // Show loading state
+                if (tableBody) {
+                    tableBody.innerHTML = '<tr><td colspan="8" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
+                }
+
+                fetch(`{{ route('admin.enrollments.index') }}?${params.toString()}`, {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'text/html'
+                        }
+                    })
+                    .then(response => response.text())
+                    .then(html => {
+                        // Create a temporary container to parse the HTML
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = html;
+
+                        // Extract table body
+                        const newTableBody = tempDiv.querySelector('.table tbody');
+                        const newPagination = tempDiv.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
+
+                        if (newTableBody && tableBody) {
+                            tableBody.innerHTML = newTableBody.innerHTML;
+                        }
+
+                        if (newPagination && paginationContainer) {
+                            paginationContainer.innerHTML = newPagination.innerHTML;
+                        }
+
+                        // Update URL without reload
+                        const newUrl = `{{ route('admin.enrollments.index') }}?${params.toString()}`;
+                        window.history.pushState({}, '', newUrl);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        if (tableBody) {
+                            tableBody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-danger">Error loading data. Please try again.</td></tr>';
+                        }
+                    });
+            }
+
+            // Prevent form submission - use AJAX instead
+            document.getElementById('filterForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                performAjaxSearch();
+            });
+
+            // Dropdown filters - use AJAX
             document.getElementById('courseFilter').addEventListener('change', function() {
-                document.getElementById('filterForm').submit();
+                performAjaxSearch();
             });
 
             document.getElementById('statusFilter').addEventListener('change', function() {
-                document.getElementById('filterForm').submit();
+                performAjaxSearch();
             });
 
             document.getElementById('progressFilter').addEventListener('change', function() {
-                document.getElementById('filterForm').submit();
+                performAjaxSearch();
             });
 
             document.getElementById('sortFilter').addEventListener('change', function() {
-                document.getElementById('filterForm').submit();
+                performAjaxSearch();
             });
 
-            // Search with debounce
-            let searchTimeout;
-            document.getElementById('searchInput').addEventListener('input', function() {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    document.getElementById('filterForm').submit();
-                }, 500);
-            });
+            // Clear filters button - use AJAX
+            const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+            if (clearFiltersBtn) {
+                clearFiltersBtn.addEventListener('click', function() {
+                    // Clear all form fields
+                    document.getElementById('searchInput').value = '';
+                    document.getElementById('courseFilter').value = '';
+                    document.getElementById('statusFilter').value = '';
+                    document.getElementById('progressFilter').value = '';
+                    document.getElementById('sortFilter').value = 'latest';
+
+                    // Update URL without parameters
+                    window.history.pushState({}, '', '{{ route('admin.enrollments.index') }}');
+
+                    // Perform AJAX search with cleared filters
+                    performAjaxSearch();
+                });
+            }
+
+            // Search with debounce - AJAX only
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        performAjaxSearch();
+                    }, 500);
+                });
+
+                // Prevent form submission on Enter key in search
+                searchInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        clearTimeout(searchTimeout);
+                        performAjaxSearch();
+                    }
+                });
+            }
 
             // Refresh stats
             function refreshStats() {

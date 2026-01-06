@@ -185,9 +185,9 @@
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fa fa-search me-1"></i>Filter
                                 </button>
-                                <a href="{{ route('admin.homework.index') }}" class="btn btn-outline-secondary">
+                                <button type="button" class="btn btn-outline-secondary" id="clearFiltersBtn">
                                     <i class="fa fa-refresh me-1"></i>Clear
-                                </a>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -220,11 +220,13 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table table-hover table-striped">
                                 <thead>
                                     <tr>
-                                        <th>
-                                            <input type="checkbox" id="selectAll">
+                                        <th width="50">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="selectAll">
+                                            </div>
                                         </th>
                                         <th>Name</th>
                                         <th>Course</th>
@@ -243,8 +245,10 @@
                                             data-instructor="{{ $hw->instructor_id }}"
                                             data-status="{{ $hw->is_published ? 'published' : 'draft' }}">
                                             <td>
-                                                <input type="checkbox" class="homework-checkbox"
-                                                    value="{{ $hw->id }}">
+                                                <div class="form-check">
+                                                    <input class="form-check-input homework-checkbox" type="checkbox"
+                                                        value="{{ $hw->id }}">
+                                                </div>
                                             </td>
                                             <td>
                                                 <div class="d-flex align-items-center">
@@ -345,21 +349,37 @@
                         <!-- Bulk Actions -->
                         <div class="row mt-3">
                             <div class="col-md-6">
-                                <div class="d-flex gap-2">
-                                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="bulkDelete()">
-                                        <i class="fa fa-trash me-1"></i>Delete Selected
-                                    </button>
-                                    <div class="dropdown">
-                                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
-                                            data-bs-toggle="dropdown">
-                                            <i class="fa fa-cog me-1"></i>Bulk Actions
+                                <div class="d-flex align-items-center">
+                                    <div class="d-flex align-items-center me-3">
+                                        <label class="form-label me-2 mb-0 small">Per page:</label>
+                                        <select class="form-select form-select-sm w-auto" id="perPageSelect" onchange="changePerPage(this.value)">
+                                            @php
+                                                $perPage = (int) request('per_page', 10);
+                                            @endphp
+                                            <option value="10" {{ $perPage === 10 ? 'selected' : '' }}>10</option>
+                                            <option value="20" {{ $perPage === 20 ? 'selected' : '' }}>20</option>
+                                            <option value="50" {{ $perPage === 50 ? 'selected' : '' }}>50</option>
+                                            <option value="100" {{ $perPage === 100 ? 'selected' : '' }}>100</option>
+                                            <option value="500" {{ $perPage === 500 ? 'selected' : '' }}>500</option>
+                                            <option value="1000" {{ $perPage === 1000 ? 'selected' : '' }}>1000</option>
+                                        </select>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="bulkDelete()">
+                                            <i class="fa fa-trash me-1"></i>Delete Selected
                                         </button>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="#"
-                                                    onclick="bulkUpdateStatus(true)">Publish Selected</a></li>
-                                            <li><a class="dropdown-item" href="#"
-                                                    onclick="bulkUpdateStatus(false)">Unpublish Selected</a></li>
-                                        </ul>
+                                        <div class="dropdown">
+                                            <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
+                                                data-bs-toggle="dropdown">
+                                                <i class="fa fa-cog me-1"></i>Bulk Actions
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#"
+                                                        onclick="bulkUpdateStatus(true)">Publish Selected</a></li>
+                                                <li><a class="dropdown-item" href="#"
+                                                        onclick="bulkUpdateStatus(false)">Unpublish Selected</a></li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -506,13 +526,20 @@
 
     @push('scripts')
         <script>
-            // Select all functionality
-            document.getElementById('selectAll').addEventListener('change', function() {
-                const checkboxes = document.querySelectorAll('.homework-checkbox');
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = this.checked;
-                });
-            });
+            // Setup checkboxes function (called initially and after AJAX updates)
+            function setupCheckboxes() {
+                const selectAll = document.getElementById('selectAll');
+                const homeworkCheckboxes = document.querySelectorAll('.homework-checkbox');
+
+                if (selectAll) {
+                    selectAll.addEventListener('change', function() {
+                        homeworkCheckboxes.forEach(checkbox => {
+                            checkbox.checked = this.checked;
+                        });
+                    });
+                }
+            }
+            setupCheckboxes();
 
             // View toggle functionality
             const gridViewBtn = document.getElementById('gridView');
@@ -535,26 +562,134 @@
             });
 
             // Auto-submit form on filter change
+            // Change per page function
+            function changePerPage(value) {
+                // Use AJAX to update
+                const formData = new FormData(document.getElementById('filterForm'));
+                formData.set('per_page', value);
+                performAjaxSearch();
+            }
+
+            // Initialize variables for AJAX search
+            let searchTimeout;
+            const searchInput = document.getElementById('searchInput');
+            const tableBody = document.querySelector('.table tbody');
+            const paginationContainer = document.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
+
+            // AJAX search function
+            function performAjaxSearch() {
+                const formData = new FormData(document.getElementById('filterForm'));
+                const params = new URLSearchParams(formData);
+
+                // Show loading state
+                if (tableBody) {
+                    tableBody.innerHTML = '<tr><td colspan="8" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
+                }
+
+                fetch(`{{ route('admin.homework.index') }}?${params.toString()}`, {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'text/html'
+                        }
+                    })
+                    .then(response => response.text())
+                    .then(html => {
+                        // Create a temporary container to parse the HTML
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = html;
+
+                        // Extract table body
+                        const newTableBody = tempDiv.querySelector('.table tbody');
+                        const newPagination = tempDiv.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
+                        const newBulkActions = tempDiv.querySelector('.row.mt-3 .col-md-6:first-child');
+
+                        if (newTableBody && tableBody) {
+                            tableBody.innerHTML = newTableBody.innerHTML;
+                        }
+
+                        if (newPagination && paginationContainer) {
+                            paginationContainer.innerHTML = newPagination.innerHTML;
+                        }
+
+                        if (newBulkActions) {
+                            const bulkActionsContainer = document.querySelector('.row.mt-3 .col-md-6:first-child');
+                            if (bulkActionsContainer) {
+                                bulkActionsContainer.innerHTML = newBulkActions.innerHTML;
+                            }
+                        }
+
+                        // Update URL without reload
+                        const newUrl = `{{ route('admin.homework.index') }}?${params.toString()}`;
+                        window.history.pushState({}, '', newUrl);
+
+                        // Re-attach event listeners
+                        setupCheckboxes();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        if (tableBody) {
+                            tableBody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-danger">Error loading data. Please try again.</td></tr>';
+                        }
+                    });
+            }
+
+
+            // Prevent form submission - use AJAX instead
+            document.getElementById('filterForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                performAjaxSearch();
+            });
+
+            // Dropdown filters - use AJAX
             document.getElementById('statusFilter').addEventListener('change', function() {
-                document.getElementById('filterForm').submit();
+                performAjaxSearch();
             });
 
             document.getElementById('courseFilter').addEventListener('change', function() {
-                document.getElementById('filterForm').submit();
+                performAjaxSearch();
             });
 
             document.getElementById('instructorFilter').addEventListener('change', function() {
-                document.getElementById('filterForm').submit();
+                performAjaxSearch();
             });
 
-            // Search with debounce
-            let searchTimeout;
-            document.getElementById('searchInput').addEventListener('input', function() {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    document.getElementById('filterForm').submit();
-                }, 500);
-            });
+            // Clear filters button - use AJAX
+            const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+            if (clearFiltersBtn) {
+                clearFiltersBtn.addEventListener('click', function() {
+                    // Clear all form fields
+                    document.getElementById('searchInput').value = '';
+                    document.getElementById('statusFilter').value = '';
+                    document.getElementById('courseFilter').value = '';
+                    document.getElementById('instructorFilter').value = '';
+
+                    // Update URL without parameters
+                    window.history.pushState({}, '', '{{ route('admin.homework.index') }}');
+
+                    // Perform AJAX search with cleared filters
+                    performAjaxSearch();
+                });
+            }
+
+            // Search with debounce - AJAX only
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        performAjaxSearch();
+                    }, 500);
+                });
+
+                // Prevent form submission on Enter key in search
+                searchInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        clearTimeout(searchTimeout);
+                        performAjaxSearch();
+                    }
+                });
+            }
 
             // Toggle status
             // toggleStatus function removed - now using modal

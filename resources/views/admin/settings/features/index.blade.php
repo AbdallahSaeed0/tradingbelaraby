@@ -120,7 +120,7 @@
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
-                            <table class="table table-hover mb-0" id="features-table">
+                            <table class="table table-hover table-striped" id="features-table">
                                 <thead>
                                     <tr>
                                         <th width="30">

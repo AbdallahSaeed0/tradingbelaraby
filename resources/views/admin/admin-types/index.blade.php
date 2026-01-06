@@ -22,65 +22,57 @@
         </div>
 
         <!-- Stats Cards -->
-        <div class="row mb-4">
+        <div class="row g-4 mb-4">
             <div class="col-md-3">
-                <div class="card bg-primary text-white">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <h4 class="mb-0">{{ $adminTypes->total() }}</h4>
-                                <p class="mb-0">
-                                    {{ request()->hasAny(['search', 'status', 'permission']) ? 'Filtered' : 'Total' }} Types
-                                </p>
-                            </div>
-                            <div class="align-self-center">
-                                <i class="fa fa-user-tag fa-2x"></i>
-                            </div>
+                <div class="card stat-card">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="stat-icon bg-primary-soft">
+                            <i class="fa fa-user-tag text-white"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-0">
+                                {{ request()->hasAny(['search', 'status', 'permission']) ? 'Filtered' : 'Total' }} Types
+                            </h6>
+                            <h4 class="fw-bold mb-0">{{ $adminTypes->total() }}</h4>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card bg-success text-white">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <h4 class="mb-0">{{ $adminTypes->where('is_active', true)->count() }}</h4>
-                                <p class="mb-0">Active Types</p>
-                            </div>
-                            <div class="align-self-center">
-                                <i class="fa fa-check-circle fa-2x"></i>
-                            </div>
+                <div class="card stat-card">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="stat-icon bg-success-soft">
+                            <i class="fa fa-check-circle text-white"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-0">Active Types</h6>
+                            <h4 class="fw-bold mb-0">{{ $adminTypes->where('is_active', true)->count() }}</h4>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card bg-info text-white">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <h4 class="mb-0">{{ $adminTypes->sum('admins_count') }}</h4>
-                                <p class="mb-0">Total Admins</p>
-                            </div>
-                            <div class="align-self-center">
-                                <i class="fa fa-users fa-2x"></i>
-                            </div>
+                <div class="card stat-card">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="stat-icon bg-info-soft">
+                            <i class="fa fa-users text-white"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-0">Total Admins</h6>
+                            <h4 class="fw-bold mb-0">{{ $adminTypes->sum('admins_count') }}</h4>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card bg-warning text-white">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <h4 class="mb-0">{{ $adminTypes->where('is_active', false)->count() }}</h4>
-                                <p class="mb-0">Inactive Types</p>
-                            </div>
-                            <div class="align-self-center">
-                                <i class="fa fa-pause-circle fa-2x"></i>
-                            </div>
+                <div class="card stat-card">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="stat-icon bg-warning-soft">
+                            <i class="fa fa-pause-circle text-white"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-0">Inactive Types</h6>
+                            <h4 class="fw-bold mb-0">{{ $adminTypes->where('is_active', false)->count() }}</h4>
                         </div>
                     </div>
                 </div>
@@ -111,7 +103,7 @@
                                 @endif
                             </label>
                             <div class="input-group">
-                                <input type="text" class="form-control" id="search" name="search"
+                                <input type="text" class="form-control" id="searchInput" name="search"
                                     value="{{ request('search') }}" placeholder="Search by name, description...">
                                 <span class="input-group-text search-indicator d-none">
                                     <i class="fa fa-spinner fa-spin"></i>
@@ -125,7 +117,7 @@
                                     <span class="text-primary">({{ ucfirst(request('status')) }})</span>
                                 @endif
                             </label>
-                            <select class="form-select" id="status" name="status">
+                            <select class="form-select" id="statusFilter" name="status">
                                 <option value="">All Status</option>
                                 <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Active
                                 </option>
@@ -141,7 +133,7 @@
                                         class="text-primary">({{ $availablePermissions[request('permission')] ?? request('permission') }})</span>
                                 @endif
                             </label>
-                            <select class="form-select" id="permission" name="permission">
+                            <select class="form-select" id="permissionFilter" name="permission">
                                 <option value="">All Permissions</option>
                                 @foreach ($availablePermissions as $key => $label)
                                     <option value="{{ $key }}"
@@ -154,9 +146,9 @@
                         <div class="col-md-3">
                             <label class="form-label">&nbsp;</label>
                             <div class="d-flex gap-2">
-                                <a href="{{ route('admin.admin-types.index') }}" class="btn btn-outline-secondary">
+                                <button type="button" class="btn btn-outline-secondary" id="clearFiltersBtn">
                                     <i class="fa fa-times me-2"></i>Clear Filters
-                                </a>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -179,7 +171,7 @@
             <div class="card-body">
                 @if ($adminTypes->count() > 0)
                     <div class="table-responsive">
-                        <table class="table table-hover">
+                        <table class="table table-hover table-striped">
                             <thead class="table-light">
                                 <tr>
                                     <th>Type Name</th>
@@ -318,6 +310,34 @@
                         </a>
                     </div>
                 @endif
+
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center">
+                            <div class="d-flex align-items-center me-3">
+                                <label class="form-label me-2 mb-0 small">Per page:</label>
+                                <select class="form-select form-select-sm w-auto" id="perPageSelect" onchange="changePerPage(this.value)">
+                                    @php
+                                        $perPage = (int) request('per_page', 10);
+                                    @endphp
+                                    <option value="10" {{ $perPage === 10 ? 'selected' : '' }}>10</option>
+                                    <option value="20" {{ $perPage === 20 ? 'selected' : '' }}>20</option>
+                                    <option value="50" {{ $perPage === 50 ? 'selected' : '' }}>50</option>
+                                    <option value="100" {{ $perPage === 100 ? 'selected' : '' }}>100</option>
+                                    <option value="500" {{ $perPage === 500 ? 'selected' : '' }}>500</option>
+                                    <option value="1000" {{ $perPage === 1000 ? 'selected' : '' }}>1000</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        @if ($adminTypes->hasPages())
+                            <div class="d-flex justify-content-end">
+                                {{ $adminTypes->links() }}
+                            </div>
+                        @endif
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -325,62 +345,21 @@
 
 @push('scripts')
     <script>
+        // Change per page function
+        function changePerPage(value) {
+            const url = new URL(window.location);
+            url.searchParams.set('per_page', value);
+            url.searchParams.delete('page'); // Reset to first page
+            window.location.href = url.toString();
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
-            // Auto-submit filters on change
-            const filterSelects = document.querySelectorAll('#filterForm select');
-            const filterSearch = document.querySelector('#filterForm input[type="text"]');
-
-            // Show loading indicator
-            function showLoading() {
-                document.getElementById('loading-indicator').classList.remove('d-none');
-            }
-
-            // Check if form has any values
-            function hasFormValues() {
-                const searchValue = filterSearch ? filterSearch.value.trim() : '';
-                const statusValue = document.getElementById('status').value;
-                const permissionValue = document.getElementById('permission').value;
-
-                return searchValue !== '' || statusValue !== '' || permissionValue !== '';
-            }
-
-            // Submit form only if it has values
-            function submitFormIfNeeded() {
-                if (hasFormValues()) {
-                    showLoading();
-                    document.getElementById('filterForm').submit();
-                } else {
-                    // If no values, redirect to clean URL
-                    window.location.href = '{{ route('admin.admin-types.index') }}';
-                }
-            }
-
-            // Auto-submit for select dropdowns
-            filterSelects.forEach(select => {
-                select.addEventListener('change', function() {
-                    submitFormIfNeeded();
-                });
-            });
-
-            // Debounced auto-submit for search input
-            let searchTimeout;
-            if (filterSearch) {
-                filterSearch.addEventListener('input', function() {
-                    // Show search indicator
-                    const searchIndicator = document.querySelector('.search-indicator');
-                    searchIndicator.classList.remove('d-none');
-
-                    clearTimeout(searchTimeout);
-                    searchTimeout = setTimeout(() => {
-                        submitFormIfNeeded();
-                    }, 500); // 500ms delay
-                });
-            }
 
             // Toggle status functionality
-            const statusToggles = document.querySelectorAll('.status-toggle');
-            statusToggles.forEach(toggle => {
-                toggle.addEventListener('click', function() {
+            function attachToggleListeners() {
+                const statusToggles = document.querySelectorAll('.status-toggle');
+                statusToggles.forEach(toggle => {
+                    toggle.addEventListener('click', function() {
                     const adminTypeId = this.dataset.id;
                     const isCurrentlyActive = this.classList.contains('active');
 
@@ -425,8 +404,10 @@
                             // Remove loading state
                             this.classList.remove('loading');
                         });
+                    });
                 });
-            });
+            }
+            attachToggleListeners();
         });
 
         function showToast(title, message, type) {

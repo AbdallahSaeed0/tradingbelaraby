@@ -1,0 +1,41 @@
+/* Admin Common - Dark Mode Styles */
+
+/* Badges with text-dark should be light in dark mode */
+.badge.bg-white.text-dark {
+    background-color: var(--admin-card-bg, #2d3142) !important;
+    color: var(--admin-text, #e4e6eb) !important;
+}
+
+.badge.text-dark {
+    color: var(--admin-text, #e4e6eb) !important;
+}
+
+/* List Group Items */
+.list-group-item {
+    background-color: var(--admin-card-bg, #2d3142) !important;
+    border-color: var(--admin-border, #3d4153) !important;
+    color: var(--admin-text, #e4e6eb) !important;
+}
+
+.list-group-item:hover {
+    background-color: var(--admin-dropdown-hover, #3d4153) !important;
+    color: var(--admin-text, #e4e6eb) !important;
+}
+
+.list-group-item.active {
+    background-color: var(--admin-active-bg, #3d4153) !important;
+    border-color: var(--admin-active-text, #6c9fff) !important;
+    color: var(--admin-active-text, #6c9fff) !important;
+}
+
+.list-group-item.bg-white {
+    background-color: var(--admin-card-bg, #2d3142) !important;
+    color: var(--admin-text, #e4e6eb) !important;
+}
+
+.list-group-item.bg-light {
+    background-color: var(--admin-dropdown-hover, #3d4153) !important;
+    color: var(--admin-text-muted, #8a8d91) !important;
+}
+
+/* Input Placeholders - Light in Dark Mode - Handled globally in admin-theme.css */

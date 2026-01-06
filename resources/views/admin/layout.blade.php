@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="{{ asset('admin/pages-ltr/blog.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/pages-ltr/admin.css') }}">
 
-    <!-- Admin Styles -->
+    <!-- Admin Styles - Base (always loaded) -->
     <link rel="stylesheet" href="{{ asset('css/admin/admin-theme.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/admin-common.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/admin-dashboard.css') }}">
@@ -23,6 +23,15 @@
     <link rel="stylesheet" href="{{ asset('css/admin/admin-analytics.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/admin-content-management.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/admin-quiz.css') }}">
+    
+    <!-- Dark Mode Styles - Loaded conditionally -->
+    <link rel="stylesheet" href="{{ asset('css/admin/dark/admin-common-dark.css') }}" id="dark-common" media="none">
+    <link rel="stylesheet" href="{{ asset('css/admin/dark/admin-forms-dark.css') }}" id="dark-forms" media="none">
+    <link rel="stylesheet" href="{{ asset('css/admin/dark/admin-tables-dark.css') }}" id="dark-tables" media="none">
+    <link rel="stylesheet" href="{{ asset('css/admin/dark/admin-settings-dark.css') }}" id="dark-settings" media="none">
+    <link rel="stylesheet" href="{{ asset('css/admin/dark/admin-analytics-dark.css') }}" id="dark-analytics" media="none">
+    <link rel="stylesheet" href="{{ asset('css/admin/dark/admin-content-management-dark.css') }}" id="dark-content" media="none">
+    <link rel="stylesheet" href="{{ asset('css/admin/dark/admin-quiz-dark.css') }}" id="dark-quiz" media="none">
 
     <!-- Shared Component Styles -->
     <link rel="stylesheet" href="{{ asset('css/components/cards.css') }}">
@@ -192,6 +201,71 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     @stack('scripts')
+    
+    <!-- Placeholder fix - Loads after all styles to override Bootstrap -->
+    <style id="final-placeholder-fix">
+        html[data-theme="dark"] input::placeholder,
+        html[data-theme="dark"] input::-webkit-input-placeholder,
+        html[data-theme="dark"] input::-moz-placeholder,
+        html[data-theme="dark"] input:-ms-input-placeholder,
+        html[data-theme="dark"] input:-moz-placeholder,
+        html[data-theme="dark"] textarea::placeholder,
+        html[data-theme="dark"] textarea::-webkit-input-placeholder,
+        html[data-theme="dark"] textarea::-moz-placeholder,
+        html[data-theme="dark"] textarea:-ms-input-placeholder,
+        html[data-theme="dark"] textarea:-moz-placeholder,
+        html[data-theme="dark"] .form-control::placeholder,
+        html[data-theme="dark"] .form-control::-webkit-input-placeholder,
+        html[data-theme="dark"] .form-control::-moz-placeholder,
+        html[data-theme="dark"] .form-control:-ms-input-placeholder,
+        html[data-theme="dark"] .form-control:-moz-placeholder,
+        html[data-theme="dark"] .input-group input::placeholder,
+        html[data-theme="dark"] .input-group input::-webkit-input-placeholder,
+        html[data-theme="dark"] .input-group input::-moz-placeholder,
+        html[data-theme="dark"] .input-group input:-ms-input-placeholder,
+        html[data-theme="dark"] .input-group input:-moz-placeholder {
+            color: #d0d3d8 !important;
+            opacity: 1 !important;
+        }
+    </style>
+    
+    <script>
+        // Additional placeholder fix that runs after page load
+        (function() {
+            function forcePlaceholderFix() {
+                if (document.documentElement.getAttribute('data-theme') === 'dark') {
+                    const inputs = document.querySelectorAll('input, textarea');
+                    inputs.forEach(input => {
+                        if (input.placeholder) {
+                            const id = input.id || ('ph-' + Math.random().toString(36).substr(2, 9));
+                            if (!input.id) input.id = id;
+                            
+                            const styleId = 'ph-force-' + id;
+                            if (!document.getElementById(styleId)) {
+                                const style = document.createElement('style');
+                                style.id = styleId;
+                                style.textContent = `#${id}::placeholder { color: #d0d3d8 !important; opacity: 1 !important; }`;
+                                document.head.appendChild(style);
+                            }
+                        }
+                    });
+                }
+            }
+            
+            // Run multiple times
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', function() {
+                    setTimeout(forcePlaceholderFix, 100);
+                    setTimeout(forcePlaceholderFix, 500);
+                    setTimeout(forcePlaceholderFix, 1000);
+                });
+            } else {
+                setTimeout(forcePlaceholderFix, 100);
+                setTimeout(forcePlaceholderFix, 500);
+                setTimeout(forcePlaceholderFix, 1000);
+            }
+        })();
+    </script>
 
     <script>
         // Theme Management
@@ -216,6 +290,28 @@
                     }
                 }
                 localStorage.setItem('adminTheme', theme);
+                
+                // Toggle dark mode CSS files
+                const darkStyles = [
+                    'dark-common',
+                    'dark-forms',
+                    'dark-tables',
+                    'dark-settings',
+                    'dark-analytics',
+                    'dark-content',
+                    'dark-quiz'
+                ];
+                
+                darkStyles.forEach(id => {
+                    const link = document.getElementById(id);
+                    if (link) {
+                        if (theme === 'dark') {
+                            link.media = 'all';
+                        } else {
+                            link.media = 'none';
+                        }
+                    }
+                });
             }
 
             // Toggle theme
@@ -223,6 +319,83 @@
                 const currentTheme = document.documentElement.getAttribute('data-theme');
                 const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
                 setTheme(newTheme);
+                applyPlaceholderFix(newTheme);
+            }
+
+            // Global placeholder fix for dark mode - NEW APPROACH: Direct style manipulation
+            function applyPlaceholderFix(theme) {
+                const placeholderColor = '#d0d3d8'; // Brighter color
+                
+                function fixAllInputs() {
+                    const inputs = document.querySelectorAll('input, textarea, select');
+                    inputs.forEach(input => {
+                        if (input.placeholder && theme === 'dark') {
+                            // Method 1: Set CSS custom property
+                            input.style.setProperty('--placeholder-color', placeholderColor, 'important');
+                            
+                            // Method 2: Direct style manipulation via computed styles override
+                            // Create a style element for this specific input
+                            const inputId = input.id || ('ph-input-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5));
+                            if (!input.id) input.id = inputId;
+                            
+                            const styleId = 'ph-fix-' + inputId;
+                            let existingStyle = document.getElementById(styleId);
+                            if (existingStyle) existingStyle.remove();
+                            
+                            const style = document.createElement('style');
+                            style.id = styleId;
+                            style.textContent = `
+                                #${inputId}::placeholder { color: ${placeholderColor} !important; opacity: 1 !important; }
+                                #${inputId}::-webkit-input-placeholder { color: ${placeholderColor} !important; opacity: 1 !important; }
+                                #${inputId}::-moz-placeholder { color: ${placeholderColor} !important; opacity: 1 !important; }
+                                #${inputId}:-ms-input-placeholder { color: ${placeholderColor} !important; opacity: 1 !important; }
+                                #${inputId}:-moz-placeholder { color: ${placeholderColor} !important; opacity: 1 !important; }
+                            `;
+                            document.head.appendChild(style);
+                        }
+                    });
+                }
+                
+                if (theme === 'dark') {
+                    // Apply immediately
+                    fixAllInputs();
+                    
+                    // Apply multiple times to catch all inputs
+                    setTimeout(fixAllInputs, 50);
+                    setTimeout(fixAllInputs, 200);
+                    setTimeout(fixAllInputs, 500);
+                    setTimeout(fixAllInputs, 1000);
+                }
+            }
+            
+            // Apply placeholder fix on init
+            applyPlaceholderFix(document.documentElement.getAttribute('data-theme') || 'light');
+            
+            // Watch for dynamically added inputs and apply placeholder fix
+            const inputObserver = new MutationObserver(function(mutations) {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                if (currentTheme === 'dark') {
+                    applyPlaceholderFix('dark');
+                }
+            });
+            
+            // Start observing when DOM is ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', function() {
+                    inputObserver.observe(document.body, {
+                        childList: true,
+                        subtree: true
+                    });
+                    // Apply fix after DOM is ready
+                    setTimeout(() => applyPlaceholderFix(document.documentElement.getAttribute('data-theme') || 'light'), 100);
+                });
+            } else {
+                inputObserver.observe(document.body, {
+                    childList: true,
+                    subtree: true
+                });
+                // Apply fix immediately
+                setTimeout(() => applyPlaceholderFix(document.documentElement.getAttribute('data-theme') || 'light'), 100);
             }
 
             // Initialize on DOM ready

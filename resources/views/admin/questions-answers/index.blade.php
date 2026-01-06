@@ -39,46 +39,54 @@
         <!-- Stats Cards -->
         <div class="row g-4 mb-4">
             <div class="col-md-3">
-                <div class="card qa-stat-card d-flex flex-row align-items-center p-3">
-                    <div class="qa-stat-icon bg-primary text-white">
-                        <i class="fas fa-question-circle"></i>
-                    </div>
-                    <div>
-                        <h6 class="text-muted mb-0">Total Questions</h6>
-                        <h4 class="fw-bold mb-0">{{ $stats['total'] }}</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card qa-stat-card d-flex flex-row align-items-center p-3">
-                    <div class="qa-stat-icon bg-warning text-dark">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <div>
-                        <h6 class="text-muted mb-0">Pending</h6>
-                        <h4 class="fw-bold mb-0">{{ $stats['pending'] }}</h4>
+                <div class="card stat-card">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="stat-icon bg-primary-soft">
+                            <i class="fa fa-question-circle text-white"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-0">Total Questions</h6>
+                            <h4 class="fw-bold mb-0">{{ $stats['total'] }}</h4>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card qa-stat-card d-flex flex-row align-items-center p-3">
-                    <div class="qa-stat-icon bg-success text-white">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div>
-                        <h6 class="text-muted mb-0">Answered</h6>
-                        <h4 class="fw-bold mb-0">{{ $stats['answered'] }}</h4>
+                <div class="card stat-card">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="stat-icon bg-warning-soft">
+                            <i class="fa fa-clock text-white"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-0">Pending</h6>
+                            <h4 class="fw-bold mb-0">{{ $stats['pending'] }}</h4>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card qa-stat-card d-flex flex-row align-items-center p-3">
-                    <div class="qa-stat-icon bg-danger text-white">
-                        <i class="fas fa-exclamation-triangle"></i>
+                <div class="card stat-card">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="stat-icon bg-success-soft">
+                            <i class="fa fa-check-circle text-white"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-0">Answered</h6>
+                            <h4 class="fw-bold mb-0">{{ $stats['answered'] }}</h4>
+                        </div>
                     </div>
-                    <div>
-                        <h6 class="text-muted mb-0">Urgent</h6>
-                        <h4 class="fw-bold mb-0">{{ $stats['urgent'] }}</h4>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="stat-icon bg-danger-soft">
+                            <i class="fa fa-exclamation-triangle text-white"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-0">Urgent</h6>
+                            <h4 class="fw-bold mb-0">{{ $stats['urgent'] }}</h4>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -92,12 +100,12 @@
                         <div class="col-md-3">
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fa fa-search"></i></span>
-                                <input type="text" class="form-control" name="search" value="{{ request('search', 'admin') }}"
+                                <input type="text" class="form-control" name="search" id="searchInput" value="{{ request('search') }}"
                                     placeholder="Search questions, answers, users...">
                             </div>
                         </div>
                         <div class="col-md-2">
-                            <select class="form-select" name="status">
+                            <select class="form-select" name="status" id="statusFilter">
                                 <option value="">All Status</option>
                                 @foreach ($statuses as $value => $label)
                                     <option value="{{ $value }}"
@@ -106,7 +114,7 @@
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <select class="form-select" name="course_id">
+                            <select class="form-select" name="course_id" id="courseFilter">
                                 <option value="">All Courses</option>
                                 @foreach ($courses as $course)
                                     <option value="{{ $course->id }}"
@@ -116,7 +124,7 @@
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <select class="form-select" name="question_type">
+                            <select class="form-select" name="question_type" id="questionTypeFilter">
                                 <option value="">All Types</option>
                                 @foreach ($questionTypes as $value => $label)
                                     <option value="{{ $value }}"
@@ -126,7 +134,7 @@
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <select class="form-select" name="priority">
+                            <select class="form-select" name="priority" id="priorityFilter">
                                 <option value="">All Priorities</option>
                                 @foreach ($priorities as $value => $label)
                                     <option value="{{ $value }}"
@@ -135,9 +143,14 @@
                             </select>
                         </div>
                         <div class="col-md-1">
-                            <button type="submit" class="btn btn-primary w-100">
-                                <i class="fas fa-filter"></i>
-                            </button>
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-filter"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" id="clearFiltersBtn">
+                                    <i class="fa fa-refresh"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -185,10 +198,13 @@
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover qa-table mb-0">
+                    <table class="table table-hover table-striped qa-table">
                         <thead>
                             <tr>
-                                <th class="w-32px"><input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                                <th width="50">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                                    </div>
                                 </th>
                                 <th>Question</th>
                                 <th>Student</th>
@@ -205,8 +221,12 @@
                         <tbody>
                             @forelse($questions as $question)
                                 <tr>
-                                    <td><input type="checkbox" class="question-checkbox" value="{{ $question->id }}"
-                                            onchange="updateSelection()"></td>
+                                    <td>
+                                        <div class="form-check">
+                                            <input class="form-check-input question-checkbox" type="checkbox" value="{{ $question->id }}"
+                                                onchange="updateSelection()">
+                                        </div>
+                                    </td>
                                     <td class="question-info">
                                         <div class="qa-question-title mb-1">
                                             <a href="{{ route('admin.questions-answers.show', $question) }}"
@@ -343,11 +363,33 @@
                     </table>
                 </div>
                 <!-- Pagination -->
-                @if ($questions->hasPages())
-                    <div class="d-flex justify-content-center p-3">
-                        {{ $questions->links() }}
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center">
+                            <div class="d-flex align-items-center me-3">
+                                <label class="form-label me-2 mb-0 small">Per page:</label>
+                                <select class="form-select form-select-sm w-auto" id="perPageSelect" onchange="changePerPage(this.value)">
+                                    @php
+                                        $perPage = (int) request('per_page', 10);
+                                    @endphp
+                                    <option value="10" {{ $perPage === 10 ? 'selected' : '' }}>10</option>
+                                    <option value="20" {{ $perPage === 20 ? 'selected' : '' }}>20</option>
+                                    <option value="50" {{ $perPage === 50 ? 'selected' : '' }}>50</option>
+                                    <option value="100" {{ $perPage === 100 ? 'selected' : '' }}>100</option>
+                                    <option value="500" {{ $perPage === 500 ? 'selected' : '' }}>500</option>
+                                    <option value="1000" {{ $perPage === 1000 ? 'selected' : '' }}>1000</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
-                @endif
+                    <div class="col-md-6">
+                        @if ($questions->hasPages())
+                            <div class="d-flex justify-content-end">
+                                {{ $questions->links() }}
+                            </div>
+                        @endif
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -356,31 +398,145 @@
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Auto-submit form on filter change
-            document.querySelector('select[name="status"]').addEventListener('change', function() {
-                document.getElementById('filterForm').submit();
-            });
+            // Change per page function
+            function changePerPage(value) {
+                // Use AJAX to update
+                const formData = new FormData(document.getElementById('filterForm'));
+                formData.set('per_page', value);
+                performAjaxSearch();
+            }
 
-            document.querySelector('select[name="course_id"]').addEventListener('change', function() {
-                document.getElementById('filterForm').submit();
-            });
-
-            document.querySelector('select[name="question_type"]').addEventListener('change', function() {
-                document.getElementById('filterForm').submit();
-            });
-
-            document.querySelector('select[name="priority"]').addEventListener('change', function() {
-                document.getElementById('filterForm').submit();
-            });
-
-            // Search with debounce
+            // Initialize variables for AJAX search
             let searchTimeout;
-            document.querySelector('input[name="search"]').addEventListener('input', function() {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    document.getElementById('filterForm').submit();
-                }, 500);
+            const searchInput = document.getElementById('searchInput');
+            const tableBody = document.querySelector('.table tbody');
+            const paginationContainer = document.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
+
+            // AJAX search function
+            function performAjaxSearch() {
+                const formData = new FormData(document.getElementById('filterForm'));
+                const params = new URLSearchParams(formData);
+
+                // Show loading state
+                if (tableBody) {
+                    tableBody.innerHTML = '<tr><td colspan="8" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
+                }
+
+                fetch(`{{ route('admin.questions-answers.index') }}?${params.toString()}`, {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'text/html'
+                        }
+                    })
+                    .then(response => response.text())
+                    .then(html => {
+                        // Create a temporary container to parse the HTML
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = html;
+
+                        // Extract table body
+                        const newTableBody = tempDiv.querySelector('.table tbody');
+                        const newPagination = tempDiv.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
+                        const newBulkActions = tempDiv.querySelector('.row.mt-3 .col-md-6:first-child');
+
+                        if (newTableBody && tableBody) {
+                            tableBody.innerHTML = newTableBody.innerHTML;
+                        }
+
+                        if (newPagination && paginationContainer) {
+                            paginationContainer.innerHTML = newPagination.innerHTML;
+                        }
+
+                        if (newBulkActions) {
+                            const bulkActionsContainer = document.querySelector('.row.mt-3 .col-md-6:first-child');
+                            if (bulkActionsContainer) {
+                                bulkActionsContainer.innerHTML = newBulkActions.innerHTML;
+                            }
+                        }
+
+                        // Update URL without reload
+                        const newUrl = `{{ route('admin.questions-answers.index') }}?${params.toString()}`;
+                        window.history.pushState({}, '', newUrl);
+
+                        // Re-attach event listeners
+                        const selectAllCheckbox = document.getElementById('selectAll');
+                        if (selectAllCheckbox) {
+                            selectAllCheckbox.onchange = toggleSelectAll;
+                        }
+                        document.querySelectorAll('.question-checkbox').forEach(checkbox => {
+                            checkbox.onchange = updateSelection;
+                        });
+                        updateSelection();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        if (tableBody) {
+                            tableBody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-danger">Error loading data. Please try again.</td></tr>';
+                        }
+                    });
+            }
+
+            // Prevent form submission - use AJAX instead
+            document.getElementById('filterForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                performAjaxSearch();
             });
+
+            // Dropdown filters - use AJAX
+            document.getElementById('statusFilter').addEventListener('change', function() {
+                performAjaxSearch();
+            });
+
+            document.getElementById('courseFilter').addEventListener('change', function() {
+                performAjaxSearch();
+            });
+
+            document.getElementById('questionTypeFilter').addEventListener('change', function() {
+                performAjaxSearch();
+            });
+
+            document.getElementById('priorityFilter').addEventListener('change', function() {
+                performAjaxSearch();
+            });
+
+            // Clear filters button - use AJAX
+            const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+            if (clearFiltersBtn) {
+                clearFiltersBtn.addEventListener('click', function() {
+                    // Clear all form fields
+                    document.getElementById('searchInput').value = '';
+                    document.getElementById('statusFilter').value = '';
+                    document.getElementById('courseFilter').value = '';
+                    document.getElementById('questionTypeFilter').value = '';
+                    document.getElementById('priorityFilter').value = '';
+
+                    // Update URL without parameters
+                    window.history.pushState({}, '', '{{ route('admin.questions-answers.index') }}');
+
+                    // Perform AJAX search with cleared filters
+                    performAjaxSearch();
+                });
+            }
+
+            // Search with debounce - AJAX only
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        performAjaxSearch();
+                    }, 500);
+                });
+
+                // Prevent form submission on Enter key in search
+                searchInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        clearTimeout(searchTimeout);
+                        performAjaxSearch();
+                    }
+                });
+            }
         });
 
         function updateSort(value) {

@@ -126,22 +126,10 @@
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fa fa-search me-1"></i>Filter
                                 </button>
-                                <a href="{{ route('admin.courses.index') }}" class="btn btn-outline-secondary">
+                                <button type="button" class="btn btn-outline-secondary" id="clearFiltersBtn">
                                     <i class="fa fa-refresh me-1"></i>Clear
-                                </a>
+                                </button>
                             </div>
-                        </div>
-                        <div class="col-md-2">
-                            <select class="form-select" name="per_page" id="perPageFilter"
-                                onchange="document.getElementById('filterForm').submit();">
-                                @php
-                                    $perPage = (int) request('per_page', 10);
-                                @endphp
-                                <option value="10" {{ $perPage === 10 ? 'selected' : '' }}>10 per page</option>
-                                <option value="25" {{ $perPage === 25 ? 'selected' : '' }}>25 per page</option>
-                                <option value="50" {{ $perPage === 50 ? 'selected' : '' }}>50 per page</option>
-                                <option value="100" {{ $perPage === 100 ? 'selected' : '' }}>100 per page</option>
-                            </select>
                         </div>
                     </div>
                 </form>
@@ -160,26 +148,6 @@
                             <button type="button" class="btn btn-outline-primary" id="gridView">
                                 <i class="fa fa-th me-1"></i>Grid View
                             </button>
-                        </div>
-                        <button class="btn btn-sm btn-outline-danger me-2 d-none-initially" id="bulkDelete">
-                            <i class="fa fa-trash me-1"></i>Delete Selected
-                        </button>
-                        <div class="dropdown me-2 d-none-initially" id="bulkStatusDropdown">
-                            <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button"
-                                data-bs-toggle="dropdown">
-                                <i class="fa fa-toggle-on me-1"></i>Change Status
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#" onclick="bulkUpdateStatus('published')">
-                                        <i class="fa fa-check me-2"></i>Publish Selected
-                                    </a></li>
-                                <li><a class="dropdown-item" href="#" onclick="bulkUpdateStatus('draft')">
-                                        <i class="fa fa-clock me-2"></i>Set as Draft
-                                    </a></li>
-                                <li><a class="dropdown-item" href="#" onclick="bulkUpdateStatus('archived')">
-                                        <i class="fa fa-archive me-2"></i>Archive Selected
-                                    </a></li>
-                            </ul>
                         </div>
                     </div>
                     <div class="d-flex align-items-center">
@@ -210,16 +178,9 @@
 
         <!-- Courses Table -->
         <div class="card" id="listViewContainer">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Courses List</h5>
-                <div class="d-flex align-items-center">
-                    <span class="text-muted me-3">Showing {{ $courses->firstItem() }} to {{ $courses->lastItem() }} of
-                        {{ $courses->total() }} entries</span>
-                </div>
-            </div>
-            <div class="card-body p-0">
+            <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-custom mb-0">
+                    <table class="table table-hover table-striped">
                         <thead>
                             <tr>
                                 <th width="50">
@@ -397,15 +358,37 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
-            <div class="card-footer">
-                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
-                    <div class="text-muted">
-                        Showing {{ $courses->firstItem() ?? 0 }} to {{ $courses->lastItem() ?? 0 }} of {{ $courses->total() }}
-                        entries
+
+                <!-- Bulk Actions -->
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-sm btn-outline-danger me-2 d-none-initially" id="bulkDelete">
+                                <i class="fa fa-trash me-1"></i>Delete Selected
+                            </button>
+                            <div class="dropdown me-2 d-none-initially" id="bulkStatusDropdown">
+                                <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button"
+                                    data-bs-toggle="dropdown">
+                                    <i class="fa fa-toggle-on me-1"></i>Change Status
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#" onclick="bulkUpdateStatus('published')">
+                                            <i class="fa fa-check me-2"></i>Publish Selected
+                                        </a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="bulkUpdateStatus('draft')">
+                                            <i class="fa fa-clock me-2"></i>Set as Draft
+                                        </a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="bulkUpdateStatus('archived')">
+                                            <i class="fa fa-archive me-2"></i>Archive Selected
+                                        </a></li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
-                    <div class="d-flex align-items-center">
-                        {{ $courses->links('pagination::bootstrap-5') }}
+                    <div class="col-md-6">
+                        <div class="d-flex justify-content-end">
+                            {{ $courses->links('pagination::bootstrap-5') }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -413,13 +396,6 @@
 
         <!-- Grid View -->
         <div class="card" id="gridViewContainer" style="display: none;">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Courses Grid</h5>
-                <div class="d-flex align-items-center">
-                    <span class="text-muted me-3">Showing {{ $courses->firstItem() }} to {{ $courses->lastItem() }} of
-                        {{ $courses->total() }} entries</span>
-                </div>
-            </div>
             <div class="card-body">
                 <div class="row g-4">
                     @forelse($courses as $course)
@@ -513,15 +489,46 @@
                         </div>
                     @endforelse
                 </div>
-            </div>
-            <div class="card-footer">
-                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
-                    <div class="text-muted">
-                        Showing {{ $courses->firstItem() ?? 0 }} to {{ $courses->lastItem() ?? 0 }} of {{ $courses->total() }}
-                        entries
+                
+                <!-- Bulk Actions and Pagination -->
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center">
+                            <div class="d-flex align-items-center me-3">
+                                <label class="form-label me-2 mb-0 small">Per page:</label>
+                                <select class="form-select form-select-sm w-auto" id="perPageSelect" onchange="changePerPage(this.value)">
+                                    @php
+                                        $perPage = (int) request('per_page', 10);
+                                    @endphp
+                                    <option value="10" {{ $perPage === 10 ? 'selected' : '' }}>10</option>
+                                    <option value="20" {{ $perPage === 20 ? 'selected' : '' }}>20</option>
+                                    <option value="50" {{ $perPage === 50 ? 'selected' : '' }}>50</option>
+                                    <option value="100" {{ $perPage === 100 ? 'selected' : '' }}>100</option>
+                                    <option value="500" {{ $perPage === 500 ? 'selected' : '' }}>500</option>
+                                    <option value="1000" {{ $perPage === 1000 ? 'selected' : '' }}>1000</option>
+                                </select>
+                            </div>
+                            <div id="bulkActions" style="display: none;">
+                                <button type="button" class="btn btn-danger btn-sm" id="bulkDelete">
+                                    <i class="fa fa-trash me-1"></i>Delete Selected
+                                </button>
+                                <div class="dropdown d-inline ms-2" id="bulkStatusDropdown" style="display: none;">
+                                    <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                        <i class="fa fa-toggle-on me-1"></i>Change Status
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#" onclick="bulkUpdateStatus('published')">Publish Selected</a></li>
+                                        <li><a class="dropdown-item" href="#" onclick="bulkUpdateStatus('draft')">Set as Draft</a></li>
+                                        <li><a class="dropdown-item" href="#" onclick="bulkUpdateStatus('archived')">Archive Selected</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="d-flex align-items-center">
-                        {{ $courses->links('pagination::bootstrap-5') }}
+                    <div class="col-md-6">
+                        <div class="d-flex justify-content-end">
+                            {{ $courses->links('pagination::bootstrap-5') }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -594,84 +601,211 @@
             });
 
             // Select all checkbox functionality
-            const selectAllCheckbox = document.getElementById('selectAll');
-            const rowCheckboxes = document.querySelectorAll('.row-checkbox');
-            const bulkDeleteBtn = document.getElementById('bulkDelete');
-            const bulkStatusDropdown = document.getElementById('bulkStatusDropdown');
+            function setupCheckboxes() {
+                const selectAllCheckbox = document.getElementById('selectAll');
+                const rowCheckboxes = document.querySelectorAll('.row-checkbox');
+                const bulkDeleteBtn = document.getElementById('bulkDelete');
+                const bulkStatusDropdown = document.getElementById('bulkStatusDropdown');
 
-            selectAllCheckbox.addEventListener('change', function() {
+                if (selectAllCheckbox) {
+                    selectAllCheckbox.addEventListener('change', function() {
+                        rowCheckboxes.forEach(checkbox => {
+                            checkbox.checked = this.checked;
+                        });
+                        toggleBulkActions();
+                    });
+                }
+
                 rowCheckboxes.forEach(checkbox => {
-                    checkbox.checked = this.checked;
+                    checkbox.addEventListener('change', function() {
+                        const selectAll = document.getElementById('selectAll');
+                        const allCheckboxes = document.querySelectorAll('.row-checkbox');
+                        const checkedCount = document.querySelectorAll('.row-checkbox:checked').length;
+                        if (selectAll) {
+                            selectAll.checked = checkedCount === allCheckboxes.length;
+                            selectAll.indeterminate = checkedCount > 0 && checkedCount < allCheckboxes.length;
+                        }
+                        toggleBulkActions();
+                    });
                 });
-                toggleBulkActions();
-            });
 
-            rowCheckboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
+                function toggleBulkActions() {
                     const checkedCount = document.querySelectorAll('.row-checkbox:checked').length;
-                    selectAllCheckbox.checked = checkedCount === rowCheckboxes.length;
-                    selectAllCheckbox.indeterminate = checkedCount > 0 && checkedCount <
-                        rowCheckboxes.length;
-                    toggleBulkActions();
-                });
-            });
-
-            function toggleBulkActions() {
-                const checkedCount = document.querySelectorAll('.row-checkbox:checked').length;
-                bulkDeleteBtn.style.display = checkedCount > 0 ? 'inline-block' : 'none';
-                bulkStatusDropdown.style.display = checkedCount > 0 ? 'inline-block' : 'none';
+                    if (bulkDeleteBtn) {
+                        bulkDeleteBtn.style.display = checkedCount > 0 ? 'inline-block' : 'none';
+                    }
+                    if (bulkStatusDropdown) {
+                        bulkStatusDropdown.style.display = checkedCount > 0 ? 'inline-block' : 'none';
+                    }
+                }
+                toggleBulkActions();
             }
+            setupCheckboxes();
 
             // Bulk delete functionality
-            bulkDeleteBtn.addEventListener('click', function() {
-                if (confirm('Are you sure you want to delete the selected courses?')) {
-                    const selectedIds = Array.from(document.querySelectorAll('.row-checkbox:checked'))
-                        .map(checkbox => checkbox.value);
+            const bulkDeleteBtn = document.getElementById('bulkDelete');
+            if (bulkDeleteBtn) {
+                bulkDeleteBtn.addEventListener('click', function() {
+                    if (confirm('Are you sure you want to delete the selected courses?')) {
+                        const selectedIds = Array.from(document.querySelectorAll('.row-checkbox:checked'))
+                            .map(checkbox => checkbox.value);
 
-                    const form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = '{{ route('admin.courses.bulk_delete') }}';
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = '{{ route('admin.courses.bulk_delete') }}';
 
-                    const csrfToken = document.createElement('input');
-                    csrfToken.type = 'hidden';
-                    csrfToken.name = '_token';
-                    csrfToken.value = '{{ csrf_token() }}';
+                        const csrfToken = document.createElement('input');
+                        csrfToken.type = 'hidden';
+                        csrfToken.name = '_token';
+                        csrfToken.value = '{{ csrf_token() }}';
 
-                    selectedIds.forEach(id => {
-                        const input = document.createElement('input');
-                        input.type = 'hidden';
-                        input.name = 'course_ids[]';
-                        input.value = id;
-                        form.appendChild(input);
-                    });
+                        selectedIds.forEach(id => {
+                            const input = document.createElement('input');
+                            input.type = 'hidden';
+                            input.name = 'course_ids[]';
+                            input.value = id;
+                            form.appendChild(input);
+                        });
 
-                    form.appendChild(csrfToken);
-                    document.body.appendChild(form);
-                    form.submit();
+                        form.appendChild(csrfToken);
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                });
+            }
+
+            // Change per page function
+            function changePerPage(value) {
+                // Use AJAX to update
+                const formData = new FormData(document.getElementById('filterForm'));
+                formData.set('per_page', value);
+                performAjaxSearch();
+            }
+
+            // Initialize variables for AJAX search
+            let searchTimeout;
+            const searchInput = document.getElementById('searchInput');
+            const tableBody = document.querySelector('#listViewContainer .table tbody');
+            const paginationContainer = document.querySelector('#listViewContainer .row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
+
+            // AJAX search function
+            function performAjaxSearch() {
+                const formData = new FormData(document.getElementById('filterForm'));
+                const params = new URLSearchParams(formData);
+
+                // Show loading state
+                if (tableBody) {
+                    tableBody.innerHTML = '<tr><td colspan="8" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
                 }
+
+                fetch(`{{ route('admin.courses.index') }}?${params.toString()}`, {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'text/html'
+                        }
+                    })
+                    .then(response => response.text())
+                    .then(html => {
+                        // Create a temporary container to parse the HTML
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = html;
+
+                        // Extract table body
+                        const newTableBody = tempDiv.querySelector('#listViewContainer .table tbody');
+                        const newPagination = tempDiv.querySelector('#listViewContainer .row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
+                        const newBulkActions = tempDiv.querySelector('#listViewContainer .row.mt-3 .col-md-6:first-child');
+
+                        if (newTableBody && tableBody) {
+                            tableBody.innerHTML = newTableBody.innerHTML;
+                        }
+
+                        if (newPagination && paginationContainer) {
+                            paginationContainer.innerHTML = newPagination.innerHTML;
+                        }
+
+                        if (newBulkActions) {
+                            const bulkActionsContainer = document.querySelector('#listViewContainer .row.mt-3 .col-md-6:first-child');
+                            if (bulkActionsContainer) {
+                                bulkActionsContainer.innerHTML = newBulkActions.innerHTML;
+                            }
+                        }
+
+                        // Update URL without reload
+                        const newUrl = `{{ route('admin.courses.index') }}?${params.toString()}`;
+                        window.history.pushState({}, '', newUrl);
+
+                        // Re-attach event listeners
+                        setupCheckboxes();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        if (tableBody) {
+                            tableBody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-danger">Error loading data. Please try again.</td></tr>';
+                        }
+                    });
+            }
+
+            // Prevent form submission - use AJAX instead
+            document.getElementById('filterForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                performAjaxSearch();
             });
 
-            // Auto-submit form on filter change
+            // Dropdown filters - use AJAX
             document.getElementById('statusFilter').addEventListener('change', function() {
-                document.getElementById('filterForm').submit();
+                performAjaxSearch();
             });
 
             document.getElementById('categoryFilter').addEventListener('change', function() {
-                document.getElementById('filterForm').submit();
+                performAjaxSearch();
             });
 
             document.getElementById('instructorFilter').addEventListener('change', function() {
-                document.getElementById('filterForm').submit();
+                performAjaxSearch();
             });
 
-            // Search with debounce
-            let searchTimeout;
-            document.getElementById('searchInput').addEventListener('input', function() {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    document.getElementById('filterForm').submit();
-                }, 500);
+            document.getElementById('perPageFilter').addEventListener('change', function() {
+                performAjaxSearch();
             });
+
+            // Clear filters button - use AJAX
+            const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+            if (clearFiltersBtn) {
+                clearFiltersBtn.addEventListener('click', function() {
+                    // Clear all form fields
+                    document.getElementById('searchInput').value = '';
+                    document.getElementById('statusFilter').value = '';
+                    document.getElementById('categoryFilter').value = '';
+                    document.getElementById('instructorFilter').value = '';
+                    document.getElementById('perPageFilter').value = '10';
+
+                    // Update URL without parameters
+                    window.history.pushState({}, '', '{{ route('admin.courses.index') }}');
+
+                    // Perform AJAX search with cleared filters
+                    performAjaxSearch();
+                });
+            }
+
+            // Search with debounce - AJAX only
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        performAjaxSearch();
+                    }, 500);
+                });
+
+                // Prevent form submission on Enter key in search
+                searchInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        clearTimeout(searchTimeout);
+                        performAjaxSearch();
+                    }
+                });
+            }
         });
 
         // Bulk update status function

@@ -33,19 +33,17 @@
             </div>
         @endif
 
-        <!-- Statistics Card -->
-        <div class="row mb-4">
-            <div class="col-md-4">
-                <div class="card bg-primary text-white">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-grow-1">
-                                <h4 class="mb-0">{{ $subscribers->total() }}</h4>
-                                <p class="mb-0">Total Subscribers</p>
-                            </div>
-                            <div class="ms-3">
-                                <i class="fa fa-users fa-2x opacity-75"></i>
-                            </div>
+        <!-- Stats Cards -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="stat-icon bg-primary-soft">
+                            <i class="fa fa-users text-white"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-0">Total Subscribers</h6>
+                            <h4 class="fw-bold mb-0">{{ $subscribers->total() }}</h4>
                         </div>
                     </div>
                 </div>
@@ -58,48 +56,48 @@
                 <form method="GET" action="{{ route('admin.subscribers.index') }}" class="row g-3" id="filterForm">
                     <div class="col-md-3">
                         <label for="search" class="form-label">Search</label>
-                        <input type="text" class="form-control" id="search" name="search"
+                        <input type="text" class="form-control" id="searchInput" name="search"
                             value="{{ request('search') }}" placeholder="Search by name, email, phone, or country...">
                     </div>
                     <div class="col-md-2">
                         <label for="years_of_experience" class="form-label">Experience</label>
-                        <select class="form-select" id="years_of_experience" name="years_of_experience">
-                            <option value="">All Levels</option>
-                            <option value="10" {{ request('years_of_experience') == '10' ? 'selected' : '' }}>10 Years
-                            </option>
-                            <option value="20" {{ request('years_of_experience') == '20' ? 'selected' : '' }}>20 Years
-                            </option>
-                            <option value="30" {{ request('years_of_experience') == '30' ? 'selected' : '' }}>30 Years
-                            </option>
-                            <option value="40" {{ request('years_of_experience') == '40' ? 'selected' : '' }}>40 Years
-                            </option>
-                            <option value="50" {{ request('years_of_experience') == '50' ? 'selected' : '' }}>50 Years
-                            </option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label for="language" class="form-label">Language</label>
-                        <select class="form-select" id="language" name="language">
-                            <option value="">All Languages</option>
-                            <option value="en" {{ request('language') == 'en' ? 'selected' : '' }}>English</option>
-                            <option value="ar" {{ request('language') == 'ar' ? 'selected' : '' }}>Arabic</option>
-                        </select>
+                            <select class="form-select" id="yearsOfExperienceFilter" name="years_of_experience">
+                                <option value="">All Levels</option>
+                                <option value="10" {{ request('years_of_experience') == '10' ? 'selected' : '' }}>10 Years
+                                </option>
+                                <option value="20" {{ request('years_of_experience') == '20' ? 'selected' : '' }}>20 Years
+                                </option>
+                                <option value="30" {{ request('years_of_experience') == '30' ? 'selected' : '' }}>30 Years
+                                </option>
+                                <option value="40" {{ request('years_of_experience') == '40' ? 'selected' : '' }}>40 Years
+                                </option>
+                                <option value="50" {{ request('years_of_experience') == '50' ? 'selected' : '' }}>50 Years
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="language" class="form-label">Language</label>
+                            <select class="form-select" id="languageFilter" name="language">
+                                <option value="">All Languages</option>
+                                <option value="en" {{ request('language') == 'en' ? 'selected' : '' }}>English</option>
+                                <option value="ar" {{ request('language') == 'ar' ? 'selected' : '' }}>Arabic</option>
+                            </select>
                     </div>
                     <div class="col-md-2">
                         <label for="date_from" class="form-label">Date From</label>
-                        <input type="date" class="form-control" id="date_from" name="date_from"
+                        <input type="date" class="form-control" id="dateFromFilter" name="date_from"
                             value="{{ request('date_from') }}">
                     </div>
                     <div class="col-md-2">
                         <label for="date_to" class="form-label">Date To</label>
-                        <input type="date" class="form-control" id="date_to" name="date_to"
+                        <input type="date" class="form-control" id="dateToFilter" name="date_to"
                             value="{{ request('date_to') }}">
                     </div>
                     <div class="col-md-1 d-flex align-items-end">
-                        <a href="{{ route('admin.subscribers.index') }}" class="btn btn-outline-secondary w-100"
+                        <button type="button" class="btn btn-outline-secondary w-100" id="clearFiltersBtn"
                             title="Clear Filters">
                             <i class="fa fa-times"></i>
-                        </a>
+                        </button>
                     </div>
                 </form>
             </div>
@@ -117,7 +115,7 @@
         <div class="card shadow-sm">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover table-striped">
                         <thead>
                             <tr>
                                 <th width="50">
@@ -227,75 +225,213 @@
                     </table>
                 </div>
 
-                @if ($subscribers->hasPages())
-                    <div class="d-flex justify-content-center mt-4">
-                        {{ $subscribers->appends(request()->query())->links() }}
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center">
+                            <div class="d-flex align-items-center me-3">
+                                <label class="form-label me-2 mb-0 small">Per page:</label>
+                                <select class="form-select form-select-sm w-auto" id="perPageSelect" onchange="changePerPage(this.value)">
+                                    @php
+                                        $perPage = (int) request('per_page', 10);
+                                    @endphp
+                                    <option value="10" {{ $perPage === 10 ? 'selected' : '' }}>10</option>
+                                    <option value="20" {{ $perPage === 20 ? 'selected' : '' }}>20</option>
+                                    <option value="50" {{ $perPage === 50 ? 'selected' : '' }}>50</option>
+                                    <option value="100" {{ $perPage === 100 ? 'selected' : '' }}>100</option>
+                                    <option value="500" {{ $perPage === 500 ? 'selected' : '' }}>500</option>
+                                    <option value="1000" {{ $perPage === 1000 ? 'selected' : '' }}>1000</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
-                @endif
+                    <div class="col-md-6">
+                        @if ($subscribers->hasPages())
+                            <div class="d-flex justify-content-end">
+                                {{ $subscribers->appends(request()->query())->links() }}
+                            </div>
+                        @endif
+                    </div>
+                </div>
             </div>
         </div>
 
     </div><script>
-        // Auto-submit form when filters change
+        // AJAX search functionality
         document.addEventListener('DOMContentLoaded', function() {
-            const filterForm = document.getElementById('filterForm');
-            const filterInputs = filterForm.querySelectorAll('input, select');
+            // Change per page function
+            function changePerPage(value) {
+                // Use AJAX to update
+                const formData = new FormData(document.getElementById('filterForm'));
+                formData.set('per_page', value);
+                performAjaxSearch();
+            }
 
-            filterInputs.forEach(input => {
-                input.addEventListener('change', function() {
-                    filterForm.submit();
-                });
-            });
-
-            // Auto-submit search input with delay
-            const searchInput = document.getElementById('search');
+            // Initialize variables for AJAX search
             let searchTimeout;
+            const searchInput = document.getElementById('searchInput');
+            const tableBody = document.querySelector('.table tbody');
+            const paginationContainer = document.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
 
-            searchInput.addEventListener('input', function() {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(function() {
-                    filterForm.submit();
-                }, 500); // 500ms delay
+            // AJAX search function
+            function performAjaxSearch() {
+                const formData = new FormData(document.getElementById('filterForm'));
+                const params = new URLSearchParams(formData);
+
+                // Show loading state
+                if (tableBody) {
+                    tableBody.innerHTML = '<tr><td colspan="9" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
+                }
+
+                fetch(`{{ route('admin.subscribers.index') }}?${params.toString()}`, {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'text/html'
+                        }
+                    })
+                    .then(response => response.text())
+                    .then(html => {
+                        // Create a temporary container to parse the HTML
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = html;
+
+                        // Extract table body
+                        const newTableBody = tempDiv.querySelector('.table tbody');
+                        const newPagination = tempDiv.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
+
+                        if (newTableBody && tableBody) {
+                            tableBody.innerHTML = newTableBody.innerHTML;
+                        }
+
+                        if (newPagination && paginationContainer) {
+                            paginationContainer.innerHTML = newPagination.innerHTML;
+                        }
+
+                        // Update URL without reload
+                        const newUrl = `{{ route('admin.subscribers.index') }}?${params.toString()}`;
+                        window.history.pushState({}, '', newUrl);
+
+                        // Re-attach event listeners
+                        setupCheckboxes();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        if (tableBody) {
+                            tableBody.innerHTML = '<tr><td colspan="9" class="text-center py-4 text-danger">Error loading data. Please try again.</td></tr>';
+                        }
+                    });
+            }
+
+            // Setup checkboxes function
+            function setupCheckboxes() {
+                const selectAllCheckbox = document.getElementById('selectAll');
+                const subscriberCheckboxes = document.querySelectorAll('.subscriber-checkbox');
+
+                if (selectAllCheckbox) {
+                    selectAllCheckbox.addEventListener('change', function() {
+                        subscriberCheckboxes.forEach(checkbox => {
+                            checkbox.checked = this.checked;
+                        });
+                        updateBulkDeleteButton();
+                    });
+                }
+
+                subscriberCheckboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', function() {
+                        updateSelectAllCheckbox();
+                        updateBulkDeleteButton();
+                    });
+                });
+                updateBulkDeleteButton();
+            }
+            setupCheckboxes();
+
+            // Prevent form submission - use AJAX instead
+            const filterForm = document.getElementById('filterForm');
+            filterForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                performAjaxSearch();
             });
+
+            // Dropdown filters - use AJAX
+            document.getElementById('yearsOfExperienceFilter').addEventListener('change', function() {
+                performAjaxSearch();
+            });
+
+            document.getElementById('languageFilter').addEventListener('change', function() {
+                performAjaxSearch();
+            });
+
+            document.getElementById('dateFromFilter').addEventListener('change', function() {
+                performAjaxSearch();
+            });
+
+            document.getElementById('dateToFilter').addEventListener('change', function() {
+                performAjaxSearch();
+            });
+
+            // Clear filters button - use AJAX
+            const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+            if (clearFiltersBtn) {
+                clearFiltersBtn.addEventListener('click', function() {
+                    // Clear all form fields
+                    document.getElementById('searchInput').value = '';
+                    document.getElementById('yearsOfExperienceFilter').value = '';
+                    document.getElementById('languageFilter').value = '';
+                    document.getElementById('dateFromFilter').value = '';
+                    document.getElementById('dateToFilter').value = '';
+
+                    // Update URL without parameters
+                    window.history.pushState({}, '', '{{ route('admin.subscribers.index') }}');
+
+                    // Perform AJAX search with cleared filters
+                    performAjaxSearch();
+                });
+            }
+
+            // Search with debounce - AJAX only
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        performAjaxSearch();
+                    }, 500);
+                });
+
+                // Prevent form submission on Enter key in search
+                searchInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        clearTimeout(searchTimeout);
+                        performAjaxSearch();
+                    }
+                });
+            }
 
             // Multi-select functionality
-            const selectAllCheckbox = document.getElementById('selectAll');
-            const subscriberCheckboxes = document.querySelectorAll('.subscriber-checkbox');
             const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
             const selectedCountSpan = document.getElementById('selectedCount');
             const bulkDeleteForm = document.getElementById('bulkDeleteForm');
             const selectedSubscribersInput = document.getElementById('selectedSubscribers');
 
-            // Select all functionality
-            selectAllCheckbox.addEventListener('change', function() {
-                subscriberCheckboxes.forEach(checkbox => {
-                    checkbox.checked = this.checked;
-                });
-                updateBulkDeleteButton();
-            });
-
-            // Individual checkbox functionality
-            subscriberCheckboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
-                    updateSelectAllCheckbox();
-                    updateBulkDeleteButton();
-                });
-            });
-
             // Update select all checkbox state
             function updateSelectAllCheckbox() {
+                const selectAllCheckbox = document.getElementById('selectAll');
+                const subscriberCheckboxes = document.querySelectorAll('.subscriber-checkbox');
                 const checkedBoxes = document.querySelectorAll('.subscriber-checkbox:checked');
                 const totalBoxes = subscriberCheckboxes.length;
 
-                if (checkedBoxes.length === 0) {
-                    selectAllCheckbox.checked = false;
-                    selectAllCheckbox.indeterminate = false;
-                } else if (checkedBoxes.length === totalBoxes) {
-                    selectAllCheckbox.checked = true;
-                    selectAllCheckbox.indeterminate = false;
-                } else {
-                    selectAllCheckbox.checked = false;
-                    selectAllCheckbox.indeterminate = true;
+                if (selectAllCheckbox) {
+                    if (checkedBoxes.length === 0) {
+                        selectAllCheckbox.checked = false;
+                        selectAllCheckbox.indeterminate = false;
+                    } else if (checkedBoxes.length === totalBoxes) {
+                        selectAllCheckbox.checked = true;
+                        selectAllCheckbox.indeterminate = false;
+                    } else {
+                        selectAllCheckbox.checked = false;
+                        selectAllCheckbox.indeterminate = true;
+                    }
                 }
             }
 
@@ -304,11 +440,13 @@
                 const checkedBoxes = document.querySelectorAll('.subscriber-checkbox:checked');
                 const count = checkedBoxes.length;
 
-                if (count > 0) {
-                    bulkDeleteBtn.style.display = 'inline-block';
-                    selectedCountSpan.textContent = count;
-                } else {
-                    bulkDeleteBtn.style.display = 'none';
+                if (bulkDeleteBtn && selectedCountSpan) {
+                    if (count > 0) {
+                        bulkDeleteBtn.style.display = 'inline-block';
+                        selectedCountSpan.textContent = count;
+                    } else {
+                        bulkDeleteBtn.style.display = 'none';
+                    }
                 }
             }
 

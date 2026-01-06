@@ -10,12 +10,32 @@
     margin-bottom: 0;
 }
 
+/* Table Header Styles - Consolidated */
 .table thead th {
     background-color: #f8f9fa;
     font-weight: 600;
-    color: #495057;
+    color: #212529;
     border-bottom: 2px solid #dee2e6;
     vertical-align: middle;
+    padding: 0.75rem;
+}
+
+/* Ensure table header children also have dark text in light mode */
+.table thead th * {
+    color: #212529;
+}
+
+/* Table checkboxes - standard size */
+.table input[type="checkbox"],
+.table .form-check-input {
+    width: 1em;
+    height: 1em;
+    margin-top: 0.25em;
+    vertical-align: top;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25em;
+    cursor: pointer;
 }
 
 .table tbody td {

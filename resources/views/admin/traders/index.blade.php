@@ -24,20 +24,20 @@
             <div class="col-12">
                 <div class="card shadow-sm">
                     <div class="card-body">
-                        <form method="GET" action="{{ route('admin.traders.index') }}" class="row g-3">
+                        <form method="GET" action="{{ route('admin.traders.index') }}" id="filterForm" class="row g-3">
                             <div class="col-md-6">
                                 <label for="search" class="form-label">{{ custom_trans('Search', 'admin') }}</label>
-                                <input type="text" class="form-control" id="search" name="search"
-                                    value="{{ request('search', 'admin') }}"
+                                <input type="text" class="form-control" id="searchInput" name="search"
+                                    value="{{ request('search') }}"
                                     placeholder="{{ custom_trans('Search by name, email, phone...', 'admin') }}">
                             </div>
                             <div class="col-md-3 d-flex align-items-end">
                                 <button type="submit" class="btn btn-primary me-2">
                                     <i class="fas fa-search me-1"></i>{{ custom_trans('Filter', 'admin') }}
                                 </button>
-                                <a href="{{ route('admin.traders.index') }}" class="btn btn-outline-secondary">
+                                <button type="button" class="btn btn-outline-secondary" id="clearFiltersBtn">
                                     <i class="fas fa-times me-1"></i>{{ custom_trans('Clear', 'admin') }}
-                                </a>
+                                </button>
                             </div>
                             <div class="col-md-3 d-flex align-items-end">
                                 <a href="{{ route('admin.traders.export') }}{{ request()->getQueryString() ? '?' . request()->getQueryString() : '' }}"
@@ -81,11 +81,13 @@
                     <div class="card-body p-0">
                         @if ($traders->count() > 0)
                             <div class="table-responsive">
-                                <table class="table table-hover mb-0">
+                                <table class="table table-hover table-striped">
                                     <thead class="table-light">
                                         <tr>
-                                            <th>
-                                                <input type="checkbox" id="selectAll" class="form-check-input">
+                                            <th width="50">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="selectAll">
+                                                </div>
                                             </th>
                                             <th>{{ custom_trans('Name', 'admin') }}</th>
                                             <th>{{ custom_trans('Email', 'admin') }}</th>
@@ -101,8 +103,10 @@
                                         @foreach ($traders as $trader)
                                             <tr>
                                                 <td>
-                                                    <input type="checkbox" class="form-check-input trader-checkbox"
-                                                        value="{{ $trader->id }}">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input trader-checkbox" type="checkbox"
+                                                            value="{{ $trader->id }}">
+                                                    </div>
                                                 </td>
                                                 <td>
                                                     <div class="d-flex align-items-center">
@@ -189,8 +193,49 @@
         <!-- Pagination -->
         @if ($traders->hasPages())
             <div class="row mt-4">
-                <div class="col-12 d-flex justify-content-center">
-                    {{ $traders->appends(request()->query())->links() }}
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <div class="d-flex align-items-center me-3">
+                            <label class="form-label me-2 mb-0 small">Per page:</label>
+                            <select class="form-select form-select-sm w-auto" id="perPageSelect" onchange="changePerPage(this.value)">
+                                @php
+                                    $perPage = (int) request('per_page', 10);
+                                @endphp
+                                <option value="10" {{ $perPage === 10 ? 'selected' : '' }}>10</option>
+                                <option value="20" {{ $perPage === 20 ? 'selected' : '' }}>20</option>
+                                <option value="50" {{ $perPage === 50 ? 'selected' : '' }}>50</option>
+                                <option value="100" {{ $perPage === 100 ? 'selected' : '' }}>100</option>
+                                <option value="500" {{ $perPage === 500 ? 'selected' : '' }}>500</option>
+                                <option value="1000" {{ $perPage === 1000 ? 'selected' : '' }}>1000</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex justify-content-center">
+                        {{ $traders->appends(request()->query())->links() }}
+                    </div>
+                </div>
+            </div>
+        @else
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <div class="d-flex align-items-center me-3">
+                            <label class="form-label me-2 mb-0 small">Per page:</label>
+                            <select class="form-select form-select-sm w-auto" id="perPageSelect" onchange="changePerPage(this.value)">
+                                @php
+                                    $perPage = (int) request('per_page', 10);
+                                @endphp
+                                <option value="10" {{ $perPage === 10 ? 'selected' : '' }}>10</option>
+                                <option value="20" {{ $perPage === 20 ? 'selected' : '' }}>20</option>
+                                <option value="50" {{ $perPage === 50 ? 'selected' : '' }}>50</option>
+                                <option value="100" {{ $perPage === 100 ? 'selected' : '' }}>100</option>
+                                <option value="500" {{ $perPage === 500 ? 'selected' : '' }}>500</option>
+                                <option value="1000" {{ $perPage === 1000 ? 'selected' : '' }}>1000</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
         @endif
@@ -206,76 +251,193 @@
 
 @push('scripts')
     <script>
-        $(document).ready(function() {
-            // Select All functionality
-            $('#selectAll').on('change', function() {
-                $('.trader-checkbox').prop('checked', this.checked);
-                updateBulkActions();
-            });
+        // Change per page function
+        function changePerPage(value) {
+            const url = new URL(window.location);
+            url.searchParams.set('per_page', value);
+            url.searchParams.delete('page'); // Reset to first page
+            window.location.href = url.toString();
+        }
 
-            // Individual checkbox change
-            $('.trader-checkbox').on('change', function() {
+        document.addEventListener('DOMContentLoaded', function() {
+            // Setup checkboxes function
+            function setupCheckboxes() {
+                const selectAll = document.getElementById('selectAll');
+                const traderCheckboxes = document.querySelectorAll('.trader-checkbox');
+
+                if (selectAll) {
+                    selectAll.addEventListener('change', function() {
+                        traderCheckboxes.forEach(checkbox => {
+                            checkbox.checked = this.checked;
+                        });
+                        updateBulkActions();
+                    });
+                }
+
+                traderCheckboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', function() {
+                        const checkedCount = document.querySelectorAll('.trader-checkbox:checked').length;
+                        const totalCheckboxes = document.querySelectorAll('.trader-checkbox').length;
+                        if (selectAll) {
+                            selectAll.checked = checkedCount === totalCheckboxes;
+                            selectAll.indeterminate = checkedCount > 0 && checkedCount < totalCheckboxes;
+                        }
+                        updateBulkActions();
+                    });
+                });
                 updateBulkActions();
-                updateSelectAll();
-            });
+            }
+            setupCheckboxes();
 
             // Update bulk actions visibility and state
             function updateBulkActions() {
-                const selectedCount = $('.trader-checkbox:checked').length;
-                const bulkActions = $('#bulkActions');
-                const bulkDeleteBtn = $('#bulkDeleteBtn');
-                const selectedCountSpan = $('#selectedCount');
+                const selectedCount = document.querySelectorAll('.trader-checkbox:checked').length;
+                const bulkActions = document.getElementById('bulkActions');
+                const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+                const selectedCountSpan = document.getElementById('selectedCount');
 
-                if (selectedCount > 0) {
-                    bulkActions.show();
-                    bulkDeleteBtn.prop('disabled', false);
-                    selectedCountSpan.text(selectedCount);
-                } else {
-                    bulkActions.hide();
-                    bulkDeleteBtn.prop('disabled', true);
-                }
-            }
-
-            // Update select all checkbox state
-            function updateSelectAll() {
-                const totalCheckboxes = $('.trader-checkbox').length;
-                const checkedCheckboxes = $('.trader-checkbox:checked').length;
-                const selectAll = $('#selectAll');
-
-                if (checkedCheckboxes === 0) {
-                    selectAll.prop('indeterminate', false).prop('checked', false);
-                } else if (checkedCheckboxes === totalCheckboxes) {
-                    selectAll.prop('indeterminate', false).prop('checked', true);
-                } else {
-                    selectAll.prop('indeterminate', true);
+                if (bulkActions && bulkDeleteBtn && selectedCountSpan) {
+                    if (selectedCount > 0) {
+                        bulkActions.style.display = 'block';
+                        bulkDeleteBtn.disabled = false;
+                        selectedCountSpan.textContent = selectedCount;
+                    } else {
+                        bulkActions.style.display = 'none';
+                        bulkDeleteBtn.disabled = true;
+                    }
                 }
             }
 
             // Clear selection
-            $('#clearSelection').on('click', function() {
-                $('.trader-checkbox').prop('checked', false);
-                $('#selectAll').prop('checked', false).prop('indeterminate', false);
-                updateBulkActions();
-            });
+            const clearSelection = document.getElementById('clearSelection');
+            if (clearSelection) {
+                clearSelection.addEventListener('click', function() {
+                    document.querySelectorAll('.trader-checkbox').forEach(checkbox => {
+                        checkbox.checked = false;
+                    });
+                    const selectAll = document.getElementById('selectAll');
+                    if (selectAll) {
+                        selectAll.checked = false;
+                        selectAll.indeterminate = false;
+                    }
+                    updateBulkActions();
+                });
+            }
 
             // Bulk delete
-            $('#bulkDeleteBtn').on('click', function() {
-                const selectedIds = $('.trader-checkbox:checked').map(function() {
-                    return $(this).val();
-                }).get();
+            const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+            if (bulkDeleteBtn) {
+                bulkDeleteBtn.addEventListener('click', function() {
+                    const selectedIds = Array.from(document.querySelectorAll('.trader-checkbox:checked'))
+                        .map(checkbox => checkbox.value);
 
-                if (selectedIds.length === 0) {
-                    alert('{{ custom_trans('Please select traders to delete.', 'admin') }}');
-                    return;
+                    if (selectedIds.length === 0) {
+                        alert('{{ custom_trans('Please select traders to delete.', 'admin') }}');
+                        return;
+                    }
+
+                    if (confirm('{{ custom_trans('Are you sure you want to delete the selected traders? This action cannot be undone.', 'admin') }}')) {
+                        document.getElementById('selectedTraderIds').value = JSON.stringify(selectedIds);
+                        document.getElementById('bulkDeleteForm').submit();
+                    }
+                });
+            }
+
+            // Initialize variables for AJAX search
+            let searchTimeout;
+            const searchInput = document.getElementById('searchInput');
+            const tableBody = document.querySelector('.table tbody');
+            const paginationContainer = document.querySelector('.row.mt-4 .col-12');
+
+            // AJAX search function
+            function performAjaxSearch() {
+                const formData = new FormData(document.getElementById('filterForm'));
+                const params = new URLSearchParams(formData);
+
+                // Show loading state
+                if (tableBody) {
+                    tableBody.innerHTML = '<tr><td colspan="9" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
                 }
 
-                if (confirm(
-                        '{{ custom_trans('Are you sure you want to delete the selected traders? This action cannot be undone.', 'admin') }}'
-                    )) {
-                    $('#selectedTraderIds').val(JSON.stringify(selectedIds));
-                    $('#bulkDeleteForm').submit();
-                }
+                fetch(`{{ route('admin.traders.index') }}?${params.toString()}`, {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'text/html'
+                        }
+                    })
+                    .then(response => response.text())
+                    .then(html => {
+                        // Create a temporary container to parse the HTML
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = html;
+
+                        // Extract table body
+                        const newTableBody = tempDiv.querySelector('.table tbody');
+                        const newPagination = tempDiv.querySelector('.row.mt-4 .col-12');
+
+                        if (newTableBody && tableBody) {
+                            tableBody.innerHTML = newTableBody.innerHTML;
+                        }
+
+                        if (newPagination && paginationContainer) {
+                            paginationContainer.innerHTML = newPagination.innerHTML;
+                        }
+
+                        // Update URL without reload
+                        const newUrl = `{{ route('admin.traders.index') }}?${params.toString()}`;
+                        window.history.pushState({}, '', newUrl);
+
+                        // Re-attach event listeners
+                        setupCheckboxes();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        if (tableBody) {
+                            tableBody.innerHTML = '<tr><td colspan="9" class="text-center py-4 text-danger">Error loading data. Please try again.</td></tr>';
+                        }
+                    });
+            }
+
+            // Prevent form submission - use AJAX instead
+            document.getElementById('filterForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                performAjaxSearch();
             });
+
+            // Clear filters button - use AJAX
+            const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+            if (clearFiltersBtn) {
+                clearFiltersBtn.addEventListener('click', function() {
+                    // Clear all form fields
+                    document.getElementById('searchInput').value = '';
+
+                    // Update URL without parameters
+                    window.history.pushState({}, '', '{{ route('admin.traders.index') }}');
+
+                    // Perform AJAX search with cleared filters
+                    performAjaxSearch();
+                });
+            }
+
+            // Search with debounce - AJAX only
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        performAjaxSearch();
+                    }, 500);
+                });
+
+                // Prevent form submission on Enter key in search
+                searchInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        clearTimeout(searchTimeout);
+                        performAjaxSearch();
+                    }
+                });
+            }
         });
     </script>
 @endpush
