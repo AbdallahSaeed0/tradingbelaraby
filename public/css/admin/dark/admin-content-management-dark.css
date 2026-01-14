@@ -152,14 +152,7 @@ input[type="search"].form-control:-moz-placeholder {
 
 /* Table header styles consolidated in admin-tables-dark.css */
 /* Specific table styles for content management tables */
-#sliders-table thead th,
-#features-table thead th,
-#hero-features-table thead th,
-#faqs-table thead th {
-    background: var(--admin-dropdown-hover, #3d4153) !important;
-    color: var(--admin-text, #e4e6eb) !important;
-    border-color: var(--admin-border, #3d4153) !important;
-}
+/* Removed custom header styles to match courses table - using default table styles */
 
 .table tbody tr:hover {
     background: var(--admin-table-stripe, #252836) !important;
@@ -204,62 +197,7 @@ input[type="search"].form-control:-moz-placeholder {
 }
 
 /* Sliders Table */
-#sliders-table thead th {
-    background: linear-gradient(135deg, var(--admin-dropdown-hover, #3d4153) 0%, var(--admin-border, #3d4153) 100%) !important;
-    color: var(--admin-text, #e4e6eb) !important;
-}
-
-#sliders-table tbody tr {
-    border-bottom-color: var(--admin-border, #3d4153) !important;
-}
-
-#sliders-table tbody tr:hover {
-    background: var(--admin-table-stripe, #252836) !important;
-}
-
-/* Features Table */
-#features-table {
-    background: var(--admin-table-bg, #2d3142) !important;
-}
-
-#features-table thead th.enhanced-header {
-    background: linear-gradient(135deg, var(--admin-dropdown-hover, #3d4153) 0%, var(--admin-border, #3d4153) 100%) !important;
-    color: var(--admin-text, #e4e6eb) !important;
-}
-
-#features-table tbody tr:hover {
-    background: var(--admin-table-stripe, #252836) !important;
-}
-
-#features-table tbody td {
-    border-bottom-color: var(--admin-border, #3d4153) !important;
-}
-
-/* Hero Features Table */
-#hero-features-table {
-    background: var(--admin-table-bg, #2d3142) !important;
-}
-
-#hero-features-table tbody tr {
-    border-bottom-color: var(--admin-border, #3d4153) !important;
-}
-
-#hero-features-table tbody tr:hover {
-    background: var(--admin-table-stripe, #252836) !important;
-}
-
-/* FAQs Table */
-#faqs-table {
-    background: var(--admin-table-bg, #2d3142) !important;
-}
-
-#faqs-table tbody tr:hover {
-    background: var(--admin-table-stripe, #252836) !important;
-}
-
-#faqs-table tbody td {
-    border-bottom-color: var(--admin-border, #3d4153) !important;
-}
+/* Removed custom table styles to match courses table - using default Bootstrap table styles */
 
 /* All borders */
 .lecture-item,
@@ -374,11 +312,5 @@ input[type="search"].form-control:-moz-placeholder {
     border-bottom-color: var(--admin-border, #3d4153) !important;
 }
 
-/* Table headers with gradients - keep readable */
-#features-table thead th,
-#hero-features-table thead th,
-#faqs-table thead th {
-    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%) !important;
-    color: var(--admin-text, #e4e6eb) !important;
-}
+/* Removed custom table header gradients to match courses table */
 

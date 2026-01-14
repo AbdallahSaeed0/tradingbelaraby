@@ -27,23 +27,7 @@
         </div>
 
         <!-- FAQs Table -->
-        <div class="card faqs-card mb-4">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">{{ custom_trans('Frequently Asked Questions', 'admin') }}</h5>
-                <div class="bulk-actions d-none-initially">
-                    <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-success btn-sm" id="bulk_activate">
-                            <i class="fas fa-check me-1"></i>{{ custom_trans('Activate', 'admin') }}
-                        </button>
-                        <button type="button" class="btn btn-warning btn-sm" id="bulk_deactivate">
-                            <i class="fas fa-pause me-1"></i>{{ custom_trans('Deactivate', 'admin') }}
-                        </button>
-                        <button type="button" class="btn btn-danger btn-sm" id="bulk_delete">
-                            <i class="fas fa-trash me-1"></i>{{ custom_trans('Delete', 'admin') }}
-                        </button>
-                    </div>
-                </div>
-            </div>
+        <div class="card mb-4">
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-hover table-striped" id="faqs-table">
@@ -360,6 +344,33 @@
             </div>
         </div>
     </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="deleteConfirmModalLabel">
+                        <i class="fas fa-exclamation-triangle me-2"></i>{{ custom_trans('Confirm Delete', 'admin') }}
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="deleteConfirmMessage">{{ custom_trans('Are you sure you want to delete this item? This action cannot be undone.', 'admin') }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        {{ custom_trans('Cancel', 'admin') }}
+                    </button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                        <i class="fas fa-trash me-1"></i>{{ custom_trans('Delete', 'admin') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -552,10 +563,17 @@
             });
 
             // Delete FAQ Button
+            let deleteFaqId = null;
             $('.delete-faq-btn').on('click', function() {
-                const faqId = $(this).data('id');
+                deleteFaqId = $(this).data('id');
+                $('#deleteConfirmMessage').text('{{ custom_trans('Are you sure you want to delete this FAQ? This action cannot be undone.', 'admin') }}');
+                $('#deleteConfirmModal').modal('show');
+            });
 
-                if (confirm('{{ custom_trans('Are you sure you want to delete this FAQ?', 'admin') }}')) {
+            $(document).on('click', '#confirmDeleteBtn', function() {
+                if (deleteFaqId) {
+                    const faqId = deleteFaqId;
+                    deleteFaqId = null;
                     $.ajax({
                         url: `/admin/settings/faq/${faqId}`,
                         method: 'DELETE',
@@ -564,15 +582,18 @@
                         },
                         success: function(response) {
                             if (response.success) {
+                                $('#deleteConfirmModal').modal('hide');
                                 toastr.success(response.message);
                                 setTimeout(function() {
                                     location.reload();
                                 }, 1000);
                             } else {
+                                $('#deleteConfirmModal').modal('hide');
                                 toastr.error(response.message);
                             }
                         },
                         error: function() {
+                            $('#deleteConfirmModal').modal('hide');
                             toastr.error(
                                 '{{ custom_trans('An error occurred while deleting the FAQ', 'admin') }}');
                         }

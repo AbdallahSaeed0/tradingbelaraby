@@ -4,17 +4,20 @@
 
 /* Form Controls Dark Mode */
 .form-control,
-.form-select {
+.form-select,
+textarea.form-control {
     border-color: var(--admin-border, #3d4153) !important;
     background-color: var(--admin-input-bg, #3d4153) !important;
     color: var(--admin-input-text, #e4e6eb) !important;
 }
 
 .form-control:focus,
-.form-select:focus {
+.form-select:focus,
+textarea.form-control:focus {
     border-color: var(--admin-active-text, #6c9fff) !important;
     background-color: var(--admin-input-bg, #3d4153) !important;
     color: var(--admin-input-text, #e4e6eb) !important;
+    box-shadow: 0 0 0 0.25rem rgba(108, 159, 255, 0.25) !important;
 }
 
 /* Input Group Text */
@@ -34,3 +37,106 @@
     color: var(--admin-text-muted, #8a8d91) !important;
 }
 
+/* SEO Section Dark Mode */
+.seo-section {
+    background-color: var(--admin-card-bg, #2d3142) !important;
+    border-color: var(--admin-border, #3d4153) !important;
+}
+
+.seo-section h5 {
+    color: var(--admin-text, #e4e6eb) !important;
+}
+
+/* Tags Input Dark Mode */
+.tags-input {
+    background-color: var(--admin-input-bg, #3d4153) !important;
+    border-color: var(--admin-border, #3d4153) !important;
+}
+
+.tags-input input[type="text"],
+.tags-input .input-transparent {
+    color: var(--admin-input-text, #e4e6eb) !important;
+    background: transparent !important;
+}
+
+.tags-input input[type="text"]::placeholder,
+.tags-input .input-transparent::placeholder {
+    color: var(--admin-text-muted, #8a8d91) !important;
+}
+
+/* Language Tabs Dark Mode */
+.language-tabs {
+    border-bottom-color: var(--admin-border, #3d4153) !important;
+}
+
+.language-tab {
+    color: var(--admin-text-muted, #8a8d91) !important;
+    background: transparent !important;
+}
+
+.language-tab:hover {
+    color: var(--admin-text, #e4e6eb) !important;
+    background-color: var(--admin-dropdown-hover, #3d4153) !important;
+}
+
+.language-tab.active {
+    color: var(--admin-active-text, #6c9fff) !important;
+    border-bottom-color: var(--admin-active-text, #6c9fff) !important;
+    background-color: var(--admin-dropdown-hover, #3d4153) !important;
+}
+
+/* Form Control Plaintext (View Modals) Dark Mode */
+.form-control-plaintext {
+    color: var(--admin-text, #e4e6eb) !important;
+    background-color: var(--admin-input-bg, #3d4153) !important;
+    border: 1px solid var(--admin-border, #3d4153) !important;
+    border-radius: 0.375rem !important;
+    padding: 0.5rem 0.75rem !important;
+    min-height: 2.5rem !important;
+    display: block !important;
+    width: 100% !important;
+    margin-bottom: 0.5rem !important;
+}
+
+/* View Modal Field Separators - Only apply to modals containing plaintext (view modals) */
+.modal:has(.form-control-plaintext) .modal-body .mb-3 {
+    padding-bottom: 1rem !important;
+    margin-bottom: 1rem !important;
+    border-bottom: 1px solid var(--admin-border, #3d4153) !important;
+}
+
+.modal:has(.form-control-plaintext) .modal-body .mb-3:last-child,
+.modal:has(.form-control-plaintext)
+    .modal-body
+    .language-content
+    .mb-3:last-child {
+    border-bottom: none !important;
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+/* View Modal Row Separators */
+.modal:has(.form-control-plaintext) .modal-body .row {
+    padding-bottom: 1rem !important;
+    margin-bottom: 1rem !important;
+    border-bottom: 1px solid var(--admin-border, #3d4153) !important;
+}
+
+.modal:has(.form-control-plaintext) .modal-body .row:last-child {
+    border-bottom: none !important;
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+/* Separator after language content sections */
+.modal:has(.form-control-plaintext) .modal-body .language-content {
+    padding-bottom: 1rem !important;
+    margin-bottom: 1rem !important;
+    border-bottom: 1px solid var(--admin-border, #3d4153) !important;
+}
+
+.modal:has(.form-control-plaintext) .modal-body .language-content:last-of-type {
+    border-bottom: none !important;
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+}

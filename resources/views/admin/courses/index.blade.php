@@ -141,14 +141,6 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="d-flex align-items-center">
-                        <div class="btn-group me-3" role="group">
-                            <button type="button" class="btn btn-outline-primary active" id="listView">
-                                <i class="fa fa-list me-1"></i>List View
-                            </button>
-                            <button type="button" class="btn btn-outline-primary" id="gridView">
-                                <i class="fa fa-th me-1"></i>Grid View
-                            </button>
-                        </div>
                     </div>
                     <div class="d-flex align-items-center">
                         <button class="btn btn-sm btn-outline-success me-2" data-bs-toggle="modal"
@@ -393,146 +385,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Grid View -->
-        <div class="card" id="gridViewContainer" style="display: none;">
-            <div class="card-body">
-                <div class="row g-4">
-                    @forelse($courses as $course)
-                        <div class="col-lg-4 col-md-6">
-                            <div class="card course-card h-100">
-                                <div class="position-relative">
-                                    @if ($course->image)
-                                        <img src="{{ $course->image_url }}" class="card-img-top"
-                                            alt="{{ $course->name }}" style="height: 200px; object-fit: cover;">
-                                    @else
-                                        <div class="card-img-top bg-primary text-white d-flex align-items-center justify-content-center"
-                                            style="height: 200px;">
-                                            <i class="fa fa-book fa-3x"></i>
-                                        </div>
-                                    @endif
-                                    <div class="position-absolute top-0 end-0 m-2">
-                                        @php
-                                            $statusClasses = [
-                                                'published' => 'bg-success',
-                                                'draft' => 'bg-warning',
-                                                'archived' => 'bg-secondary',
-                                            ];
-                                            $statusClass = $statusClasses[$course->status] ?? 'bg-secondary';
-                                        @endphp
-                                        <span class="badge {{ $statusClass }}">{{ ucfirst($course->status) }}</span>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <h6 class="card-title">{{ $course->name }}</h6>
-                                    <p class="card-text text-muted small">{{ Str::limit($course->description, 100) }}</p>
-
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <small class="text-muted">
-                                            <i class="fa fa-user me-1"></i>
-                                            @if ($course->instructors->count() > 0)
-                                                {{ $course->instructors->pluck('name')->take(2)->join(', ') }}
-                                                @if ($course->instructors->count() > 2)
-                                                    <span>+{{ $course->instructors->count() - 2 }}</span>
-                                                @endif
-                                            @else
-                                                No instructor
-                                            @endif
-                                        </small>
-                                        <small class="text-muted">
-                                            <i class="fa fa-users me-1"></i>{{ $course->enrollments->count() }} students
-                                        </small>
-                                    </div>
-
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span class="fw-bold text-primary">{{ number_format($course->price, 2) }}
-                                            SAR</span>
-                                        <small class="text-muted">{{ $course->created_at->format('M d, Y') }}</small>
-                                    </div>
-                                </div>
-                                <div class="card-footer bg-transparent">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div class="form-check">
-                                            <input class="form-check-input row-checkbox" type="checkbox"
-                                                value="{{ $course->id }}">
-                                        </div>
-                                        <div class="btn-group btn-group-sm">
-                                            <a href="{{ route('admin.courses.show', $course) }}"
-                                                class="btn btn-outline-primary" title="View">
-                                                <i class="fa fa-eye"></i>
-                                            </a>
-                                            <a href="{{ route('admin.courses.edit', $course) }}"
-                                                class="btn btn-outline-secondary" title="Edit">
-                                                <i class="fa fa-edit"></i>
-                                            </a>
-                                            <a href="{{ route('admin.courses.analytics', $course) }}"
-                                                class="btn btn-outline-info" title="Analytics">
-                                                <i class="fa fa-chart-bar"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @empty
-                        <div class="col-12">
-                            <div class="text-center py-4">
-                                <div class="text-muted">
-                                    <i class="fa fa-book fa-3x mb-3"></i>
-                                    <h5>No courses found</h5>
-                                    <p>Start by creating your first course.</p>
-                                    <a href="{{ route('admin.courses.create') }}" class="btn btn-primary">
-                                        <i class="fa fa-plus me-2"></i>Create Course
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    @endforelse
-                </div>
-                
-                <!-- Bulk Actions and Pagination -->
-                <div class="row mt-3">
-                    <div class="col-md-6">
-                        <div class="d-flex align-items-center">
-                            <div class="d-flex align-items-center me-3">
-                                <label class="form-label me-2 mb-0 small">Per page:</label>
-                                <select class="form-select form-select-sm w-auto" id="perPageSelect" onchange="changePerPage(this.value)">
-                                    @php
-                                        $perPage = (int) request('per_page', 10);
-                                    @endphp
-                                    <option value="10" {{ $perPage === 10 ? 'selected' : '' }}>10</option>
-                                    <option value="20" {{ $perPage === 20 ? 'selected' : '' }}>20</option>
-                                    <option value="50" {{ $perPage === 50 ? 'selected' : '' }}>50</option>
-                                    <option value="100" {{ $perPage === 100 ? 'selected' : '' }}>100</option>
-                                    <option value="500" {{ $perPage === 500 ? 'selected' : '' }}>500</option>
-                                    <option value="1000" {{ $perPage === 1000 ? 'selected' : '' }}>1000</option>
-                                </select>
-                            </div>
-                            <div id="bulkActions" style="display: none;">
-                                <button type="button" class="btn btn-danger btn-sm" id="bulkDelete">
-                                    <i class="fa fa-trash me-1"></i>Delete Selected
-                                </button>
-                                <div class="dropdown d-inline ms-2" id="bulkStatusDropdown" style="display: none;">
-                                    <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                        <i class="fa fa-toggle-on me-1"></i>Change Status
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="#" onclick="bulkUpdateStatus('published')">Publish Selected</a></li>
-                                        <li><a class="dropdown-item" href="#" onclick="bulkUpdateStatus('draft')">Set as Draft</a></li>
-                                        <li><a class="dropdown-item" href="#" onclick="bulkUpdateStatus('archived')">Archive Selected</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="d-flex justify-content-end">
-                            {{ $courses->links('pagination::bootstrap-5') }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- Import Modal -->
@@ -580,26 +432,6 @@
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // View toggle functionality
-            const gridViewBtn = document.getElementById('gridView');
-            const listViewBtn = document.getElementById('listView');
-            const gridViewContainer = document.getElementById('gridViewContainer');
-            const listViewContainer = document.getElementById('listViewContainer');
-
-            gridViewBtn.addEventListener('click', function() {
-                gridViewContainer.style.display = 'block';
-                listViewContainer.style.display = 'none';
-                this.classList.add('active');
-                listViewBtn.classList.remove('active');
-            });
-
-            listViewBtn.addEventListener('click', function() {
-                listViewContainer.style.display = 'block';
-                gridViewContainer.style.display = 'none';
-                this.classList.add('active');
-                gridViewBtn.classList.remove('active');
-            });
-
             // Select all checkbox functionality
             function setupCheckboxes() {
                 const selectAllCheckbox = document.getElementById('selectAll');

@@ -168,6 +168,33 @@
             </div>
         </div>
     </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="deleteConfirmModalLabel">
+                        <i class="fas fa-exclamation-triangle me-2"></i>{{ custom_trans('Confirm Delete', 'admin') }}
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="deleteConfirmMessage">{{ custom_trans('Are you sure you want to delete this item? This action cannot be undone.', 'admin') }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        {{ custom_trans('Cancel', 'admin') }}
+                    </button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                        <i class="fas fa-trash me-1"></i>{{ custom_trans('Delete', 'admin') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -246,25 +273,32 @@
 
             // Delete Form
             $('.delete-form-btn').on('click', function() {
-                if (confirm('{{ custom_trans('Are you sure you want to delete this contact form submission?', 'admin') }}')) {
-                    $.ajax({
-                        url: '{{ route('admin.settings.contact-forms.destroy', $contactForm) }}',
-                        method: 'DELETE',
-                        data: {
-                            _token: '{{ csrf_token() }}'
-                        },
+                $('#deleteConfirmMessage').text('{{ custom_trans('Are you sure you want to delete this contact form submission? This action cannot be undone.', 'admin') }}');
+                $('#deleteConfirmModal').modal('show');
+            });
+
+            $(document).on('click', '#confirmDeleteBtn', function() {
+                $.ajax({
+                    url: '{{ route('admin.settings.contact-forms.destroy', $contactForm) }}',
+                    method: 'DELETE',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
                         success: function(response) {
                             if (response.success) {
+                                $('#deleteConfirmModal').modal('hide');
                                 toastr.success(response.message);
                                 setTimeout(function() {
                                     window.location.href =
                                         '{{ route('admin.settings.contact-forms.index') }}';
                                 }, 1500);
                             } else {
+                                $('#deleteConfirmModal').modal('hide');
                                 toastr.error(response.message);
                             }
                         },
                         error: function() {
+                            $('#deleteConfirmModal').modal('hide');
                             toastr.error(
                                 '{{ custom_trans('An error occurred while deleting the submission', 'admin') }}'
                             );

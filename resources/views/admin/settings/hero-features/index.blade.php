@@ -26,13 +26,12 @@
             </div>
         </div>
 
-        <!-- Filters Card -->
-        <div class="card filter-card mb-4">
+        <!-- Filters and Search -->
+        <div class="card mb-4">
             <div class="card-body">
-                <form id="filterForm" class="row g-3">
+                <form method="GET" action="{{ route('admin.settings.hero-features.index') }}" id="filterForm" class="row g-3">
                     <div class="col-md-3">
-                        <label for="status_filter" class="form-label">{{ custom_trans('Status', 'admin') }}</label>
-                        <select class="form-select form-select-lg" id="status_filter" name="status">
+                        <select class="form-select" name="status" id="status_filter">
                             <option value="">{{ custom_trans('All Status', 'admin') }}</option>
                             <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>
                                 {{ custom_trans('Active', 'admin') }}</option>
@@ -41,14 +40,15 @@
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label for="search_filter" class="form-label">{{ custom_trans('Search', 'admin') }}</label>
-                        <input type="text" class="form-control form-control-lg" id="search_filter" name="search"
-                            value="{{ request('search') }}" placeholder="{{ custom_trans('Search by title, subtitle...', 'admin') }}"
-                            autocomplete="off">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fa fa-search"></i></span>
+                            <input type="text" class="form-control" name="search" id="search_filter"
+                                value="{{ request('search') }}" placeholder="{{ custom_trans('Search by title, subtitle...', 'admin') }}"
+                                autocomplete="off">
+                        </div>
                     </div>
                     <div class="col-md-3">
-                        <label for="order_filter" class="form-label">{{ custom_trans('Order By', 'admin') }}</label>
-                        <select class="form-select form-select-lg" id="order_filter" name="order_by">
+                        <select class="form-select" name="order_by" id="order_filter">
                             <option value="order" {{ request('order_by', 'order') === 'order' ? 'selected' : '' }}>
                                 {{ custom_trans('Order', 'admin') }}</option>
                             <option value="title" {{ request('order_by') === 'title' ? 'selected' : '' }}>
@@ -60,33 +60,21 @@
                         </select>
                     </div>
                     <div class="col-md-2">
-                        <label class="form-label">&nbsp;</label>
-                        <button type="button" class="btn btn-secondary btn-lg w-100" id="clear_filters">
-                            <i class="fas fa-times me-2"></i>{{ custom_trans('Clear', 'admin') }}
-                        </button>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa fa-search me-1"></i>{{ custom_trans('Filter', 'admin') }}
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" id="clear_filters">
+                                <i class="fa fa-refresh me-1"></i>{{ custom_trans('Clear', 'admin') }}
+                            </button>
+                        </div>
                     </div>
                 </form>
             </div>
         </div>
 
-        <!-- Bulk Actions -->
-        <div class="card table-card mb-4">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">{{ custom_trans('Hero Features', 'admin') }}</h5>
-                <div class="bulk-actions d-none-initially">
-                    <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-success btn-sm" id="bulk_activate">
-                            <i class="fas fa-check me-1"></i>{{ custom_trans('Activate', 'admin') }}
-                        </button>
-                        <button type="button" class="btn btn-warning btn-sm" id="bulk_deactivate">
-                            <i class="fas fa-pause me-1"></i>{{ custom_trans('Deactivate', 'admin') }}
-                        </button>
-                        <button type="button" class="btn btn-danger btn-sm" id="bulk_delete">
-                            <i class="fas fa-trash me-1"></i>{{ custom_trans('Delete', 'admin') }}
-                        </button>
-                    </div>
-                </div>
-            </div>
+        <!-- Hero Features Table -->
+        <div class="card mb-4">
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-hover table-striped" id="hero-features-table">
@@ -185,32 +173,37 @@
                 <form id="addHeroFeatureForm">
                     @csrf
                     <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
-                                    <input type="text" class="form-control" id="title" name="title" required>
-                                </div>
+                        <!-- Language Tabs -->
+                        <div class="language-tabs mb-3">
+                            <button type="button" class="language-tab active" data-lang="en">
+                                <i class="fas fa-globe me-1"></i> English
+                            </button>
+                            <button type="button" class="language-tab" data-lang="ar">
+                                <i class="fas fa-globe me-1"></i> العربية
+                            </button>
+                        </div>
+
+                        <!-- English Content -->
+                        <div id="add-content-en" class="language-content active">
+                            <div class="mb-3">
+                                <label for="title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
+                                <input type="text" class="form-control" id="title" name="title" required>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="title_ar" class="form-label">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
-                                    <input type="text" class="form-control" id="title_ar" name="title_ar">
-                                </div>
+                            <div class="mb-3">
+                                <label for="subtitle" class="form-label">{{ custom_trans('Subtitle', 'admin') }} *</label>
+                                <input type="text" class="form-control" id="subtitle" name="subtitle" required>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="subtitle" class="form-label">{{ custom_trans('Subtitle', 'admin') }} *</label>
-                                    <input type="text" class="form-control" id="subtitle" name="subtitle" required>
-                                </div>
+
+                        <!-- Arabic Content -->
+                        <div id="add-content-ar" class="language-content">
+                            <div class="mb-3">
+                                <label for="title_ar" class="form-label">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
+                                <input type="text" class="form-control" id="title_ar" name="title_ar" dir="rtl">
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="subtitle_ar" class="form-label">{{ custom_trans('Subtitle (Arabic)', 'admin') }}</label>
-                                    <input type="text" class="form-control" id="subtitle_ar" name="subtitle_ar">
-                                </div>
+                            <div class="mb-3">
+                                <label for="subtitle_ar" class="form-label">{{ custom_trans('Subtitle (Arabic)', 'admin') }}</label>
+                                <input type="text" class="form-control" id="subtitle_ar" name="subtitle_ar" dir="rtl">
                             </div>
                         </div>
                         <div class="row">
@@ -263,34 +256,37 @@
                     @csrf
                     <input type="hidden" id="edit_hero_feature_id" name="hero_feature_id">
                     <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="edit_title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
-                                    <input type="text" class="form-control" id="edit_title" name="title" required>
-                                </div>
+                        <!-- Language Tabs -->
+                        <div class="language-tabs mb-3">
+                            <button type="button" class="language-tab active" data-lang="edit-en">
+                                <i class="fas fa-globe me-1"></i> English
+                            </button>
+                            <button type="button" class="language-tab" data-lang="edit-ar">
+                                <i class="fas fa-globe me-1"></i> العربية
+                            </button>
+                        </div>
+
+                        <!-- English Content -->
+                        <div id="edit-content-en" class="language-content active">
+                            <div class="mb-3">
+                                <label for="edit_title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
+                                <input type="text" class="form-control" id="edit_title" name="title" required>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="edit_title_ar" class="form-label">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
-                                    <input type="text" class="form-control" id="edit_title_ar" name="title_ar">
-                                </div>
+                            <div class="mb-3">
+                                <label for="edit_subtitle" class="form-label">{{ custom_trans('Subtitle', 'admin') }} *</label>
+                                <input type="text" class="form-control" id="edit_subtitle" name="subtitle" required>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="edit_subtitle" class="form-label">{{ custom_trans('Subtitle', 'admin') }} *</label>
-                                    <input type="text" class="form-control" id="edit_subtitle" name="subtitle"
-                                        required>
-                                </div>
+
+                        <!-- Arabic Content -->
+                        <div id="edit-content-ar" class="language-content">
+                            <div class="mb-3">
+                                <label for="edit_title_ar" class="form-label">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
+                                <input type="text" class="form-control" id="edit_title_ar" name="title_ar" dir="rtl">
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="edit_subtitle_ar"
-                                        class="form-label">{{ custom_trans('Subtitle (Arabic)', 'admin') }}</label>
-                                    <input type="text" class="form-control" id="edit_subtitle_ar" name="subtitle_ar">
-                                </div>
+                            <div class="mb-3">
+                                <label for="edit_subtitle_ar" class="form-label">{{ custom_trans('Subtitle (Arabic)', 'admin') }}</label>
+                                <input type="text" class="form-control" id="edit_subtitle_ar" name="subtitle_ar" dir="rtl">
                             </div>
                         </div>
                         <div class="row">
@@ -339,34 +335,41 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">{{ custom_trans('Title', 'admin') }}</label>
-                                <p id="view_title" class="form-control-plaintext"></p>
-                            </div>
+                    <!-- Language Tabs -->
+                    <div class="language-tabs mb-3">
+                        <button type="button" class="language-tab active" data-lang="view-en">
+                            <i class="fas fa-globe me-1"></i> English
+                        </button>
+                        <button type="button" class="language-tab" data-lang="view-ar">
+                            <i class="fas fa-globe me-1"></i> العربية
+                        </button>
+                    </div>
+
+                    <!-- English Content -->
+                    <div id="view-content-en" class="language-content active">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">{{ custom_trans('Title', 'admin') }}</label>
+                            <p id="view_title" class="form-control-plaintext"></p>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
-                                <p id="view_title_ar" class="form-control-plaintext"></p>
-                            </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">{{ custom_trans('Subtitle', 'admin') }}</label>
+                            <p id="view_subtitle" class="form-control-plaintext"></p>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">{{ custom_trans('Subtitle', 'admin') }}</label>
-                                <p id="view_subtitle" class="form-control-plaintext"></p>
-                            </div>
+
+                    <!-- Arabic Content -->
+                    <div id="view-content-ar" class="language-content">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
+                            <p id="view_title_ar" class="form-control-plaintext" dir="rtl"></p>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">{{ custom_trans('Subtitle (Arabic)', 'admin') }}</label>
-                                <p id="view_subtitle_ar" class="form-control-plaintext"></p>
-                            </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">{{ custom_trans('Subtitle (Arabic)', 'admin') }}</label>
+                            <p id="view_subtitle_ar" class="form-control-plaintext" dir="rtl"></p>
                         </div>
                     </div>
+
+                    <!-- Common Fields (not language-specific) -->
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
@@ -383,18 +386,41 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">{{ custom_trans('Status', 'admin') }}</label>
-                                <p id="view_status" class="form-control-plaintext"></p>
-                            </div>
-                        </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">{{ custom_trans('Status', 'admin') }}</label>
+                        <p id="view_status" class="form-control-plaintext"></p>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary"
                         data-bs-dismiss="modal">{{ custom_trans('Close', 'admin') }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="deleteConfirmModalLabel">
+                        <i class="fas fa-exclamation-triangle me-2"></i>{{ custom_trans('Confirm Delete', 'admin') }}
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="deleteConfirmMessage">{{ custom_trans('Are you sure you want to delete this item? This action cannot be undone.', 'admin') }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        {{ custom_trans('Cancel', 'admin') }}
+                    </button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                        <i class="fas fa-trash me-1"></i>{{ custom_trans('Delete', 'admin') }}
+                    </button>
                 </div>
             </div>
         </div>
@@ -405,6 +431,54 @@
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <script>
         $(document).ready(function() {
+            // Language tab switching for Add Modal
+            $('#addHeroFeatureModal .language-tab').on('click', function() {
+                const lang = $(this).data('lang');
+                const modal = $(this).closest('.modal');
+                
+                modal.find('.language-tab').removeClass('active');
+                modal.find('.language-content').removeClass('active');
+                
+                $(this).addClass('active');
+                if (lang === 'en') {
+                    modal.find('#add-content-en').addClass('active');
+                } else if (lang === 'ar') {
+                    modal.find('#add-content-ar').addClass('active');
+                }
+            });
+
+            // Language tab switching for Edit Modal
+            $('#editHeroFeatureModal .language-tab').on('click', function() {
+                const lang = $(this).data('lang');
+                const modal = $(this).closest('.modal');
+                
+                modal.find('.language-tab').removeClass('active');
+                modal.find('.language-content').removeClass('active');
+                
+                $(this).addClass('active');
+                if (lang === 'edit-en') {
+                    modal.find('#edit-content-en').addClass('active');
+                } else if (lang === 'edit-ar') {
+                    modal.find('#edit-content-ar').addClass('active');
+                }
+            });
+
+            // Language tab switching for View Modal
+            $('#viewHeroFeatureModal .language-tab').on('click', function() {
+                const lang = $(this).data('lang');
+                const modal = $(this).closest('.modal');
+                
+                modal.find('.language-tab').removeClass('active');
+                modal.find('.language-content').removeClass('active');
+                
+                $(this).addClass('active');
+                if (lang === 'view-en') {
+                    modal.find('#view-content-en').addClass('active');
+                } else if (lang === 'view-ar') {
+                    modal.find('#view-content-ar').addClass('active');
+                }
+            });
+
             // Debounce function for search
             function debounce(func, wait) {
                 let timeout;
@@ -484,20 +558,7 @@
                 }
             }
 
-            // Bulk actions
-            $('#bulk_activate').on('click', function() {
-                performBulkAction('activate');
-            });
-
-            $('#bulk_deactivate').on('click', function() {
-                performBulkAction('deactivate');
-            });
-
-            $('#bulk_delete').on('click', function() {
-                if (confirm('{{ custom_trans('Are you sure you want to delete the selected hero features?', 'admin') }}')) {
-                    performBulkAction('delete');
-                }
-            });
+            // Bulk actions - removed card-header buttons, functionality can be added via dropdown or other UI if needed
 
             function performBulkAction(action) {
                 const selectedIds = $('.feature-checkbox:checked').map(function() {
@@ -662,10 +723,18 @@
             });
 
             // Delete button click
+            let deleteHeroFeatureId = null;
             $('.delete-btn').on('click', function() {
-                const heroFeatureId = $(this).data('id');
+                deleteHeroFeatureId = $(this).data('id');
+                $('#deleteConfirmMessage').text('{{ custom_trans('Are you sure you want to delete this hero feature? This action cannot be undone.', 'admin') }}');
+                $('#deleteConfirmModal').modal('show');
+            });
 
-                if (confirm('{{ custom_trans('Are you sure you want to delete this hero feature?', 'admin') }}')) {
+            // Single delete handler
+            $(document).on('click', '#confirmDeleteBtn', function() {
+                if (deleteHeroFeatureId) {
+                    const heroFeatureId = deleteHeroFeatureId;
+                    deleteHeroFeatureId = null; // Reset
                     $.ajax({
                         url: `/admin/settings/hero-feature/${heroFeatureId}`,
                         method: 'DELETE',
@@ -674,15 +743,18 @@
                         },
                         success: function(response) {
                             if (response.success) {
+                                $('#deleteConfirmModal').modal('hide');
                                 toastr.success(response.message);
                                 setTimeout(function() {
                                     location.reload();
                                 }, 1000);
                             } else {
+                                $('#deleteConfirmModal').modal('hide');
                                 toastr.error(response.message);
                             }
                         },
                         error: function() {
+                            $('#deleteConfirmModal').modal('hide');
                             toastr.error(
                                 '{{ custom_trans('An error occurred while deleting the hero feature', 'admin') }}'
                                 );

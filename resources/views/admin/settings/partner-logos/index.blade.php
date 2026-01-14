@@ -82,15 +82,10 @@
                                                     class="btn btn-sm btn-primary">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                                <form action="{{ route('admin.partner-logos.destroy', $logo) }}"
-                                                    method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger"
-                                                        onclick="return confirm('Are you sure?')">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                </form>
+                                                <button type="button" class="btn btn-sm btn-danger delete-partner-logo"
+                                                    data-logo-id="{{ $logo->id }}">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
                                             </td>
                                         </tr>
                                     @empty
@@ -109,8 +104,47 @@
             </div>
         </div>
     </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="deleteConfirmModalLabel">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Confirm Delete
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="deleteConfirmMessage">Are you sure you want to delete this partner logo? This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form id="deletePartnerLogoForm" method="POST" class="d-inline">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash me-1"></i>Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
     @include('admin.partials.status-modal')
+    <script>
+        $(document).ready(function() {
+            $('.delete-partner-logo').on('click', function() {
+                const logoId = $(this).data('logo-id');
+                const deleteUrl = '{{ route('admin.partner-logos.index') }}/' + logoId;
+                $('#deletePartnerLogoForm').attr('action', deleteUrl);
+                $('#deleteConfirmModal').modal('show');
+            });
+        });
+    </script>
 @endpush

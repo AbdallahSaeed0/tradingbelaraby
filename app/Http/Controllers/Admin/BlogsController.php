@@ -145,6 +145,8 @@ class BlogsController extends Controller
         try {
             Blog::create($data);
             return redirect()->route('admin.blogs.index')->with('success', 'Blog created successfully');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
             \Log::error('Blog creation failed: ' . $e->getMessage());
             return redirect()->back()->withInput()->with('error', 'Failed to create blog: ' . $e->getMessage());
@@ -359,11 +361,24 @@ class BlogsController extends Controller
         $publishedBlogs = Blog::published()->count();
         $draftBlogs = Blog::where('status', 'draft')->count();
         $featuredBlogs = Blog::featured()->count();
+        $totalViews = Blog::sum('views_count');
 
-        $topCategories = BlogCategory::withCount('blogs')
-            ->orderBy('blogs_count', 'desc')
-            ->limit(5)
+        // Top performing blogs by views
+        $topBlogs = Blog::with('category')
+            ->orderBy('views_count', 'desc')
+            ->limit(10)
             ->get();
+
+        // Category statistics
+        $categoryStats = BlogCategory::withCount('blogs')
+            ->orderBy('blogs_count', 'desc')
+            ->get()
+            ->map(function ($category) {
+                return (object) [
+                    'category_name' => $category->name,
+                    'blog_count' => $category->blogs_count
+                ];
+            });
 
         $recentBlogs = Blog::with('category')
             ->latest()
@@ -381,7 +396,9 @@ class BlogsController extends Controller
             'publishedBlogs',
             'draftBlogs',
             'featuredBlogs',
-            'topCategories',
+            'totalViews',
+            'topBlogs',
+            'categoryStats',
             'recentBlogs',
             'blogsByStatus'
         ));

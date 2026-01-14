@@ -380,15 +380,7 @@
 }
 
 /* Specific table styles for content management - only apply to specific tables */
-#sliders-table thead th,
-#features-table thead th,
-#hero-features-table thead th,
-#faqs-table thead th {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border: none;
-    font-weight: 600;
-}
+/* Removed custom header styles to match courses table */
 
 .table tbody tr {
     transition: all 0.3s ease;
@@ -616,30 +608,7 @@
     margin-bottom: 0;
 }
 
-#sliders-table thead th {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    border: none;
-    padding: 1rem;
-    font-weight: 600;
-    color: #212529;
-    text-transform: uppercase;
-    font-size: 0.85rem;
-    letter-spacing: 0.5px;
-}
-
-#sliders-table tbody tr {
-    transition: all 0.3s ease;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-#sliders-table tbody tr:hover {
-    background: linear-gradient(
-        135deg,
-        rgba(102, 126, 234, 0.05) 0%,
-        rgba(118, 75, 162, 0.05) 100%
-    );
-    transform: translateX(5px);
-}
+/* Removed custom slider table styles to match courses table */
 
 #sliders-table tbody td {
     padding: 1rem;
@@ -752,41 +721,7 @@
     margin-bottom: 0;
 }
 
-#features-table thead th {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border: none;
-    font-weight: 600;
-    padding: 1rem;
-}
-
-#features-table thead th.enhanced-header {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    color: #212529;
-    text-transform: uppercase;
-    font-size: 0.85rem;
-    letter-spacing: 0.5px;
-}
-
-#features-table tbody tr {
-    transition: all 0.3s ease;
-}
-
-#features-table tbody tr:hover {
-    background: rgba(102, 126, 234, 0.1);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-#features-table tbody tr.enhanced-hover:hover {
-    background: linear-gradient(
-        135deg,
-        rgba(102, 126, 234, 0.05) 0%,
-        rgba(118, 75, 162, 0.05) 100%
-    );
-    transform: translateX(5px);
-    box-shadow: none;
-}
+/* Removed custom features table header and hover styles to match courses table */
 
 #features-table tbody td {
     padding: 1rem;
@@ -857,24 +792,7 @@
     overflow: hidden;
 }
 
-#hero-features-table thead th {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border: none;
-    font-weight: 600;
-    padding: 1rem;
-}
-
-#hero-features-table tbody tr {
-    transition: all 0.3s ease;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-#hero-features-table tbody tr:hover {
-    background: rgba(102, 126, 234, 0.1);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
+/* Removed custom hero-features table styles to match courses table */
 
 #hero-features-table tbody td {
     padding: 1rem;
@@ -915,23 +833,7 @@
     overflow: hidden;
 }
 
-#faqs-table thead th {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border: none;
-    font-weight: 600;
-    padding: 1rem;
-}
-
-#faqs-table tbody tr {
-    transition: all 0.3s ease;
-}
-
-#faqs-table tbody tr:hover {
-    background: rgba(102, 126, 234, 0.1);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
+/* Removed custom FAQs table styles to match courses table */
 
 #faqs-table tbody td {
     padding: 1rem;

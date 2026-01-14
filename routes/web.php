@@ -351,12 +351,14 @@ Route::resource('quizzes.questions', App\Http\Controllers\Admin\QuizQuestionMana
     Route::resource('questions-answers', App\Http\Controllers\Admin\QuestionsAnswersManagementController::class)->middleware('admin.permission:manage_questions_answers,manage_own_questions_answers');
     Route::resource('languages', App\Http\Controllers\Admin\LanguageController::class)->middleware('admin.permission:manage_languages');
     Route::resource('translations', App\Http\Controllers\Admin\TranslationController::class)->middleware('admin.permission:manage_translations');
+    // Blogs analytics route must be before resource route to avoid route conflict
+    Route::get('/blogs/analytics', [App\Http\Controllers\Admin\BlogsController::class, 'analytics'])->name('blogs.analytics')->middleware('admin.permission:view_analytics');
     Route::resource('blogs', App\Http\Controllers\Admin\BlogsController::class)->middleware('admin.permission:manage_blogs');
     Route::resource('blog-categories', App\Http\Controllers\Admin\BlogCategoryController::class)->parameters(['blog-categories' => 'category'])->middleware('admin.permission:manage_blogs');
     Route::get('/subscribers/export', [App\Http\Controllers\Admin\SubscriberController::class, 'export'])->name('subscribers.export')->middleware('admin.permission:manage_users');
     Route::post('/subscribers/bulk-delete', [App\Http\Controllers\Admin\SubscriberController::class, 'bulkDelete'])->name('subscribers.bulk-delete')->middleware('admin.permission:manage_users');
     Route::resource('subscribers', App\Http\Controllers\Admin\SubscriberController::class)->only(['index', 'show', 'destroy'])->middleware('admin.permission:manage_users');
-    
+
     // Trader management routes
     Route::get('/traders/export', [App\Http\Controllers\Admin\TraderController::class, 'export'])->name('traders.export')->middleware('admin.permission:manage_users');
     Route::delete('/traders/bulk-delete', [App\Http\Controllers\Admin\TraderController::class, 'bulkDelete'])->name('traders.bulk-delete')->middleware('admin.permission:manage_users');
@@ -431,9 +433,8 @@ Route::resource('quizzes.questions', App\Http\Controllers\Admin\QuizQuestionMana
     Route::post('/blog-categories/{category}/toggle-status', [App\Http\Controllers\Admin\BlogCategoryController::class, 'toggleStatus'])->name('blog-categories.toggle_status');
     Route::post('/blog-categories/{category}/update-status', [App\Http\Controllers\Admin\BlogCategoryController::class, 'updateStatus'])->name('blog-categories.update_status');
     Route::post('/blog-categories/bulk-delete', [App\Http\Controllers\Admin\BlogCategoryController::class, 'bulkDelete'])->name('blog-categories.bulk_delete');
-    Route::get('/blogs/analytics', [App\Http\Controllers\Admin\BlogsController::class, 'analytics'])->name('blogs.analytics')->middleware('admin.permission:view_analytics');
-        Route::post('/blogs/{blog}/toggle-status', [App\Http\Controllers\Admin\BlogsController::class, 'toggleStatus'])->name('blogs.toggle_status');
-        Route::post('/blogs/{blog}/update-status', [App\Http\Controllers\Admin\BlogsController::class, 'updateStatus'])->name('blogs.update_status');
+    Route::post('/blogs/{blog}/toggle-status', [App\Http\Controllers\Admin\BlogsController::class, 'toggleStatus'])->name('blogs.toggle_status');
+    Route::post('/blogs/{blog}/update-status', [App\Http\Controllers\Admin\BlogsController::class, 'updateStatus'])->name('blogs.update_status');
     Route::post('/blogs/{blog}/toggle-featured', [App\Http\Controllers\Admin\BlogsController::class, 'toggleFeatured'])->name('blogs.toggle_featured');
     Route::post('/blogs/bulk-delete', [App\Http\Controllers\Admin\BlogsController::class, 'bulkDelete'])->name('blogs.bulk_delete');
     Route::post('/translations/clear-cache', [App\Http\Controllers\Admin\TranslationController::class, 'clearCache'])->name('translations.clear_cache');

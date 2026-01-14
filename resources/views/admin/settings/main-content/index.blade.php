@@ -500,7 +500,11 @@
         });
 
         function removeLogo() {
-            if (confirm('Are you sure you want to remove the current logo?')) {
+            $('#deleteConfirmMessage').text('Are you sure you want to remove the current logo? This action cannot be undone.');
+            $('#deleteConfirmModal').modal('show');
+            $('#confirmDeleteBtn').off('click.removeLogo').on('click.removeLogo', function() {
+                $('#deleteConfirmModal').modal('hide');
+                $('#confirmDeleteBtn').off('click.removeLogo');
                 fetch('{{ route('admin.settings.main-content.remove-logo') }}', {
                         method: 'POST',
                         headers: {

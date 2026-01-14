@@ -34,34 +34,37 @@
             <div class="card-body">
                 <form id="aboutUniversityForm">
                     @csrf
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
-                                <input type="text" class="form-control" id="title" name="title"
-                                    value="{{ $aboutUniversity->title ?? '' }}" required>
-                            </div>
+                    <!-- Language Tabs -->
+                    <div class="language-tabs mb-3">
+                        <button type="button" class="language-tab active" data-lang="main-en">
+                            <i class="fas fa-globe me-1"></i> English
+                        </button>
+                        <button type="button" class="language-tab" data-lang="main-ar">
+                            <i class="fas fa-globe me-1"></i> العربية
+                        </button>
+                    </div>
+
+                    <!-- English Content -->
+                    <div id="main-content-en" class="language-content active">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
+                            <input type="text" class="form-control" id="title" name="title" value="{{ $aboutUniversity->title ?? '' }}" required>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="title_ar" class="form-label">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
-                                <input type="text" class="form-control" id="title_ar" name="title_ar"
-                                    value="{{ $aboutUniversity->title_ar ?? '' }}">
-                            </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">{{ custom_trans('Description', 'admin') }} *</label>
+                            <textarea class="form-control" id="description" name="description" rows="4" required>{{ $aboutUniversity->description ?? '' }}</textarea>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="description" class="form-label">{{ custom_trans('Description', 'admin') }} *</label>
-                                <textarea class="form-control" id="description" name="description" rows="4" required>{{ $aboutUniversity->description ?? '' }}</textarea>
-                            </div>
+
+                    <!-- Arabic Content -->
+                    <div id="main-content-ar" class="language-content">
+                        <div class="mb-3">
+                            <label for="title_ar" class="form-label">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
+                            <input type="text" class="form-control" id="title_ar" name="title_ar" value="{{ $aboutUniversity->title_ar ?? '' }}" dir="rtl">
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="description_ar" class="form-label">{{ custom_trans('Description (Arabic)', 'admin') }}</label>
-                                <textarea class="form-control" id="description_ar" name="description_ar" rows="4">{{ $aboutUniversity->description_ar ?? '' }}</textarea>
-                            </div>
+                        <div class="mb-3">
+                            <label for="description_ar" class="form-label">{{ custom_trans('Description (Arabic)', 'admin') }}</label>
+                            <textarea class="form-control" id="description_ar" name="description_ar" rows="4" dir="rtl">{{ $aboutUniversity->description_ar ?? '' }}</textarea>
                         </div>
                     </div>
                     <div class="row">
@@ -115,23 +118,7 @@
         </div>
 
         <!-- Features Section -->
-        <div class="card features-card mb-4">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">{{ custom_trans('Features', 'admin') }}</h5>
-                <div class="bulk-actions d-none-initially">
-                    <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-success btn-sm" id="bulk_activate">
-                            <i class="fas fa-check me-1"></i>{{ custom_trans('Activate', 'admin') }}
-                        </button>
-                        <button type="button" class="btn btn-warning btn-sm" id="bulk_deactivate">
-                            <i class="fas fa-pause me-1"></i>{{ custom_trans('Deactivate', 'admin') }}
-                        </button>
-                        <button type="button" class="btn btn-danger btn-sm" id="bulk_delete">
-                            <i class="fas fa-trash me-1"></i>{{ custom_trans('Delete', 'admin') }}
-                        </button>
-                    </div>
-                </div>
-            </div>
+        <div class="card mb-4">
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-hover table-striped" id="features-table">
@@ -225,34 +212,37 @@
                 <form id="addFeatureForm">
                     @csrf
                     <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="feature_title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
-                                    <input type="text" class="form-control" id="feature_title" name="title"
-                                        required>
-                                </div>
+                        <!-- Language Tabs -->
+                        <div class="language-tabs mb-3">
+                            <button type="button" class="language-tab active" data-lang="feat-en">
+                                <i class="fas fa-globe me-1"></i> English
+                            </button>
+                            <button type="button" class="language-tab" data-lang="feat-ar">
+                                <i class="fas fa-globe me-1"></i> العربية
+                            </button>
+                        </div>
+
+                        <!-- English Content -->
+                        <div id="feat-content-en" class="language-content active">
+                            <div class="mb-3">
+                                <label for="feature_title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
+                                <input type="text" class="form-control" id="feature_title" name="title" required>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="feature_title_ar" class="form-label">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
-                                    <input type="text" class="form-control" id="feature_title_ar" name="title_ar">
-                                </div>
+                            <div class="mb-3">
+                                <label for="feature_description" class="form-label">{{ custom_trans('Description', 'admin') }} *</label>
+                                <textarea class="form-control" id="feature_description" name="description" rows="3" required></textarea>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="feature_description" class="form-label">{{ custom_trans('Description', 'admin') }} *</label>
-                                    <textarea class="form-control" id="feature_description" name="description" rows="3" required></textarea>
-                                </div>
+
+                        <!-- Arabic Content -->
+                        <div id="feat-content-ar" class="language-content">
+                            <div class="mb-3">
+                                <label for="feature_title_ar" class="form-label">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
+                                <input type="text" class="form-control" id="feature_title_ar" name="title_ar" dir="rtl">
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="feature_description_ar"
-                                        class="form-label">{{ custom_trans('Description (Arabic)', 'admin') }}</label>
-                                    <textarea class="form-control" id="feature_description_ar" name="description_ar" rows="3"></textarea>
-                                </div>
+                            <div class="mb-3">
+                                <label for="feature_description_ar" class="form-label">{{ custom_trans('Description (Arabic)', 'admin') }}</label>
+                                <textarea class="form-control" id="feature_description_ar" name="description_ar" rows="3" dir="rtl"></textarea>
                             </div>
                         </div>
                         <div class="row">
@@ -304,37 +294,37 @@
                     @csrf
                     <input type="hidden" id="edit_feature_id" name="feature_id">
                     <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="edit_feature_title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
-                                    <input type="text" class="form-control" id="edit_feature_title" name="title"
-                                        required>
-                                </div>
+                        <!-- Language Tabs -->
+                        <div class="language-tabs mb-3">
+                            <button type="button" class="language-tab active" data-lang="edit-feat-en">
+                                <i class="fas fa-globe me-1"></i> English
+                            </button>
+                            <button type="button" class="language-tab" data-lang="edit-feat-ar">
+                                <i class="fas fa-globe me-1"></i> العربية
+                            </button>
+                        </div>
+
+                        <!-- English Content -->
+                        <div id="edit-feat-content-en" class="language-content active">
+                            <div class="mb-3">
+                                <label for="edit_feature_title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
+                                <input type="text" class="form-control" id="edit_feature_title" name="title" required>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="edit_feature_title_ar"
-                                        class="form-label">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
-                                    <input type="text" class="form-control" id="edit_feature_title_ar"
-                                        name="title_ar">
-                                </div>
+                            <div class="mb-3">
+                                <label for="edit_feature_description" class="form-label">{{ custom_trans('Description', 'admin') }} *</label>
+                                <textarea class="form-control" id="edit_feature_description" name="description" rows="3" required></textarea>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="edit_feature_description" class="form-label">{{ custom_trans('Description', 'admin') }}
-                                        *</label>
-                                    <textarea class="form-control" id="edit_feature_description" name="description" rows="3" required></textarea>
-                                </div>
+
+                        <!-- Arabic Content -->
+                        <div id="edit-feat-content-ar" class="language-content">
+                            <div class="mb-3">
+                                <label for="edit_feature_title_ar" class="form-label">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
+                                <input type="text" class="form-control" id="edit_feature_title_ar" name="title_ar" dir="rtl">
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="edit_feature_description_ar"
-                                        class="form-label">{{ custom_trans('Description (Arabic)', 'admin') }}</label>
-                                    <textarea class="form-control" id="edit_feature_description_ar" name="description_ar" rows="3"></textarea>
-                                </div>
+                            <div class="mb-3">
+                                <label for="edit_feature_description_ar" class="form-label">{{ custom_trans('Description (Arabic)', 'admin') }}</label>
+                                <textarea class="form-control" id="edit_feature_description_ar" name="description_ar" rows="3" dir="rtl"></textarea>
                             </div>
                         </div>
                         <div class="row">
@@ -383,34 +373,41 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">{{ custom_trans('Title', 'admin') }}</label>
-                                <p id="view_feature_title" class="form-control-plaintext"></p>
-                            </div>
+                    <!-- Language Tabs -->
+                    <div class="language-tabs mb-3">
+                        <button type="button" class="language-tab active" data-lang="view-feat-en">
+                            <i class="fas fa-globe me-1"></i> English
+                        </button>
+                        <button type="button" class="language-tab" data-lang="view-feat-ar">
+                            <i class="fas fa-globe me-1"></i> العربية
+                        </button>
+                    </div>
+
+                    <!-- English Content -->
+                    <div id="view-feat-content-en" class="language-content active">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">{{ custom_trans('Title', 'admin') }}</label>
+                            <p id="view_feature_title" class="form-control-plaintext"></p>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
-                                <p id="view_feature_title_ar" class="form-control-plaintext"></p>
-                            </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">{{ custom_trans('Description', 'admin') }}</label>
+                            <p id="view_feature_description" class="form-control-plaintext"></p>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">{{ custom_trans('Description', 'admin') }}</label>
-                                <p id="view_feature_description" class="form-control-plaintext"></p>
-                            </div>
+
+                    <!-- Arabic Content -->
+                    <div id="view-feat-content-ar" class="language-content">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
+                            <p id="view_feature_title_ar" class="form-control-plaintext" dir="rtl"></p>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">{{ custom_trans('Description (Arabic)', 'admin') }}</label>
-                                <p id="view_feature_description_ar" class="form-control-plaintext"></p>
-                            </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">{{ custom_trans('Description (Arabic)', 'admin') }}</label>
+                            <p id="view_feature_description_ar" class="form-control-plaintext" dir="rtl"></p>
                         </div>
                     </div>
+
+                    <!-- Common Fields (not language-specific) -->
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
@@ -425,18 +422,41 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">{{ custom_trans('Status', 'admin') }}</label>
-                                <p id="view_feature_status" class="form-control-plaintext"></p>
-                            </div>
-                        </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">{{ custom_trans('Status', 'admin') }}</label>
+                        <p id="view_feature_status" class="form-control-plaintext"></p>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary"
                         data-bs-dismiss="modal">{{ custom_trans('Close', 'admin') }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="deleteConfirmModalLabel">
+                        <i class="fas fa-exclamation-triangle me-2"></i>{{ custom_trans('Confirm Delete', 'admin') }}
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="deleteConfirmMessage">{{ custom_trans('Are you sure you want to delete this item? This action cannot be undone.', 'admin') }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        {{ custom_trans('Cancel', 'admin') }}
+                    </button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                        <i class="fas fa-trash me-1"></i>{{ custom_trans('Delete', 'admin') }}
+                    </button>
                 </div>
             </div>
         </div>
@@ -447,6 +467,69 @@
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <script>
         $(document).ready(function() {
+            // Language tab switching for Main Form
+            $('.main-content-card .language-tab').on('click', function() {
+                const lang = $(this).data('lang');
+                
+                $('.main-content-card .language-tab').removeClass('active');
+                $('.main-content-card .language-content').removeClass('active');
+                
+                $(this).addClass('active');
+                if (lang === 'main-en') {
+                    $('#main-content-en').addClass('active');
+                } else if (lang === 'main-ar') {
+                    $('#main-content-ar').addClass('active');
+                }
+            });
+
+            // Language tab switching for Add Feature Modal
+            $('#addFeatureModal .language-tab').on('click', function() {
+                const lang = $(this).data('lang');
+                const modal = $(this).closest('.modal');
+                
+                modal.find('.language-tab').removeClass('active');
+                modal.find('.language-content').removeClass('active');
+                
+                $(this).addClass('active');
+                if (lang === 'feat-en') {
+                    modal.find('#feat-content-en').addClass('active');
+                } else if (lang === 'feat-ar') {
+                    modal.find('#feat-content-ar').addClass('active');
+                }
+            });
+
+            // Language tab switching for Edit Feature Modal
+            $('#editFeatureModal .language-tab').on('click', function() {
+                const lang = $(this).data('lang');
+                const modal = $(this).closest('.modal');
+                
+                modal.find('.language-tab').removeClass('active');
+                modal.find('.language-content').removeClass('active');
+                
+                $(this).addClass('active');
+                if (lang === 'edit-feat-en') {
+                    modal.find('#edit-feat-content-en').addClass('active');
+                } else if (lang === 'edit-feat-ar') {
+                    modal.find('#edit-feat-content-ar').addClass('active');
+                }
+            });
+
+            // Language tab switching for View Feature Modal
+            $('#viewFeatureModal .language-tab').on('click', function() {
+                const lang = $(this).data('lang');
+                const modal = $(this).closest('.modal');
+                
+                modal.find('.language-tab').removeClass('active');
+                modal.find('.language-content').removeClass('active');
+                
+                $(this).addClass('active');
+                if (lang === 'view-feat-en') {
+                    modal.find('#view-feat-content-en').addClass('active');
+                } else if (lang === 'view-feat-ar') {
+                    modal.find('#view-feat-content-ar').addClass('active');
+                }
+            });
+
             // Select all functionality
             $('#select_all').on('change', function() {
                 $('.feature-checkbox').prop('checked', $(this).is(':checked'));
@@ -666,10 +749,18 @@
             });
 
             // Delete Feature Button
+            let deleteFeatureId = null;
             $('.delete-feature-btn').on('click', function() {
-                const featureId = $(this).data('id');
+                deleteFeatureId = $(this).data('id');
+                $('#deleteConfirmMessage').text('{{ custom_trans('Are you sure you want to delete this feature? This action cannot be undone.', 'admin') }}');
+                $('#deleteConfirmModal').modal('show');
+            });
 
-                if (confirm('{{ custom_trans('Are you sure you want to delete this feature?', 'admin') }}')) {
+            // Single delete handler
+            $(document).on('click', '#confirmDeleteBtn', function() {
+                if (deleteFeatureId) {
+                    const featureId = deleteFeatureId;
+                    deleteFeatureId = null; // Reset
                     $.ajax({
                         url: `/admin/settings/about-university/feature/${featureId}`,
                         method: 'DELETE',
@@ -678,15 +769,18 @@
                         },
                         success: function(response) {
                             if (response.success) {
+                                $('#deleteConfirmModal').modal('hide');
                                 toastr.success(response.message);
                                 setTimeout(function() {
                                     location.reload();
                                 }, 1000);
                             } else {
+                                $('#deleteConfirmModal').modal('hide');
                                 toastr.error(response.message);
                             }
                         },
                         error: function() {
+                            $('#deleteConfirmModal').modal('hide');
                             toastr.error(
                                 '{{ custom_trans('An error occurred while deleting the feature', 'admin') }}');
                         }

@@ -200,6 +200,33 @@
 
     <!-- Edit Testimonial Modal -->
     @include('admin.settings.testimonials.partials.edit-modal')
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="deleteConfirmModalLabel">
+                        <i class="fas fa-exclamation-triangle me-2"></i>{{ custom_trans('Confirm Delete', 'admin') }}
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="deleteConfirmMessage">{{ custom_trans('Are you sure you want to delete this item? This action cannot be undone.', 'admin') }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        {{ custom_trans('Cancel', 'admin') }}
+                    </button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                        <i class="fas fa-trash me-1"></i>{{ custom_trans('Delete', 'admin') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -301,7 +328,10 @@
                         break;
                 }
 
-                if (confirm(confirmMessage)) {
+                // Show confirmation modal
+                $('#deleteConfirmMessage').text(confirmMessage);
+                $('#deleteConfirmModal').modal('show');
+                $('#confirmDeleteBtn').off('click.bulkAction').on('click.bulkAction', function() {
                     $.ajax({
                         url: '{{ route('admin.settings.testimonials.bulk-action') }}',
                         method: 'POST',
@@ -312,21 +342,27 @@
                         },
                         success: function(response) {
                             if (response.success) {
+                                $('#deleteConfirmModal').modal('hide');
+                                $('#confirmDeleteBtn').off('click.bulkAction');
                                 toastr.success(response.message);
                                 setTimeout(function() {
                                     location.reload();
                                 }, 1500);
                             } else {
+                                $('#deleteConfirmModal').modal('hide');
+                                $('#confirmDeleteBtn').off('click.bulkAction');
                                 toastr.error(response.message);
                             }
                         },
                         error: function() {
+                            $('#deleteConfirmModal').modal('hide');
+                            $('#confirmDeleteBtn').off('click.bulkAction');
                             toastr.error(
                                 '{{ custom_trans('An error occurred while performing the bulk action', 'admin') }}'
                             );
                         }
                     });
-                }
+                });
             });
 
             // Status toggle
@@ -357,10 +393,17 @@
             });
 
             // Delete testimonial
+            let deleteTestimonialId = null;
             $(document).on('click', '.delete-testimonial-btn', function() {
-                const testimonialId = $(this).data('id');
+                deleteTestimonialId = $(this).data('id');
+                $('#deleteConfirmMessage').text('{{ custom_trans('Are you sure you want to delete this testimonial? This action cannot be undone.', 'admin') }}');
+                $('#deleteConfirmModal').modal('show');
+            });
 
-                if (confirm('{{ custom_trans('Are you sure you want to delete this testimonial?', 'admin') }}')) {
+            $(document).on('click', '#confirmDeleteBtn', function() {
+                if (deleteTestimonialId) {
+                    const testimonialId = deleteTestimonialId;
+                    deleteTestimonialId = null;
                     $.ajax({
                         url: `/admin/settings/testimonials/${testimonialId}`,
                         method: 'DELETE',
@@ -369,15 +412,18 @@
                         },
                         success: function(response) {
                             if (response.success) {
+                                $('#deleteConfirmModal').modal('hide');
                                 toastr.success(response.message);
                                 setTimeout(function() {
                                     location.reload();
                                 }, 1500);
                             } else {
+                                $('#deleteConfirmModal').modal('hide');
                                 toastr.error(response.message);
                             }
                         },
                         error: function() {
+                            $('#deleteConfirmModal').modal('hide');
                             toastr.error(
                                 '{{ custom_trans('An error occurred while deleting the testimonial', 'admin') }}'
                             );
