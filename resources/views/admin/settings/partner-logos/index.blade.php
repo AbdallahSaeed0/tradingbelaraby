@@ -84,8 +84,8 @@
                                                 </a>
                                                 <button type="button" class="btn btn-sm btn-danger delete-partner-logo"
                                                     data-logo-id="{{ $logo->id }}">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
                                             </td>
                                         </tr>
                                     @empty

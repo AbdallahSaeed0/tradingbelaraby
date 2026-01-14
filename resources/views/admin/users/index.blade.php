@@ -148,6 +148,7 @@
                                 <th>Email</th>
                                 <th>Role</th>
                                 <th>Status</th>
+                                <th>Verified</th>
                                 <th>Enrollments</th>
                                 <th>Joined</th>
                                 <th width="120">Actions</th>
@@ -195,6 +196,18 @@
                                         </span>
                                     </td>
                                     <td>
+                                        @if($user->email_verified_at)
+                                            <span class="badge bg-success">
+                                                <i class="fa fa-check-circle me-1"></i>Verified
+                                            </span>
+                                            <small class="text-muted d-block">{{ $user->email_verified_at->format('M d, Y') }}</small>
+                                        @else
+                                            <span class="badge bg-warning">
+                                                <i class="fa fa-times-circle me-1"></i>Not Verified
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td>
                                         <span class="fw-bold">{{ $user->enrollments_count ?? 0 }}</span>
                                         <small class="text-muted d-block">courses</small>
                                     </td>
@@ -218,6 +231,27 @@
                                                     <i class="fa fa-ellipsis-v"></i>
                                                 </button>
                                                 <ul class="dropdown-menu">
+                                                    @if($user->email_verified_at)
+                                                        <li>
+                                                            <button type="button" class="dropdown-item" onclick="unverifyUser({{ $user->id }})">
+                                                                <i class="fa fa-times-circle me-2"></i>Unverify Email
+                                                            </button>
+                                                        </li>
+                                                    @else
+                                                        <li>
+                                                            <button type="button" class="dropdown-item" onclick="verifyUser({{ $user->id }})">
+                                                                <i class="fa fa-check-circle me-2"></i>Verify Email
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <button type="button" class="dropdown-item" onclick="resendVerification({{ $user->id }})">
+                                                                <i class="fa fa-envelope me-2"></i>Resend Verification Email
+                                                            </button>
+                                                        </li>
+                                                    @endif
+                                                    <li>
+                                                        <hr class="dropdown-divider">
+                                                    </li>
                                                     <li>
                                                         <form action="{{ route('admin.users.toggle-active', $user) }}"
                                                             method="POST" class="d-inline">
@@ -249,7 +283,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center py-4">
+                                    <td colspan="9" class="text-center py-4">
                                         <div class="text-muted">
                                             <i class="fa fa-users fa-3x mb-3"></i>
                                             <h5>No users found</h5>
@@ -403,7 +437,7 @@
 
                 // Show loading state
                 if (tableBody) {
-                    tableBody.innerHTML = '<tr><td colspan="8" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
+                    tableBody.innerHTML = '<tr><td colspan="9" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
                 }
 
                 fetch(`{{ route('admin.users.index') }}?${params.toString()}`, {
@@ -449,7 +483,7 @@
                     .catch(error => {
                         console.error('Error:', error);
                         if (tableBody) {
-                            tableBody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-danger">Error loading data. Please try again.</td></tr>';
+                            tableBody.innerHTML = '<tr><td colspan="9" class="text-center py-4 text-danger">Error loading data. Please try again.</td></tr>';
                         }
                     });
             }
@@ -689,6 +723,98 @@
                 }
             });
         });
+
+        // Verify user email
+        function verifyUser(userId) {
+            if (!confirm('Are you sure you want to verify this user\'s email?')) {
+                return;
+            }
+
+            fetch(`{{ url('admin/users') }}/${userId}/verify`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    toastr.success(data.message || 'User email verified successfully');
+                    // Reload the page to show updated status
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    toastr.error(data.message || 'Failed to verify user email');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                toastr.error('An error occurred while verifying the user email');
+            });
+        }
+
+        // Unverify user email
+        function unverifyUser(userId) {
+            if (!confirm('Are you sure you want to remove email verification from this user?')) {
+                return;
+            }
+
+            fetch(`{{ url('admin/users') }}/${userId}/unverify`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    toastr.success(data.message || 'User email verification removed successfully');
+                    // Reload the page to show updated status
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    toastr.error(data.message || 'Failed to remove email verification');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                toastr.error('An error occurred while removing email verification');
+            });
+        }
+
+        // Resend verification email
+        function resendVerification(userId) {
+            if (!confirm('Are you sure you want to resend the verification email to this user?')) {
+                return;
+            }
+
+            fetch(`{{ url('admin/users') }}/${userId}/resend-verification`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    toastr.success(data.message || 'Verification email sent successfully');
+                } else {
+                    toastr.error(data.message || 'Failed to send verification email');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                toastr.error('An error occurred while sending the verification email');
+            });
+        }
     </script>
     @include('admin.partials.status-modal')
 @endpush

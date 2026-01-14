@@ -43,8 +43,8 @@
                         <div class="input-group">
                             <span class="input-group-text"><i class="fa fa-search"></i></span>
                             <input type="text" class="form-control" name="search" id="search_filter"
-                                value="{{ request('search') }}" placeholder="{{ custom_trans('Search by title, subtitle...', 'admin') }}"
-                                autocomplete="off">
+                            value="{{ request('search') }}" placeholder="{{ custom_trans('Search by title, subtitle...', 'admin') }}"
+                            autocomplete="off">
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -66,7 +66,7 @@
                             </button>
                             <button type="button" class="btn btn-outline-secondary" id="clear_filters">
                                 <i class="fa fa-refresh me-1"></i>{{ custom_trans('Clear', 'admin') }}
-                            </button>
+                        </button>
                         </div>
                     </div>
                 </form>
@@ -185,11 +185,11 @@
 
                         <!-- English Content -->
                         <div id="add-content-en" class="language-content active">
-                            <div class="mb-3">
-                                <label for="title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
-                                <input type="text" class="form-control" id="title" name="title" required>
+                                <div class="mb-3">
+                                    <label for="title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
+                                    <input type="text" class="form-control" id="title" name="title" required>
                             </div>
-                            <div class="mb-3">
+                                <div class="mb-3">
                                 <label for="subtitle" class="form-label">{{ custom_trans('Subtitle', 'admin') }} *</label>
                                 <input type="text" class="form-control" id="subtitle" name="subtitle" required>
                             </div>
@@ -197,12 +197,12 @@
 
                         <!-- Arabic Content -->
                         <div id="add-content-ar" class="language-content">
-                            <div class="mb-3">
+                                <div class="mb-3">
                                 <label for="title_ar" class="form-label">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
                                 <input type="text" class="form-control" id="title_ar" name="title_ar" dir="rtl">
                             </div>
-                            <div class="mb-3">
-                                <label for="subtitle_ar" class="form-label">{{ custom_trans('Subtitle (Arabic)', 'admin') }}</label>
+                                <div class="mb-3">
+                                    <label for="subtitle_ar" class="form-label">{{ custom_trans('Subtitle (Arabic)', 'admin') }}</label>
                                 <input type="text" class="form-control" id="subtitle_ar" name="subtitle_ar" dir="rtl">
                             </div>
                         </div>
@@ -268,11 +268,11 @@
 
                         <!-- English Content -->
                         <div id="edit-content-en" class="language-content active">
-                            <div class="mb-3">
-                                <label for="edit_title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
-                                <input type="text" class="form-control" id="edit_title" name="title" required>
+                                <div class="mb-3">
+                                    <label for="edit_title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
+                                    <input type="text" class="form-control" id="edit_title" name="title" required>
                             </div>
-                            <div class="mb-3">
+                                <div class="mb-3">
                                 <label for="edit_subtitle" class="form-label">{{ custom_trans('Subtitle', 'admin') }} *</label>
                                 <input type="text" class="form-control" id="edit_subtitle" name="subtitle" required>
                             </div>
@@ -280,11 +280,11 @@
 
                         <!-- Arabic Content -->
                         <div id="edit-content-ar" class="language-content">
-                            <div class="mb-3">
+                                <div class="mb-3">
                                 <label for="edit_title_ar" class="form-label">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
                                 <input type="text" class="form-control" id="edit_title_ar" name="title_ar" dir="rtl">
                             </div>
-                            <div class="mb-3">
+                                <div class="mb-3">
                                 <label for="edit_subtitle_ar" class="form-label">{{ custom_trans('Subtitle (Arabic)', 'admin') }}</label>
                                 <input type="text" class="form-control" id="edit_subtitle_ar" name="subtitle_ar" dir="rtl">
                             </div>
@@ -347,11 +347,11 @@
 
                     <!-- English Content -->
                     <div id="view-content-en" class="language-content active">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">{{ custom_trans('Title', 'admin') }}</label>
-                            <p id="view_title" class="form-control-plaintext"></p>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">{{ custom_trans('Title', 'admin') }}</label>
+                                <p id="view_title" class="form-control-plaintext"></p>
                         </div>
-                        <div class="mb-3">
+                            <div class="mb-3">
                             <label class="form-label fw-bold">{{ custom_trans('Subtitle', 'admin') }}</label>
                             <p id="view_subtitle" class="form-control-plaintext"></p>
                         </div>
@@ -359,12 +359,12 @@
 
                     <!-- Arabic Content -->
                     <div id="view-content-ar" class="language-content">
-                        <div class="mb-3">
+                            <div class="mb-3">
                             <label class="form-label fw-bold">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
                             <p id="view_title_ar" class="form-control-plaintext" dir="rtl"></p>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">{{ custom_trans('Subtitle (Arabic)', 'admin') }}</label>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">{{ custom_trans('Subtitle (Arabic)', 'admin') }}</label>
                             <p id="view_subtitle_ar" class="form-control-plaintext" dir="rtl"></p>
                         </div>
                     </div>
@@ -386,9 +386,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">{{ custom_trans('Status', 'admin') }}</label>
-                        <p id="view_status" class="form-control-plaintext"></p>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">{{ custom_trans('Status', 'admin') }}</label>
+                                <p id="view_status" class="form-control-plaintext"></p>
                     </div>
                 </div>
                 <div class="modal-footer">

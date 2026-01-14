@@ -166,4 +166,57 @@ class UsersController extends Controller
         return redirect()->back()
             ->with('success', "Successfully deleted {$count} user(s).");
     }
+
+    /**
+     * Verify user email
+     */
+    public function verify(User $user)
+    {
+        if (!$user->hasVerifiedEmail()) {
+            $user->markEmailAsVerified();
+            return response()->json([
+                'success' => true,
+                'message' => 'User email verified successfully'
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'User email is already verified'
+        ], 400);
+    }
+
+    /**
+     * Unverify user email
+     */
+    public function unverify(User $user)
+    {
+        $user->email_verified_at = null;
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User email verification removed successfully'
+        ]);
+    }
+
+    /**
+     * Resend verification email
+     */
+    public function resendVerification(User $user)
+    {
+        if ($user->hasVerifiedEmail()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User email is already verified'
+            ], 400);
+        }
+
+        $user->sendEmailVerificationNotification();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Verification email sent successfully'
+        ]);
+    }
 }

@@ -416,7 +416,7 @@
                         $('#confirmDeleteBtn').off('click.bulkDelete');
                         performBulkDelete();
                     });
-                    return;
+                        return;
                 }
                 
                 function performBulkDelete() {
@@ -460,24 +460,24 @@
                     data: {
                         _token: '{{ csrf_token() }}'
                     },
-                        success: function(response) {
-                            if (response.success) {
+                    success: function(response) {
+                        if (response.success) {
                                 $('#deleteConfirmModal').modal('hide');
-                                toastr.success(response.message);
-                                setTimeout(() => {
-                                    location.reload();
-                                }, 1500);
-                            } else {
+                            toastr.success(response.message);
+                            setTimeout(() => {
+                                location.reload();
+                            }, 1500);
+                        } else {
                                 $('#deleteConfirmModal').modal('hide');
-                                toastr.error(response.message || '{{ custom_trans('An error occurred.', 'admin') }}');
-                            }
-                        },
-                        error: function() {
-                            $('#deleteConfirmModal').modal('hide');
-                            toastr.error(
-                                '{{ custom_trans('An error occurred while deleting the submission.', 'admin') }}');
+                            toastr.error(response.message || '{{ custom_trans('An error occurred.', 'admin') }}');
                         }
-                    });
+                    },
+                    error: function() {
+                            $('#deleteConfirmModal').modal('hide');
+                        toastr.error(
+                            '{{ custom_trans('An error occurred while deleting the submission.', 'admin') }}');
+                    }
+                });
                 }
             });
 

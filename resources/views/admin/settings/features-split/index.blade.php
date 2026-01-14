@@ -788,7 +788,7 @@
                     $('#confirmDeleteBtn').off('click.bulkDelete').on('click.bulkDelete', function() {
                         $('#deleteConfirmModal').modal('hide');
                         $('#confirmDeleteBtn').off('click.bulkDelete');
-                        $.ajax({
+                $.ajax({
                     url: '{{ route('admin.settings.features-split.features.bulk-action') }}',
                     type: 'POST',
                     data: {

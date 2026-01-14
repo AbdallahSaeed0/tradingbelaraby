@@ -278,12 +278,12 @@
             });
 
             $(document).on('click', '#confirmDeleteBtn', function() {
-                $.ajax({
-                    url: '{{ route('admin.settings.contact-forms.destroy', $contactForm) }}',
-                    method: 'DELETE',
-                    data: {
-                        _token: '{{ csrf_token() }}'
-                    },
+                    $.ajax({
+                        url: '{{ route('admin.settings.contact-forms.destroy', $contactForm) }}',
+                        method: 'DELETE',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
                         success: function(response) {
                             if (response.success) {
                                 $('#deleteConfirmModal').modal('hide');

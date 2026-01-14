@@ -46,11 +46,11 @@
 
                     <!-- English Content -->
                     <div id="main-content-en" class="language-content active">
-                        <div class="mb-3">
-                            <label for="title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
+                            <div class="mb-3">
+                                <label for="title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
                             <input type="text" class="form-control" id="title" name="title" value="{{ $aboutUniversity->title ?? '' }}" required>
                         </div>
-                        <div class="mb-3">
+                            <div class="mb-3">
                             <label for="description" class="form-label">{{ custom_trans('Description', 'admin') }} *</label>
                             <textarea class="form-control" id="description" name="description" rows="4" required>{{ $aboutUniversity->description ?? '' }}</textarea>
                         </div>
@@ -58,12 +58,12 @@
 
                     <!-- Arabic Content -->
                     <div id="main-content-ar" class="language-content">
-                        <div class="mb-3">
+                            <div class="mb-3">
                             <label for="title_ar" class="form-label">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
                             <input type="text" class="form-control" id="title_ar" name="title_ar" value="{{ $aboutUniversity->title_ar ?? '' }}" dir="rtl">
                         </div>
-                        <div class="mb-3">
-                            <label for="description_ar" class="form-label">{{ custom_trans('Description (Arabic)', 'admin') }}</label>
+                            <div class="mb-3">
+                                <label for="description_ar" class="form-label">{{ custom_trans('Description (Arabic)', 'admin') }}</label>
                             <textarea class="form-control" id="description_ar" name="description_ar" rows="4" dir="rtl">{{ $aboutUniversity->description_ar ?? '' }}</textarea>
                         </div>
                     </div>
@@ -224,11 +224,11 @@
 
                         <!-- English Content -->
                         <div id="feat-content-en" class="language-content active">
-                            <div class="mb-3">
-                                <label for="feature_title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
+                                <div class="mb-3">
+                                    <label for="feature_title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
                                 <input type="text" class="form-control" id="feature_title" name="title" required>
                             </div>
-                            <div class="mb-3">
+                                <div class="mb-3">
                                 <label for="feature_description" class="form-label">{{ custom_trans('Description', 'admin') }} *</label>
                                 <textarea class="form-control" id="feature_description" name="description" rows="3" required></textarea>
                             </div>
@@ -236,11 +236,11 @@
 
                         <!-- Arabic Content -->
                         <div id="feat-content-ar" class="language-content">
-                            <div class="mb-3">
+                                <div class="mb-3">
                                 <label for="feature_title_ar" class="form-label">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
                                 <input type="text" class="form-control" id="feature_title_ar" name="title_ar" dir="rtl">
                             </div>
-                            <div class="mb-3">
+                                <div class="mb-3">
                                 <label for="feature_description_ar" class="form-label">{{ custom_trans('Description (Arabic)', 'admin') }}</label>
                                 <textarea class="form-control" id="feature_description_ar" name="description_ar" rows="3" dir="rtl"></textarea>
                             </div>
@@ -306,11 +306,11 @@
 
                         <!-- English Content -->
                         <div id="edit-feat-content-en" class="language-content active">
-                            <div class="mb-3">
-                                <label for="edit_feature_title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
+                                <div class="mb-3">
+                                    <label for="edit_feature_title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
                                 <input type="text" class="form-control" id="edit_feature_title" name="title" required>
                             </div>
-                            <div class="mb-3">
+                                <div class="mb-3">
                                 <label for="edit_feature_description" class="form-label">{{ custom_trans('Description', 'admin') }} *</label>
                                 <textarea class="form-control" id="edit_feature_description" name="description" rows="3" required></textarea>
                             </div>
@@ -318,11 +318,11 @@
 
                         <!-- Arabic Content -->
                         <div id="edit-feat-content-ar" class="language-content">
-                            <div class="mb-3">
+                                <div class="mb-3">
                                 <label for="edit_feature_title_ar" class="form-label">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
                                 <input type="text" class="form-control" id="edit_feature_title_ar" name="title_ar" dir="rtl">
                             </div>
-                            <div class="mb-3">
+                                <div class="mb-3">
                                 <label for="edit_feature_description_ar" class="form-label">{{ custom_trans('Description (Arabic)', 'admin') }}</label>
                                 <textarea class="form-control" id="edit_feature_description_ar" name="description_ar" rows="3" dir="rtl"></textarea>
                             </div>
@@ -385,11 +385,11 @@
 
                     <!-- English Content -->
                     <div id="view-feat-content-en" class="language-content active">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">{{ custom_trans('Title', 'admin') }}</label>
-                            <p id="view_feature_title" class="form-control-plaintext"></p>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">{{ custom_trans('Title', 'admin') }}</label>
+                                <p id="view_feature_title" class="form-control-plaintext"></p>
                         </div>
-                        <div class="mb-3">
+                            <div class="mb-3">
                             <label class="form-label fw-bold">{{ custom_trans('Description', 'admin') }}</label>
                             <p id="view_feature_description" class="form-control-plaintext"></p>
                         </div>
@@ -397,12 +397,12 @@
 
                     <!-- Arabic Content -->
                     <div id="view-feat-content-ar" class="language-content">
-                        <div class="mb-3">
+                            <div class="mb-3">
                             <label class="form-label fw-bold">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
                             <p id="view_feature_title_ar" class="form-control-plaintext" dir="rtl"></p>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">{{ custom_trans('Description (Arabic)', 'admin') }}</label>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">{{ custom_trans('Description (Arabic)', 'admin') }}</label>
                             <p id="view_feature_description_ar" class="form-control-plaintext" dir="rtl"></p>
                         </div>
                     </div>
@@ -422,9 +422,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">{{ custom_trans('Status', 'admin') }}</label>
-                        <p id="view_feature_status" class="form-control-plaintext"></p>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">{{ custom_trans('Status', 'admin') }}</label>
+                                <p id="view_feature_status" class="form-control-plaintext"></p>
                     </div>
                 </div>
                 <div class="modal-footer">

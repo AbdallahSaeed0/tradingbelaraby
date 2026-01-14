@@ -19,8 +19,8 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h4 class="page-title mb-0">{{ custom_trans('Features Section Management', 'admin') }}</h4>
-                            <p class="text-muted mb-0">
-                                {{ custom_trans('Manage the homepage features section with statistics and achievements', 'admin') }}</p>
+                    <p class="text-muted mb-0">
+                        {{ custom_trans('Manage the homepage features section with statistics and achievements', 'admin') }}</p>
                         </div>
                         <div>
                             <button type="button" class="btn btn-warning" data-bs-toggle="modal"
@@ -37,40 +37,40 @@
         <div class="card mb-4">
             <div class="card-body">
                 <form method="GET" action="{{ route('admin.settings.features.index') }}" id="filterForm">
-                    <div class="row g-3">
-                        <div class="col-md-3">
+                                <div class="row g-3">
+                                    <div class="col-md-3">
                             <select class="form-select" name="status" id="status_filter">
-                                <option value="">{{ custom_trans('All Status', 'admin') }}</option>
-                                <option value="1">{{ custom_trans('Active', 'admin') }}</option>
-                                <option value="0">{{ custom_trans('Inactive', 'admin') }}</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="input-group">
+                                            <option value="">{{ custom_trans('All Status', 'admin') }}</option>
+                                            <option value="1">{{ custom_trans('Active', 'admin') }}</option>
+                                            <option value="0">{{ custom_trans('Inactive', 'admin') }}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="input-group">
                                 <span class="input-group-text"><i class="fa fa-search"></i></span>
                                 <input type="text" class="form-control" name="search" id="search_filter"
-                                    placeholder="{{ custom_trans('Search by title or description...', 'admin') }}"
+                                                placeholder="{{ custom_trans('Search by title or description...', 'admin') }}"
                                     value="{{ request('search') }}" autocomplete="off">
-                            </div>
-                        </div>
-                        <div class="col-md-3">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
                             <select class="form-select" name="order" id="order_filter">
-                                <option value="order">{{ custom_trans('Order', 'admin') }}</option>
-                                <option value="title">{{ custom_trans('Title', 'admin') }}</option>
-                                <option value="created_at">{{ custom_trans('Created Date', 'admin') }}</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
+                                            <option value="order">{{ custom_trans('Order', 'admin') }}</option>
+                                            <option value="title">{{ custom_trans('Title', 'admin') }}</option>
+                                            <option value="created_at">{{ custom_trans('Created Date', 'admin') }}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
                             <div class="d-flex gap-2">
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fa fa-search me-1"></i>{{ custom_trans('Filter', 'admin') }}
-                                </button>
+                                        </button>
                                 <button type="button" class="btn btn-outline-secondary" id="clear_filters">
                                     <i class="fa fa-refresh me-1"></i>{{ custom_trans('Clear', 'admin') }}
-                                </button>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
                 </form>
             </div>
         </div>
@@ -192,10 +192,10 @@
 
                         <!-- English Content -->
                         <div id="add-content-en" class="language-content active">
-                            <div class="mb-3">
-                                <label for="title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
-                                <input type="text" class="form-control" id="title" name="title" required>
-                            </div>
+                                <div class="mb-3">
+                                    <label for="title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
+                                    <input type="text" class="form-control" id="title" name="title" required>
+                                </div>
                             <div class="mb-3">
                                 <label for="description" class="form-label">{{ custom_trans('Description', 'admin') }} *</label>
                                 <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
@@ -204,10 +204,10 @@
 
                         <!-- Arabic Content -->
                         <div id="add-content-ar" class="language-content">
-                            <div class="mb-3">
-                                <label for="title_ar" class="form-label">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
+                                <div class="mb-3">
+                                    <label for="title_ar" class="form-label">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
                                 <input type="text" class="form-control" id="title_ar" name="title_ar" dir="rtl">
-                            </div>
+                                </div>
                             <div class="mb-3">
                                 <label for="description_ar" class="form-label">{{ custom_trans('Description (Arabic)', 'admin') }}</label>
                                 <textarea class="form-control" id="description_ar" name="description_ar" rows="3" dir="rtl"></textarea>
@@ -284,10 +284,10 @@
 
                         <!-- English Content -->
                         <div id="edit-content-en" class="language-content active">
-                            <div class="mb-3">
-                                <label for="edit_title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
-                                <input type="text" class="form-control" id="edit_title" name="title" required>
-                            </div>
+                                <div class="mb-3">
+                                    <label for="edit_title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
+                                    <input type="text" class="form-control" id="edit_title" name="title" required>
+                                </div>
                             <div class="mb-3">
                                 <label for="edit_description" class="form-label">{{ custom_trans('Description', 'admin') }} *</label>
                                 <textarea class="form-control" id="edit_description" name="description" rows="3" required></textarea>
@@ -296,10 +296,10 @@
 
                         <!-- Arabic Content -->
                         <div id="edit-content-ar" class="language-content">
-                            <div class="mb-3">
-                                <label for="edit_title_ar" class="form-label">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
+                                <div class="mb-3">
+                                    <label for="edit_title_ar" class="form-label">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
                                 <input type="text" class="form-control" id="edit_title_ar" name="title_ar" dir="rtl">
-                            </div>
+                                </div>
                             <div class="mb-3">
                                 <label for="edit_description_ar" class="form-label">{{ custom_trans('Description (Arabic)', 'admin') }}</label>
                                 <textarea class="form-control" id="edit_description_ar" name="description_ar" rows="3" dir="rtl"></textarea>
@@ -381,10 +381,10 @@
 
                     <!-- English Content -->
                     <div id="view-content-en" class="language-content active">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">{{ custom_trans('Title', 'admin') }}</label>
-                            <p id="view_title" class="form-control-plaintext"></p>
-                        </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">{{ custom_trans('Title', 'admin') }}</label>
+                                <p id="view_title" class="form-control-plaintext"></p>
+                            </div>
                         <div class="mb-3">
                             <label class="form-label fw-bold">{{ custom_trans('Description', 'admin') }}</label>
                             <p id="view_description" class="form-control-plaintext"></p>
@@ -393,10 +393,10 @@
 
                     <!-- Arabic Content -->
                     <div id="view-content-ar" class="language-content">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
                             <p id="view_title_ar" class="form-control-plaintext" dir="rtl"></p>
-                        </div>
+                            </div>
                         <div class="mb-3">
                             <label class="form-label fw-bold">{{ custom_trans('Description (Arabic)', 'admin') }}</label>
                             <p id="view_description_ar" class="form-control-plaintext" dir="rtl"></p>
@@ -418,9 +418,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">{{ custom_trans('Status', 'admin') }}</label>
-                        <p id="view_status" class="form-control-plaintext"></p>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">{{ custom_trans('Status', 'admin') }}</label>
+                                <p id="view_status" class="form-control-plaintext"></p>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">{{ custom_trans('Icon', 'admin') }}</label>
@@ -626,29 +626,29 @@
                     $('#deleteConfirmModal').modal('show');
                     // Use one-time handler for bulk delete
                     $('#confirmDeleteBtn').off('click.bulkDelete').on('click.bulkDelete', function() {
-                        $.ajax({
-                            url: '{{ route('admin.settings.features.bulk-action') }}',
-                            type: 'POST',
-                            data: {
-                                action: action,
-                                feature_ids: selectedIds,
-                                _token: $('meta[name="csrf-token"]').attr('content')
-                            },
-                            success: function(response) {
-                                if (response.success) {
+                    $.ajax({
+                        url: '{{ route('admin.settings.features.bulk-action') }}',
+                        type: 'POST',
+                        data: {
+                            action: action,
+                            feature_ids: selectedIds,
+                            _token: $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                            if (response.success) {
                                     $('#deleteConfirmModal').modal('hide');
                                     $('#confirmDeleteBtn').off('click.bulkDelete');
-                                    toastr.success(response.message);
-                                    location.reload();
-                                }
-                            },
-                            error: function() {
+                                toastr.success(response.message);
+                                location.reload();
+                            }
+                        },
+                        error: function() {
                                 $('#deleteConfirmModal').modal('hide');
                                 $('#confirmDeleteBtn').off('click.bulkDelete');
-                                toastr.error(
-                                    '{{ custom_trans('An error occurred while performing bulk action', 'admin') }}'
-                                );
-                            }
+                            toastr.error(
+                                '{{ custom_trans('An error occurred while performing bulk action', 'admin') }}'
+                            );
+                        }
                         });
                     });
                 } else {
