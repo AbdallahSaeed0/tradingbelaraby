@@ -45,7 +45,7 @@ class TermsConditionsController extends Controller
                 'description' => $request->description,
                 'description_ar' => $request->description_ar,
                 'slug' => $request->slug,
-                'is_active' => $request->has('is_active') ? true : false,
+                'is_active' => $request->input('is_active', '0') === '1' || $request->has('is_active'),
             ];
 
             $termsConditions->fill($data);

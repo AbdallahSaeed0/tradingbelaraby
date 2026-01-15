@@ -51,12 +51,13 @@
                             @method('PUT')
 
                             <input type="hidden" name="id" value="{{ $termsConditions->id }}">
+                            <input type="hidden" name="is_active" id="is_active_hidden" value="{{ old('is_active', $termsConditions->is_active ?? true) ? '1' : '0' }}">
 
                             <!-- Status Toggle -->
                             <div class="row mb-4">
                                 <div class="col-12">
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="is_active" name="is_active"
+                                        <input class="form-check-input" type="checkbox" id="is_active" 
                                             {{ old('is_active', $termsConditions->is_active ?? true) ? 'checked' : '' }}>
                                         <label class="form-check-label" for="is_active">
                                             <strong>Active</strong> - Display this page on the website
@@ -93,7 +94,7 @@
                                         <label for="description" class="form-label">Description (English) <span
                                                 class="text-danger">*</span></label>
                                         <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description"
-                                            rows="10" required>{{ old('description', $termsConditions->description) }}</textarea>
+                                            rows="10">{{ old('description', $termsConditions->description) }}</textarea>
                                         @error('description')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -128,7 +129,7 @@
                                         <label for="description_ar" class="form-label">Description (Arabic) <span
                                                 class="text-danger">*</span></label>
                                         <textarea class="form-control @error('description_ar') is-invalid @enderror" id="description_ar" name="description_ar"
-                                            rows="10" required dir="rtl">{{ old('description_ar', $termsConditions->description_ar) }}</textarea>
+                                            rows="10" dir="rtl">{{ old('description_ar', $termsConditions->description_ar) }}</textarea>
                                         @error('description_ar')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -315,6 +316,47 @@
                 } else {
                     alert('Please enter a title first');
                 }
+            });
+
+            // Update hidden is_active field when checkbox changes
+            document.getElementById('is_active').addEventListener('change', function() {
+                document.getElementById('is_active_hidden').value = this.checked ? '1' : '0';
+            });
+
+            // Form submission handler - sync CKEditor content and validate
+            document.querySelector('form').addEventListener('submit', function(e) {
+                // Update hidden is_active field
+                const isActiveCheckbox = document.getElementById('is_active');
+                document.getElementById('is_active_hidden').value = isActiveCheckbox.checked ? '1' : '0';
+
+                // Sync CKEditor content to textareas before submission
+                if (window.editorEnglish) {
+                    const englishContent = window.editorEnglish.getData();
+                    document.getElementById('description').value = englishContent;
+                    
+                    // Validate English content
+                    if (!englishContent || englishContent.trim() === '' || englishContent === '<p></p>') {
+                        e.preventDefault();
+                        alert('Please enter a description in English.');
+                        window.editorEnglish.focus();
+                        return false;
+                    }
+                }
+
+                if (window.editorArabic) {
+                    const arabicContent = window.editorArabic.getData();
+                    document.getElementById('description_ar').value = arabicContent;
+                    
+                    // Validate Arabic content
+                    if (!arabicContent || arabicContent.trim() === '' || arabicContent === '<p></p>') {
+                        e.preventDefault();
+                        alert('Please enter a description in Arabic.');
+                        window.editorArabic.focus();
+                        return false;
+                    }
+                }
+
+                return true;
             });
         });
     </script>
