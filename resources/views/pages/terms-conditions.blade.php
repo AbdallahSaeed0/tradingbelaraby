@@ -1,12 +1,17 @@
 @extends('layouts.app')
 
-@section('title', (app()->getLocale() == 'ar' ? 'الشروط والأحكام' : 'Terms and Conditions') . ' - ' .
-    (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site Name'))
+@php
+    $currentLang = app()->getLocale();
+    $pageTitle = isset($termsConditions) 
+        ? ($currentLang == 'ar' ? ($termsConditions->title_ar ?? 'الشروط والأحكام') : ($termsConditions->title ?? 'Terms and Conditions'))
+        : ($currentLang == 'ar' ? 'الشروط والأحكام' : 'Terms and Conditions');
+@endphp
+@section('title', $pageTitle . ' - ' . (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site Name'))
 
 @section('content')
     @php
         $currentLang = app()->getLocale();
-        $pageTitle = $currentLang == 'ar' ? 'الشروط والأحكام' : 'Terms and Conditions';
+        $pageTitle = $currentLang == 'ar' ? ($termsConditions->title_ar ?? 'الشروط والأحكام') : ($termsConditions->title ?? 'Terms and Conditions');
     @endphp
 
     <!-- Page Banner -->
@@ -15,13 +20,15 @@
             class="contact-banner-bg position-absolute w-100 h-100 top-0 start-0">
         <div class="contact-banner-overlay position-absolute w-100 h-100 top-0 start-0"></div>
         <div class="container position-relative z-3 text-center">
-            <h1 class="display-4 fw-bold text-white mb-3">{{ $pageTitle }}</h1>
+            <h1 class="display-4 fw-bold text-white mb-3">
+                {{ $currentLang == 'ar' ? ($termsConditions->title_ar ?? 'الشروط والأحكام') : ($termsConditions->title ?? 'Terms and Conditions') }}
+            </h1>
             <div class="d-flex justify-content-center mb-2">
                 <span class="contact-label px-4 py-2 rounded-pill bg-white text-dark fw-semibold shadow">
                     <a href="{{ route('home') }}" class="text-dark text-decoration-none hover-primary">
                         {{ custom_trans('home', 'front') }}
                     </a> &nbsp;|&nbsp;
-                    {{ $pageTitle }}
+                    {{ $currentLang == 'ar' ? ($termsConditions->title_ar ?? 'الشروط والأحكام') : ($termsConditions->title ?? 'Terms and Conditions') }}
                 </span>
             </div>
         </div>
@@ -37,10 +44,16 @@
                             <div class="terms-content">
                                 @if ($currentLang == 'ar')
                                     <div dir="rtl" class="text-end">
+                                        @if($termsConditions->title_ar)
+                                            <h2 class="mb-4">{{ $termsConditions->title_ar }}</h2>
+                                        @endif
                                         {!! $termsConditions->description_ar !!}
                                     </div>
                                 @else
                                     <div>
+                                        @if($termsConditions->title)
+                                            <h2 class="mb-4">{{ $termsConditions->title }}</h2>
+                                        @endif
                                         {!! $termsConditions->description !!}
                                     </div>
                                 @endif

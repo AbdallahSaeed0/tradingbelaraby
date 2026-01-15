@@ -66,73 +66,81 @@
                                 </div>
                             </div>
 
-                            <!-- English Content Section -->
+                            <!-- Content Section with Tabs -->
                             <div class="row mb-4">
                                 <div class="col-12">
                                     <h6 class="text-primary mb-3">
                                         <i class="fas fa-language me-2"></i>
-                                        English Content
+                                        Content
                                     </h6>
-                                </div>
-                                <div class="col-12">
-                                    <div class="mb-3">
-                                        <label for="title" class="form-label">Title (English) <span
-                                                class="text-danger">*</span></label>
-                                        <input type="text" class="form-control @error('title') is-invalid @enderror"
-                                            id="title" name="title"
-                                            value="{{ old('title', $termsConditions->title) }}"
-                                            placeholder="Enter title in English" required>
-                                        @error('title')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                        <div class="form-text">This title is for internal reference only, not displayed on
-                                            the page</div>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="mb-3">
-                                        <label for="description" class="form-label">Description (English) <span
-                                                class="text-danger">*</span></label>
-                                        <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description"
-                                            rows="10">{{ old('description', $termsConditions->description) }}</textarea>
-                                        @error('description')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
+                                    
+                                    <!-- Language Tabs -->
+                                    <ul class="nav nav-tabs" id="contentTabs" role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link active" id="content-en-tab" data-bs-toggle="tab"
+                                                data-bs-target="#content-en" type="button" role="tab">
+                                                <i class="fa fa-flag-usa me-1"></i>English
+                                            </button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link" id="content-ar-tab" data-bs-toggle="tab"
+                                                data-bs-target="#content-ar" type="button" role="tab">
+                                                <i class="fa fa-flag me-1"></i>العربية
+                                            </button>
+                                        </li>
+                                    </ul>
 
-                            <!-- Arabic Content Section -->
-                            <div class="row mb-4">
-                                <div class="col-12">
-                                    <h6 class="text-primary mb-3">
-                                        <i class="fas fa-language me-2"></i>
-                                        Arabic Content (المحتوى العربي)
-                                    </h6>
-                                </div>
-                                <div class="col-12">
-                                    <div class="mb-3">
-                                        <label for="title_ar" class="form-label">Title (Arabic) <span
-                                                class="text-danger">*</span></label>
-                                        <input type="text" class="form-control @error('title_ar') is-invalid @enderror"
-                                            id="title_ar" name="title_ar"
-                                            value="{{ old('title_ar', $termsConditions->title_ar) }}"
-                                            placeholder="أدخل العنوان بالعربية" required dir="rtl">
-                                        @error('title_ar')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                        <div class="form-text">هذا العنوان للمرجعية الداخلية فقط، لا يظهر في الصفحة</div>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="mb-3">
-                                        <label for="description_ar" class="form-label">Description (Arabic) <span
-                                                class="text-danger">*</span></label>
-                                        <textarea class="form-control @error('description_ar') is-invalid @enderror" id="description_ar" name="description_ar"
-                                            rows="10" dir="rtl">{{ old('description_ar', $termsConditions->description_ar) }}</textarea>
-                                        @error('description_ar')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                    <!-- Tab Content -->
+                                    <div class="tab-content border border-top-0 p-3" id="contentTabContent">
+                                        <!-- English Tab -->
+                                        <div class="tab-pane fade show active" id="content-en" role="tabpanel">
+                                            <div class="mb-3">
+                                                <label for="title" class="form-label">Title (English) <span
+                                                        class="text-danger">*</span></label>
+                                                <input type="text" class="form-control @error('title') is-invalid @enderror"
+                                                    id="title" name="title"
+                                                    value="{{ old('title', $termsConditions->title) }}"
+                                                    placeholder="Enter title in English" required>
+                                                @error('title')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                                <div class="form-text">This title will be displayed on the page</div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="description" class="form-label">Description (English) <span
+                                                        class="text-danger">*</span></label>
+                                                <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description"
+                                                    rows="10">{{ old('description', $termsConditions->description) }}</textarea>
+                                                @error('description')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        <!-- Arabic Tab -->
+                                        <div class="tab-pane fade" id="content-ar" role="tabpanel">
+                                            <div class="mb-3">
+                                                <label for="title_ar" class="form-label">Title (Arabic) <span
+                                                        class="text-danger">*</span></label>
+                                                <input type="text" class="form-control @error('title_ar') is-invalid @enderror"
+                                                    id="title_ar" name="title_ar"
+                                                    value="{{ old('title_ar', $termsConditions->title_ar) }}"
+                                                    placeholder="أدخل العنوان بالعربية" required dir="rtl">
+                                                @error('title_ar')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                                <div class="form-text">هذا العنوان سيظهر في الصفحة</div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="description_ar" class="form-label">Description (Arabic) <span
+                                                        class="text-danger">*</span></label>
+                                                <textarea class="form-control @error('description_ar') is-invalid @enderror" id="description_ar" name="description_ar"
+                                                    rows="10" dir="rtl">{{ old('description_ar', $termsConditions->description_ar) }}</textarea>
+                                                @error('description_ar')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
