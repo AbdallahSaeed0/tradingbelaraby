@@ -594,6 +594,94 @@
                 </div>
             </div>
 
+            <!-- About Us Management -->
+            <div class="col-xl-4 col-lg-6 col-md-10">
+                <div class="card settings-card">
+                    <div class="card-body text-center p-4">
+                        <div class="settings-icon mb-4">
+                            <div class="icon-wrapper">
+                                <i class="fas fa-info-circle fa-4x text-info"></i>
+                            </div>
+                        </div>
+                        <h3 class="card-title mb-3">{{ custom_trans('About Us', 'admin') }}</h3>
+                        <p class="card-text text-muted mb-4">
+                            {{ custom_trans('Manage your website\'s about us page with bilingual support for English and Arabic.', 'admin') }}
+                        </p>
+                        <div class="features-list mb-4">
+                            <div class="row text-start">
+                                <div class="col-md-6">
+                                    <div class="feature-item">
+                                        <i class="fas fa-language text-primary me-2"></i>
+                                        <span>{{ custom_trans('Bilingual Content', 'admin') }}</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-edit text-info me-2"></i>
+                                        <span>{{ custom_trans('Rich Text Editor', 'admin') }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="feature-item">
+                                        <i class="fas fa-link text-warning me-2"></i>
+                                        <span>{{ custom_trans('SEO-Friendly URLs', 'admin') }}</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-toggle-on text-success me-2"></i>
+                                        <span>{{ custom_trans('Active/Inactive', 'admin') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="{{ route('admin.settings.about-us.index') }}" class="btn btn-info btn-lg">
+                            <i class="fas fa-info-circle me-2"></i>{{ custom_trans('Manage About Us', 'admin') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Academy Policy Management -->
+            <div class="col-xl-4 col-lg-6 col-md-10">
+                <div class="card settings-card">
+                    <div class="card-body text-center p-4">
+                        <div class="settings-icon mb-4">
+                            <div class="icon-wrapper">
+                                <i class="fas fa-gavel fa-4x text-dark"></i>
+                            </div>
+                        </div>
+                        <h3 class="card-title mb-3">{{ custom_trans('Academy Policy', 'admin') }}</h3>
+                        <p class="card-text text-muted mb-4">
+                            {{ custom_trans('Manage your website\'s academy policy page with bilingual support for English and Arabic.', 'admin') }}
+                        </p>
+                        <div class="features-list mb-4">
+                            <div class="row text-start">
+                                <div class="col-md-6">
+                                    <div class="feature-item">
+                                        <i class="fas fa-language text-primary me-2"></i>
+                                        <span>{{ custom_trans('Bilingual Content', 'admin') }}</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-edit text-info me-2"></i>
+                                        <span>{{ custom_trans('Rich Text Editor', 'admin') }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="feature-item">
+                                        <i class="fas fa-link text-warning me-2"></i>
+                                        <span>{{ custom_trans('SEO-Friendly URLs', 'admin') }}</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-toggle-on text-success me-2"></i>
+                                        <span>{{ custom_trans('Active/Inactive', 'admin') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="{{ route('admin.settings.academy-policy.index') }}" class="btn btn-dark btn-lg">
+                            <i class="fas fa-gavel me-2"></i>{{ custom_trans('Manage Academy Policy', 'admin') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+
             <!-- Contact Management -->
             <div class="col-xl-4 col-lg-6 col-md-10">
                 <div class="card settings-card">

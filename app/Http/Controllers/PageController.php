@@ -99,4 +99,42 @@ class PageController extends Controller
 
         return view('pages.terms-conditions', compact('termsConditions'));
     }
+
+    /**
+     * Display the about us page.
+     *
+     * @param string $slug
+     * @return \Illuminate\View\View
+     */
+    public function aboutUs($slug)
+    {
+        $aboutUs = \App\Models\AboutUs::where('slug', $slug)
+            ->where('is_active', true)
+            ->first();
+
+        if (!$aboutUs) {
+            abort(404);
+        }
+
+        return view('pages.about-us', compact('aboutUs'));
+    }
+
+    /**
+     * Display the academy policy page.
+     *
+     * @param string $slug
+     * @return \Illuminate\View\View
+     */
+    public function academyPolicy($slug)
+    {
+        $academyPolicy = \App\Models\AcademyPolicy::where('slug', $slug)
+            ->where('is_active', true)
+            ->first();
+
+        if (!$academyPolicy) {
+            abort(404);
+        }
+
+        return view('pages.academy-policy', compact('academyPolicy'));
+    }
 }

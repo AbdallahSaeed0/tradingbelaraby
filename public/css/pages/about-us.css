@@ -1,0 +1,171 @@
+/* About Us Page */
+
+/* Banner Styles (shared with contact page) */
+.contact-banner {
+    min-height: 340px;
+    position: relative;
+    overflow: hidden;
+}
+
+.contact-banner-bg {
+    object-fit: cover;
+    width: 100vw;
+    height: 100%;
+    left: 0;
+    top: 0;
+    z-index: 1;
+}
+
+.contact-banner-overlay {
+    background: rgba(24, 49, 63, 0.65);
+    z-index: 2;
+}
+
+.contact-banner .container {
+    z-index: 3;
+    position: relative;
+}
+
+.contact-label {
+    font-size: 1.1rem;
+    font-weight: 600;
+    background: #fff;
+    color: #222;
+    border-radius: 32px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+    display: inline-block;
+}
+
+.contact-label a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.contact-label a:hover {
+    color: #ff7043;
+}
+
+.terms-content-section {
+    background-color: #f8f9fa;
+}
+
+.terms-content {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #333;
+}
+
+.terms-content h1,
+.terms-content h2,
+.terms-content h3,
+.terms-content h4,
+.terms-content h5,
+.terms-content h6 {
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.terms-content h1 {
+    font-size: 2rem;
+}
+
+.terms-content h2 {
+    font-size: 1.75rem;
+}
+
+.terms-content h3 {
+    font-size: 1.5rem;
+}
+
+.terms-content p {
+    margin-bottom: 1rem;
+}
+
+.terms-content ul,
+.terms-content ol {
+    margin-bottom: 1rem;
+    padding-left: 2rem;
+}
+
+.terms-content li {
+    margin-bottom: 0.5rem;
+}
+
+.terms-content a {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+.terms-content a:hover {
+    color: #0056b3;
+}
+
+.terms-content strong {
+    font-weight: 600;
+}
+
+.terms-content blockquote {
+    border-left: 4px solid #007bff;
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: #555;
+}
+
+.terms-content table {
+    width: 100%;
+    margin-bottom: 1rem;
+    border-collapse: collapse;
+}
+
+.terms-content table th,
+.terms-content table td {
+    padding: 0.75rem;
+    border: 1px solid #dee2e6;
+}
+
+.terms-content table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+/* RTL Support */
+[dir="rtl"] .terms-content ul,
+[dir="rtl"] .terms-content ol {
+    padding-right: 2rem;
+    padding-left: 0;
+}
+
+[dir="rtl"] .terms-content blockquote {
+    border-right: 4px solid #007bff;
+    border-left: none;
+    padding-right: 1rem;
+    padding-left: 0;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .contact-banner {
+        min-height: 220px;
+    }
+    
+    .contact-label {
+        font-size: 1rem;
+        padding: 0.5rem 1.2rem;
+    }
+    
+    .terms-content h1 {
+        font-size: 1.75rem;
+    }
+    
+    .terms-content h2 {
+        font-size: 1.5rem;
+    }
+    
+    .terms-content h3 {
+        font-size: 1.25rem;
+    }
+}

@@ -85,6 +85,8 @@ Route::get('/categories', [CategoryController::class, 'index'])->name('categorie
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
 Route::post('/contact', [App\Http\Controllers\ContactController::class, 'store'])->name('contact.store');
 Route::get('/page/{slug}', [PageController::class, 'termsConditions'])->name('terms-conditions');
+Route::get('/about-us/{slug}', [PageController::class, 'aboutUs'])->name('about-us');
+Route::get('/academy-policy/{slug}', [PageController::class, 'academyPolicy'])->name('academy-policy');
 
 // Newsletter routes
 Route::post('/newsletter/subscribe', [App\Http\Controllers\NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
@@ -551,6 +553,16 @@ Route::resource('quizzes.questions', App\Http\Controllers\Admin\QuizQuestionMana
     Route::get('/settings/terms-conditions', [App\Http\Controllers\Admin\TermsConditionsController::class, 'index'])->name('settings.terms-conditions.index');
     Route::put('/settings/terms-conditions', [App\Http\Controllers\Admin\TermsConditionsController::class, 'update'])->name('settings.terms-conditions.update');
     Route::post('/settings/terms-conditions/generate-slug', [App\Http\Controllers\Admin\TermsConditionsController::class, 'generateSlug'])->name('settings.terms-conditions.generate-slug');
+
+    // About Us Management
+    Route::get('/settings/about-us', [App\Http\Controllers\Admin\AboutUsController::class, 'index'])->name('settings.about-us.index');
+    Route::put('/settings/about-us', [App\Http\Controllers\Admin\AboutUsController::class, 'update'])->name('settings.about-us.update');
+    Route::post('/settings/about-us/generate-slug', [App\Http\Controllers\Admin\AboutUsController::class, 'generateSlug'])->name('settings.about-us.generate-slug');
+
+    // Academy Policy Management
+    Route::get('/settings/academy-policy', [App\Http\Controllers\Admin\AcademyPolicyController::class, 'index'])->name('settings.academy-policy.index');
+    Route::put('/settings/academy-policy', [App\Http\Controllers\Admin\AcademyPolicyController::class, 'update'])->name('settings.academy-policy.update');
+    Route::post('/settings/academy-policy/generate-slug', [App\Http\Controllers\Admin\AcademyPolicyController::class, 'generateSlug'])->name('settings.academy-policy.generate-slug');
 
     Route::get('/enrollments/export', [App\Http\Controllers\Admin\EnrollmentsController::class, 'export'])->name('enrollments.export');
     Route::get('/homework/export/{format?}', [App\Http\Controllers\Admin\HomeworkManagementController::class, 'export'])->name('homework.export');
