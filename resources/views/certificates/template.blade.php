@@ -14,6 +14,31 @@
             font-family: 'Times New Roman', serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
+        @media print {
+            body {
+                background: white;
+            }
+            .print-button {
+                display: none;
+            }
+        }
+        .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+        .print-button:hover {
+            background: #5568d3;
+        }
         .certificate-container {
             width: 11in;
             height: 8.5in;
@@ -96,6 +121,9 @@
     </style>
 </head>
 <body>
+    <button class="print-button" onclick="window.print()">
+        🖨️ Print / Save as PDF
+    </button>
     <div class="certificate-container">
         <div class="certificate-border">
             <div class="certificate-content">

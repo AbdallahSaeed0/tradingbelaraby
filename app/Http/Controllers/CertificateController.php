@@ -116,8 +116,15 @@ class CertificateController extends Controller
                 ->with('error', 'Certificate not found. Please regenerate.');
         }
 
-        return Storage::download($enrollmentModel->certificate_path, 
-            'certificate-' . $enrollmentModel->course->slug . '-' . $enrollmentModel->id . '.pdf');
+        $fileExtension = pathinfo($enrollmentModel->certificate_path, PATHINFO_EXTENSION);
+        $fileName = 'certificate-' . $enrollmentModel->course->slug . '-' . $enrollmentModel->id . '.' . $fileExtension;
+        
+        // If it's an HTML file, return it as a view instead of download
+        if ($fileExtension === 'html') {
+            return $this->view($enrollment);
+        }
+
+        return Storage::download($enrollmentModel->certificate_path, $fileName);
     }
 
     /**
@@ -142,11 +149,20 @@ class CertificateController extends Controller
                 ->with('error', 'Certificate not found. Please regenerate.');
         }
 
+        $fileExtension = pathinfo($enrollmentModel->certificate_path, PATHINFO_EXTENSION);
+        
+        // If it's an HTML file, render it directly
+        if ($fileExtension === 'html') {
+            $htmlContent = Storage::get($enrollmentModel->certificate_path);
+            return response($htmlContent)->header('Content-Type', 'text/html');
+        }
+
+        // For PDF files, return as file
         return response()->file(Storage::path($enrollmentModel->certificate_path));
     }
 
     /**
-     * Generate certificate as PDF using DomPDF
+     * Generate certificate as PDF using DomPDF (or HTML fallback)
      */
     private function generateCertificate(Course $course, CourseEnrollment $enrollment, string $studentName): string
     {
@@ -161,22 +177,28 @@ class CertificateController extends Controller
             'course' => $course,
         ])->render();
 
-        // Use DomPDF to generate PDF (already included in composer.json)
-        try {
-            $dompdf = new \Dompdf\Dompdf();
-            $dompdf->loadHtml($html);
-            $dompdf->setPaper('A4', 'landscape');
-            $dompdf->render();
-            $pdfContent = $dompdf->output();
-            Storage::put($certificatePath, $pdfContent);
-            return $certificatePath;
-        } catch (\Exception $e) {
-            Log::error('PDF generation failed: ' . $e->getMessage());
-            // Fallback: Save as HTML if PDF generation fails
-            $htmlPath = str_replace('.pdf', '.html', $certificatePath);
-            Storage::put($htmlPath, $html);
-            Log::warning('Certificate saved as HTML due to PDF generation error. Check DomPDF installation.');
-            return $htmlPath;
+        // Check if DomPDF class exists
+        if (class_exists('\Dompdf\Dompdf')) {
+            try {
+                $dompdf = new \Dompdf\Dompdf();
+                $dompdf->loadHtml($html);
+                $dompdf->setPaper('A4', 'landscape');
+                $dompdf->render();
+                $pdfContent = $dompdf->output();
+                Storage::put($certificatePath, $pdfContent);
+                return $certificatePath;
+            } catch (\Exception $e) {
+                Log::error('PDF generation failed: ' . $e->getMessage());
+                // Fall through to HTML fallback
+            }
+        } else {
+            Log::warning('Dompdf class not found. Using HTML fallback. Please install dompdf/dompdf via composer.');
         }
+        
+        // Fallback: Save as HTML (can be printed to PDF by browser)
+        $htmlPath = str_replace('.pdf', '.html', $certificatePath);
+        Storage::put($htmlPath, $html);
+        Log::info('Certificate saved as HTML. User can print to PDF from browser.');
+        return $htmlPath;
     }
 }
