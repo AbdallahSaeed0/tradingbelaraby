@@ -79,10 +79,6 @@
         center center/cover no-repeat !important;
 }
 
-.bg-blog-news {
-    background: url("https://eclass.mediacity.co.in/demo2/public/frontcss/img/bg/blog_bg.png")
-        center center/cover no-repeat !important;
-}
 
 /* Hover effects */
 .hover-primary:hover {

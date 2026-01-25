@@ -217,16 +217,46 @@
             });
         }
 
+        // CTA Video Modal - Use dynamic video URL from database
         var videoModal = document.getElementById('videoModal');
         var youtubeVideo = document.getElementById('youtubeVideo');
-        var videoURL = "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1";
+        
+        @php
+            $ctaVideo = \App\Models\CTAVideo::active()->first();
+            $videoUrl = '';
+            if ($ctaVideo && $ctaVideo->video_url) {
+                // Convert various YouTube URL formats to embed format
+                $url = $ctaVideo->video_url;
+                if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/', $url, $matches)) {
+                    $videoId = $matches[1];
+                    $videoUrl = "https://www.youtube.com/embed/{$videoId}?autoplay=1";
+                } else {
+                    // If already in embed format or other format, use as is
+                    $videoUrl = str_replace('watch?v=', 'embed/', $url);
+                    if (strpos($videoUrl, 'embed/') === false && strpos($videoUrl, 'youtu.be/') !== false) {
+                        $videoUrl = str_replace('youtu.be/', 'youtube.com/embed/', $videoUrl);
+                    }
+                    if (strpos($videoUrl, '?') === false) {
+                        $videoUrl .= '?autoplay=1';
+                    } else {
+                        $videoUrl .= '&autoplay=1';
+                    }
+                }
+            }
+        @endphp
+        
+        var videoURL = @json($videoUrl);
 
-        videoModal.addEventListener('show.bs.modal', function() {
-            youtubeVideo.src = videoURL;
-        });
-        videoModal.addEventListener('hidden.bs.modal', function() {
-            youtubeVideo.src = "";
-        });
+        if (videoModal && youtubeVideo) {
+            videoModal.addEventListener('show.bs.modal', function() {
+                if (videoURL) {
+                    youtubeVideo.src = videoURL;
+                }
+            });
+            videoModal.addEventListener('hidden.bs.modal', function() {
+                youtubeVideo.src = "";
+            });
+        }
 
         // Wishlist functionality
         document.querySelectorAll('.wishlist-btn').forEach(btn => {

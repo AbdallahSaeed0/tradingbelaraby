@@ -36,7 +36,8 @@
                         data-bs-dismiss="modal" aria-label="Close"></button>
                     <div class="ratio ratio-16x9">
                         <iframe id="youtubeVideo"
-                            src="{{ $ctaVideo->video_url ? str_replace('watch?v=', 'embed/', $ctaVideo->video_url) : '' }}"
+                            src=""
+                            data-video-url="{{ $ctaVideo->video_url ?? '' }}"
                             title="YouTube video" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                     </div>
                 </div>
