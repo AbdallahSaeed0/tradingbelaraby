@@ -129,7 +129,7 @@ class CertificateController extends Controller
     }
 
     /**
-     * Generate certificate from PPTX template or PDF
+     * Generate certificate as PDF using DomPDF
      */
     private function generateCertificate(Course $course, CourseEnrollment $enrollment, string $studentName): string
     {
@@ -144,28 +144,22 @@ class CertificateController extends Controller
             'course' => $course,
         ])->render();
 
-        // Check if DomPDF is available
-        if (class_exists('\Dompdf\Dompdf')) {
-            try {
-                $dompdf = new \Dompdf\Dompdf();
-                $dompdf->loadHtml($html);
-                $dompdf->setPaper('A4', 'landscape');
-                $dompdf->render();
-                $pdfContent = $dompdf->output();
-                Storage::put($certificatePath, $pdfContent);
-                return $certificatePath;
-            } catch (\Exception $e) {
-                Log::error('PDF generation failed: ' . $e->getMessage());
-            }
+        // Use DomPDF to generate PDF (already included in composer.json)
+        try {
+            $dompdf = new \Dompdf\Dompdf();
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('A4', 'landscape');
+            $dompdf->render();
+            $pdfContent = $dompdf->output();
+            Storage::put($certificatePath, $pdfContent);
+            return $certificatePath;
+        } catch (\Exception $e) {
+            Log::error('PDF generation failed: ' . $e->getMessage());
+            // Fallback: Save as HTML if PDF generation fails
+            $htmlPath = str_replace('.pdf', '.html', $certificatePath);
+            Storage::put($htmlPath, $html);
+            Log::warning('Certificate saved as HTML due to PDF generation error. Check DomPDF installation.');
+            return $htmlPath;
         }
-        
-        // Fallback: Save as HTML (admin can convert manually or install DomPDF)
-        // Note: You should install dompdf/dompdf package: composer require dompdf/dompdf
-        Storage::put(str_replace('.pdf', '.html', $certificatePath), $html);
-        
-        // For now, return the HTML path - you'll need to install DomPDF for PDF generation
-        Log::warning('DomPDF not installed. Certificate saved as HTML. Install with: composer require dompdf/dompdf');
-        
-        return str_replace('.pdf', '.html', $certificatePath);
     }
 }

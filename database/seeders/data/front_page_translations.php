@@ -952,6 +952,10 @@ return [
         'en' => 'About Us',
         'ar' => 'من نحن',
     ],
+    'academy_policy' => [
+        'en' => 'Academy Policy',
+        'ar' => 'سياسة الأكاديمية',
+    ],
     'access_courses_immediately' => [
         'en' => 'Access courses immediately',
         'ar' => 'يمكنك الوصول إلى الدورات فوراً',

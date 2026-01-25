@@ -24,6 +24,8 @@ class AuthController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Password::defaults()],
+            'country' => ['required', 'string', 'max:255'],
+            'phone' => ['required', 'string', 'max:20'],
         ]);
 
         if ($validator->fails()) {
@@ -38,8 +40,11 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'country' => $request->country,
+            'phone' => $request->phone,
         ]);
 
+        // Fire the Registered event which will trigger the email verification notification
         event(new Registered($user));
 
         // Create token using Sanctum
@@ -47,7 +52,7 @@ class AuthController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'User registered successfully. Please verify your email.',
+            'message' => 'User registered successfully. Please check your email to verify your account before logging in.',
             'data' => [
                 'user' => new UserResource($user),
                 'token' => $token,
@@ -87,7 +92,7 @@ class AuthController extends Controller
             Auth::logout();
             return response()->json([
                 'success' => false,
-                'message' => 'Please verify your email address before logging in.',
+                'message' => 'Email not verified. Please check your inbox and verify your email address before logging in.',
                 'email_verified' => false,
             ], 403);
         }
