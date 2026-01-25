@@ -396,6 +396,7 @@ class CoursesController extends Controller
             'show_in_live_meeting' => 'boolean',
             'show_in_recent_courses' => 'boolean',
             'is_free' => 'boolean',
+            'enable_certificate' => 'boolean',
             'learning_objectives' => 'nullable|array',
             'learning_objectives.*' => 'string',
             'sections' => 'nullable|array',
@@ -425,11 +426,15 @@ class CoursesController extends Controller
         // Ensure is_free is always set explicitly on create as well
         if (!$request->has('is_free')) {
             $data['is_free'] = false;
+        } else {
+            $data['is_free'] = (bool) $request->is_free;
         }
         
         // Ensure enable_certificate is always set explicitly
         if (!$request->has('enable_certificate')) {
             $data['enable_certificate'] = false;
+        } else {
+            $data['enable_certificate'] = (bool) $request->enable_certificate;
         }
 
         // If course is free, set price to 0
