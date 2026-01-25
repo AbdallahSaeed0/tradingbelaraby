@@ -31,7 +31,11 @@
                     <i class="fa fa-award ms-3 text-warning fs-1-5rem"></i>
                 </div>
                 
-                @if ($userEnrollment->status == 'completed')
+                @if ($userEnrollment && $userEnrollment->status == 'completed')
+                    @php
+                        // Refresh course to get latest enable_certificate value
+                        $course->refresh();
+                    @endphp
                     @if ($course->enable_certificate)
                         @if ($userEnrollment->certificate_path)
                             <div class="alert alert-success mb-3">

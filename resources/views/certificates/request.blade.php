@@ -49,7 +49,7 @@
                             </div>
 
                             <div class="d-flex justify-content-between">
-                                <a href="{{ route('student.learn-course', $course->id) }}" class="btn btn-secondary">
+                                <a href="{{ route('courses.learn', $course->id) }}" class="btn btn-secondary">
                                     <i class="fas fa-arrow-left me-2"></i>
                                     {{ custom_trans('Back to Course', 'front') }}
                                 </a>

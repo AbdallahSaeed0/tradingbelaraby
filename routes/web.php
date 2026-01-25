@@ -212,8 +212,8 @@ Route::middleware('auth')->group(function () {
     // Certificate routes
     Route::get('/courses/{course}/certificate/request', [App\Http\Controllers\CertificateController::class, 'showCertificateForm'])->name('certificate.request');
     Route::post('/courses/{course}/certificate', [App\Http\Controllers\CertificateController::class, 'storeCertificateName'])->name('certificate.store');
-    Route::get('/certificates/{enrollment}/download', [App\Http\Controllers\CertificateController::class, 'download'])->name('certificate.download');
-    Route::get('/certificates/{enrollment}/view', [App\Http\Controllers\CertificateController::class, 'view'])->name('certificate.view');
+    Route::get('/certificates/{enrollment}/download', [App\Http\Controllers\CertificateController::class, 'download'])->name('certificate.download')->where('enrollment', '[0-9]+');
+    Route::get('/certificates/{enrollment}/view', [App\Http\Controllers\CertificateController::class, 'view'])->name('certificate.view')->where('enrollment', '[0-9]+');
 
     // Enrollment routes
     Route::get('/enrollments', [EnrollmentController::class, 'index'])->name('enrollments.index');

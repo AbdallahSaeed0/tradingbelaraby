@@ -120,6 +120,9 @@ class StudentController extends Controller
             ->firstOrFail();
 
         $course = $enrollment->course;
+        
+        // Refresh course to ensure enable_certificate is loaded
+        $course->refresh();
 
         // Load homework with user submissions
         $course->load(['homework' => function($query) use ($user) {

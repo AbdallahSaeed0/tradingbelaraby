@@ -325,6 +325,54 @@ return [
     'Get Certificate' => [
         'ar' => 'احصل على شهادة',
     ],
+    'Download Certificate' => [
+        'en' => 'Download Certificate',
+        'ar' => 'تحميل الشهادة',
+    ],
+    'Course Completed!' => [
+        'en' => 'Course Completed!',
+        'ar' => 'تم إكمال الدورة!',
+    ],
+    'You have completed this course and earned a certificate.' => [
+        'en' => 'You have completed this course and earned a certificate.',
+        'ar' => 'لقد أكملت هذه الدورة وحصلت على شهادة.',
+    ],
+    'Get your certificate by entering your name.' => [
+        'en' => 'Get your certificate by entering your name.',
+        'ar' => 'احصل على شهادتك بإدخال اسمك.',
+    ],
+    'Request Certificate' => [
+        'en' => 'Request Certificate',
+        'ar' => 'طلب الشهادة',
+    ],
+    'Generate Certificate' => [
+        'en' => 'Generate Certificate',
+        'ar' => 'إنشاء الشهادة',
+    ],
+    'Name on Certificate' => [
+        'en' => 'Name on Certificate',
+        'ar' => 'الاسم على الشهادة',
+    ],
+    'Please enter the name you would like to appear on your certificate. This name will be printed exactly as you enter it.' => [
+        'en' => 'Please enter the name you would like to appear on your certificate. This name will be printed exactly as you enter it.',
+        'ar' => 'يرجى إدخال الاسم الذي تريد أن يظهر على شهادتك. سيتم طباعة هذا الاسم بالضبط كما تدخله.',
+    ],
+    'Enter your full name' => [
+        'en' => 'Enter your full name',
+        'ar' => 'أدخل اسمك الكامل',
+    ],
+    'This name will appear on your certificate. Make sure it is spelled correctly.' => [
+        'en' => 'This name will appear on your certificate. Make sure it is spelled correctly.',
+        'ar' => 'سيظهر هذا الاسم على شهادتك. تأكد من أنه مكتوب بشكل صحيح.',
+    ],
+    'Back to Course' => [
+        'en' => 'Back to Course',
+        'ar' => 'العودة إلى الدورة',
+    ],
+    'You have successfully completed the course' => [
+        'en' => 'You have successfully completed the course',
+        'ar' => 'لقد أكملت الدورة بنجاح',
+    ],
     'Get Notified' => [
         'ar' => 'تلقي إشعارات',
     ],

@@ -35,6 +35,9 @@ class CertificateController extends Controller
             return redirect()->route('certificate.download', $enrollment->id);
         }
 
+        // Refresh course to ensure enable_certificate is loaded
+        $course->refresh();
+        
         if (!$course->enable_certificate) {
             return redirect()->route('courses.learn', $course->id)
                 ->with('error', 'This course does not offer certificates.');
@@ -94,38 +97,52 @@ class CertificateController extends Controller
     /**
      * Download certificate
      */
-    public function download(CourseEnrollment $enrollment)
+    public function download($enrollment)
     {
         $user = Auth::user();
-        if (!$user || $enrollment->user_id != $user->id) {
+        if (!$user) {
+            return redirect()->route('login');
+        }
+
+        // Get enrollment by ID
+        $enrollmentModel = CourseEnrollment::with('course')->findOrFail($enrollment);
+        
+        if ($enrollmentModel->user_id != $user->id) {
             abort(403);
         }
 
-        if (!$enrollment->certificate_path || !Storage::exists($enrollment->certificate_path)) {
-            return redirect()->route('certificate.request', $enrollment->course_id)
+        if (!$enrollmentModel->certificate_path || !Storage::exists($enrollmentModel->certificate_path)) {
+            return redirect()->route('certificate.request', $enrollmentModel->course_id)
                 ->with('error', 'Certificate not found. Please regenerate.');
         }
 
-        return Storage::download($enrollment->certificate_path, 
-            'certificate-' . $enrollment->course->slug . '-' . $enrollment->id . '.pdf');
+        return Storage::download($enrollmentModel->certificate_path, 
+            'certificate-' . $enrollmentModel->course->slug . '-' . $enrollmentModel->id . '.pdf');
     }
 
     /**
      * View certificate
      */
-    public function view(CourseEnrollment $enrollment)
+    public function view($enrollment)
     {
         $user = Auth::user();
-        if (!$user || $enrollment->user_id != $user->id) {
+        if (!$user) {
+            return redirect()->route('login');
+        }
+
+        // Get enrollment by ID
+        $enrollmentModel = CourseEnrollment::with('course')->findOrFail($enrollment);
+        
+        if ($enrollmentModel->user_id != $user->id) {
             abort(403);
         }
 
-        if (!$enrollment->certificate_path || !Storage::exists($enrollment->certificate_path)) {
-            return redirect()->route('certificate.request', $enrollment->course_id)
+        if (!$enrollmentModel->certificate_path || !Storage::exists($enrollmentModel->certificate_path)) {
+            return redirect()->route('certificate.request', $enrollmentModel->course_id)
                 ->with('error', 'Certificate not found. Please regenerate.');
         }
 
-        return response()->file(Storage::path($enrollment->certificate_path));
+        return response()->file(Storage::path($enrollmentModel->certificate_path));
     }
 
     /**
