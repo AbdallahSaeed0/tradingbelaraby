@@ -703,17 +703,27 @@
                     <div class="footer-title-underline mb-3"></div>
                     <ul class="footer-links list-unstyled">
                         <li><a href="{{ route('home') }}">{{ custom_trans('home', 'front') }}</a></li>
+                        @php
+                            $aboutUsPage = \App\Models\AboutUs::where('is_active', true)->first();
+                        @endphp
+                        @if ($aboutUsPage)
+                            <li><a href="{{ route('about-us') }}">{{ custom_trans('about_us', 'front') }}</a></li>
+                        @endif
                         <li><a href="{{ route('categories.index') }}">{{ custom_trans('courses', 'front') }}</a>
                         </li>
                         <li><a href="{{ route('contact') }}">{{ custom_trans('contact_us', 'front') }}</a></li>
                         <li><a href="{{ route('blog.index') }}">{{ custom_trans('blog', 'front') }}</a></li>
                         @php
                             $termsPage = \App\Models\TermsConditions::where('is_active', true)->first();
+                            $academyPolicyPage = \App\Models\AcademyPolicy::where('is_active', true)->first();
                         @endphp
                         @if ($termsPage)
                             <li><a
                                     href="{{ route('terms-conditions', $termsPage->slug) }}">{{ custom_trans('terms_and_conditions', 'front') }}</a>
                             </li>
+                        @endif
+                        @if ($academyPolicyPage)
+                            <li><a href="{{ route('academy-policy') }}">{{ custom_trans('academy_policy', 'front') }}</a></li>
                         @endif
                     </ul>
                 </div>

@@ -728,6 +728,18 @@
                             </div>
                         </div>
                         <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="enable_certificate" name="enable_certificate"
+                                    value="1">
+                                <label class="form-check-label" for="enable_certificate">
+                                    Enable Certificate
+                                </label>
+                                <small class="form-text text-muted d-block">
+                                    Allow students to receive a certificate upon course completion
+                                </small>
+                            </div>
+                        </div>
+                        <div class="mb-3">
                             <label class="form-label fw-bold">Display in Homepage Sections:</label>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="show_in_top_discounted"

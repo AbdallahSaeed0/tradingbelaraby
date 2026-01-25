@@ -23,6 +23,7 @@ class CourseEnrollment extends Model
         'last_accessed_at',
         'certificate_path',
         'certificate_issued_at',
+        'certificate_name',
         'amount_paid',
         'payment_method',
         'transaction_id',

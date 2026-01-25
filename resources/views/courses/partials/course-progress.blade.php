@@ -30,7 +30,32 @@
                     </div>
                     <i class="fa fa-award ms-3 text-warning fs-1-5rem"></i>
                 </div>
-                <button class="btn btn-orange px-4 py-2 fw-bold">{{ custom_trans('Continue To Lecture', 'front') }}</button>
+                
+                @if ($userEnrollment->status == 'completed')
+                    @if ($course->enable_certificate)
+                        @if ($userEnrollment->certificate_path)
+                            <div class="alert alert-success mb-3">
+                                <i class="fas fa-certificate me-2"></i>
+                                <strong>{{ custom_trans('Congratulations!', 'front') }}</strong>
+                                {{ custom_trans('You have completed this course and earned a certificate.', 'front') }}
+                                <a href="{{ route('certificate.download', $userEnrollment->id) }}" class="btn btn-success btn-sm ms-2">
+                                    <i class="fas fa-download me-1"></i>{{ custom_trans('Download Certificate', 'front') }}
+                                </a>
+                            </div>
+                        @else
+                            <div class="alert alert-warning mb-3">
+                                <i class="fas fa-certificate me-2"></i>
+                                <strong>{{ custom_trans('Course Completed!', 'front') }}</strong>
+                                {{ custom_trans('Get your certificate by entering your name.', 'front') }}
+                                <a href="{{ route('certificate.request', $course->id) }}" class="btn btn-warning btn-sm ms-2">
+                                    <i class="fas fa-certificate me-1"></i>{{ custom_trans('Get Certificate', 'front') }}
+                                </a>
+                            </div>
+                        @endif
+                    @endif
+                @else
+                    <button class="btn btn-orange px-4 py-2 fw-bold">{{ custom_trans('Continue To Lecture', 'front') }}</button>
+                @endif
             </div>
         </div>
     </div>

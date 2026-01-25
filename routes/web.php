@@ -85,8 +85,8 @@ Route::get('/categories', [CategoryController::class, 'index'])->name('categorie
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
 Route::post('/contact', [App\Http\Controllers\ContactController::class, 'store'])->name('contact.store');
 Route::get('/page/{slug}', [PageController::class, 'termsConditions'])->name('terms-conditions');
-Route::get('/about-us/{slug}', [PageController::class, 'aboutUs'])->name('about-us');
-Route::get('/academy-policy/{slug}', [PageController::class, 'academyPolicy'])->name('academy-policy');
+Route::get('/about-us', [PageController::class, 'aboutUs'])->name('about-us');
+Route::get('/academy-policy', [PageController::class, 'academyPolicy'])->name('academy-policy');
 
 // Newsletter routes
 Route::post('/newsletter/subscribe', [App\Http\Controllers\NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
@@ -208,6 +208,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/student/dashboard', [StudentController::class, 'dashboard'])->name('student.dashboard');
     Route::get('/student/my-courses', [StudentController::class, 'myCourses'])->name('student.my-courses');
     Route::get('/courses/{course}/learn', [StudentController::class, 'learnCourse'])->name('courses.learn');
+    
+    // Certificate routes
+    Route::get('/courses/{course}/certificate/request', [App\Http\Controllers\CertificateController::class, 'showCertificateForm'])->name('certificate.request');
+    Route::post('/courses/{course}/certificate', [App\Http\Controllers\CertificateController::class, 'storeCertificateName'])->name('certificate.store');
+    Route::get('/certificates/{enrollment}/download', [App\Http\Controllers\CertificateController::class, 'download'])->name('certificate.download');
+    Route::get('/certificates/{enrollment}/view', [App\Http\Controllers\CertificateController::class, 'view'])->name('certificate.view');
 
     // Enrollment routes
     Route::get('/enrollments', [EnrollmentController::class, 'index'])->name('enrollments.index');

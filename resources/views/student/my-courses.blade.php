@@ -219,15 +219,30 @@
                             </div>
 
                             <div class="card-footer bg-transparent">
-                                <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
                                     <a href="{{ route('courses.show', $enrollment->course->slug ?? $enrollment->course->id) }}"
                                         class="btn btn-outline-primary btn-sm">
                                         <i class="fas fa-eye me-1"></i>{{ custom_trans('View Details', 'front') }}
                                     </a>
-                                    <a href="{{ route('courses.learn', $enrollment->course->id) }}"
-                                        class="btn btn-primary btn-sm">
-                                        <i class="fas fa-play me-1"></i>{{ custom_trans('Continue', 'front') }}
-                                    </a>
+                                    <div class="d-flex gap-2">
+                                        @if ($enrollment->status == 'completed' && $enrollment->course->enable_certificate)
+                                            @if ($enrollment->certificate_path)
+                                                <a href="{{ route('certificate.download', $enrollment->id) }}"
+                                                    class="btn btn-success btn-sm" title="{{ custom_trans('Download Certificate', 'front') }}">
+                                                    <i class="fas fa-certificate me-1"></i>{{ custom_trans('Certificate', 'front') }}
+                                                </a>
+                                            @else
+                                                <a href="{{ route('certificate.request', $enrollment->course->id) }}"
+                                                    class="btn btn-warning btn-sm" title="{{ custom_trans('Request Certificate', 'front') }}">
+                                                    <i class="fas fa-certificate me-1"></i>{{ custom_trans('Get Certificate', 'front') }}
+                                                </a>
+                                            @endif
+                                        @endif
+                                        <a href="{{ route('courses.learn', $enrollment->course->id) }}"
+                                            class="btn btn-primary btn-sm">
+                                            <i class="fas fa-play me-1"></i>{{ custom_trans('Continue', 'front') }}
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>

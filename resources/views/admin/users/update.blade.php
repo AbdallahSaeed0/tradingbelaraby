@@ -23,6 +23,18 @@
                                     value="{{ old('email', $user->email) }}" required>
                             </div>
                             <div class="mb-3">
+                                <label class="form-label">Country</label>
+                                <select name="country" class="form-select" required>
+                                    <option value="">Select Country</option>
+                                    @include('partials.countries', ['selected' => old('country', $user->country)])
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Phone Number</label>
+                                <input type="tel" name="phone" class="form-control"
+                                    value="{{ old('phone', $user->phone) }}" placeholder="+1234567890" required>
+                            </div>
+                            <div class="mb-3">
                                 <label class="form-label">Password (leave blank to keep unchanged)</label>
                                 <input type="password" name="password" class="form-control">
                             </div>

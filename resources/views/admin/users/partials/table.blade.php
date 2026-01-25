@@ -3,6 +3,8 @@
         <th>#</th>
         <th>Name</th>
         <th>Email</th>
+        <th>Country</th>
+        <th>Phone</th>
         <th>Registered</th>
         <th>Active</th>
         <th>Actions</th>
@@ -14,6 +16,8 @@
             <td>{{ $users->firstItem() + $loop->index }}</td>
             <td>{{ $user->name }}</td>
             <td>{{ $user->email }}</td>
+            <td>{{ $user->country ?? '-' }}</td>
+            <td>{{ $user->phone ?? '-' }}</td>
             <td>{{ $user->created_at->diffForHumans() }}</td>
             <td>
                 <form action="{{ route('admin.users.active', $user) }}" method="POST" class="d-inline">
@@ -46,7 +50,7 @@
 </tbody>
 <tfoot>
     <tr>
-        <td colspan="6" class="p-2">
+        <td colspan="8" class="p-2">
             <div class="d-flex justify-content-between">
                 <small>Showing {{ $users->count() }} of {{ $users->total() }} users</small>
                 {{ $users->links() }}

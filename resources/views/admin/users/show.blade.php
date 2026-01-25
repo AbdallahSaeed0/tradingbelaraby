@@ -29,6 +29,18 @@
                                 <th>Email:</th>
                                 <td>{{ $user->email }}</td>
                             </tr>
+                            @if($user->country)
+                            <tr>
+                                <th>Country:</th>
+                                <td>{{ $user->country }}</td>
+                            </tr>
+                            @endif
+                            @if($user->phone)
+                            <tr>
+                                <th>Phone:</th>
+                                <td>{{ $user->phone }}</td>
+                            </tr>
+                            @endif
                             <tr>
                                 <th>Joined:</th>
                                 <td>{{ $user->created_at->format('d M Y') }}</td>

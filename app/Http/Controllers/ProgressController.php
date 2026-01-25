@@ -292,20 +292,34 @@ class ProgressController extends Controller
         ]);
 
         // Check if course is completed
+        $courseCompleted = false;
         if ($progress >= 100) {
+            $courseCompleted = true;
             $enrollment->update([
                 'status' => 'completed',
                 'completed_at' => now()
             ]);
         }
 
-        return response()->json([
+        $response = [
             'success' => true,
             'message' => "{$completedCount} lecture(s) marked as complete",
             'progress' => $progress,
             'completed_lectures' => $completedLectures,
-            'total_lectures' => $totalLectures
-        ]);
+            'total_lectures' => $totalLectures,
+            'course_completed' => $courseCompleted,
+        ];
+        
+        // Add certificate info if course is completed and certificate is enabled
+        if ($courseCompleted && $course->enable_certificate) {
+            $response['certificate_available'] = true;
+            $response['certificate_request_url'] = route('certificate.request', $course->id);
+            if ($enrollment->certificate_path) {
+                $response['certificate_download_url'] = route('certificate.download', $enrollment->id);
+            }
+        }
+
+        return response()->json($response);
     }
 
     /**

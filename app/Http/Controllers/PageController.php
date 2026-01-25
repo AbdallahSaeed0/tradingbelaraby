@@ -103,14 +103,11 @@ class PageController extends Controller
     /**
      * Display the about us page.
      *
-     * @param string $slug
      * @return \Illuminate\View\View
      */
-    public function aboutUs($slug)
+    public function aboutUs()
     {
-        $aboutUs = \App\Models\AboutUs::where('slug', $slug)
-            ->where('is_active', true)
-            ->first();
+        $aboutUs = \App\Models\AboutUs::where('is_active', true)->first();
 
         if (!$aboutUs) {
             abort(404);
@@ -122,14 +119,11 @@ class PageController extends Controller
     /**
      * Display the academy policy page.
      *
-     * @param string $slug
      * @return \Illuminate\View\View
      */
-    public function academyPolicy($slug)
+    public function academyPolicy()
     {
-        $academyPolicy = \App\Models\AcademyPolicy::where('slug', $slug)
-            ->where('is_active', true)
-            ->first();
+        $academyPolicy = \App\Models\AcademyPolicy::where('is_active', true)->first();
 
         if (!$academyPolicy) {
             abort(404);

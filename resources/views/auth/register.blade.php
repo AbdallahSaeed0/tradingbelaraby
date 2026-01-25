@@ -42,6 +42,28 @@
             </div>
 
             <div class="mb-3">
+                <label for="country" class="form-label">Country</label>
+                <select name="country" id="country" required
+                    class="form-select @error('country') is-invalid @enderror">
+                    <option value="">Select Country</option>
+                    @include('partials.countries')
+                </select>
+                @error('country')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="mb-3">
+                <label for="phone" class="form-label">Phone Number</label>
+                <input type="tel" name="phone" id="phone" value="{{ old('phone') }}" required
+                    class="form-control @error('phone') is-invalid @enderror"
+                    placeholder="+1234567890">
+                @error('phone')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
                 <input type="password" name="password" id="password" required
                     class="form-control @error('password') is-invalid @enderror">
