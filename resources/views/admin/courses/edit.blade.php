@@ -1514,35 +1514,53 @@
             const previewImg = document.getElementById('previewImg');
             const removeImageBtn = document.getElementById('removeImage');
 
-            imageUploadArea.addEventListener('click', () => courseImage.click());
+            if (imageUploadArea && courseImage) {
+                imageUploadArea.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    courseImage.click();
+                });
+            }
 
-            imageUploadArea.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                imageUploadArea.classList.add('dragover');
-            });
+            if (imageUploadArea) {
+                imageUploadArea.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    imageUploadArea.classList.add('dragover');
+                });
 
-            imageUploadArea.addEventListener('dragleave', () => {
-                imageUploadArea.classList.remove('dragover');
-            });
+                imageUploadArea.addEventListener('dragleave', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    imageUploadArea.classList.remove('dragover');
+                });
 
-            imageUploadArea.addEventListener('drop', (e) => {
-                e.preventDefault();
-                imageUploadArea.classList.remove('dragover');
-                const files = e.dataTransfer.files;
-                if (files.length > 0) {
-                    courseImage.files = files;
-                    handleImagePreview(files[0]);
-                }
-            });
+                imageUploadArea.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    imageUploadArea.classList.remove('dragover');
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0 && courseImage) {
+                        // Create a new FileList using DataTransfer
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(files[0]);
+                        courseImage.files = dataTransfer.files;
+                        handleImagePreview(files[0]);
+                    }
+                });
+            }
 
-            courseImage.addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                if (file) {
-                    handleImagePreview(file);
-                }
-            });
+            if (courseImage) {
+                courseImage.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        handleImagePreview(file);
+                    }
+                });
+            }
 
             function handleImagePreview(file) {
+                if (!previewImg || !imagePreview || !imageUploadArea) return;
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     previewImg.src = e.target.result;
@@ -1552,11 +1570,13 @@
                 reader.readAsDataURL(file);
             }
 
-            removeImageBtn.addEventListener('click', function() {
-                courseImage.value = '';
-                imagePreview.style.display = 'none';
-                imageUploadArea.style.display = 'block';
-            });
+            if (removeImageBtn) {
+                removeImageBtn.addEventListener('click', function() {
+                    if (courseImage) courseImage.value = '';
+                    if (imagePreview) imagePreview.style.display = 'none';
+                    if (imageUploadArea) imageUploadArea.style.display = 'block';
+                });
+            }
 
             // Section management
             const addSectionBtn = document.getElementById('addSection');

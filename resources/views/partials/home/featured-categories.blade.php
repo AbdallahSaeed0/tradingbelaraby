@@ -12,24 +12,26 @@
             <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-4 justify-content-center">
                 @foreach ($featuredCategories as $category)
                     <div class="col">
-                        <div class="category-card h-100">
-                            <div class="category-img-wrap">
-                                @if ($category->image)
-                                    <img src="{{ $category->image_url }}"
-                                        alt="{{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}"
-                                        class="category-img">
-                                @else
-                                    <div class="category-placeholder">
-                                        <i class="fas fa-graduation-cap"></i>
-                                    </div>
-                                @endif
+                        <a href="{{ route('categories.show', $category->slug) }}" class="text-decoration-none">
+                            <div class="category-card h-100">
+                                <div class="category-img-wrap">
+                                    @if ($category->image)
+                                        <img src="{{ $category->image_url }}"
+                                            alt="{{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}"
+                                            class="category-img">
+                                    @else
+                                        <div class="category-placeholder">
+                                            <i class="fas fa-graduation-cap"></i>
+                                        </div>
+                                    @endif
+                                </div>
+                                <div class="category-label">
+                                    <i class="fas fa-folder me-2"></i>
+                                    {{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}
+                                </div>
+                                <div class="category-hover-text">{{ $category->courses_count }} {{ custom_trans('courses', 'front') }}</div>
                             </div>
-                            <div class="category-label">
-                                <i class="fas fa-folder me-2"></i>
-                                {{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}
-                            </div>
-                            <div class="category-hover-text">{{ $category->courses_count }} {{ custom_trans('courses', 'front') }}</div>
-                        </div>
+                        </a>
                     </div>
                 @endforeach
             </div>
