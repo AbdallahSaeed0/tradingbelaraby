@@ -670,12 +670,12 @@
                         <div class="section-header">
                             <h5><i class="fa fa-image me-2"></i>Course Image</h5>
                         </div>
-                        <div class="image-upload-area" id="imageUploadArea">
+                        <label for="courseImage" class="image-upload-area" id="imageUploadArea" style="display: block; cursor: pointer;">
                             <i class="fa fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
                             <p class="text-muted mb-2">Drag and drop an image here or click to select</p>
                             <p class="text-muted small">Recommended size: 800x600px</p>
                             <input type="file" class="d-none" id="courseImage" name="image" accept="image/*">
-                        </div>
+                        </label>
                         <div id="imagePreview" class="mt-3 d-none-initially">
                             <img id="previewImg" class="img-fluid rounded max-h-200">
                             <button type="button" class="btn btn-sm btn-outline-danger mt-2" id="removeImage">
@@ -1043,11 +1043,23 @@
             const previewImg = document.getElementById('previewImg');
             const removeImageBtn = document.getElementById('removeImage');
 
-            if (imageUploadArea && courseImage) {
-                imageUploadArea.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    courseImage.click();
+            if (!imageUploadArea || !courseImage) {
+                console.error('Image upload elements not found!', {
+                    imageUploadArea: !!imageUploadArea,
+                    courseImage: !!courseImage
+                });
+            } else {
+                console.log('Image upload elements found successfully');
+                
+                // Label element will handle click automatically, but we still need drag and drop
+                // Prevent label's default behavior if clicking on preview/remove
+                imageUploadArea.addEventListener('click', function(e) {
+                    // Don't trigger if clicking on preview or remove button
+                    if (e.target.closest('#imagePreview') || e.target.id === 'removeImage') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return false;
+                    }
                 });
             }
 
