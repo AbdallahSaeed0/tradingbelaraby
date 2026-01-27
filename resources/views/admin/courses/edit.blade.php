@@ -1196,7 +1196,7 @@
                         <div class="section-header">
                             <h5><i class="fa fa-image me-2"></i>Course Image</h5>
                         </div>
-                        <label for="courseImage" class="image-upload-area" id="imageUploadArea" style="display: block; cursor: pointer;">
+                        <label for="courseImage" class="image-upload-area" id="imageUploadArea" style="display: block; cursor: pointer; user-select: none;">
                             @if ($course->image_url)
                                 <img src="{{ $course->image_url }}" alt="Course Image"
                                     class="img-fluid rounded mb-3 max-h-200">
@@ -1535,29 +1535,52 @@
             }
 
             if (imageUploadArea) {
-                imageUploadArea.addEventListener('dragover', (e) => {
+                // Prevent default drag behavior on the label
+                imageUploadArea.addEventListener('dragenter', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
                     imageUploadArea.classList.add('dragover');
                 });
 
-                imageUploadArea.addEventListener('dragleave', (e) => {
+                imageUploadArea.addEventListener('dragover', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    imageUploadArea.classList.remove('dragover');
+                    e.dataTransfer.dropEffect = 'copy';
+                    imageUploadArea.classList.add('dragover');
                 });
 
-                imageUploadArea.addEventListener('drop', (e) => {
+                imageUploadArea.addEventListener('dragleave', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    // Only remove dragover if we're actually leaving the upload area
+                    if (!imageUploadArea.contains(e.relatedTarget)) {
+                        imageUploadArea.classList.remove('dragover');
+                    }
+                });
+
+                imageUploadArea.addEventListener('drop', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
                     imageUploadArea.classList.remove('dragover');
+                    
                     const files = e.dataTransfer.files;
+                    console.log('Files dropped:', files.length);
+                    
                     if (files.length > 0 && courseImage) {
-                        // Create a new FileList using DataTransfer
-                        const dataTransfer = new DataTransfer();
-                        dataTransfer.items.add(files[0]);
-                        courseImage.files = dataTransfer.files;
-                        handleImagePreview(files[0]);
+                        const file = files[0];
+                        // Validate it's an image
+                        if (file.type.startsWith('image/')) {
+                            // Create a new FileList using DataTransfer
+                            const dataTransfer = new DataTransfer();
+                            dataTransfer.items.add(file);
+                            courseImage.files = dataTransfer.files;
+                            // Trigger change event manually
+                            const changeEvent = new Event('change', { bubbles: true });
+                            courseImage.dispatchEvent(changeEvent);
+                            handleImagePreview(file);
+                        } else {
+                            alert('Please drop an image file');
+                        }
                     }
                 });
             }
