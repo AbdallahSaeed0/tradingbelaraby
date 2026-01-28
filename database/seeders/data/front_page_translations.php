@@ -1655,6 +1655,10 @@ return [
         'en' => 'Students',
         'ar' => 'الطلاب',
     ],
+    'lessons' => [
+        'en' => 'Lessons',
+        'ar' => 'دروس',
+    ],
     'submit' => [
         'en' => 'Submit',
         'ar' => 'إرسال',

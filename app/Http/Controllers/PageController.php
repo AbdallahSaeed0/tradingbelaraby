@@ -23,7 +23,11 @@ class PageController extends Controller
 
         // Get courses based on selection
         $coursesQuery = \App\Models\Course::with(['category', 'instructor', 'instructors'])
-            ->published();
+            ->where('status', 'published') // Only show published courses, exclude drafts
+            ->withCount(['lectures as total_lessons_count' => function($query) {
+                $query->where('is_published', true); // Only count published lectures
+            }])
+            ->withAvg('ratings', 'rating');
 
         if ($selectedCategory) {
             $coursesQuery->where('category_id', $selectedCategory->id);

@@ -37,8 +37,11 @@ class CategoryController extends Controller
         $category = CourseCategory::where('slug', $slug)->firstOrFail();
 
         $courses = Course::where('category_id', $category->id)
+            ->where('status', 'published') // Only show published courses, exclude drafts
             ->with(['instructor', 'instructors', 'category'])
-            ->withCount('enrollments as enrolled_students')
+            ->withCount(['lectures as total_lessons_count' => function($query) {
+                $query->where('is_published', true); // Only count published lectures
+            }])
             ->withAvg('ratings', 'rating')
             ->orderBy('created_at', 'desc')
             ->paginate(12);

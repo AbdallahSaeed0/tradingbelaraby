@@ -139,7 +139,16 @@ class CourseController extends Controller
 
     public function category(CourseCategory $category)
     {
-        $courses = $category->courses()->paginate(12);
+        $courses = $category->courses()
+            ->where('status', 'published') // Only show published courses, exclude drafts
+            ->with(['instructor', 'instructors', 'category'])
+            ->withCount(['lectures as total_lessons_count' => function($query) {
+                $query->where('is_published', true); // Only count published lectures
+            }])
+            ->withAvg('ratings', 'rating')
+            ->orderBy('created_at', 'desc')
+            ->paginate(12);
+        
         return view('pages.category-show', compact('category', 'courses'));
     }
 }
