@@ -80,6 +80,9 @@ Route::get('/languages', [LanguageController::class, 'index'])->name('api.langua
 // About Academy API Routes
 Route::get('/about-academy', [AboutAcademyController::class, 'index'])->name('api.about-academy.index');
 
+// Sliders API (home page banner - same as website)
+Route::get('/sliders', [App\Http\Controllers\Api\SliderController::class, 'index'])->name('api.sliders.index');
+
 // Cart API Routes (Protected)
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/cart', [App\Http\Controllers\Api\CartController::class, 'index'])->name('api.cart.index');

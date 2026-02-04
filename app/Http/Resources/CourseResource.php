@@ -24,8 +24,8 @@ class CourseResource extends JsonResource
             'is_free' => (bool) $this->is_free,
             'instructor_id' => (string) $this->instructor_id,
             'instructor_name' => $this->instructor ? $this->instructor->name : null,
-            'instructor_avatar_url' => $this->instructor && $this->instructor->avatar 
-                ? asset('storage/' . $this->instructor->avatar) 
+            'instructor_avatar_url' => $this->instructor && $this->instructor->avatar
+                ? asset('storage/' . $this->instructor->avatar)
                 : null,
             'thumbnail_url' => $this->image ? asset('storage/' . $this->image) : null,
             'category_id' => $this->category_id ? (string) $this->category_id : null,
@@ -40,6 +40,19 @@ class CourseResource extends JsonResource
             'is_featured' => (bool) $this->is_featured,
             'status' => $this->status,
             'sections' => SectionResource::collection($this->whenLoaded('sections')),
+            'faq' => $this->faq_course ?? [],
+            'faq_ar' => $this->faq_course_ar ?? [],
+            'reviews' => $this->whenLoaded('approvedRatings', function () {
+                return $this->approvedRatings->map(function ($r) {
+                    return [
+                        'id' => (string) $r->id,
+                        'user_name' => $r->user ? $r->user->name : __('Anonymous'),
+                        'rating' => (int) $r->rating,
+                        'review' => $r->review,
+                        'created_at' => $r->created_at?->toIso8601String(),
+                    ];
+                });
+            }, []),
             'created_at' => $this->created_at?->toIso8601String(),
             'updated_at' => $this->updated_at?->toIso8601String(),
         ];

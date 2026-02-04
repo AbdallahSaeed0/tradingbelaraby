@@ -182,7 +182,17 @@ class FeaturesController extends Controller
         }
 
         try {
-            $data = $request->all();
+            $data = [
+                'title' => $request->input('title'),
+                'title_ar' => $request->input('title_ar'),
+                'description' => $request->input('description'),
+                'description_ar' => $request->input('description_ar'),
+                'number' => (int) $request->input('number', $feature->number),
+                'order' => $request->has('order') && $request->input('order') !== '' && $request->input('order') !== null
+                    ? (int) $request->input('order')
+                    : (int) $feature->order,
+                'is_active' => $request->has('is_active') && $request->input('is_active') === 'on',
+            ];
 
             // Handle icon upload
             if ($request->hasFile('icon')) {
@@ -194,8 +204,6 @@ class FeaturesController extends Controller
                 $iconPath = $request->file('icon')->store('features', 'public');
                 $data['icon'] = $iconPath;
             }
-
-            $data['is_active'] = $request->has('is_active') && $request->input('is_active') === 'on';
 
             $feature->update($data);
 
