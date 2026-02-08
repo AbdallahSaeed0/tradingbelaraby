@@ -43,6 +43,14 @@ Route::get('/courses', [CourseController::class, 'index'])->name('api.courses.in
 Route::get('/courses/featured', [CourseController::class, 'featured'])->name('api.courses.featured');
 Route::get('/courses/search', [CourseController::class, 'search'])->name('api.courses.search');
 Route::get('/courses/{id}', [CourseController::class, 'show'])->name('api.courses.show');
+Route::get('/courses/{id}/reviews', [CourseController::class, 'getReviews'])->name('api.courses.reviews.index');
+Route::get('/courses/{id}/questions', [App\Http\Controllers\Api\CourseQuestionController::class, 'index'])->name('api.courses.questions.index');
+
+// Course review & Q&A (protected: auth required)
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/courses/{id}/review', [CourseController::class, 'storeReview'])->name('api.courses.review.store');
+    Route::post('/courses/{id}/questions', [App\Http\Controllers\Api\CourseQuestionController::class, 'store'])->name('api.courses.questions.store');
+});
 
 // Category API Routes
 Route::get('/categories', [CategoryController::class, 'index'])->name('api.categories.index');

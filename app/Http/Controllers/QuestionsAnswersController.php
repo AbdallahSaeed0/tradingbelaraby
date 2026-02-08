@@ -123,7 +123,13 @@ class QuestionsAnswersController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-
+        $course = Course::find($request->course_id);
+        if (!$course || !$course->isEnrolledBy($user)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You must be enrolled in this course to ask a question.',
+            ], 403);
+        }
 
         try {
             $request->validate([
@@ -192,8 +198,8 @@ class QuestionsAnswersController extends Controller
         $isAdmin = $user instanceof \App\Models\Admin;
         $isCourseInstructor = $question->course && $question->course->instructor_id === $user->id;
 
-        // Only allow admins and course instructors to answer
-        if (!$isAdmin || !$isCourseInstructor) {
+        // Only allow admins or course instructors to answer
+        if (!$isAdmin && !$isCourseInstructor) {
             return response()->json(['error' => 'Only course instructors and administrators can answer questions'], 403);
         }
 

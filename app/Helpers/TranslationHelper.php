@@ -11,11 +11,12 @@ class TranslationHelper
 {
     public static function getCurrentLanguage()
     {
-        // Check if we're in admin area
+        // Check if we're in admin area (dashboard defaults to English; frontend uses app locale)
         $isAdmin = request()->is('admin*');
         $sessionKey = $isAdmin ? 'admin_locale' : 'frontend_locale';
+        $defaultLocale = $isAdmin ? 'en' : config('app.locale');
 
-        $languageCode = Session::get($sessionKey, config('app.locale'));
+        $languageCode = Session::get($sessionKey, $defaultLocale);
         return Language::where('code', $languageCode)->first() ?? Language::default()->first();
     }
 
@@ -152,11 +153,11 @@ class TranslationHelper
     }
 
     /**
-     * Get current language for admin specifically
+     * Get current language for admin specifically (dashboard defaults to English)
      */
     public static function getAdminLanguage()
     {
-        $languageCode = Session::get('admin_locale', config('app.locale'));
+        $languageCode = Session::get('admin_locale', 'en');
         return Language::where('code', $languageCode)->first() ?? Language::default()->first();
     }
 
