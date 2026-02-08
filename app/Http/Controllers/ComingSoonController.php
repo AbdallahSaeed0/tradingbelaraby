@@ -10,23 +10,8 @@ class ComingSoonController extends Controller
 {
     public function index(Request $request)
     {
-        // Detect browser language
-        $acceptLanguage = $request->header('Accept-Language');
-        $language = 'en'; // Default to English
-
-        if ($acceptLanguage) {
-            // Parse Accept-Language header
-            $languages = explode(',', $acceptLanguage);
-            $primaryLanguage = explode(';', $languages[0])[0];
-            $languageCode = explode('-', $primaryLanguage)[0];
-
-            // Check if it's Arabic
-            if (in_array($languageCode, ['ar'])) {
-                $language = 'ar';
-            }
-        }
-
-        // Set app locale
+        // Use Arabic as default language (no browser detection)
+        $language = 'ar';
         app()->setLocale($language);
 
         return view('coming-soon', compact('language'));
