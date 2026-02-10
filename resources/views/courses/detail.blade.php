@@ -41,8 +41,8 @@
                     <img src="{{ $course->image_url }}" class="img-fluid rounded-4 mb-4"
                         alt="{{ $course->localized_name }}">
 
-                    <!-- Course Features Box - after image for quick access -->
-                    <div class="course-features-box rounded-4 shadow-sm bg-white mb-4">
+                    <!-- Course Features Box - after image (mobile only: quick access without long scroll) -->
+                    <div class="course-features-box course-features-box-after-image rounded-4 shadow-sm bg-white mb-4 d-lg-none">
                         <div class="course-features-header p-3 rounded-top-4 text-white fw-bold">
                             {{ custom_trans('Course Features', 'front') }}
                         </div>
@@ -413,8 +413,8 @@
                         @include('courses.partials.course-qa', ['course' => $course])
                     </div>
                 </div>
-                <!-- Right Side - Sticky enroll / add to cart -->
-                <div class="col-lg-4">
+                <!-- Right Side - Desktop only: sidebar with features + enroll -->
+                <div class="col-lg-4 d-none d-lg-block">
                     <div class="course-enroll-sticky rounded-4 shadow-sm bg-white mb-4 position-sticky" style="top: 1rem;">
                         <div class="course-features-header p-3 rounded-top-4 text-white fw-bold">
                             {{ custom_trans('Course Features', 'front') }}
@@ -536,6 +536,42 @@
             </div>
         </div>
     </section>
+
+    <!-- Mobile only: sticky bottom enroll bar (scrolls with user) -->
+    <div class="course-detail-mobile-enroll-bar d-lg-none">
+        <div class="course-detail-mobile-enroll-bar-inner container">
+            <div class="d-flex align-items-center justify-content-between gap-3 w-100">
+                <div class="course-detail-mobile-enroll-price text-white fw-bold">
+                    @if ($course->price > 0)
+                        {{ number_format($course->price, 2) }} SAR
+                        @if ($course->original_price > $course->price)
+                            <span class="text-white-50 text-decoration-line-through ms-1 small">{{ number_format($course->original_price, 2) }} SAR</span>
+                        @endif
+                    @else
+                        {{ custom_trans('free', 'front') }}
+                    @endif
+                </div>
+                <div class="course-detail-mobile-enroll-cta">
+                    @auth
+                        @if (auth()->user()->enrollments()->where('course_id', $course->id)->exists())
+                            <a href="{{ route('courses.learn', $course->id) }}" class="btn btn-light btn-sm fw-bold">
+                                {{ custom_trans('go_to_course', 'front') }}
+                            </a>
+                        @else
+                            <button type="button" class="btn btn-light btn-sm fw-bold detail-enroll-btn"
+                                data-course-id="{{ $course->id }}" data-enroll-type="{{ $course->price > 0 ? 'paid' : 'free' }}">
+                                <i class="fas fa-graduation-cap me-1"></i>{{ custom_trans('enroll_now', 'front') }}
+                            </button>
+                        @endif
+                    @else
+                        <a href="{{ route('login', 'front') }}" class="btn btn-light btn-sm fw-bold">
+                            <i class="fas fa-graduation-cap me-1"></i>{{ custom_trans('enroll_now', 'front') }}
+                        </a>
+                    @endauth
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Related Courses Slider Section -->
     @if ($relatedCourses && $relatedCourses->count() > 0)
