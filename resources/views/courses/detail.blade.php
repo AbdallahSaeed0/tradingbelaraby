@@ -413,23 +413,48 @@
                         @include('courses.partials.course-qa', ['course' => $course])
                     </div>
                 </div>
-                <!-- Right Side - Desktop only: sidebar with features + enroll -->
+                <!-- Right Side - Desktop only: full sidebar with features + enroll -->
                 <div class="col-lg-4 d-none d-lg-block">
-                    <div class="course-enroll-sticky rounded-4 shadow-sm bg-white mb-4 position-sticky" style="top: 1rem;">
+                    <div class="course-features-box course-enroll-sticky rounded-4 shadow-sm bg-white mb-4 position-sticky" style="top: 1rem;">
                         <div class="course-features-header p-3 rounded-top-4 text-white fw-bold">
                             {{ custom_trans('Course Features', 'front') }}
                         </div>
-                        <div class="p-3">
-                            <div class="fs-5 text-orange fw-bold mb-3">
-                                @if ($course->price > 0)
-                                    {{ number_format($course->price, 2) }} SAR
-                                    @if ($course->original_price > $course->price)
-                                        <span class="fs-6 text-decoration-line-through text-muted ms-2">{{ number_format($course->original_price, 2) }} SAR</span>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex align-items-center justify-content-between">
+                                <span class="fs-5 text-orange fw-bold">
+                                    @if ($course->price > 0)
+                                        {{ number_format($course->price, 2) }} SAR
+                                        @if ($course->original_price > $course->price)
+                                            <span class="fs-6 text-decoration-line-through text-muted ms-2">{{ number_format($course->original_price, 2) }} SAR</span>
+                                        @endif
+                                    @else
+                                        {{ custom_trans('free', 'front') }}
                                     @endif
-                                @else
-                                    {{ custom_trans('free', 'front') }}
-                                @endif
-                            </div>
+                                </span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-center"><i class="fa fa-home me-2 text-orange"></i> <span class="fw-bold">{{ custom_trans('instructor', 'front') }}:</span>
+                                <span class="ms-auto">{{ $course->instructor->name ?? 'Not Found' }}</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-center"><i class="fa fa-book me-2 text-orange"></i> <span class="fw-bold">{{ custom_trans('lectures', 'front') }}:</span>
+                                <span class="ms-auto">{{ $course->sections->sum(function ($section) {return $section->lectures->count();}) }}</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-center"><i class="fa fa-clock me-2 text-orange"></i> <span class="fw-bold">{{ custom_trans('duration', 'front') }}:</span>
+                                <span class="ms-auto">{{ $course->duration ?? 'Not Found' }}</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-center"><i class="fa fa-user me-2 text-orange"></i> <span class="fw-bold">{{ custom_trans('enrolled', 'front') }}:</span>
+                                <span class="ms-auto">{{ $course->enrolled_students ?? 0 }}</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-center"><i class="fa fa-globe me-2 text-orange"></i> <span class="fw-bold">{{ custom_trans('language', 'front') }}:</span>
+                                <span class="ms-auto">
+                                    @if ($course->default_language)
+                                        {{ \App\Helpers\MultilingualHelper::getLanguageName($course->default_language) }}
+                                    @else
+                                        {{ custom_trans('Not Found', 'front') }}
+                                    @endif
+                                </span>
+                            </li>
+                        </ul>
+                        <div class="p-3">
                             @auth
                                 @if (auth()->user()->enrollments()->where('course_id', $course->id)->exists())
                                     <a href="{{ route('courses.learn', $course->id) }}"
