@@ -309,5 +309,6 @@
     [dir="rtl"] .whatsapp-float {
         right: auto;
         left: 20px;
+        bottom: 85px;
     }
 }

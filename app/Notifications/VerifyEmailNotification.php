@@ -32,8 +32,13 @@ class VerifyEmailNotification extends VerifyEmail implements ShouldQueue
 
         $texts = $this->getTexts($lang);
 
+        $fromAddress = config('mail.from.address');
+        $fromName = config('mail.from.name', $siteName);
+
         return (new MailMessage)
-            ->subject($texts['subject'])
+            ->from($fromAddress, $fromName)
+            ->replyTo($fromAddress, $fromName)
+            ->subject($texts['subject'] . ' - ' . $siteName)
             ->greeting($texts['greeting'] . ' ' . $notifiable->name . '!')
             ->line($texts['line1'])
             ->action($texts['action'], $verificationUrl)

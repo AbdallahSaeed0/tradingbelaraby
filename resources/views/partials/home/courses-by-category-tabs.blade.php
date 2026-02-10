@@ -62,8 +62,10 @@
                                         <div class="swiper-slide">
                                             <div class="course-card-custom">
                                                 <div class="course-img-wrap">
-                                                    <img src="{{ $course->image_url }}" class="course-img"
-                                                        alt="{{ $course->localized_name }}">
+                                                    <a href="{{ route('courses.show', $course) }}" class="d-block text-decoration-none">
+                                                        <img src="{{ $course->image_url }}" class="course-img"
+                                                            alt="{{ $course->localized_name }}">
+                                                    </a>
 
                                                     @if ($course->is_featured)
                                                         <span
@@ -106,6 +108,18 @@
                                                     <p class="course-desc">
                                                         {{ Str::limit($course->localized_description, 80) }}
                                                     </p>
+                                                    <div class="d-flex gap-2 flex-wrap mb-2">
+                                                        <a href="{{ route('courses.show', $course) }}" class="btn btn-outline-primary btn-sm">{{ custom_trans('Show details', 'front') }}</a>
+                                                        @auth
+                                                            @if (auth()->user()->enrollments()->where('course_id', $course->id)->exists())
+                                                                <a href="{{ route('courses.learn', $course->id) }}" class="btn btn-success btn-sm">{{ custom_trans('go_to_course', 'front') }}</a>
+                                                            @else
+                                                                <button type="button" class="btn btn-orange btn-sm enroll-btn" data-course-id="{{ $course->id }}" data-enroll-type="{{ $course->price > 0 ? 'paid' : 'free' }}">{{ $course->price > 0 ? custom_trans('Add to cart', 'front') : custom_trans('enroll_now', 'front') }}</button>
+                                                            @endif
+                                                        @else
+                                                            <a href="{{ route('login') }}" class="btn btn-orange btn-sm">{{ $course->price > 0 ? custom_trans('Add to cart', 'front') : custom_trans('enroll_now', 'front') }}</a>
+                                                        @endauth
+                                                    </div>
                                                     <a href="{{ route('courses.show', $course) }}"
                                                         class="read-more">{{ custom_trans('Read More', 'front') }}
                                                         &rarr;</a>

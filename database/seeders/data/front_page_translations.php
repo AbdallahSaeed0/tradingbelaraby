@@ -27,6 +27,66 @@ return [
     'Already Submitted' => [
         'ar' => 'تم الإرسال مسبقاً',
     ],
+    'Already have an account?' => [
+        'en' => 'Already have an account?',
+        'ar' => 'لديك حساب بالفعل؟',
+    ],
+    'Login' => [
+        'en' => 'Login',
+        'ar' => 'تسجيل الدخول',
+    ],
+    'Sign in' => [
+        'en' => 'Sign in',
+        'ar' => 'تسجيل الدخول',
+    ],
+    'Sign up' => [
+        'en' => 'Sign up',
+        'ar' => 'إنشاء حساب',
+    ],
+    "Don't have an account?" => [
+        'en' => "Don't have an account?",
+        'ar' => 'ليس لديك حساب؟',
+    ],
+    'Email address' => [
+        'en' => 'Email address',
+        'ar' => 'البريد الإلكتروني',
+    ],
+    'Password' => [
+        'en' => 'Password',
+        'ar' => 'كلمة المرور',
+    ],
+    'Remember me' => [
+        'en' => 'Remember me',
+        'ar' => 'تذكرني',
+    ],
+    'Create an Account' => [
+        'en' => 'Create an Account',
+        'ar' => 'إنشاء حساب',
+    ],
+    'Name' => [
+        'en' => 'Name',
+        'ar' => 'الاسم',
+    ],
+    'Country' => [
+        'en' => 'Country',
+        'ar' => 'الدولة',
+    ],
+    'Confirm Password' => [
+        'en' => 'Confirm Password',
+        'ar' => 'تأكيد كلمة المرور',
+    ],
+    'Register' => [
+        'en' => 'Register',
+        'ar' => 'تسجيل',
+    ],
+    'Show details' => [
+        'en' => 'Show details',
+        'ar' => 'عرض التفاصيل',
+    ],
+    'Add to cart' => [
+        'en' => 'Add to cart',
+        'ar' => 'إضافة إلى السلة',
+    ],
     'An error occurred during registration.' => [
         'ar' => 'حدث خطأ أثناء التسجيل.',
     ],

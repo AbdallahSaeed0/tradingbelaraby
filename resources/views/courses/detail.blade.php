@@ -40,6 +40,88 @@
                         {{ $course->localized_name }}</h2>
                     <img src="{{ $course->image_url }}" class="img-fluid rounded-4 mb-4"
                         alt="{{ $course->localized_name }}">
+
+                    <!-- Course Features Box - after image for quick access -->
+                    <div class="course-features-box rounded-4 shadow-sm bg-white mb-4">
+                        <div class="course-features-header p-3 rounded-top-4 text-white fw-bold">
+                            {{ custom_trans('Course Features', 'front') }}
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex align-items-center justify-content-between">
+                                <span class="fs-5 text-orange fw-bold">
+                                    @if ($course->price > 0)
+                                        {{ number_format($course->price, 2) }} SAR
+                                        @if ($course->original_price > $course->price)
+                                            <span
+                                                class="fs-6 text-decoration-line-through text-muted ms-2">{{ number_format($course->original_price, 2) }}
+                                                SAR</span>
+                                        @endif
+                                    @else
+                                        {{ custom_trans('free', 'front') }}
+                                    @endif
+                                </span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-center"><i
+                                    class="fa fa-home me-2 text-orange"></i> <span
+                                    class="fw-bold">{{ custom_trans('instructor', 'front') }}:</span>
+                                <span class="ms-auto">{{ $course->instructor->name ?? 'Not Found' }}</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-center"><i
+                                    class="fa fa-book me-2 text-orange"></i> <span
+                                    class="fw-bold">{{ custom_trans('lectures', 'front') }}:</span>
+                                <span
+                                    class="ms-auto">{{ $course->sections->sum(function ($section) {return $section->lectures->count();}) }}</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-center"><i
+                                    class="fa fa-clock me-2 text-orange"></i> <span
+                                    class="fw-bold">{{ custom_trans('duration', 'front') }}:</span>
+                                <span class="ms-auto">{{ $course->duration ?? 'Not Found' }}</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-center"><i
+                                    class="fa fa-user me-2 text-orange"></i> <span
+                                    class="fw-bold">{{ custom_trans('enrolled', 'front') }}:</span>
+                                <span class="ms-auto">{{ $course->enrolled_students ?? 0 }}</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-center"><i
+                                    class="fa fa-globe me-2 text-orange"></i> <span
+                                    class="fw-bold">{{ custom_trans('language', 'front') }}:</span>
+                                <span class="ms-auto">
+                                    @if ($course->default_language)
+                                        {{ \App\Helpers\MultilingualHelper::getLanguageName($course->default_language) }}
+                                    @else
+                                        {{ custom_trans('Not Found', 'front') }}
+                                    @endif
+                                </span>
+                            </li>
+                        </ul>
+                        <div class="p-3">
+                            @auth
+                                @if (auth()->user()->enrollments()->where('course_id', $course->id)->exists())
+                                    <a href="{{ route('courses.learn', $course->id) }}"
+                                        class="btn btn-orange w-100 fw-bold mb-3">{{ custom_trans('go_to_course', 'front') }}</a>
+                                @else
+                                    @if ($course->price > 0)
+                                        <button class="btn btn-orange w-100 fw-bold mb-3 detail-enroll-btn"
+                                            data-course-id="{{ $course->id }}" data-enroll-type="paid">
+                                            <i
+                                                class="fas fa-graduation-cap me-2"></i>{{ custom_trans('enroll_now', 'front') }}
+                                        </button>
+                                    @else
+                                        <button class="btn btn-orange w-100 fw-bold mb-3 detail-enroll-btn"
+                                            data-course-id="{{ $course->id }}" data-enroll-type="free">
+                                            <i
+                                                class="fas fa-graduation-cap me-2"></i>{{ custom_trans('enroll_now', 'front') }}
+                                        </button>
+                                    @endif
+                                @endif
+                            @else
+                                <a href="{{ route('login', 'front') }}" class="btn btn-orange w-100 fw-bold mb-3">
+                                    <i class="fas fa-graduation-cap me-2"></i>{{ custom_trans('enroll_now', 'front') }}
+                                </a>
+                            @endauth
+                        </div>
+                    </div>
+
                     <div class="what-learn-box p-4 rounded-4 border">
                         <h5 class="fw-bold mb-3">{{ custom_trans('What learn', 'front') }}</h5>
                         @php
@@ -331,82 +413,42 @@
                         @include('courses.partials.course-qa', ['course' => $course])
                     </div>
                 </div>
-                <!-- Right Side -->
+                <!-- Right Side - Sticky enroll / add to cart -->
                 <div class="col-lg-4">
-                    <div class="course-features-box rounded-4 shadow-sm bg-white mb-4">
+                    <div class="course-enroll-sticky rounded-4 shadow-sm bg-white mb-4 position-sticky" style="top: 1rem;">
                         <div class="course-features-header p-3 rounded-top-4 text-white fw-bold">
                             {{ custom_trans('Course Features', 'front') }}
                         </div>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item d-flex align-items-center justify-content-between">
-                                <span class="fs-5 text-orange fw-bold">
-                                    @if ($course->price > 0)
-                                        {{ number_format($course->price, 2) }} SAR
-                                        @if ($course->original_price > $course->price)
-                                            <span
-                                                class="fs-6 text-decoration-line-through text-muted ms-2">{{ number_format($course->original_price, 2) }}
-                                                SAR</span>
-                                        @endif
-                                    @else
-                                        {{ custom_trans('free', 'front') }}
-                                    @endif
-                                </span>
-                            </li>
-                            <li class="list-group-item d-flex align-items-center"><i
-                                    class="fa fa-home me-2 text-orange"></i> <span
-                                    class="fw-bold">{{ custom_trans('instructor', 'front') }}:</span>
-                                <span class="ms-auto">{{ $course->instructor->name ?? 'Not Found' }}</span>
-                            </li>
-                            <li class="list-group-item d-flex align-items-center"><i
-                                    class="fa fa-book me-2 text-orange"></i> <span
-                                    class="fw-bold">{{ custom_trans('lectures', 'front') }}:</span>
-                                <span
-                                    class="ms-auto">{{ $course->sections->sum(function ($section) {return $section->lectures->count();}) }}</span>
-                            </li>
-                            <li class="list-group-item d-flex align-items-center"><i
-                                    class="fa fa-clock me-2 text-orange"></i> <span
-                                    class="fw-bold">{{ custom_trans('duration', 'front') }}:</span>
-                                <span class="ms-auto">{{ $course->duration ?? 'Not Found' }}</span>
-                            </li>
-                            <li class="list-group-item d-flex align-items-center"><i
-                                    class="fa fa-user me-2 text-orange"></i> <span
-                                    class="fw-bold">{{ custom_trans('enrolled', 'front') }}:</span>
-                                <span class="ms-auto">{{ $course->enrolled_students ?? 0 }}</span>
-                            </li>
-                            <li class="list-group-item d-flex align-items-center"><i
-                                    class="fa fa-globe me-2 text-orange"></i> <span
-                                    class="fw-bold">{{ custom_trans('language', 'front') }}:</span>
-                                <span class="ms-auto">
-                                    @if ($course->default_language)
-                                        {{ \App\Helpers\MultilingualHelper::getLanguageName($course->default_language) }}
-                                    @else
-                                        {{ custom_trans('Not Found', 'front') }}
-                                    @endif
-                                </span>
-                            </li>
-                        </ul>
                         <div class="p-3">
+                            <div class="fs-5 text-orange fw-bold mb-3">
+                                @if ($course->price > 0)
+                                    {{ number_format($course->price, 2) }} SAR
+                                    @if ($course->original_price > $course->price)
+                                        <span class="fs-6 text-decoration-line-through text-muted ms-2">{{ number_format($course->original_price, 2) }} SAR</span>
+                                    @endif
+                                @else
+                                    {{ custom_trans('free', 'front') }}
+                                @endif
+                            </div>
                             @auth
                                 @if (auth()->user()->enrollments()->where('course_id', $course->id)->exists())
                                     <a href="{{ route('courses.learn', $course->id) }}"
-                                        class="btn btn-orange w-100 fw-bold mb-3">{{ custom_trans('go_to_course', 'front') }}</a>
+                                        class="btn btn-orange w-100 fw-bold mb-2">{{ custom_trans('go_to_course', 'front') }}</a>
                                 @else
                                     @if ($course->price > 0)
-                                        <button class="btn btn-orange w-100 fw-bold mb-3 detail-enroll-btn"
+                                        <button class="btn btn-orange w-100 fw-bold mb-2 detail-enroll-btn"
                                             data-course-id="{{ $course->id }}" data-enroll-type="paid">
-                                            <i
-                                                class="fas fa-graduation-cap me-2"></i>{{ custom_trans('enroll_now', 'front') }}
+                                            <i class="fas fa-graduation-cap me-2"></i>{{ custom_trans('enroll_now', 'front') }}
                                         </button>
                                     @else
-                                        <button class="btn btn-orange w-100 fw-bold mb-3 detail-enroll-btn"
+                                        <button class="btn btn-orange w-100 fw-bold mb-2 detail-enroll-btn"
                                             data-course-id="{{ $course->id }}" data-enroll-type="free">
-                                            <i
-                                                class="fas fa-graduation-cap me-2"></i>{{ custom_trans('enroll_now', 'front') }}
+                                            <i class="fas fa-graduation-cap me-2"></i>{{ custom_trans('enroll_now', 'front') }}
                                         </button>
                                     @endif
                                 @endif
                             @else
-                                <a href="{{ route('login', 'front') }}" class="btn btn-orange w-100 fw-bold mb-3">
+                                <a href="{{ route('login', 'front') }}" class="btn btn-orange w-100 fw-bold mb-2">
                                     <i class="fas fa-graduation-cap me-2"></i>{{ custom_trans('enroll_now', 'front') }}
                                 </a>
                             @endauth

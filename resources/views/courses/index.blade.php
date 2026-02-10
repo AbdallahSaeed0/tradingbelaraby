@@ -124,15 +124,17 @@
                             <div class="col-lg-4 col-md-6">
                                 <div class="course-card h-100 shadow-sm">
                                     <div class="course-img-wrap">
-                                        <div class="course-image">
-                                            @if ($course->image)
-                                                <img src="{{ $course->image_url }}" alt="{{ $course->localized_name }}"
-                                                    class="img-fluid">
-                                            @else
-                                                <div class="course-placeholder">
-                                                    <i class="fas fa-graduation-cap"></i>
-                                                </div>
-                                            @endif
+                                        <div class="course-image position-relative">
+                                            <a href="{{ route('courses.show', $course) }}" class="d-block text-decoration-none">
+                                                @if ($course->image)
+                                                    <img src="{{ $course->image_url }}" alt="{{ $course->localized_name }}"
+                                                        class="img-fluid">
+                                                @else
+                                                    <div class="course-placeholder">
+                                                        <i class="fas fa-graduation-cap"></i>
+                                                    </div>
+                                                @endif
+                                            </a>
 
                                             @if ($course->is_featured)
                                                 <span class="badge bg-warning position-absolute top-0 start-0 m-2">

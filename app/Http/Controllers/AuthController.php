@@ -146,7 +146,19 @@ class AuthController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'country' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:20'],
-            'password' => ['required', 'confirmed', 'min:8'],
+            'password' => ['required', 'confirmed', 'min:6'],
+        ], [
+            'name.required' => 'Please enter your name.',
+            'name.max' => 'Name must not exceed 255 characters.',
+            'email.required' => 'Please enter your email address.',
+            'email.email' => 'Please enter a valid email address.',
+            'email.unique' => 'This email is already registered. Please sign in or use a different email.',
+            'country.required' => 'Please select your country.',
+            'phone.required' => 'Please enter your phone number.',
+            'phone.max' => 'Phone number must not exceed 20 characters.',
+            'password.required' => 'Please enter a password.',
+            'password.confirmed' => 'Password and confirmation do not match.',
+            'password.min' => 'Password must be at least 6 characters.',
         ]);
 
         $user = User::create([

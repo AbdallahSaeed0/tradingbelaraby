@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Register - ' . (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site Name'))
+@section('title', custom_trans('Register', 'front') . ' - ' . (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site Name'))
 
 @section('content')
     <div class="container py-5 max-w-560">
-        <h2 class="text-center mb-4">Create an Account</h2>
+        <h2 class="text-center mb-4">{{ custom_trans('Create an Account', 'front') }}</h2>
 
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -24,7 +24,7 @@
             </div>
 
             <div class="mb-3">
-                <label for="name" class="form-label">Name</label>
+                <label for="name" class="form-label">{{ custom_trans('Name', 'front') }}</label>
                 <input type="text" name="name" id="name" value="{{ old('name') }}" required autofocus
                     class="form-control @error('name') is-invalid @enderror">
                 @error('name')
@@ -33,7 +33,7 @@
             </div>
 
             <div class="mb-3">
-                <label for="email" class="form-label">Email address</label>
+                <label for="email" class="form-label">{{ custom_trans('Email address', 'front') }}</label>
                 <input type="email" name="email" id="email" value="{{ old('email') }}" required
                     class="form-control @error('email') is-invalid @enderror">
                 @error('email')
@@ -42,10 +42,10 @@
             </div>
 
             <div class="mb-3">
-                <label for="country" class="form-label">Country</label>
+                <label for="country" class="form-label">{{ custom_trans('Country', 'front') }}</label>
                 <select name="country" id="country" required
                     class="form-select @error('country') is-invalid @enderror">
-                    <option value="">Select Country</option>
+                    <option value="">{{ custom_trans('Select Country', 'front') }}</option>
                     @include('partials.countries')
                 </select>
                 @error('country')
@@ -54,7 +54,7 @@
             </div>
 
             <div class="mb-3">
-                <label for="phone" class="form-label">Phone Number</label>
+                <label for="phone" class="form-label">{{ custom_trans('Phone Number', 'front') }}</label>
                 <input type="tel" name="phone" id="phone" value="{{ old('phone') }}" required
                     class="form-control @error('phone') is-invalid @enderror"
                     placeholder="+1234567890">
@@ -64,7 +64,7 @@
             </div>
 
             <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
+                <label for="password" class="form-label">{{ custom_trans('Password', 'front') }}</label>
                 <input type="password" name="password" id="password" required
                     class="form-control @error('password') is-invalid @enderror">
                 @error('password')
@@ -73,15 +73,15 @@
             </div>
 
             <div class="mb-3">
-                <label for="password_confirmation" class="form-label">Confirm Password</label>
+                <label for="password_confirmation" class="form-label">{{ custom_trans('Confirm Password', 'front') }}</label>
                 <input type="password" name="password_confirmation" id="password_confirmation" required
                     class="form-control">
             </div>
 
-            <button type="submit" class="btn btn-primary w-100" id="submitBtn">Register</button>
+            <button type="submit" class="btn btn-primary w-100" id="submitBtn">{{ custom_trans('Register', 'front') }}</button>
         </form>
 
-        <p class="text-center mt-3">Already have an account? <a href="{{ route('login') }}">Login here</a></p>
+        <p class="text-center mt-3">{{ custom_trans('Already have an account?', 'front') }} <a href="{{ route('login') }}">{{ custom_trans('Sign in', 'front') }}</a></p>
     </div>
 
     @push('scripts')

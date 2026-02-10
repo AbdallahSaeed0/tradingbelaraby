@@ -2,7 +2,9 @@
 <div class="course-card bg-white rounded-4 shadow-sm h-100 overflow-hidden">
     <!-- Course Image -->
     <div class="course-image position-relative">
-        <img src="{{ $course->image_url }}" alt="{{ $course->localized_name }}" class="w-100 img-h-200">
+        <a href="{{ route('courses.show', $course->id) }}" class="d-block text-decoration-none">
+            <img src="{{ $course->image_url }}" alt="{{ $course->localized_name }}" class="w-100 img-h-200">
+        </a>
 
         <!-- Course Badge -->
         @if ($course->is_featured ?? false)
