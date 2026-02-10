@@ -180,9 +180,10 @@
                                         <input class="form-check-input" type="checkbox" id="selectAll">
                                     </div>
                                 </th>
-                                <th>Course</th>
+                                <th style="max-width: 200px;">Course</th>
                                 <th>Category</th>
                                 <th>Instructor</th>
+                                <th>Price</th>
                                 <th>Students</th>
                                 <th>Status</th>
                                 <th>Created</th>
@@ -198,7 +199,7 @@
                                                 value="{{ $course->id }}">
                                         </div>
                                     </td>
-                                    <td>
+                                    <td style="max-width: 200px;">
                                         <div class="d-flex align-items-center">
                                             @if ($course->image)
                                                 <img src="{{ $course->image_url }}" alt="Course"
@@ -209,18 +210,17 @@
                                                     {{ strtoupper(substr($course->name, 0, 2)) }}
                                                 </div>
                                             @endif
-                                            <div>
-                                                <h6 class="mb-0">{{ $course->name }}</h6>
+                                            <div class="min-w-0">
+                                                <h6 class="mb-0 text-truncate" title="{{ $course->name }}">{{ $course->name }}</h6>
                                                 <small
-                                                    class="text-muted">{{ Str::limit($course->description, 60) }}</small>
-                                                <div class="course-stats mt-1">
-                                                    <span class="me-3">
+                                                    class="text-muted d-block text-truncate">{{ Str::limit($course->description, 40) }}</small>
+                                                <div class="course-stats mt-1 small">
+                                                    <span class="me-2">
                                                         <i class="fa fa-play-circle me-1"></i>{{ $course->total_lessons }}
-                                                        Lectures
                                                     </span>
                                                     <span>
                                                         <i
-                                                            class="fa fa-clock me-1"></i>{{ $course->duration ?? 'Not Found' }}
+                                                            class="fa fa-clock me-1"></i>{{ $course->duration ?? '—' }}
                                                     </span>
                                                 </div>
                                             </div>
@@ -258,6 +258,16 @@
                                             @endif
                                         @else
                                             <span class="text-muted">No instructor</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($course->price > 0)
+                                            <span class="fw-bold">{{ number_format($course->price, 2) }} SAR</span>
+                                            @if ($course->original_price > $course->price)
+                                                <small class="text-muted d-block text-decoration-line-through">{{ number_format($course->original_price, 2) }} SAR</small>
+                                            @endif
+                                        @else
+                                            <span class="badge bg-success">Free</span>
                                         @endif
                                     </td>
                                     <td>
@@ -335,7 +345,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center py-4">
+                                    <td colspan="9" class="text-center py-4">
                                         <div class="text-muted">
                                             <i class="fa fa-book fa-3x mb-3"></i>
                                             <h5>No courses found</h5>

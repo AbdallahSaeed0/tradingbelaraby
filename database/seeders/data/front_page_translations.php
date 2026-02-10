@@ -87,6 +87,10 @@ return [
         'en' => 'Add to cart',
         'ar' => 'إضافة إلى السلة',
     ],
+    'This email is already registered. Please sign in or use a different email.' => [
+        'en' => 'This email is already registered. Please sign in or use a different email.',
+        'ar' => 'هذا البريد الإلكتروني مسجل بالفعل. يرجى تسجيل الدخول أو استخدام بريد آخر.',
+    ],
     'An error occurred during registration.' => [
         'ar' => 'حدث خطأ أثناء التسجيل.',
     ],

@@ -12,7 +12,8 @@
             <div class="mb-3">
                 <label for="email" class="form-label">{{ custom_trans('Email address', 'front') }}</label>
                 <input type="email" name="email" id="email" value="{{ old('email') }}" required autofocus
-                    class="form-control @error('email') is-invalid @enderror">
+                    class="form-control @error('email') is-invalid @enderror"
+                    placeholder="{{ custom_trans('Email address', 'front') }}">
                 @error('email')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -21,7 +22,8 @@
             <div class="mb-3">
                 <label for="password" class="form-label">{{ custom_trans('Password', 'front') }}</label>
                 <input type="password" name="password" id="password" required
-                    class="form-control @error('password') is-invalid @enderror">
+                    class="form-control @error('password') is-invalid @enderror"
+                    placeholder="{{ custom_trans('Password', 'front') }}">
                 @error('password')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror

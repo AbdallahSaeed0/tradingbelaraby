@@ -79,8 +79,6 @@
                                         <a href="{{ route('login') }}" class="btn btn-orange btn-sm">{{ $course->price > 0 ? custom_trans('Add to cart', 'front') : custom_trans('enroll_now', 'front') }}</a>
                                     @endauth
                                 </div>
-                                <a href="{{ route('courses.show', $course) }}" class="read-more">{{ custom_trans('Read More', 'front') }}
-                                    &rarr;</a>
                                 <img src="https://eclass.mediacity.co.in/demo2/public/frontcss/img/icon/cou-icon.png"
                                     class="book-icon" alt="book">
                             </div>
@@ -109,7 +107,6 @@
                                 <p class="course-desc">
                                     {{ custom_trans('This is a sample course description. Add some featured courses to see them here.', 'front') }}
                                 </p>
-                                <a href="#" class="read-more">{{ custom_trans('Read More', 'front') }} &rarr;</a>
                                 <img src="https://eclass.mediacity.co.in/demo2/public/frontcss/img/icon/cou-icon.png"
                                     class="book-icon" alt="book">
                             </div>

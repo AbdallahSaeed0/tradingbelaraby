@@ -192,43 +192,7 @@
                                         </div>
                                     </div>
                                 @elseif($hasPaid)
-                                    <div class="payment-option-card p-4 border rounded-3 position-relative">
-                                        <input type="radio" name="payment_method" value="visa" id="visa_payment"
-                                            class="position-absolute top-0 end-0 m-3">
-                                        <div class="payment-icon mb-3">
-                                            <i class="fab fa-cc-visa fa-3x text-primary"></i>
-                                        </div>
-                                        <h5 class="fw-bold mb-2">{{ custom_trans('credit_card', 'front') }}</h5>
-                                        <p class="text-muted mb-0 small">
-                                            {{ custom_trans('credit_card_description', 'front') }}</p>
-                                        <div class="selected-badge position-absolute top-0 start-0 m-2 d-none">
-                                            <i class="fas fa-check-circle text-success"></i>
-                                        </div>
-                                        <div class="payment-logos mt-3 d-flex gap-2">
-                                            <i class="fab fa-cc-mastercard fa-2x text-muted"></i>
-                                            <i class="fab fa-cc-amex fa-2x text-muted"></i>
-                                            <i class="fab fa-cc-discover fa-2x text-muted"></i>
-                                        </div>
-                                    </div>
-
-                                    {{-- Tabby Payment Option (Commented out - not configured)
-                                    <div class="payment-option-card p-4 border rounded-3 position-relative">
-                                        <input type="radio" name="payment_method" value="tabby" id="tabby_payment"
-                                            class="position-absolute top-0 end-0 m-3">
-                                        <div class="payment-icon mb-3">
-                                            <img src="https://cdn.tabby.ai/assets/logo_pink.png" alt="Tabby"
-                                                style="height: 40px;">
-                                        </div>
-                                        <h5 class="fw-bold mb-2">Pay with Tabby</h5>
-                                        <p class="text-muted mb-0 small">
-                                            Split into 4 payments. No interest.</p>
-                                        <div class="selected-badge position-absolute top-0 start-0 m-2 d-none">
-                                            <i class="fas fa-check-circle text-success"></i>
-                                        </div>
-                                    </div>
-                                    --}}
-
-                                    <!-- PayPal Payment Option -->
+                                    <!-- PayPal only -->
                                     <div class="payment-option-card selected p-4 border rounded-3 position-relative">
                                         <input type="radio" name="payment_method" value="paypal" id="paypal_payment"
                                             checked class="position-absolute top-0 end-0 m-3">
@@ -239,22 +203,6 @@
                                         <p class="text-muted mb-0 small">
                                             Pay securely with your PayPal account</p>
                                         <div class="selected-badge position-absolute top-0 start-0 m-2">
-                                            <i class="fas fa-check-circle text-success"></i>
-                                        </div>
-                                    </div>
-                                @endif
-
-                                @if ($allFree && $hasPaid)
-                                    <div class="payment-option-card p-4 border rounded-3 position-relative">
-                                        <input type="radio" name="payment_method" value="free" id="free_payment"
-                                            class="position-absolute top-0 end-0 m-3">
-                                        <div class="payment-icon mb-3">
-                                            <i class="fas fa-graduation-cap fa-3x text-success"></i>
-                                        </div>
-                                        <h5 class="fw-bold mb-2">{{ custom_trans('free_enrollment', 'front') }}</h5>
-                                        <p class="text-muted mb-0 small">
-                                            {{ custom_trans('free_enrollment_description', 'front') }}</p>
-                                        <div class="selected-badge position-absolute top-0 start-0 m-2 d-none">
                                             <i class="fas fa-check-circle text-success"></i>
                                         </div>
                                     </div>

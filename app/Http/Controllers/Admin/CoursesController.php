@@ -136,7 +136,7 @@ class CoursesController extends Controller
             'instructor_ids' => 'required|array|min:1',
             'instructor_ids.*' => 'required|exists:admins,id',
             'original_price' => 'nullable|numeric|min:0',
-            'price' => 'required|numeric|min:0',
+            'price' => 'nullable|numeric|min:0',
             'duration' => 'nullable|string',
             'status' => 'required|in:draft,published,archived',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -198,6 +198,15 @@ class CoursesController extends Controller
         // If course is free, set price to 0
         if ($request->has('is_free') && $request->is_free) {
             $data['price'] = 0;
+        } else {
+            // If discount price is empty but original price is set, use original as selling price (no discount)
+            $priceVal = $data['price'] ?? null;
+            if (($priceVal === null || $priceVal === '') && !empty($data['original_price'])) {
+                $data['price'] = $data['original_price'];
+            }
+            if (empty($data['price']) && empty($data['original_price'])) {
+                $data['price'] = 0;
+            }
         }
 
         // Handle file uploads
@@ -358,7 +367,7 @@ class CoursesController extends Controller
             'instructor_ids' => 'required|array|min:1',
             'instructor_ids.*' => 'required|exists:admins,id',
             'original_price' => 'nullable|numeric|min:0',
-            'price' => 'required|numeric|min:0',
+            'price' => 'nullable|numeric|min:0',
             'duration' => 'nullable|string',
             'status' => 'required|in:draft,published,archived',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -440,6 +449,15 @@ class CoursesController extends Controller
         // If course is free, set price to 0
         if ($request->has('is_free') && $request->is_free) {
             $data['price'] = 0;
+        } else {
+            // If discount price is empty but original price is set, use original as selling price (no discount)
+            $priceVal = $data['price'] ?? null;
+            if (($priceVal === null || $priceVal === '') && !empty($data['original_price'])) {
+                $data['price'] = $data['original_price'];
+            }
+            if (empty($data['price']) && empty($data['original_price'])) {
+                $data['price'] = 0;
+            }
         }
 
         $removeExistingBook = $request->boolean('remove_book');

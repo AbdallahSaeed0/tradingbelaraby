@@ -81,6 +81,19 @@ class AuthController extends Controller
     }
 
     /**
+     * Check if email is available (for JS validation before submit).
+     */
+    public function checkEmail(Request $request)
+    {
+        $email = $request->query('email');
+        if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return response()->json(['available' => true]);
+        }
+        $exists = User::where('email', $email)->exists();
+        return response()->json(['available' => !$exists]);
+    }
+
+    /**
      * Handle registration request.
      */
     public function register(Request $request)

@@ -644,10 +644,10 @@
                                 @enderror
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="price" class="form-label">Discount Price (SAR) <span class="text-danger">*</span></label>
+                                <label for="price" class="form-label">Discount Price (SAR)</label>
                                 <input type="number" class="form-control" id="price" name="price" step="0.01"
-                                    min="0" value="{{ old('price', $course->price) }}" required>
-                                <small class="text-muted">Current selling price (set to 0 for free course)</small>
+                                    min="0" value="{{ old('price', $course->price) }}" placeholder="Leave empty for no discount">
+                                <small class="text-muted">Optional. Leave empty to use original price (no discount). Set to 0 for free course.</small>
                                 @error('price')
                                     <div class="text-danger small">{{ $message }}</div>
                                 @enderror
