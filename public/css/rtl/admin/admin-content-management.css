@@ -286,30 +286,50 @@
    Styles from Content Management Views
    ============================== */
 
-/* Enhanced Page Header - Used across admin settings pages */
+/* Page header - matches card system; RTL: breadcrumbs on start side */
 .page-title-box {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 2rem;
-    border-radius: 15px;
-    margin-bottom: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row-reverse;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    background-color: var(--surface-1, var(--admin-card-bg));
+    border: 1px solid var(--border, var(--admin-border));
+    border-radius: var(--radius-lg, 12px);
+    box-shadow: var(--shadow, 0 1px 3px rgba(0, 0, 0, 0.06));
+}
+
+.page-title-box .page-title-content {
+    flex: 1;
+    min-width: 0;
+    text-align: right;
 }
 
 .page-title-box .page-title {
-    color: white;
-    margin-bottom: 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text, var(--admin-text)) !important;
+    margin-bottom: 0.25rem;
 }
 
 .page-title-box .text-muted {
-    color: rgba(255, 255, 255, 0.8) !important;
+    font-size: 0.875rem;
+    color: var(--muted, var(--admin-text-muted)) !important;
 }
 
-.breadcrumb-item a {
-    color: rgba(255, 255, 255, 0.8);
+.page-title-box .page-title-right {
+    flex-shrink: 0;
 }
 
-.breadcrumb-item.active {
-    color: white;
+.page-title-box .breadcrumb-item a {
+    color: var(--primary, var(--admin-active-text));
+}
+
+.page-title-box .breadcrumb-item.active {
+    color: var(--muted, var(--admin-text-muted));
 }
 
 /* Content Cards */

@@ -281,9 +281,10 @@ input[type="search"].form-control:-moz-placeholder {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
 }
 
-/* Gradient backgrounds - keep gradients but adjust colors */
+/* Page header in dark mode - use surface, no gradient */
 .page-title-box {
-    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%) !important;
+    background-color: var(--admin-card-bg, #2d3142) !important;
+    border-color: var(--admin-border, #3d4153) !important;
 }
 
 .content-card .card-header,

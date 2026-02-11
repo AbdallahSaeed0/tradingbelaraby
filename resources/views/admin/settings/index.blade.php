@@ -4,26 +4,23 @@
 
 @section('content')
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-12">
-                <div class="page-title-box">
-                    <div class="page-title-right">
-                        <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ custom_trans('Dashboard', 'admin') }}</a>
-                            </li>
-                            <li class="breadcrumb-item active">{{ custom_trans('Settings', 'admin') }}</li>
-                        </ol>
-                    </div>
-                    <h4 class="page-title">{{ custom_trans('Content Management', 'admin') }}</h4>
-                    <p class="text-muted mb-0">
-                        {{ custom_trans('Manage your website content and settings from one central location', 'admin') }}</p>
-                </div>
+        <div class="page-title-box">
+            <div class="page-title-content">
+                <h4 class="page-title">{{ custom_trans('Content Management', 'admin') }}</h4>
+                <p class="text-muted mb-0">
+                    {{ custom_trans('Manage your website content and settings from one central location', 'admin') }}</p>
+            </div>
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ custom_trans('Dashboard', 'admin') }}</a></li>
+                    <li class="breadcrumb-item active">{{ custom_trans('Settings', 'admin') }}</li>
+                </ol>
             </div>
         </div>
 
-        <div class="row justify-content-center">
+        <div class="settings-cards-grid">
             <!-- Slider Management Card -->
-            <div class="col-xl-4 col-lg-6 col-md-10 mb-4">
+            <div class="settings-card-wrapper">
                 <div class="card settings-card">
                     <div class="card-body text-center p-4">
                         <div class="settings-icon mb-4">
@@ -59,7 +56,7 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="{{ route('admin.settings.sliders.index') }}" class="btn btn-primary btn-lg">
+                        <a href="{{ route('admin.settings.sliders.index') }}" class="btn btn-primary settings-card-cta">
                             <i class="fas fa-cog me-2"></i>{{ custom_trans('Manage Sliders', 'admin') }}
                         </a>
                     </div>
@@ -67,7 +64,7 @@
             </div>
 
             <!-- Features Section Management Card -->
-            <div class="col-xl-4 col-lg-6 col-md-10">
+            <div class="settings-card-wrapper">
                 <div class="card settings-card">
                     <div class="card-body text-center p-4">
                         <div class="settings-icon mb-4">
@@ -103,7 +100,7 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="{{ route('admin.settings.features.index') }}" class="btn btn-warning btn-lg">
+                        <a href="{{ route('admin.settings.features.index') }}" class="btn btn-primary settings-card-cta">
                             <i class="fas fa-star me-2"></i>{{ custom_trans('Manage Features', 'admin') }}
                         </a>
                     </div>
@@ -111,7 +108,7 @@
             </div>
 
             <!-- Hero Features Section Management -->
-            <div class="col-xl-4 col-lg-6 col-md-10">
+            <div class="settings-card-wrapper">
                 <div class="card settings-card">
                     <div class="card-body text-center p-4">
                         <div class="settings-icon mb-4">
@@ -147,7 +144,7 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="{{ route('admin.settings.hero-features.index') }}" class="btn btn-info btn-lg">
+                        <a href="{{ route('admin.settings.hero-features.index') }}" class="btn btn-primary settings-card-cta">
                             <i class="fas fa-sliders-h me-2"></i>{{ custom_trans('Manage Hero Features', 'admin') }}
                         </a>
                     </div>
@@ -155,7 +152,7 @@
             </div>
 
             <!-- About University Section Management -->
-            <div class="col-xl-4 col-lg-6 col-md-10">
+            <div class="settings-card-wrapper">
                 <div class="card settings-card">
                     <div class="card-body text-center p-4">
                         <div class="settings-icon mb-4">
@@ -191,7 +188,7 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="{{ route('admin.settings.about-university.index') }}" class="btn btn-success btn-lg">
+                        <a href="{{ route('admin.settings.about-university.index') }}" class="btn btn-primary settings-card-cta">
                             <i class="fas fa-university me-2"></i>{{ custom_trans('Manage About University', 'admin') }}
                         </a>
                     </div>
@@ -199,7 +196,7 @@
             </div>
 
             <!-- FAQ Section Management -->
-            <div class="col-xl-4 col-lg-6 col-md-10">
+            <div class="settings-card-wrapper">
                 <div class="card settings-card">
                     <div class="card-body text-center p-4">
                         <div class="settings-icon mb-4">
@@ -235,7 +232,7 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="{{ route('admin.settings.faqs.index') }}" class="btn btn-warning btn-lg">
+                        <a href="{{ route('admin.settings.faqs.index') }}" class="btn btn-primary settings-card-cta">
                             <i class="fas fa-question-circle me-2"></i>{{ custom_trans('Manage FAQs', 'admin') }}
                         </a>
                     </div>
@@ -243,7 +240,7 @@
             </div>
 
             <!-- Content Management -->
-            <div class="col-xl-4 col-lg-6 col-md-10">
+            <div class="settings-card-wrapper">
                 <div class="card settings-card">
                     <div class="card-body text-center p-4">
                         <div class="settings-icon mb-4">
@@ -279,7 +276,7 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="{{ route('admin.settings.content-management.index') }}" class="btn btn-primary btn-lg">
+                        <a href="{{ route('admin.settings.content-management.index') }}" class="btn btn-primary settings-card-cta">
                             <i class="fas fa-cogs me-2"></i>{{ custom_trans('Manage Content', 'admin') }}
                         </a>
                     </div>
@@ -287,7 +284,7 @@
             </div>
 
             <!-- Testimonials Management -->
-            <div class="col-xl-4 col-lg-6 col-md-10">
+            <div class="settings-card-wrapper">
                 <div class="card settings-card">
                     <div class="card-body text-center p-4">
                         <div class="settings-icon mb-4">
@@ -323,7 +320,7 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="{{ route('admin.settings.testimonials.index') }}" class="btn btn-success btn-lg">
+                        <a href="{{ route('admin.settings.testimonials.index') }}" class="btn btn-primary settings-card-cta">
                             <i class="fas fa-quote-left me-2"></i>{{ custom_trans('Manage Testimonials', 'admin') }}
                         </a>
                     </div>
@@ -331,7 +328,7 @@
             </div>
 
             <!-- Features Split Section Management -->
-            <div class="col-xl-4 col-lg-6 col-md-10">
+            <div class="settings-card-wrapper">
                 <div class="card settings-card">
                     <div class="card-body text-center p-4">
                         <div class="settings-icon mb-4">
@@ -367,7 +364,7 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="{{ route('admin.settings.features-split.index') }}" class="btn btn-info btn-lg">
+                        <a href="{{ route('admin.settings.features-split.index') }}" class="btn btn-primary settings-card-cta">
                             <i class="fas fa-puzzle-piece me-2"></i>{{ custom_trans('Manage Features Split', 'admin') }}
                         </a>
                     </div>
@@ -375,7 +372,7 @@
             </div>
 
             <!-- Partner Logos Management -->
-            <div class="col-xl-4 col-lg-6 col-md-10">
+            <div class="settings-card-wrapper">
                 <div class="card settings-card">
                     <div class="card-body text-center p-4">
                         <div class="settings-icon mb-4">
@@ -411,7 +408,7 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="{{ route('admin.partner-logos.index') }}" class="btn btn-primary btn-lg">
+                        <a href="{{ route('admin.partner-logos.index') }}" class="btn btn-primary settings-card-cta">
                             <i class="fas fa-handshake me-2"></i>{{ custom_trans('Manage Partner Logos', 'admin') }}
                         </a>
                     </div>
@@ -419,7 +416,7 @@
             </div>
 
             <!-- Info Split Section Management -->
-            <div class="col-xl-4 col-lg-6 col-md-10">
+            <div class="settings-card-wrapper">
                 <div class="card settings-card">
                     <div class="card-body text-center p-4">
                         <div class="settings-icon mb-4">
@@ -455,7 +452,7 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="{{ route('admin.settings.info-split.index') }}" class="btn btn-secondary btn-lg">
+                        <a href="{{ route('admin.settings.info-split.index') }}" class="btn btn-primary settings-card-cta">
                             <i class="fas fa-info-circle me-2"></i>{{ custom_trans('Manage Info Split', 'admin') }}
                         </a>
                     </div>
@@ -463,7 +460,7 @@
             </div>
 
             <!-- Newsletter Management -->
-            <div class="col-xl-4 col-lg-6 col-md-10">
+            <div class="settings-card-wrapper">
                 <div class="card settings-card">
                     <div class="card-body text-center p-4">
                         <div class="settings-icon mb-4">
@@ -499,7 +496,7 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="{{ route('admin.settings.newsletters.index') }}" class="btn btn-danger btn-lg">
+                        <a href="{{ route('admin.settings.newsletters.index') }}" class="btn btn-primary settings-card-cta">
                             <i class="fas fa-newspaper me-2"></i>{{ custom_trans('Manage Newsletters', 'admin') }}
                         </a>
                     </div>
@@ -507,7 +504,7 @@
             </div>
 
             <!-- Main Content Management -->
-            <div class="col-xl-4 col-lg-6 col-md-10">
+            <div class="settings-card-wrapper">
                 <div class="card settings-card">
                     <div class="card-body text-center p-4">
                         <div class="settings-icon mb-4">
@@ -543,7 +540,7 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="{{ route('admin.settings.main-content.index') }}" class="btn btn-primary btn-lg">
+                        <a href="{{ route('admin.settings.main-content.index') }}" class="btn btn-primary settings-card-cta">
                             <i class="fas fa-cog me-2"></i>{{ custom_trans('Manage Main Content', 'admin') }}
                         </a>
                     </div>
@@ -551,7 +548,7 @@
             </div>
 
             <!-- Terms and Conditions Management -->
-            <div class="col-xl-4 col-lg-6 col-md-10">
+            <div class="settings-card-wrapper">
                 <div class="card settings-card">
                     <div class="card-body text-center p-4">
                         <div class="settings-icon mb-4">
@@ -587,7 +584,7 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="{{ route('admin.settings.terms-conditions.index') }}" class="btn btn-secondary btn-lg">
+                        <a href="{{ route('admin.settings.terms-conditions.index') }}" class="btn btn-primary settings-card-cta">
                             <i class="fas fa-file-contract me-2"></i>{{ custom_trans('Manage Terms & Conditions', 'admin') }}
                         </a>
                     </div>
@@ -595,7 +592,7 @@
             </div>
 
             <!-- About Us Management -->
-            <div class="col-xl-4 col-lg-6 col-md-10">
+            <div class="settings-card-wrapper">
                 <div class="card settings-card">
                     <div class="card-body text-center p-4">
                         <div class="settings-icon mb-4">
@@ -631,7 +628,7 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="{{ route('admin.settings.about-us.index') }}" class="btn btn-info btn-lg">
+                        <a href="{{ route('admin.settings.about-us.index') }}" class="btn btn-primary settings-card-cta">
                             <i class="fas fa-info-circle me-2"></i>{{ custom_trans('Manage About Us', 'admin') }}
                         </a>
                     </div>
@@ -639,7 +636,7 @@
             </div>
 
             <!-- Academy Policy Management -->
-            <div class="col-xl-4 col-lg-6 col-md-10">
+            <div class="settings-card-wrapper">
                 <div class="card settings-card">
                     <div class="card-body text-center p-4">
                         <div class="settings-icon mb-4">
@@ -675,7 +672,7 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="{{ route('admin.settings.academy-policy.index') }}" class="btn btn-dark btn-lg">
+                        <a href="{{ route('admin.settings.academy-policy.index') }}" class="btn btn-primary settings-card-cta">
                             <i class="fas fa-gavel me-2"></i>{{ custom_trans('Manage Academy Policy', 'admin') }}
                         </a>
                     </div>
@@ -683,7 +680,7 @@
             </div>
 
             <!-- Contact Management -->
-            <div class="col-xl-4 col-lg-6 col-md-10">
+            <div class="settings-card-wrapper">
                 <div class="card settings-card">
                     <div class="card-body text-center p-4">
                         <div class="settings-icon mb-4">
@@ -719,14 +716,12 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="{{ route('admin.settings.contact-management.index') }}" class="btn btn-success btn-lg">
+                        <a href="{{ route('admin.settings.contact-management.index') }}" class="btn btn-primary settings-card-cta">
                             <i class="fas fa-address-book me-2"></i>{{ custom_trans('Manage Contact', 'admin') }}
                         </a>
                     </div>
                 </div>
             </div>
-
-
         </div>
     </div>
 @endsection

@@ -1,7 +1,25 @@
 /* Admin Theme - Light/Dark Mode */
 
 /* CSS Variables - Light Mode (Default) */
+/* Design system tokens (shared) + legacy admin-* */
 :root {
+    /* Design system tokens */
+    --bg: #f4f6f9;
+    --surface-1: #ffffff;
+    --surface-2: #f8f9fa;
+    --border: #dee2e6;
+    --text: #333333;
+    --muted: #6c757d;
+    --primary: #2563eb;
+    --primary-contrast: #ffffff;
+    --warning: #d97706;
+    --warning-contrast: #ffffff;
+    --radius: 8px;
+    --radius-lg: 12px;
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --gap: 1rem;
+
     --admin-bg: #f4f6f9;
     --admin-card-bg: #ffffff;
     --admin-sidebar-bg: #ffffff;
@@ -22,13 +40,26 @@
     --admin-table-bg: #ffffff;
     --admin-table-stripe: #f8f9fa;
     --admin-table-border: #dee2e6;
-    --admin-active-bg: #eef2ff;
-    --admin-active-text: #4e73df;
+    --admin-active-bg: #eff6ff;
+    --admin-active-text: #2563eb;
     --admin-placeholder-color: #6c757d;
 }
 
 /* CSS Variables - Dark Mode */
 [data-theme="dark"] {
+    --bg: #1a1d29;
+    --surface-1: #2d3142;
+    --surface-2: #252836;
+    --border: #3d4153;
+    --text: #e4e6eb;
+    --muted: #8a8d91;
+    --primary: #3b82f6;
+    --primary-contrast: #ffffff;
+    --warning: #f59e0b;
+    --warning-contrast: #1f2937;
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.25);
+
     --admin-bg: #1a1d29;
     --admin-card-bg: #2d3142;
     --admin-sidebar-bg: #252836;
@@ -49,7 +80,7 @@
     --admin-table-bg: #2d3142;
     --admin-table-stripe: #252836;
     --admin-table-border: #3d4153;
-    --admin-active-bg: #3d4153;
+    --admin-active-bg: rgba(59, 130, 246, 0.15);
     --admin-active-text: #6c9fff;
     --admin-placeholder-color: #d0d3d8;
 
@@ -139,6 +170,81 @@ body {
 .offcanvas .list-group-item.bg-light {
     background-color: var(--admin-dropdown-hover) !important;
     color: var(--admin-text-muted);
+}
+
+/* Sidebar UX: consistent item height, active indicator, section headers, icon alignment */
+#adminSidebar .offcanvas-body {
+    padding-top: 0.25rem;
+    padding-bottom: 1rem;
+}
+#adminSidebar .list-group-item {
+    min-height: 2.75rem;
+    padding: 0.625rem 1rem;
+    display: flex;
+    align-items: center;
+    border-width: 0 0 1px 0;
+    border-color: var(--admin-border);
+    gap: var(--gap, 0.75rem);
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+#adminSidebar .list-group-item:focus-visible {
+    outline: 2px solid var(--admin-active-text);
+    outline-offset: -2px;
+    z-index: 1;
+}
+#adminSidebar .list-group-item.active {
+    background-color: var(--admin-active-bg) !important;
+    color: var(--admin-active-text) !important;
+    border-inline-start: 3px solid var(--admin-active-text);
+    padding-inline-start: calc(1rem - 3px);
+    font-weight: 500;
+}
+#adminSidebar .list-group-item:not(.active):hover {
+    background-color: var(--admin-dropdown-hover);
+}
+#adminSidebar .list-group-item .fa, #adminSidebar .list-group-item .fas, #adminSidebar .list-group-item .far {
+    width: 1.25rem;
+    text-align: center;
+    flex-shrink: 0;
+    opacity: 0.9;
+}
+#adminSidebar .list-group-item.active .fa,
+#adminSidebar .list-group-item.active .fas,
+#adminSidebar .list-group-item.active .far {
+    opacity: 1;
+}
+/* Section headers as subtle separators */
+#adminSidebar .list-group-item.sidebar-section-header,
+#adminSidebar .list-group-item.bg-light.text-muted {
+    min-height: auto;
+    padding: 0.75rem 1rem 0.5rem;
+    margin-top: 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background-color: transparent !important;
+    color: var(--admin-text-muted) !important;
+    border-bottom: 1px solid var(--admin-border);
+}
+#adminSidebar .list-group-item.sidebar-section-header:first-child,
+#adminSidebar .list-group-item.bg-light.text-muted:first-child {
+    margin-top: 0;
+}
+#adminSidebar .list-group-item .sidebar-nav-text {
+    flex: 1;
+    min-width: 0;
+}
+#adminSidebar .list-group-item .badge {
+    flex-shrink: 0;
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    min-width: 1.25rem;
+    text-align: center;
+}
+#adminSidebar .list-group-item .badge.bg-warning {
+    background-color: var(--warning, #d97706) !important;
+    color: var(--warning-contrast, #fff) !important;
 }
 
 /* Cards - Override Bootstrap card variables */
@@ -383,7 +489,19 @@ body {
     color: var(--admin-text);
 }
 
-/* Buttons */
+/* Buttons - unified primary (blue) */
+.btn-primary {
+    background-color: var(--primary, var(--admin-active-text));
+    border-color: var(--primary, var(--admin-active-text));
+    color: var(--primary-contrast, #fff);
+}
+.btn-primary:hover {
+    background-color: var(--admin-active-text);
+    border-color: var(--admin-active-text);
+    color: var(--primary-contrast, #fff);
+    opacity: 0.95;
+}
+
 .btn-outline-secondary {
     border-color: var(--admin-border);
     color: var(--admin-text);
