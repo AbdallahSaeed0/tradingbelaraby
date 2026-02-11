@@ -112,26 +112,36 @@
 
 @push('scripts')
     <script>
-        const swiper = new Swiper('.mySwiper', {
-            slidesPerView: 1,
-            spaceBetween: 20,
-            breakpoints: {
-                768: {
-                    slidesPerView: 2
-                },
-                992: {
-                    slidesPerView: 3
-                },
-                1200: {
-                    slidesPerView: 4
+        // Home course sliders: vanilla scroll (RTL-aware), no Swiper
+        (function() {
+            var isRtl = document.documentElement.getAttribute('dir') === 'rtl';
+            document.querySelectorAll('[data-home-courses-slider]').forEach(function(wrap) {
+                var track = wrap.querySelector('[data-home-courses-track]');
+                var prevBtn = wrap.querySelector('[data-home-courses-prev]');
+                var nextBtn = wrap.querySelector('[data-home-courses-next]');
+                if (!track || !prevBtn || !nextBtn) return;
+                var cardWidth = 0;
+                function getScrollAmount() {
+                    if (!cardWidth && track.firstElementChild && track.firstElementChild.firstElementChild) {
+                        var card = track.firstElementChild.firstElementChild;
+                        var style = window.getComputedStyle(track.firstElementChild);
+                        var gap = parseFloat(style.gap) || 0;
+                        cardWidth = card.offsetWidth + gap;
+                    }
+                    return cardWidth || 280;
                 }
-            },
-            navigation: {
-                nextEl: '.swiper-button-next-courses',
-                prevEl: '.swiper-button-prev-courses',
-            },
-            grabCursor: true,
-        });
+                function scrollPrev() {
+                    track.scrollBy({ left: isRtl ? getScrollAmount() : -getScrollAmount(), behavior: 'smooth' });
+                }
+                function scrollNext() {
+                    track.scrollBy({ left: isRtl ? -getScrollAmount() : getScrollAmount(), behavior: 'smooth' });
+                }
+                prevBtn.addEventListener('click', scrollPrev);
+                nextBtn.addEventListener('click', scrollNext);
+                prevBtn.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); scrollPrev(); } });
+                nextBtn.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); scrollNext(); } });
+            });
+        })();
 
         // Slick Testimonial Slider
         $(document).ready(function() {

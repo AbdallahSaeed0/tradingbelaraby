@@ -1,120 +1,30 @@
-<!-- Top Discounted Courses Section -->
+<!-- Top Discounted Courses Section - BEM, vanilla slider -->
 @if ($topDiscountedCourses->count() > 0)
-    <section class="courses-section position-relative py-5 bg-light-gray">
-        <!-- Background image on the left behind the cards -->
-        <img src="https://eclass.mediacity.co.in/demo2/public/frontcss/img/bg/an-img-03.png" alt="an-img-01"
-            class="courses-bg-img d-none d-md-block">
-        <div class="container position-relative z-2">
-            <!-- Slider controls -->
-            <div class="d-flex justify-content-between mb-3">
-                <div class="mb-4">
-                    <span class="text-warning fw-bold mb-2 d-block fs-11">
-                        <i class="fas fa-percent"></i> {{ custom_trans('Special Offers', 'front') }}
+    <section class="home-courses-slider" id="topDiscountedSection" aria-labelledby="top-discounted-heading" data-home-courses-slider>
+        <div class="home-courses-slider__container">
+            <header class="home-courses-slider__header">
+                <div class="home-courses-slider__title-row">
+                    <span class="home-courses-slider__label">
+                        <i class="fas fa-percent" aria-hidden="true"></i> {{ custom_trans('Special Offers', 'front') }}
                     </span>
-                    <h2 class="fw-bold mb-3 fs-25">{{ custom_trans('Top Discounted Courses', 'front') }}</h2>
+                    <h2 class="home-courses-slider__title" id="top-discounted-heading">{{ custom_trans('Top Discounted Courses', 'front') }}</h2>
                 </div>
-                @php
-                    $direction = \App\Helpers\TranslationHelper::getFrontendLanguage()->direction ?? 'ltr';
-                @endphp
-            </div>
-            <!-- Swiper -->
-            <div class="swiper topDiscountedSwiper">
-                <!-- Navigation buttons -->
-                <div class="swiper-button-prev swiper-button-prev-discounted"></div>
-                <div class="swiper-button-next swiper-button-next-discounted"></div>
-                <div class="swiper-wrapper">
-                    @foreach ($topDiscountedCourses as $course)
-                        <div class="swiper-slide">
-                            <div class="course-card-custom">
-                                <div class="course-img-wrap">
-                                    <a href="{{ route('courses.show', $course) }}" class="d-block text-decoration-none">
-                                        <img src="{{ $course->image_url }}" class="course-img"
-                                            alt="{{ $course->localized_name }}">
-                                    </a>
-
-                                    @if ($course->is_featured)
-                                        <span class="badge badge-green">{{ custom_trans('Featured', 'front') }}</span>
-                                    @endif
-
-                                    @if ($course->is_discounted)
-                                        <span class="price-badge">
-                                            <span class="discounted">{{ $course->formatted_price }}</span>
-                                            <span class="original">{{ $course->formatted_original_price }}</span>
-                                        </span>
-                                    @else
-                                        <span class="price-badge">
-                                            <span class="discounted">{{ $course->formatted_price }}</span>
-                                        </span>
-                                    @endif
-
-
-                                    <div class="course-hover-icons">
-                                        <button class="icon-btn wishlist-btn" data-course-id="{{ $course->id }}">
-                                            <i
-                                                class="fas fa-heart {{ auth()->check() && auth()->user()->hasInWishlist($course) ? 'text-danger' : '' }}"></i>
-                                        </button>
-                                        <button class="icon-btn">
-                                            <i class="fa-regular fa-bell"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="course-card-body">
-                                    <h5 class="course-title">
-                                        <a href="{{ route('courses.show', $course) }}"
-                                            class="text-decoration-none text-dark">
-                                            {{ $course->localized_name }}
-                                        </a>
-                                    </h5>
-                                    <p class="course-desc">{{ Str::limit($course->localized_description, 80) }}</p>
-                                    <div class="d-flex gap-2 flex-wrap mb-2">
-                                        <a href="{{ route('courses.show', $course) }}" class="btn btn-outline-primary btn-sm">{{ custom_trans('Show details', 'front') }}</a>
-                                        @auth
-                                            @if (auth()->user()->enrollments()->where('course_id', $course->id)->exists())
-                                                <a href="{{ route('courses.learn', $course->id) }}" class="btn btn-success btn-sm">{{ custom_trans('go_to_course', 'front') }}</a>
-                                            @else
-                                                <button type="button" class="btn btn-orange btn-sm enroll-btn" data-course-id="{{ $course->id }}" data-enroll-type="{{ $course->price > 0 ? 'paid' : 'free' }}">{{ $course->price > 0 ? custom_trans('Add to cart', 'front') : custom_trans('enroll_now', 'front') }}</button>
-                                            @endif
-                                        @else
-                                            <a href="{{ route('login') }}" class="btn btn-orange btn-sm">{{ $course->price > 0 ? custom_trans('Add to cart', 'front') : custom_trans('enroll_now', 'front') }}</a>
-                                        @endauth
-                                    </div>
-                                    <img src="https://eclass.mediacity.co.in/demo2/public/frontcss/img/icon/cou-icon.png"
-                                        class="book-icon" alt="book">
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
+            </header>
+            <div class="home-courses-slider__slider-wrap">
+                <button type="button" class="home-courses-slider__arrow home-courses-slider__arrow--prev" aria-label="{{ custom_trans('Previous', 'front') }}" data-home-courses-prev>
+                    <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="home-courses-slider__arrow home-courses-slider__arrow--next" aria-label="{{ custom_trans('Next', 'front') }}" data-home-courses-next>
+                    <i class="fas fa-chevron-left" aria-hidden="true"></i>
+                </button>
+                <div class="home-courses-slider__track" data-home-courses-track role="region" aria-label="{{ custom_trans('Top Discounted Courses', 'front') }}">
+                    <div class="home-courses-slider__list">
+                        @foreach ($topDiscountedCourses as $course)
+                            @include('partials.home.course-card', ['course' => $course])
+                        @endforeach
+                    </div>
                 </div>
             </div>
         </div>
     </section>
-
-    <script>
-        // Initialize Top Discounted Courses Swiper
-        document.addEventListener('DOMContentLoaded', function() {
-            new Swiper('.topDiscountedSwiper', {
-                slidesPerView: 1,
-                spaceBetween: 30,
-                loop: true,
-                navigation: {
-                    nextEl: '.swiper-button-next-discounted',
-                    prevEl: '.swiper-button-prev-discounted',
-                },
-                breakpoints: {
-                    640: {
-                        slidesPerView: 2,
-                    },
-                    768: {
-                        slidesPerView: 2,
-                    },
-                    1024: {
-                        slidesPerView: 3,
-                    },
-                    1200: {
-                        slidesPerView: 4,
-                    }
-                }
-            });
-        });
-    </script>
 @endif

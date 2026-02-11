@@ -1,105 +1,107 @@
-/* Live Meeting Courses Section - RTL, BEM, vanilla slider */
-.live-meeting-courses-section {
-    --live-primary: #FF6A00;
-    --live-primary-dark: #E85F00;
-    --live-bg: #F7F8FA;
-    --live-card: #FFFFFF;
-    --live-text: #111827;
-    --live-muted: #6B7280;
-    --live-border: #E5E7EB;
-    --live-card-padding: 18px;
-    --live-card-radius: 14px;
-    --live-image-height: 170px;
-    --live-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-    --live-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.1);
-    background: var(--live-bg);
+/* Home Courses Slider - Shared for Our Courses, Discounted, Live Meeting, Recent (RTL, BEM, vanilla) */
+.home-courses-slider {
+    --hcs-primary: #FF6A00;
+    --hcs-primary-dark: #E85F00;
+    --hcs-bg: #F7F8FA;
+    --hcs-card: #FFFFFF;
+    --hcs-text: #111827;
+    --hcs-muted: #6B7280;
+    --hcs-border: #E5E7EB;
+    --hcs-card-padding: 18px;
+    --hcs-card-radius: 14px;
+    --hcs-image-height: 170px;
+    --hcs-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    --hcs-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.1);
+    background: var(--hcs-bg);
     padding: 2.5rem 0;
     overflow: hidden;
 }
 
-.live-meeting-courses-section__container {
+.home-courses-slider--white {
+    background: #fff;
+}
+
+.home-courses-slider__container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 1rem;
     position: relative;
 }
 
-.live-meeting-courses-section__header {
+.home-courses-slider__header {
     margin-bottom: 1.25rem;
 }
 
-.live-meeting-courses-section__title-row {
+.home-courses-slider__title-row {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
 }
 
-.live-meeting-courses-section__label {
+.home-courses-slider__label {
     font-size: 0.8125rem;
     font-weight: 600;
-    color: var(--live-primary);
+    color: var(--hcs-primary);
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
 }
 
-.live-meeting-courses-section__title {
+.home-courses-slider__title {
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--live-text);
+    color: var(--hcs-text);
     margin: 0;
     line-height: 1.3;
 }
 
-/* Slider wrapper: arrows in gutter so they don't cover cards */
-.live-meeting-courses-section__slider-wrap {
+.home-courses-slider__slider-wrap {
     position: relative;
     padding-inline: 2.5rem;
 }
 
-.live-meeting-courses-section__arrow {
+.home-courses-slider__arrow {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
     width: 44px;
     height: 44px;
     border-radius: 50%;
-    border: 1px solid var(--live-border);
-    background: var(--live-card);
-    color: var(--live-primary);
+    border: 1px solid var(--hcs-border);
+    background: var(--hcs-card);
+    color: var(--hcs-primary);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 5;
-    box-shadow: var(--live-shadow);
+    box-shadow: var(--hcs-shadow);
     transition: background 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
 
-.live-meeting-courses-section__arrow:hover {
-    background: var(--live-primary);
+.home-courses-slider__arrow:hover {
+    background: var(--hcs-primary);
     color: #fff;
-    border-color: var(--live-primary);
+    border-color: var(--hcs-primary);
     box-shadow: 0 4px 12px rgba(255, 106, 0, 0.35);
 }
 
-.live-meeting-courses-section__arrow:focus {
+.home-courses-slider__arrow:focus {
     outline: none;
     box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.4);
 }
 
-.live-meeting-courses-section__arrow--prev {
+.home-courses-slider__arrow--prev {
     right: 0;
     left: auto;
 }
 
-.live-meeting-courses-section__arrow--next {
+.home-courses-slider__arrow--next {
     left: 0;
     right: auto;
 }
 
-/* Track: horizontal scroll, no overlap with arrows */
-.live-meeting-courses-section__track {
+.home-courses-slider__track {
     overflow-x: auto;
     overflow-y: hidden;
     scroll-behavior: smooth;
@@ -107,69 +109,68 @@
     scrollbar-width: thin;
 }
 
-.live-meeting-courses-section__track::-webkit-scrollbar {
+.home-courses-slider__track::-webkit-scrollbar {
     height: 6px;
 }
 
-.live-meeting-courses-section__track::-webkit-scrollbar-track {
-    background: var(--live-border);
+.home-courses-slider__track::-webkit-scrollbar-track {
+    background: var(--hcs-border);
     border-radius: 3px;
 }
 
-.live-meeting-courses-section__track::-webkit-scrollbar-thumb {
-    background: var(--live-muted);
+.home-courses-slider__track::-webkit-scrollbar-thumb {
+    background: var(--hcs-muted);
     border-radius: 3px;
 }
 
-.live-meeting-courses-section__list {
+.home-courses-slider__list {
     display: flex;
     gap: 1.25rem;
     padding: 0.25rem 0 1rem;
     min-height: 0;
 }
 
-/* Card: uniform height, no overlap */
-.live-meeting-courses-section__card {
+.home-courses-slider__card {
     flex: 0 0 auto;
     width: 280px;
     min-width: 280px;
-    background: var(--live-card);
-    border-radius: var(--live-card-radius);
-    box-shadow: var(--live-shadow);
-    border: 1px solid var(--live-border);
+    background: var(--hcs-card);
+    border-radius: var(--hcs-card-radius);
+    box-shadow: var(--hcs-shadow);
+    border: 1px solid var(--hcs-border);
     overflow: hidden;
     display: flex;
     flex-direction: column;
     transition: box-shadow 0.25s ease;
 }
 
-.live-meeting-courses-section__card:hover {
-    box-shadow: var(--live-shadow-hover);
+.home-courses-slider__card:hover {
+    box-shadow: var(--hcs-shadow-hover);
 }
 
-.live-meeting-courses-section__card-image-wrap {
+.home-courses-slider__card-image-wrap {
     position: relative;
     width: 100%;
-    height: var(--live-image-height);
-    background: var(--live-border);
+    height: var(--hcs-image-height);
+    background: var(--hcs-border);
     flex-shrink: 0;
 }
 
-.live-meeting-courses-section__card-image-link {
+.home-courses-slider__card-image-link {
     display: block;
     width: 100%;
     height: 100%;
     text-decoration: none;
 }
 
-.live-meeting-courses-section__card-image {
+.home-courses-slider__card-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
 }
 
-.live-meeting-courses-section__badge {
+.home-courses-slider__badge {
     position: absolute;
     top: 12px;
     right: 12px;
@@ -183,11 +184,11 @@
     z-index: 2;
 }
 
-.live-meeting-courses-section__badge--featured {
+.home-courses-slider__badge--featured {
     background: #2ecc40;
 }
 
-.live-meeting-courses-section__card-actions {
+.home-courses-slider__card-actions {
     position: absolute;
     top: 12px;
     left: 12px;
@@ -199,67 +200,67 @@
     z-index: 2;
 }
 
-.live-meeting-courses-section__card-image-wrap:hover .live-meeting-courses-section__card-actions {
+.home-courses-slider__card-image-wrap:hover .home-courses-slider__card-actions {
     opacity: 1;
 }
 
-.live-meeting-courses-section__icon-btn {
+.home-courses-slider__icon-btn {
     width: 32px;
     height: 32px;
     border-radius: 50%;
     border: none;
-    background: var(--live-card);
-    color: var(--live-primary);
+    background: var(--hcs-card);
+    color: var(--hcs-primary);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: var(--live-shadow);
+    box-shadow: var(--hcs-shadow);
     transition: background 0.2s, color 0.2s;
 }
 
-.live-meeting-courses-section__icon-btn:hover {
-    background: var(--live-primary);
+.home-courses-slider__icon-btn:hover {
+    background: var(--hcs-primary);
     color: #fff;
 }
 
-.live-meeting-courses-section__icon-btn:focus {
+.home-courses-slider__icon-btn:focus {
     outline: none;
-    box-shadow: 0 0 0 2px var(--live-primary);
+    box-shadow: 0 0 0 2px var(--hcs-primary);
 }
 
-.live-meeting-courses-section__icon--active {
+.home-courses-slider__icon--active {
     color: #dc2626 !important;
 }
 
-.live-meeting-courses-section__card-body {
-    padding: var(--live-card-padding);
+.home-courses-slider__card-body {
+    padding: var(--hcs-card-padding);
     flex: 1;
     display: flex;
     flex-direction: column;
     min-height: 0;
 }
 
-.live-meeting-courses-section__card-title {
+.home-courses-slider__card-title {
     font-size: 1.0625rem;
     font-weight: 700;
     margin: 0 0 0.5rem;
     line-height: 1.35;
 }
 
-.live-meeting-courses-section__card-title-link {
-    color: var(--live-text);
+.home-courses-slider__card-title-link {
+    color: var(--hcs-text);
     text-decoration: none;
     transition: color 0.2s;
 }
 
-.live-meeting-courses-section__card-title-link:hover {
-    color: var(--live-primary);
+.home-courses-slider__card-title-link:hover {
+    color: var(--hcs-primary);
 }
 
-.live-meeting-courses-section__card-desc {
+.home-courses-slider__card-desc {
     font-size: 0.875rem;
-    color: var(--live-muted);
+    color: var(--hcs-muted);
     margin: 0 0 0.75rem;
     line-height: 1.45;
     flex: 1;
@@ -269,7 +270,7 @@
     overflow: hidden;
 }
 
-.live-meeting-courses-section__card-price {
+.home-courses-slider__card-price {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -277,34 +278,34 @@
     margin-bottom: 0.75rem;
 }
 
-.live-meeting-courses-section__price-current {
+.home-courses-slider__price-current {
     font-size: 1.125rem;
     font-weight: 700;
-    color: var(--live-primary);
+    color: var(--hcs-primary);
 }
 
-.live-meeting-courses-section__price-old {
+.home-courses-slider__price-old {
     font-size: 0.875rem;
-    color: var(--live-muted);
+    color: var(--hcs-muted);
     text-decoration: line-through;
 }
 
-.live-meeting-courses-section__discount-pill {
+.home-courses-slider__discount-pill {
     font-size: 0.6875rem;
     font-weight: 600;
     padding: 2px 8px;
     border-radius: 6px;
     background: rgba(255, 106, 0, 0.12);
-    color: var(--live-primary-dark);
+    color: var(--hcs-primary-dark);
 }
 
-.live-meeting-courses-section__card-ctas {
+.home-courses-slider__card-ctas {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
 }
 
-.live-meeting-courses-section__btn {
+.home-courses-slider__btn {
     flex: 1;
     min-width: 0;
     padding: 0.5rem 0.75rem;
@@ -321,130 +322,129 @@
     justify-content: center;
 }
 
-.live-meeting-courses-section__btn:focus {
+.home-courses-slider__btn:focus {
     outline: none;
-    box-shadow: 0 0 0 2px var(--live-primary);
+    box-shadow: 0 0 0 2px var(--hcs-primary);
 }
 
-.live-meeting-courses-section__btn--primary {
-    background: var(--live-primary);
+.home-courses-slider__btn--primary {
+    background: var(--hcs-primary);
     color: #fff;
-    border-color: var(--live-primary);
+    border-color: var(--hcs-primary);
 }
 
-.live-meeting-courses-section__btn--primary:hover {
-    background: var(--live-primary-dark);
-    border-color: var(--live-primary-dark);
+.home-courses-slider__btn--primary:hover {
+    background: var(--hcs-primary-dark);
+    border-color: var(--hcs-primary-dark);
     color: #fff;
 }
 
-.live-meeting-courses-section__btn--secondary {
+.home-courses-slider__btn--secondary {
     background: transparent;
-    color: var(--live-text);
-    border-color: var(--live-border);
+    color: var(--hcs-text);
+    border-color: var(--hcs-border);
 }
 
-.live-meeting-courses-section__btn--secondary:hover {
-    border-color: var(--live-primary);
-    color: var(--live-primary);
+.home-courses-slider__btn--secondary:hover {
+    border-color: var(--hcs-primary);
+    color: var(--hcs-primary);
 }
 
-/* Responsive */
 @media (min-width: 1200px) {
-    .live-meeting-courses-section__container {
+    .home-courses-slider__container {
         max-width: 1200px;
         padding: 0 1.5rem;
     }
-    .live-meeting-courses-section__slider-wrap {
+    .home-courses-slider__slider-wrap {
         padding-inline: 0;
     }
-    .live-meeting-courses-section__list {
+    .home-courses-slider__list {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 1.25rem;
         overflow: visible;
         padding: 0;
     }
-    .live-meeting-courses-section__track {
+    .home-courses-slider__track {
         overflow: visible;
     }
-    .live-meeting-courses-section__card {
+    .home-courses-slider__card {
         width: 100%;
         min-width: 0;
     }
-    .live-meeting-courses-section__arrow {
+    .home-courses-slider__arrow {
         display: none;
     }
 }
 
 @media (min-width: 992px) and (max-width: 1199px) {
-    .live-meeting-courses-section__slider-wrap {
+    .home-courses-slider__slider-wrap {
         padding-inline: 0;
     }
-    .live-meeting-courses-section__list {
+    .home-courses-slider__list {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         overflow: visible;
         padding: 0;
     }
-    .live-meeting-courses-section__track {
+    .home-courses-slider__track {
         overflow: visible;
     }
-    .live-meeting-courses-section__card {
+    .home-courses-slider__card {
         width: 100%;
         min-width: 0;
     }
-    .live-meeting-courses-section__arrow {
+    .home-courses-slider__arrow {
         display: none;
     }
 }
 
 @media (min-width: 768px) and (max-width: 991px) {
-    .live-meeting-courses-section__arrow {
+    .home-courses-slider__arrow {
         width: 38px;
         height: 38px;
     }
 }
 
 @media (max-width: 767px) {
-    .live-meeting-courses-section {
+    .home-courses-slider {
         padding: 1.5rem 0;
     }
-    .live-meeting-courses-section__title {
+    .home-courses-slider__title {
         font-size: 1.25rem;
     }
-    .live-meeting-courses-section__slider-wrap {
+    .home-courses-slider__slider-wrap {
         padding-inline: 1.5rem;
     }
-    .live-meeting-courses-section__arrow {
+    .home-courses-slider__arrow {
         width: 36px;
         height: 36px;
     }
-    .live-meeting-courses-section__card {
+    .home-courses-slider__card {
         width: 260px;
         min-width: 260px;
     }
-    .live-meeting-courses-section__card-ctas {
+    .home-courses-slider__card-ctas {
         flex-direction: column;
     }
-    .live-meeting-courses-section__btn {
+    .home-courses-slider__btn {
         width: 100%;
     }
 }
 
 @media (max-width: 480px) {
-    .live-meeting-courses-section__container {
+    .home-courses-slider__container {
         padding: 0 0.75rem;
     }
-    .live-meeting-courses-section__slider-wrap {
+    .home-courses-slider__slider-wrap {
         padding-inline: 1rem;
     }
-    .live-meeting-courses-section__card {
+    .home-courses-slider__card {
         width: 100%;
         min-width: 100%;
         max-width: 100%;
     }
-    .live-meeting-courses-section__arrow {
+    .home-courses-slider__arrow {
         width: 32px;
         height: 32px;
         font-size: 0.75rem;
