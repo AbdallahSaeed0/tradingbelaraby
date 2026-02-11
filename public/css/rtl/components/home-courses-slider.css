@@ -355,48 +355,6 @@
         max-width: 1200px;
         padding: 0 1.5rem;
     }
-    .home-courses-slider__slider-wrap {
-        padding-inline: 0;
-    }
-    .home-courses-slider__list {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1.25rem;
-        overflow: visible;
-        padding: 0;
-    }
-    .home-courses-slider__track {
-        overflow: visible;
-    }
-    .home-courses-slider__card {
-        width: 100%;
-        min-width: 0;
-    }
-    .home-courses-slider__arrow {
-        display: none;
-    }
-}
-
-@media (min-width: 992px) and (max-width: 1199px) {
-    .home-courses-slider__slider-wrap {
-        padding-inline: 0;
-    }
-    .home-courses-slider__list {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        overflow: visible;
-        padding: 0;
-    }
-    .home-courses-slider__track {
-        overflow: visible;
-    }
-    .home-courses-slider__card {
-        width: 100%;
-        min-width: 0;
-    }
-    .home-courses-slider__arrow {
-        display: none;
-    }
 }
 
 @media (min-width: 768px) and (max-width: 991px) {
@@ -449,4 +407,30 @@
         height: 32px;
         font-size: 0.75rem;
     }
+}
+
+/* Instructor slider variant: same layout, card has avatar + course count + View Profile */
+.home-courses-slider--instructors .home-courses-slider__card-avatar {
+    position: absolute;
+    bottom: -20px;
+    right: 12px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid var(--hcs-card);
+    object-fit: cover;
+    z-index: 2;
+}
+
+.home-courses-slider--instructors .home-courses-slider__card-body {
+    padding-top: 1.5rem;
+}
+
+.home-courses-slider--instructors .home-courses-slider__card-desc {
+    -webkit-line-clamp: 1;
+}
+
+.home-courses-slider--instructors .home-courses-slider__card-ctas .home-courses-slider__btn {
+    flex: none;
+    width: 100%;
 }

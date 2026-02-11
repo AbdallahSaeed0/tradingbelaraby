@@ -1,5 +1,4 @@
 @php
-    // Fetch active instructors from the database
     $instructors = \App\Models\Admin::whereHas('adminType', function ($query) {
         $query->where('name', 'instructor');
     })
@@ -7,189 +6,61 @@
         ->get();
 @endphp
 
-<!-- Instructor Section -->
-<section class="instructor-section position-relative py-5 bg-light">
-    <!-- Background image on the left behind the cards -->
-    <img src="https://eclass.mediacity.co.in/demo2/public/frontcss/img/bg/an-img-03.png" alt="an-img-01"
-        class="courses-bg-img d-none d-md-block">
-    <div class="container position-relative z-2">
-        <!-- Slider controls -->
-        <div class="d-flex justify-content-between mb-3">
-            <div class="mb-4">
-                <span class="text-warning fw-bold mb-2 d-block fs-1-1rem">
-                    <i class="fas fa-graduation-cap"></i> {{ custom_trans('Instructor', 'front') }}
-                </span>
-                <h2 class="fw-bold mb-3 fs-2-5rem"> {{ custom_trans('Instructor', 'front') }}</h2>
-            </div>
-        </div>
-
-        @if ($instructors->count() > 0)
-            <!-- Swiper -->
-            <div class="swiper instructorSwiper">
-                <!-- Navigation buttons -->
-                <div class="swiper-button-prev swiper-button-prev-instructor"></div>
-                <div class="swiper-button-next swiper-button-next-instructor"></div>
-                <div class="swiper-wrapper">
-                    @foreach ($instructors as $instructor)
-                        <div class="swiper-slide">
-                            <div class="course-card-custom">
-                                <div class="course-img-wrap">
-                                    <!-- Instructor Cover Image -->
-                                    <img src="{{ $instructor->cover_url }}" class="course-img"
-                                        alt="{{ $instructor->name }} Cover">
-                                    <span class="badge badge-green">{{ custom_trans('Instructor', 'front') }}</span>
-                                    <span class="price-badge">
-                                        <span class="discounted">{{ $instructor->courses->count() }}</span>
-                                        <span class="original">{{ custom_trans('Courses', 'front') }}</span>
-                                    </span>
-                                    <!-- Instructor Avatar -->
-                                    <img src="{{ $instructor->avatar_url }}" class="author-avatar"
-                                        alt="{{ $instructor->name }}">
-                                    <div class="course-hover-icons">
-                                        <button class="icon-btn"><i class="fas fa-heart"></i></button>
-                                        <button class="icon-btn"><i class="fa-regular fa-bell"></i></button>
+@if ($instructors->count() > 0)
+    @if (\App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl')
+        @push('rtl-styles')
+            <link rel="stylesheet" href="{{ asset('css/rtl/components/home-courses-slider.css') }}">
+        @endpush
+    @else
+        @push('styles')
+            <link rel="stylesheet" href="{{ asset('css/rtl/components/home-courses-slider.css') }}">
+        @endpush
+    @endif
+    <section class="home-courses-slider home-courses-slider--instructors" id="instructorSection" aria-labelledby="instructor-heading" data-home-courses-slider>
+        <div class="home-courses-slider__container">
+            <header class="home-courses-slider__header">
+                <div class="home-courses-slider__title-row">
+                    <span class="home-courses-slider__label">
+                        <i class="fas fa-graduation-cap" aria-hidden="true"></i> {{ custom_trans('Instructor', 'front') }}
+                    </span>
+                    <h2 class="home-courses-slider__title" id="instructor-heading">{{ custom_trans('Instructor', 'front') }}</h2>
+                </div>
+            </header>
+            <div class="home-courses-slider__slider-wrap">
+                <button type="button" class="home-courses-slider__arrow home-courses-slider__arrow--prev" aria-label="{{ custom_trans('Previous', 'front') }}" data-home-courses-prev>
+                    <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="home-courses-slider__arrow home-courses-slider__arrow--next" aria-label="{{ custom_trans('Next', 'front') }}" data-home-courses-next>
+                    <i class="fas fa-chevron-left" aria-hidden="true"></i>
+                </button>
+                <div class="home-courses-slider__track" data-home-courses-track role="region" aria-label="{{ custom_trans('Instructor', 'front') }}">
+                    <div class="home-courses-slider__list">
+                        @foreach ($instructors as $instructor)
+                            <article class="home-courses-slider__card">
+                                <div class="home-courses-slider__card-image-wrap">
+                                    <a href="{{ route('instructor.show', $instructor->id) }}" class="home-courses-slider__card-image-link">
+                                        <img src="{{ $instructor->cover_url }}" class="home-courses-slider__card-image" alt="{{ $instructor->name }}" width="280" height="170" loading="lazy">
+                                    </a>
+                                    <span class="home-courses-slider__badge home-courses-slider__badge--featured">{{ custom_trans('Instructor', 'front') }}</span>
+                                    <img src="{{ $instructor->avatar_url }}" class="home-courses-slider__card-avatar" alt="{{ $instructor->name }}" width="48" height="48">
+                                </div>
+                                <div class="home-courses-slider__card-body">
+                                    <h3 class="home-courses-slider__card-title">
+                                        <a href="{{ route('instructor.show', $instructor->id) }}" class="home-courses-slider__card-title-link">{{ $instructor->name }}</a>
+                                    </h3>
+                                    <p class="home-courses-slider__card-desc">{{ custom_trans('Instructor', 'front') }}</p>
+                                    <div class="home-courses-slider__card-price">
+                                        <span class="home-courses-slider__price-current">{{ $instructor->courses->count() }} {{ custom_trans('Courses', 'front') }}</span>
+                                    </div>
+                                    <div class="home-courses-slider__card-ctas">
+                                        <a href="{{ route('instructor.show', $instructor->id) }}" class="home-courses-slider__btn home-courses-slider__btn--primary">{{ custom_trans('View Profile', 'front') }}</a>
                                     </div>
                                 </div>
-                                <div class="course-card-body">
-                                    <h5 class="course-title">
-                                        <a href="{{ route('instructor.show', $instructor->id) }}"
-                                            class="text-decoration-none text-dark">
-                                            {{ $instructor->name }}
-                                        </a>
-                                    </h5>
-                                    <p class="course-desc">{{ custom_trans('Instructor', 'front') }}</p>
-                                    <a href="{{ route('instructor.show', $instructor->id) }}"
-                                        class="read-more">{{ custom_trans('View Profile', 'front') }} &rarr;</a>
-                                    <img src="https://eclass.mediacity.co.in/demo2/public/frontcss/img/icon/cou-icon.png"
-                                        class="book-icon" alt="book">
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        @else
-            <!-- Fallback content when no instructors are available -->
-            <div class="text-center py-5">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="course-card-custom">
-                            <div class="course-img-wrap">
-                                <img src="https://eclass.mediacity.co.in/demo2/public/images/course/man-filming-with-professional-camera.jpg"
-                                    class="course-img" alt="Photography">
-                                <span class="badge badge-green">{{ custom_trans('Bestseller', 'front') }}</span>
-                                <span class="price-badge">
-                                    <span class="discounted">345.99₹</span>
-                                    <span class="original">1037.99₹</span>
-                                </span>
-                                <img src="https://randomuser.me/api/portraits/men/32.jpg" class="author-avatar"
-                                    alt="author">
-                                <div class="course-hover-icons">
-                                    <button class="icon-btn"><i class="fas fa-heart"></i></button>
-                                    <button class="icon-btn"><i class="fa-regular fa-bell"></i></button>
-                                </div>
-                            </div>
-                            <div class="course-card-body">
-                                <h5 class="course-title">{{ custom_trans('Photography', 'front') }}</h5>
-                                <p class="course-desc">
-                                    {{ custom_trans('This is an all-encompassing guide for making an independent feature le...', 'front') }}
-                                </p>
-                                <a href="#" class="read-more">{{ custom_trans('Read More', 'front') }} &rarr;</a>
-                                <img src="https://eclass.mediacity.co.in/demo2/public/frontcss/img/icon/cou-icon.png"
-                                    class="book-icon" alt="book">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="course-card-custom">
-                            <div class="course-img-wrap">
-                                <img src="https://eclass.mediacity.co.in/demo2/public/images/course/beautiful-indian-young-hindu-woman-model-traditional-indian-costume-yellow-saree%20(1).jpg"
-                                    class="course-img" alt="Designing">
-                                <span class="badge badge-yellow">{{ custom_trans('Trending', 'front') }}</span>
-                                <span class="price-badge">
-                                    <span class="discounted">1556.99₹</span>
-                                    <span class="original">3114.00₹</span>
-                                </span>
-                                <img src="https://randomuser.me/api/portraits/women/44.jpg" class="author-avatar"
-                                    alt="author">
-                                <div class="course-hover-icons">
-                                    <button class="icon-btn"><i class="fas fa-heart"></i></button>
-                                    <button class="icon-btn"><i class="fa-regular fa-bell"></i></button>
-                                </div>
-                            </div>
-                            <div class="course-card-body">
-                                <h5 class="course-title">{{ custom_trans('Designing', 'front') }}</h5>
-                                <p class="course-desc">
-                                    {{ custom_trans('Details of a fashion design course may include: Fundamentals of fashion...', 'front') }}
-                                </p>
-                                <a href="#" class="read-more">{{ custom_trans('Read More', 'front') }} &rarr;</a>
-                                <img src="https://eclass.mediacity.co.in/demo2/public/frontcss/img/icon/cou-icon.png"
-                                    class="book-icon" alt="book">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="course-card-custom">
-                            <div class="course-img-wrap">
-                                <img src="https://eclass.mediacity.co.in/demo2/public/images/course/couress-img-3.jpg"
-                                    class="course-img" alt="IT & Software">
-                                <span class="badge badge-green">{{ custom_trans('Bestseller', 'front') }}</span>
-                                <span class="price-badge">
-                                    <span class="discounted">1037.99₹</span>
-                                    <span class="original">1730.00₹</span>
-                                </span>
-                                <img src="https://randomuser.me/api/portraits/men/45.jpg" class="author-avatar"
-                                    alt="author">
-                                <div class="course-hover-icons">
-                                    <button class="icon-btn"><i class="fas fa-heart"></i></button>
-                                    <button class="icon-btn"><i class="fa-regular fa-bell"></i></button>
-                                </div>
-                            </div>
-                            <div class="course-card-body">
-                                <h5 class="course-title">{{ custom_trans('IT & Software', 'front') }}</h5>
-                                <p class="course-desc">
-                                    {{ custom_trans('Artificial Intelligence is finally here and most of us are already act...', 'front') }}
-                                </p>
-                                <a href="#" class="read-more">{{ custom_trans('Read More', 'front') }} &rarr;</a>
-                                <img src="https://eclass.mediacity.co.in/demo2/public/frontcss/img/icon/cou-icon.png"
-                                    class="book-icon" alt="book">
-                            </div>
-                        </div>
+                            </article>
+                        @endforeach
                     </div>
                 </div>
             </div>
-        @endif
-    </div>
-</section>
-
-@push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        @if ($instructors->count() > 0)
-            new Swiper('.instructorSwiper', {
-                slidesPerView: 1,
-                spaceBetween: 30,
-                loop: {{ $instructors->count() > 3 ? 'true' : 'false' }},
-                navigation: {
-                    nextEl: '.swiper-button-next-instructor',
-                    prevEl: '.swiper-button-prev-instructor',
-                },
-                breakpoints: {
-                    640: {
-                        slidesPerView: 2,
-                    },
-                    768: {
-                        slidesPerView: 2,
-                    },
-                    1024: {
-                        slidesPerView: 3,
-                    },
-                    1200: {
-                        slidesPerView: 4,
-                    }
-                }
-            });
-        @endif
-    });
-</script>
-@endpush
+        </div>
+    </section>
+@endif
