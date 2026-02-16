@@ -2,6 +2,66 @@
 
 @section('title', 'Create New Course')
 
+@push('styles')
+<style>
+/* Course Create page: Course Content section – scoped layout and RTL */
+.course-create-page .form-section .section-item {
+    margin-bottom: 1.25rem;
+}
+.course-create-page .section-item .mb-3 {
+    margin-bottom: 1rem !important;
+}
+.course-create-page .section-item .form-label {
+    display: block;
+    margin-bottom: 0.375rem;
+    font-weight: 500;
+    color: var(--admin-text, #333);
+}
+.course-create-page .section-item .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+}
+.course-create-page .section-item .row > [class*="col-"] {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+.course-create-page .section-item .form-control {
+    min-height: 38px;
+    padding: 0.5rem 0.75rem;
+    background-color: var(--admin-card-bg, #fff);
+    border: 1px solid var(--admin-border, #dee2e6);
+    color: var(--admin-text, #333);
+    width: 100%;
+}
+.course-create-page .section-item textarea.form-control {
+    min-height: 60px;
+    resize: vertical;
+}
+.course-create-page .section-item .section-title-ar,
+.course-create-page .section-item .section-description-ar {
+    direction: rtl;
+    text-align: right;
+}
+.course-create-page .section-item .d-flex.justify-content-between.align-items-center {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+.course-create-page .section-item .add-lecture,
+.course-create-page .section-item .remove-section {
+    white-space: nowrap;
+}
+@media (max-width: 767.98px) {
+    .course-create-page .section-item .row > .col-md-6 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+</style>
+@endpush
+
 @section('content')
     <!-- Define instructor functions BEFORE the dropdown HTML -->
     <script>
@@ -249,7 +309,7 @@
         });
     </script>
 
-    <div class="container-fluid py-4">
+    <div class="container-fluid py-4 course-create-page">
         <!-- Page Header -->
         <div class="row mb-4">
             <div class="col-12">
@@ -1050,15 +1110,16 @@
             } else {
                 console.log('Image upload elements found successfully');
                 
-                // Label element will handle click automatically, but we still need drag and drop
-                // Prevent label's default behavior if clicking on preview/remove
+                // Click: open file picker when clicking the drop zone (label default can fail when input is hidden)
                 imageUploadArea.addEventListener('click', function(e) {
-                    // Don't trigger if clicking on preview or remove button
                     if (e.target.closest('#imagePreview') || e.target.id === 'removeImage') {
                         e.preventDefault();
                         e.stopPropagation();
                         return false;
                     }
+                    e.preventDefault();
+                    e.stopPropagation();
+                    courseImage.click();
                 });
             }
 
