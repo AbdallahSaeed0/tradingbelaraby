@@ -2,6 +2,27 @@
 
 @section('title', 'Edit Course - ' . $course->name)
 
+@push('styles')
+<style>
+#courseImagePreview .course-preview-thumb {
+    max-height: 280px;
+    width: auto;
+    border-radius: 0.375rem;
+    background: var(--admin-dropdown-hover, #f8f9fa);
+}
+[data-theme="dark"] #courseImagePreview .course-preview-thumb {
+    background: var(--admin-dropdown-hover, #3d4153);
+}
+#courseImageUploadWrap.dragover {
+    border-color: var(--admin-active-text, #007bff);
+    background-color: var(--admin-dropdown-hover, #f8f9fa);
+}
+[data-theme="dark"] #courseImageUploadWrap.dragover {
+    background-color: var(--admin-dropdown-hover, #3d4153);
+}
+</style>
+@endpush
+
 @section('content')
     <!-- Define instructor functions BEFORE the dropdown HTML -->
     <script>
@@ -1196,22 +1217,26 @@
                         <div class="section-header">
                             <h5><i class="fa fa-image me-2"></i>Course Image</h5>
                         </div>
-                        <label for="courseImage" class="image-upload-area" id="imageUploadArea" style="display: block; cursor: pointer; user-select: none;">
-                            @if ($course->image_url)
-                                <img src="{{ $course->image_url }}" alt="Course Image"
-                                    class="img-fluid rounded mb-3 max-h-200">
-                            @else
+                        <div class="image-upload-area" id="courseImageUploadWrap" style="cursor: pointer; position: relative;" data-existing-url="{{ $course->image ? $course->image_url : '' }}" data-existing-name="{{ $course->image ? basename($course->image) : '' }}">
+                            <input type="file" id="courseImage" name="image" accept="image/jpeg,image/png,image/jpg,image/gif" style="position: absolute; opacity: 0; width: 100%; height: 100%; top: 0; left: 0; cursor: pointer;">
+                            <div id="courseImagePrompt" style="{{ $course->image ? 'display: none;' : 'display: block;' }}">
                                 <i class="fa fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
                                 <p class="text-muted mb-2">Drag and drop an image here or click to select</p>
-                                <p class="text-muted small">Recommended size: 800x600px</p>
-                            @endif
-                            <input type="file" class="d-none" id="courseImage" name="image" accept="image/*">
-                        </label>
-                        <div id="imagePreview" class="mt-3 d-none-initially">
-                            <img id="previewImg" class="img-fluid rounded max-h-200">
-                            <button type="button" class="btn btn-sm btn-outline-danger mt-2" id="removeImage">
-                                <i class="fa fa-trash me-1"></i>Remove
-                            </button>
+                                <p class="text-muted small">Recommended size: 800x600px. Max 2MB. JPEG, PNG, GIF.</p>
+                            </div>
+                            <div id="courseImageError" class="alert alert-danger py-2 mt-2" style="display: none;" role="alert"></div>
+                            <div id="courseImagePreview" class="course-image-preview-wrap" style="{{ $course->image ? 'display: block;' : 'display: none;' }}">
+                                <img id="coursePreviewImg" class="img-fluid rounded course-preview-thumb" src="{{ $course->image ? $course->image_url : '' }}" alt="Course image" style="max-height: 280px; width: auto;">
+                                <p id="courseImageFilename" class="text-muted small mt-2 mb-1">{{ $course->image ? basename($course->image) : '' }}</p>
+                                <div class="mt-2">
+                                    <button type="button" class="btn btn-sm btn-outline-primary me-2" id="changeCourseImage">
+                                        <i class="fa fa-sync me-1"></i>Change
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" id="removeCourseImage">
+                                        <i class="fa fa-trash me-1"></i>Remove
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -1507,111 +1532,119 @@
             priceInput.addEventListener('input', updateDiscountPreview);
             updateDiscountPreview(); // Initial check
 
-            // Image upload functionality
-            const imageUploadArea = document.getElementById('imageUploadArea');
-            const courseImage = document.getElementById('courseImage');
-            const imagePreview = document.getElementById('imagePreview');
-            const previewImg = document.getElementById('previewImg');
-            const removeImageBtn = document.getElementById('removeImage');
+            // Course image upload – same as Create: blob preview for new file, existing DB image on Edit
+            (function() {
+                const MAX_SIZE_BYTES = 2 * 1024 * 1024;
+                const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
 
-            if (!imageUploadArea || !courseImage) {
-                console.error('Image upload elements not found!', {
-                    imageUploadArea: !!imageUploadArea,
-                    courseImage: !!courseImage
-                });
-            } else {
-                console.log('Image upload elements found successfully');
-                
-                // Label element will handle click automatically, but we still need drag and drop
-                // Prevent label's default behavior if clicking on preview/remove
-                imageUploadArea.addEventListener('click', function(e) {
-                    // Don't trigger if clicking on preview or remove button
-                    if (e.target.closest('#imagePreview') || e.target.id === 'removeImage') {
+                const form = document.getElementById('courseForm');
+                if (!form) return;
+                const wrap = form.querySelector('#courseImageUploadWrap');
+                const input = form.querySelector('#courseImage');
+                const prompt = form.querySelector('#courseImagePrompt');
+                const preview = form.querySelector('#courseImagePreview');
+                const img = form.querySelector('#coursePreviewImg');
+                const filenameEl = form.querySelector('#courseImageFilename');
+                const errorEl = form.querySelector('#courseImageError');
+                const removeBtn = form.querySelector('#removeCourseImage');
+                const changeBtn = form.querySelector('#changeCourseImage');
+
+                const existingUrl = wrap ? (wrap.getAttribute('data-existing-url') || '') : '';
+                const existingName = wrap ? (wrap.getAttribute('data-existing-name') || '') : '';
+
+                let objectUrl = null;
+
+                function showError(msg) {
+                    if (errorEl) { errorEl.textContent = msg; errorEl.style.display = 'block'; }
+                }
+                function hideError() {
+                    if (errorEl) errorEl.style.display = 'none';
+                }
+                function validateFile(file) {
+                    if (!file) return 'No file selected.';
+                    if (!ALLOWED_TYPES.includes(file.type) && !file.type.startsWith('image/')) return 'Please select an image (JPEG, PNG, or GIF).';
+                    if (file.size > MAX_SIZE_BYTES) return 'Image must be 2MB or smaller.';
+                    return null;
+                }
+                function clearInput() {
+                    if (input) { const dt = new DataTransfer(); input.files = dt.files; }
+                }
+
+                function showPreview(file) {
+                    const err = validateFile(file);
+                    if (err) { showError(err); clearInput(); return; }
+                    hideError();
+                    if (objectUrl) URL.revokeObjectURL(objectUrl);
+                    objectUrl = URL.createObjectURL(file);
+                    if (img) { img.src = objectUrl; img.alt = file.name || 'Preview'; }
+                    if (filenameEl) filenameEl.textContent = file.name || '';
+                    if (prompt) prompt.style.display = 'none';
+                    if (preview) preview.style.display = 'block';
+                    if (input) input.style.pointerEvents = 'none';
+                }
+
+                function hidePreview() {
+                    if (objectUrl) { URL.revokeObjectURL(objectUrl); objectUrl = null; }
+                    clearInput();
+                    if (input) input.style.pointerEvents = 'auto';
+                    if (img) img.src = existingUrl || '';
+                    if (img) img.alt = existingName ? 'Course image' : 'Preview';
+                    if (filenameEl) filenameEl.textContent = existingName || '';
+                    if (existingUrl) {
+                        if (prompt) prompt.style.display = 'none';
+                        if (preview) preview.style.display = 'block';
+                    } else {
+                        if (prompt) prompt.style.display = 'block';
+                        if (preview) preview.style.display = 'none';
+                    }
+                    hideError();
+                }
+
+                if (input) {
+                    input.addEventListener('change', function() {
+                        if (this.files && this.files.length > 0) showPreview(this.files[0]);
+                    });
+                }
+                if (removeBtn) {
+                    removeBtn.addEventListener('click', function(e) {
                         e.preventDefault();
                         e.stopPropagation();
-                        return false;
-                    }
-                });
-            }
-
-            if (imageUploadArea) {
-                // Prevent default drag behavior on the label
-                imageUploadArea.addEventListener('dragenter', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    imageUploadArea.classList.add('dragover');
-                });
-
-                imageUploadArea.addEventListener('dragover', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    e.dataTransfer.dropEffect = 'copy';
-                    imageUploadArea.classList.add('dragover');
-                });
-
-                imageUploadArea.addEventListener('dragleave', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    // Only remove dragover if we're actually leaving the upload area
-                    if (!imageUploadArea.contains(e.relatedTarget)) {
-                        imageUploadArea.classList.remove('dragover');
-                    }
-                });
-
-                imageUploadArea.addEventListener('drop', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    imageUploadArea.classList.remove('dragover');
-                    
-                    const files = e.dataTransfer.files;
-                    console.log('Files dropped:', files.length);
-                    
-                    if (files.length > 0 && courseImage) {
-                        const file = files[0];
-                        // Validate it's an image
-                        if (file.type.startsWith('image/')) {
-                            // Create a new FileList using DataTransfer
-                            const dataTransfer = new DataTransfer();
-                            dataTransfer.items.add(file);
-                            courseImage.files = dataTransfer.files;
-                            // Trigger change event manually
-                            const changeEvent = new Event('change', { bubbles: true });
-                            courseImage.dispatchEvent(changeEvent);
-                            handleImagePreview(file);
-                        } else {
-                            alert('Please drop an image file');
+                        hidePreview();
+                    });
+                }
+                if (changeBtn && input) {
+                    changeBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        input.click();
+                    });
+                }
+                if (wrap) {
+                    wrap.addEventListener('dragover', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        e.dataTransfer.dropEffect = 'copy';
+                        this.classList.add('dragover');
+                    });
+                    wrap.addEventListener('dragleave', function(e) {
+                        e.preventDefault();
+                        if (!this.contains(e.relatedTarget)) this.classList.remove('dragover');
+                    });
+                    wrap.addEventListener('drop', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        this.classList.remove('dragover');
+                        const files = e.dataTransfer.files;
+                        if (files.length > 0) {
+                            const dt = new DataTransfer();
+                            dt.items.add(files[0]);
+                            if (input) input.files = dt.files;
+                            showPreview(files[0]);
                         }
-                    }
-                });
-            }
-
-            if (courseImage) {
-                courseImage.addEventListener('change', (e) => {
-                    const file = e.target.files[0];
-                    if (file) {
-                        handleImagePreview(file);
-                    }
-                });
-            }
-
-            function handleImagePreview(file) {
-                if (!previewImg || !imagePreview || !imageUploadArea) return;
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    previewImg.src = e.target.result;
-                    imagePreview.style.display = 'block';
-                    imageUploadArea.style.display = 'none';
-                };
-                reader.readAsDataURL(file);
-            }
-
-            if (removeImageBtn) {
-                removeImageBtn.addEventListener('click', function() {
-                    if (courseImage) courseImage.value = '';
-                    if (imagePreview) imagePreview.style.display = 'none';
-                    if (imageUploadArea) imageUploadArea.style.display = 'block';
-                });
-            }
+                    });
+                }
+                if (existingUrl && input) input.style.pointerEvents = 'none';
+            })();
 
             // Section management
             const addSectionBtn = document.getElementById('addSection');

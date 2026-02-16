@@ -749,7 +749,7 @@
                         <div class="section-header">
                             <h5><i class="fa fa-image me-2"></i>Course Image</h5>
                         </div>
-                        <div class="image-upload-area" id="courseImageUploadWrap" style="cursor: pointer; position: relative;">
+                        <div class="image-upload-area" id="courseImageUploadWrap" style="cursor: pointer; position: relative;" data-existing-url="" data-existing-name="">
                             <input type="file" id="courseImage" name="image" accept="image/jpeg,image/png,image/jpg,image/gif" style="position: absolute; opacity: 0; width: 100%; height: 100%; top: 0; left: 0; cursor: pointer;">
                             <div id="courseImagePrompt">
                                 <i class="fa fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
@@ -758,7 +758,7 @@
                             </div>
                             <div id="courseImageError" class="alert alert-danger py-2 mt-2" style="display: none;" role="alert"></div>
                             <div id="courseImagePreview" class="course-image-preview-wrap" style="display: none;">
-                                <img id="coursePreviewImg" class="img-fluid rounded course-preview-thumb" alt="">
+                                <img id="coursePreviewImg" class="img-fluid rounded course-preview-thumb" alt="" style="max-height: 280px; width: auto;">
                                 <p id="courseImageFilename" class="text-muted small mt-2 mb-1"></p>
                                 <div class="mt-2">
                                     <button type="button" class="btn btn-sm btn-outline-primary me-2" id="changeCourseImage">
@@ -1124,9 +1124,9 @@
             priceInput.addEventListener('input', updateDiscountPreview);
             updateDiscountPreview(); // Initial check
 
-            // Course image upload – preview module (scoped to this page)
+            // Course image upload – same logic as Edit: blob preview for new file, optional existing (DB) image
             (function() {
-                const MAX_SIZE_BYTES = 2 * 1024 * 1024; // 2MB, matches backend
+                const MAX_SIZE_BYTES = 2 * 1024 * 1024;
                 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
 
                 const form = document.getElementById('courseForm');
@@ -1141,51 +1141,34 @@
                 const removeBtn = form.querySelector('#removeCourseImage');
                 const changeBtn = form.querySelector('#changeCourseImage');
 
+                const existingUrl = wrap ? (wrap.getAttribute('data-existing-url') || '') : '';
+                const existingName = wrap ? (wrap.getAttribute('data-existing-name') || '') : '';
+
                 let objectUrl = null;
 
                 function showError(msg) {
-                    if (errorEl) {
-                        errorEl.textContent = msg;
-                        errorEl.style.display = 'block';
-                    }
+                    if (errorEl) { errorEl.textContent = msg; errorEl.style.display = 'block'; }
                 }
-
                 function hideError() {
                     if (errorEl) errorEl.style.display = 'none';
                 }
-
                 function validateFile(file) {
                     if (!file) return 'No file selected.';
-                    if (!ALLOWED_TYPES.includes(file.type) && !file.type.startsWith('image/')) {
-                        return 'Please select an image (JPEG, PNG, or GIF).';
-                    }
-                    if (file.size > MAX_SIZE_BYTES) {
-                        return 'Image must be 2MB or smaller.';
-                    }
+                    if (!ALLOWED_TYPES.includes(file.type) && !file.type.startsWith('image/')) return 'Please select an image (JPEG, PNG, or GIF).';
+                    if (file.size > MAX_SIZE_BYTES) return 'Image must be 2MB or smaller.';
                     return null;
                 }
-
                 function clearInput() {
-                    if (input) {
-                        const dt = new DataTransfer();
-                        input.files = dt.files;
-                    }
+                    if (input) { const dt = new DataTransfer(); input.files = dt.files; }
                 }
 
                 function showPreview(file) {
                     const err = validateFile(file);
-                    if (err) {
-                        showError(err);
-                        clearInput();
-                        return;
-                    }
+                    if (err) { showError(err); clearInput(); return; }
                     hideError();
                     if (objectUrl) URL.revokeObjectURL(objectUrl);
                     objectUrl = URL.createObjectURL(file);
-                    if (img) {
-                        img.src = objectUrl;
-                        img.alt = file.name || 'Preview';
-                    }
+                    if (img) { img.src = objectUrl; img.alt = file.name || 'Preview'; }
                     if (filenameEl) filenameEl.textContent = file.name || '';
                     if (prompt) prompt.style.display = 'none';
                     if (preview) preview.style.display = 'block';
@@ -1193,16 +1176,19 @@
                 }
 
                 function hidePreview() {
-                    if (objectUrl) {
-                        URL.revokeObjectURL(objectUrl);
-                        objectUrl = null;
-                    }
+                    if (objectUrl) { URL.revokeObjectURL(objectUrl); objectUrl = null; }
                     clearInput();
                     if (input) input.style.pointerEvents = 'auto';
-                    if (img) img.removeAttribute('src');
-                    if (filenameEl) filenameEl.textContent = '';
-                    if (prompt) prompt.style.display = 'block';
-                    if (preview) preview.style.display = 'none';
+                    if (img) img.src = existingUrl || '';
+                    if (img) img.alt = existingName ? 'Course image' : 'Preview';
+                    if (filenameEl) filenameEl.textContent = existingName || '';
+                    if (existingUrl) {
+                        if (prompt) prompt.style.display = 'none';
+                        if (preview) preview.style.display = 'block';
+                    } else {
+                        if (prompt) prompt.style.display = 'block';
+                        if (preview) preview.style.display = 'none';
+                    }
                     hideError();
                 }
 
@@ -1211,7 +1197,6 @@
                         if (this.files && this.files.length > 0) showPreview(this.files[0]);
                     });
                 }
-
                 if (removeBtn) {
                     removeBtn.addEventListener('click', function(e) {
                         e.preventDefault();
@@ -1219,7 +1204,6 @@
                         hidePreview();
                     });
                 }
-
                 if (changeBtn && input) {
                     changeBtn.addEventListener('click', function(e) {
                         e.preventDefault();
@@ -1227,7 +1211,6 @@
                         input.click();
                     });
                 }
-
                 if (wrap) {
                     wrap.addEventListener('dragover', function(e) {
                         e.preventDefault();
@@ -1252,6 +1235,7 @@
                         }
                     });
                 }
+                if (existingUrl && input) input.style.pointerEvents = 'none';
             })();
 
             // Section management
