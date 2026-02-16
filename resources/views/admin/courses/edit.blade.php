@@ -2151,26 +2151,27 @@
 
             // Free Course functionality
             const freeCheckbox = document.getElementById('is_free');
-            const priceInput = document.getElementById('price');
+            const priceField = document.getElementById('price');
 
             function togglePriceInput() {
-                if (freeCheckbox.checked) {
-                    priceInput.value = '0';
-                    priceInput.readOnly = true;
-                    priceInput.style.backgroundColor = '#e9ecef';
-                    priceInput.style.cursor = 'not-allowed';
-                } else {
-                    priceInput.readOnly = false;
-                    priceInput.style.backgroundColor = '';
-                    priceInput.style.cursor = '';
+                if (freeCheckbox && priceField) {
+                    if (freeCheckbox.checked) {
+                        priceField.value = '0';
+                        priceField.readOnly = true;
+                        priceField.style.backgroundColor = '#e9ecef';
+                        priceField.style.cursor = 'not-allowed';
+                    } else {
+                        priceField.readOnly = false;
+                        priceField.style.backgroundColor = '';
+                        priceField.style.cursor = '';
+                    }
                 }
             }
 
-            // Initialize on page load
-            togglePriceInput();
-
-            // Add event listener for checkbox change
-            freeCheckbox.addEventListener('change', togglePriceInput);
+            if (freeCheckbox) {
+                togglePriceInput();
+                freeCheckbox.addEventListener('change', togglePriceInput);
+            }
         });
     </script>
 @endpush

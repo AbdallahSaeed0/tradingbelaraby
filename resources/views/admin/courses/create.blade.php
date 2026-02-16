@@ -1459,26 +1459,27 @@
 
             // Free Course functionality
             const isFreeCheckbox = document.getElementById('is_free');
-            const priceInput = document.getElementById('price');
+            const priceField = document.getElementById('price');
 
             function togglePriceInput() {
-                if (isFreeCheckbox.checked) {
-                    priceInput.value = '0';
-                    priceInput.readOnly = true;
-                    priceInput.style.backgroundColor = '#e9ecef';
-                    priceInput.style.cursor = 'not-allowed';
-                } else {
-                    priceInput.readOnly = false;
-                    priceInput.style.backgroundColor = '';
-                    priceInput.style.cursor = '';
+                if (isFreeCheckbox && priceField) {
+                    if (isFreeCheckbox.checked) {
+                        priceField.value = '0';
+                        priceField.readOnly = true;
+                        priceField.style.backgroundColor = '#e9ecef';
+                        priceField.style.cursor = 'not-allowed';
+                    } else {
+                        priceField.readOnly = false;
+                        priceField.style.backgroundColor = '';
+                        priceField.style.cursor = '';
+                    }
                 }
             }
 
-            // Initialize on page load
-            togglePriceInput();
-
-            // Add event listener for checkbox change
-            isFreeCheckbox.addEventListener('change', togglePriceInput);
+            if (isFreeCheckbox) {
+                togglePriceInput();
+                isFreeCheckbox.addEventListener('change', togglePriceInput);
+            }
 
             // Learning Objectives management
             let learningObjectiveCounter = 0;
