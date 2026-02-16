@@ -735,8 +735,8 @@
                             <p class="text-muted small">Recommended size: 800x600px</p>
                             <input type="file" class="d-none" id="courseImage" name="image" accept="image/*">
                         </label>
-                        <div id="imagePreview" class="mt-3 d-none-initially">
-                            <img id="previewImg" class="img-fluid rounded max-h-200">
+                        <div id="imagePreview" class="mt-3 d-none-initially" style="min-height: 120px;">
+                            <img id="previewImg" class="img-fluid rounded" style="max-height: 280px; width: auto; display: block;">
                             <button type="button" class="btn btn-sm btn-outline-danger mt-2" id="removeImage">
                                 <i class="fa fa-trash me-1"></i>Remove
                             </button>
@@ -1174,33 +1174,50 @@
                 });
             }
 
+            let currentPreviewObjectUrl = null;
+
+            function handleImagePreview(file) {
+                if (!file || !previewImg || !imagePreview || !imageUploadArea) return;
+                if (currentPreviewObjectUrl) {
+                    URL.revokeObjectURL(currentPreviewObjectUrl);
+                    currentPreviewObjectUrl = null;
+                }
+                currentPreviewObjectUrl = URL.createObjectURL(file);
+                previewImg.src = currentPreviewObjectUrl;
+                previewImg.alt = file.name || 'Course image preview';
+                imagePreview.classList.remove('d-none-initially');
+                imagePreview.style.setProperty('display', 'block', 'important');
+                imageUploadArea.style.setProperty('display', 'none', 'important');
+            }
+
             if (courseImage) {
                 courseImage.addEventListener('change', (e) => {
-                    if (e.target.files.length > 0) {
+                    if (e.target.files && e.target.files.length > 0) {
+                        handleImagePreview(e.target.files[0]);
+                    }
+                });
+                courseImage.addEventListener('input', (e) => {
+                    if (e.target.files && e.target.files.length > 0) {
                         handleImagePreview(e.target.files[0]);
                     }
                 });
             }
 
             if (removeImageBtn) {
-                removeImageBtn.addEventListener('click', () => {
+                removeImageBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (currentPreviewObjectUrl) {
+                        URL.revokeObjectURL(currentPreviewObjectUrl);
+                        currentPreviewObjectUrl = null;
+                    }
                     if (courseImage) courseImage.value = '';
-                    if (imagePreview) imagePreview.style.display = 'none';
+                    previewImg.removeAttribute('src');
+                    if (imagePreview) {
+                        imagePreview.style.display = 'none';
+                        imagePreview.classList.add('d-none-initially');
+                    }
                     if (imageUploadArea) imageUploadArea.style.display = 'block';
                 });
-            }
-
-            function handleImagePreview(file) {
-                if (!file || !previewImg || !imagePreview || !imageUploadArea) return;
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    previewImg.src = e.target.result;
-                    imagePreview.classList.remove('d-none-initially');
-                    imagePreview.style.setProperty('display', 'block', 'important');
-                    imageUploadArea.style.display = 'none';
-                };
-                reader.onerror = () => { console.error('FileReader error'); };
-                reader.readAsDataURL(file);
             }
 
             // Section management
