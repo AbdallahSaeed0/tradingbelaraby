@@ -1191,12 +1191,15 @@
             }
 
             function handleImagePreview(file) {
+                if (!file || !previewImg || !imagePreview || !imageUploadArea) return;
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     previewImg.src = e.target.result;
-                    imagePreview.style.display = 'block';
+                    imagePreview.classList.remove('d-none-initially');
+                    imagePreview.style.setProperty('display', 'block', 'important');
                     imageUploadArea.style.display = 'none';
                 };
+                reader.onerror = () => { console.error('FileReader error'); };
                 reader.readAsDataURL(file);
             }
 
@@ -1555,6 +1558,12 @@
 
                 // Create FormData to handle file uploads
                 const formData = new FormData(this);
+
+                // Ensure course image is included (some browsers omit file inputs with display:none)
+                const courseImageInput = document.getElementById('courseImage');
+                if (courseImageInput && courseImageInput.files && courseImageInput.files.length > 0) {
+                    formData.set('image', courseImageInput.files[0]);
+                }
 
                 // Log form data for debugging
                 console.log('Form data entries:');
