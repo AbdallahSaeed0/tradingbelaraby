@@ -729,18 +729,23 @@
                         <div class="section-header">
                             <h5><i class="fa fa-image me-2"></i>Course Image</h5>
                         </div>
-                        <div id="courseImageUploadWrap">
-                            <label for="courseImage" class="image-upload-area" id="imageUploadArea" style="display: block; cursor: pointer; user-select: none;">
+                        <div class="image-upload-area" id="courseImageUploadWrap" style="cursor: pointer; position: relative;">
+                            <input type="file" id="courseImage" name="image" accept="image/*" style="position: absolute; opacity: 0; width: 100%; height: 100%; top: 0; left: 0; cursor: pointer;">
+                            <div id="courseImagePrompt">
                                 <i class="fa fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
                                 <p class="text-muted mb-2">Drag and drop an image here or click to select</p>
                                 <p class="text-muted small">Recommended size: 800x600px</p>
-                                <input type="file" class="d-none" id="courseImage" name="image" accept="image/*">
-                            </label>
-                            <div id="courseImagePreview" class="mt-3 d-none-initially" style="min-height: 120px; display: none !important;">
-                                <img id="coursePreviewImg" class="img-fluid rounded" style="max-height: 280px; width: auto; display: block;" alt="">
-                                <button type="button" class="btn btn-sm btn-outline-danger mt-2" id="removeCourseImage">
-                                    <i class="fa fa-trash me-1"></i>Remove
-                                </button>
+                            </div>
+                            <div id="courseImagePreview" style="display: none;">
+                                <img id="coursePreviewImg" class="img-fluid rounded" style="max-height: 280px; width: auto;" alt="">
+                                <div class="mt-2">
+                                    <button type="button" class="btn btn-sm btn-outline-primary me-2" id="changeCourseImage">
+                                        <i class="fa fa-sync me-1"></i>Change
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" id="removeCourseImage">
+                                        <i class="fa fa-trash me-1"></i>Remove
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1097,114 +1102,89 @@
             priceInput.addEventListener('input', updateDiscountPreview);
             updateDiscountPreview(); // Initial check
 
-            // Image upload functionality - scoped to course form to avoid wrong elements
+            // Course image upload - file input overlays the dashed box (click = native picker), we swap prompt/preview
             const courseForm = document.getElementById('courseForm');
-            const imageUploadArea = courseForm ? courseForm.querySelector('#imageUploadArea') : null;
+            const uploadWrap = courseForm ? courseForm.querySelector('#courseImageUploadWrap') : null;
             const courseImage = courseForm ? courseForm.querySelector('#courseImage') : null;
-            const imagePreview = courseForm ? courseForm.querySelector('#courseImagePreview') : null;
+            const promptDiv = courseForm ? courseForm.querySelector('#courseImagePrompt') : null;
+            const previewDiv = courseForm ? courseForm.querySelector('#courseImagePreview') : null;
             const previewImg = courseForm ? courseForm.querySelector('#coursePreviewImg') : null;
-            const removeImageBtn = courseForm ? courseForm.querySelector('#removeCourseImage') : null;
+            const removeBtn = courseForm ? courseForm.querySelector('#removeCourseImage') : null;
 
             let currentPreviewObjectUrl = null;
 
-            function handleImagePreview(file) {
-                if (!file || !previewImg || !imagePreview || !imageUploadArea) return;
+            function showPreview(file) {
+                if (!file || !previewImg || !previewDiv || !promptDiv) return;
+                if (currentPreviewObjectUrl) URL.revokeObjectURL(currentPreviewObjectUrl);
+                currentPreviewObjectUrl = URL.createObjectURL(file);
+                previewImg.src = currentPreviewObjectUrl;
+                previewImg.alt = file.name || 'Preview';
+                promptDiv.style.display = 'none';
+                previewDiv.style.display = 'block';
+                if (courseImage) courseImage.style.pointerEvents = 'none';
+            }
+
+            function hidePreview() {
                 if (currentPreviewObjectUrl) {
                     URL.revokeObjectURL(currentPreviewObjectUrl);
                     currentPreviewObjectUrl = null;
                 }
-                currentPreviewObjectUrl = URL.createObjectURL(file);
-                previewImg.src = currentPreviewObjectUrl;
-                previewImg.alt = file.name || 'Course image preview';
-                imagePreview.classList.remove('d-none-initially');
-                imagePreview.style.setProperty('display', 'block', 'important');
-                imageUploadArea.style.setProperty('display', 'none', 'important');
+                if (courseImage) {
+                    courseImage.value = '';
+                    courseImage.style.pointerEvents = 'auto';
+                }
+                if (previewImg) previewImg.removeAttribute('src');
+                if (promptDiv) promptDiv.style.display = 'block';
+                if (previewDiv) previewDiv.style.display = 'none';
             }
 
-            if (!imageUploadArea || !courseImage) {
-                console.error('Course image upload elements not found');
-            } else {
-                // Click: open file picker when clicking the drop zone
-                imageUploadArea.addEventListener('click', function(e) {
-                    if (e.target.closest('#courseImagePreview') || e.target.id === 'removeCourseImage') {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        return false;
-                    }
+            if (courseImage) {
+                courseImage.addEventListener('change', function() {
+                    if (this.files && this.files.length > 0) showPreview(this.files[0]);
+                });
+            }
+
+            if (removeBtn) {
+                removeBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    hidePreview();
+                });
+            }
+
+            const changeBtn = courseForm ? courseForm.querySelector('#changeCourseImage') : null;
+            if (changeBtn && courseImage) {
+                changeBtn.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
                     courseImage.click();
                 });
+            }
 
-                imageUploadArea.addEventListener('dragenter', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    imageUploadArea.classList.add('dragover');
-                });
-
-                imageUploadArea.addEventListener('dragover', function(e) {
+            if (uploadWrap) {
+                uploadWrap.addEventListener('dragover', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
                     e.dataTransfer.dropEffect = 'copy';
-                    imageUploadArea.classList.add('dragover');
+                    this.classList.add('dragover');
                 });
-
-                imageUploadArea.addEventListener('dragleave', function(e) {
+                uploadWrap.addEventListener('dragleave', function(e) {
+                    e.preventDefault();
+                    if (!this.contains(e.relatedTarget)) this.classList.remove('dragover');
+                });
+                uploadWrap.addEventListener('drop', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    if (!imageUploadArea.contains(e.relatedTarget)) {
-                        imageUploadArea.classList.remove('dragover');
-                    }
-                });
-
-                imageUploadArea.addEventListener('drop', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    imageUploadArea.classList.remove('dragover');
+                    this.classList.remove('dragover');
                     const files = e.dataTransfer.files;
-                    if (files.length > 0 && courseImage) {
-                        const file = files[0];
-                        if (file.type.startsWith('image/')) {
-                            const dataTransfer = new DataTransfer();
-                            dataTransfer.items.add(file);
-                            courseImage.files = dataTransfer.files;
-                            courseImage.dispatchEvent(new Event('change', { bubbles: true }));
-                            handleImagePreview(file);
-                        } else {
-                            alert('Please drop an image file');
-                        }
+                    if (files.length > 0 && files[0].type.startsWith('image/')) {
+                        const dt = new DataTransfer();
+                        dt.items.add(files[0]);
+                        courseImage.files = dt.files;
+                        showPreview(files[0]);
+                    } else {
+                        alert('Please drop an image file');
                     }
-                });
-            }
-
-            if (courseImage) {
-                courseImage.addEventListener('change', function(e) {
-                    if (e.target.files && e.target.files.length > 0) {
-                        handleImagePreview(e.target.files[0]);
-                    }
-                });
-                courseImage.addEventListener('input', function(e) {
-                    if (e.target.files && e.target.files.length > 0) {
-                        handleImagePreview(e.target.files[0]);
-                    }
-                });
-            }
-
-            if (removeImageBtn) {
-                removeImageBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if (currentPreviewObjectUrl) {
-                        URL.revokeObjectURL(currentPreviewObjectUrl);
-                        currentPreviewObjectUrl = null;
-                    }
-                    if (courseImage) courseImage.value = '';
-                    if (previewImg) previewImg.removeAttribute('src');
-                    if (imagePreview) {
-                        imagePreview.style.setProperty('display', 'none', 'important');
-                        imagePreview.classList.add('d-none-initially');
-                    }
-                    if (imageUploadArea) imageUploadArea.style.setProperty('display', 'block', 'important');
                 });
             }
 
