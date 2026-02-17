@@ -918,7 +918,7 @@ footer {
 .hero-slide-bg {
     position: relative;
     background-size: cover !important;
-    background-position: center !important;
+    background-position: center center !important;
     background-repeat: no-repeat !important;
     width: 100%;
     min-height: 700px;
@@ -930,7 +930,7 @@ footer {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.5) 100%);
     z-index: 1;
 }
 
@@ -955,38 +955,50 @@ footer {
     max-width: 480px;
 }
 
-/* Hero Swiper Navigation */
+/* Hero Swiper Navigation - consistent size, inset from edge, high contrast, proper hit area */
 .hero-swiper-button-next,
 .hero-swiper-button-prev {
-    color: #fff;
-    background: #f15a29 !important;
-    width: 50px;
-    height: 50px;
+    color: #fff !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px;
+    min-height: 48px;
     border-radius: 50%;
-    transition: all 0.3s ease;
+    transition: all 0.25s ease;
     z-index: 10;
-    position: absolute;
-    top: 50%;
+    position: absolute !important;
+    top: 50% !important;
     transform: translateY(-50%);
     cursor: pointer;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
 }
 
 .hero-swiper-button-next {
-    right: 0;
+    right: 16px !important;
+    left: auto !important;
 }
 
 .hero-swiper-button-prev {
-    left: 0;
+    left: 16px !important;
+    right: auto !important;
 }
 
 .hero-swiper-button-next:hover,
 .hero-swiper-button-prev:hover {
-    background: #d94e1f !important;
+    background: rgba(241, 90, 41, 0.95) !important;
+    border-color: #fff;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 .hero-swiper-button-next::after,
 .hero-swiper-button-prev::after {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
 }
 
@@ -1006,16 +1018,34 @@ footer {
     background: #f15a29;
 }
 
-/* Responsive Hero Slider Styles */
+/* Responsive Hero Slider Styles - consistent height, arrows visible and tappable */
 @media (max-width: 768px) {
     .hero-swiper,
     .hero-slide,
     .hero-slide-bg {
-        min-height: 400px;
+        min-height: 420px;
     }
 
     .hero-colored {
-        min-height: 400px;
+        min-height: 420px;
+    }
+
+    .hero-swiper-button-next,
+    .hero-swiper-button-prev {
+        width: 44px !important;
+        height: 44px !important;
+        min-width: 44px;
+        min-height: 44px;
+        right: 12px !important;
+        left: auto !important;
+    }
+    .hero-swiper-button-prev {
+        left: 12px !important;
+        right: auto !important;
+    }
+    .hero-swiper-button-next::after,
+    .hero-swiper-button-prev::after {
+        font-size: 16px;
     }
 }
 
@@ -1023,11 +1053,25 @@ footer {
     .hero-swiper,
     .hero-slide,
     .hero-slide-bg {
-        min-height: 350px;
+        min-height: 380px;
     }
 
     .hero-colored {
-        min-height: 350px;
+        min-height: 380px;
+    }
+
+    .hero-swiper-button-next,
+    .hero-swiper-button-prev {
+        width: 42px !important;
+        height: 42px !important;
+        min-width: 42px;
+        min-height: 42px;
+        right: 10px !important;
+        left: auto !important;
+    }
+    .hero-swiper-button-prev {
+        left: 10px !important;
+        right: auto !important;
     }
 }
 .hero-flex {
@@ -1388,9 +1432,7 @@ footer {
     bottom: 16px;
     right: 16px;
 }
-/* Unified Swiper Navigation Buttons - Hero Style for All Sliders */
-.hero-swiper-button-next,
-.hero-swiper-button-prev,
+/* Unified Swiper Navigation Buttons - other sliders (hero has its own block above) */
 .courses-section .swiper-button-next,
 .courses-section .swiper-button-prev,
 .courses-by-category-section .swiper-button-next,
@@ -1438,7 +1480,7 @@ footer {
     justify-content: center;
 }
 
-.hero-swiper-button-next,
+/* Hero arrows use inset from courses-listing (see Hero Swiper Navigation above); others at edge */
 .courses-section .swiper-button-next,
 .courses-by-category-section .swiper-button-next,
 .swiper-button-next-bundles,
@@ -1458,7 +1500,6 @@ footer {
     left: auto !important;
 }
 
-.hero-swiper-button-prev,
 .courses-section .swiper-button-prev,
 .courses-by-category-section .swiper-button-prev,
 .swiper-button-prev-bundles,
@@ -1478,8 +1519,6 @@ footer {
     right: auto !important;
 }
 
-.hero-swiper-button-next:hover,
-.hero-swiper-button-prev:hover,
 .courses-section .swiper-button-next:hover,
 .courses-section .swiper-button-prev:hover,
 .courses-by-category-section .swiper-button-next:hover,
@@ -1513,8 +1552,6 @@ footer {
     background: #d94e1f !important;
 }
 
-.hero-swiper-button-next::after,
-.hero-swiper-button-prev::after,
 .courses-section .swiper-button-next::after,
 .courses-section .swiper-button-prev::after,
 .courses-by-category-section .swiper-button-next::after,

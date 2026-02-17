@@ -5,10 +5,12 @@
 
     @push('styles')
         <link rel="stylesheet" href="{{ asset('css/pages/course-detail.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/rtl/components/home-courses-slider.css') }}">
     @endpush
 
     @push('rtl-styles')
         <link rel="stylesheet" href="{{ asset('css/rtl/pages/course-detail.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/rtl/components/home-courses-slider.css') }}">
     @endpush
 
 @section('content')
@@ -598,93 +600,31 @@
         </div>
     </div>
 
-    <!-- Related Courses Slider Section -->
+    <!-- Related Courses Slider Section - same style as home sliders -->
     @if ($relatedCourses && $relatedCourses->count() > 0)
-        <section class="related-courses-section position-relative py-5 bg-light">
-            <div class="container position-relative z-2">
-                <!-- Slider controls -->
-                <div class="d-flex justify-content-between mb-4">
-                    <div class="mb-4">
-                        <span class="text-warning fw-bold mb-2 d-block fs-11">
-                            <i class="fas fa-star"></i> {{ custom_trans('Related Courses', 'front') }}
+        <section class="home-courses-slider home-courses-slider--white related-courses-section py-5" id="relatedCoursesSection" data-home-courses-slider>
+            <div class="home-courses-slider__container">
+                <header class="home-courses-slider__header">
+                    <div class="home-courses-slider__title-row">
+                        <span class="home-courses-slider__label">
+                            <i class="fas fa-star" aria-hidden="true"></i> {{ custom_trans('Related Courses', 'front') }}
                         </span>
-                        <h2 class="fw-bold mb-3 fs-25">{{ custom_trans('Related Courses', 'front') }}</h2>
+                        <h2 class="home-courses-slider__title">{{ custom_trans('Related Courses', 'front') }}</h2>
                     </div>
-                    @php
-                        $direction = \App\Helpers\TranslationHelper::getFrontendLanguage()->direction ?? 'ltr';
-                    @endphp
-                </div>
-                <!-- Swiper -->
-                <div class="swiper relatedCoursesSwiper">
-                    <!-- Navigation buttons -->
-                    <div class="swiper-button-prev related-courses-swiper-button-prev"></div>
-                    <div class="swiper-button-next related-courses-swiper-button-next"></div>
-                    <div class="swiper-wrapper">
-                        @foreach ($relatedCourses as $relatedCourse)
-                            <div class="swiper-slide">
-                                <div class="course-card-custom">
-                                    <div class="course-img-wrap">
-                                        <img src="{{ $relatedCourse->image_url }}" class="course-img"
-                                            alt="{{ $relatedCourse->localized_name }}">
-
-                                        @if ($relatedCourse->is_featured)
-                                            <span
-                                                class="badge badge-green">{{ custom_trans('Featured', 'front') }}</span>
-                                        @endif
-
-                                        @if ($relatedCourse->is_discounted)
-                                            <span class="price-badge">
-                                                <span class="discounted">{{ $relatedCourse->formatted_price }}</span>
-                                                <span
-                                                    class="original">{{ $relatedCourse->formatted_original_price }}</span>
-                                            </span>
-                                        @else
-                                            <span class="price-badge">
-                                                <span class="discounted">{{ $relatedCourse->formatted_price }}</span>
-                                            </span>
-                                        @endif
-
-                                        @if ($relatedCourse->instructor)
-                                            <img src="{{ $relatedCourse->instructor->avatar ?? 'https://randomuser.me/api/portraits/men/32.jpg' }}"
-                                                class="author-avatar" alt="{{ $relatedCourse->instructor->name }}">
-                                        @endif
-
-                                        <div class="course-hover-icons">
-                                            @auth
-                                                <button class="icon-btn wishlist-btn"
-                                                    data-course-id="{{ $relatedCourse->id }}">
-                                                    <i
-                                                        class="fas fa-heart {{ auth()->user()->hasInWishlist($relatedCourse) ? 'text-danger' : '' }}"></i>
-                                                </button>
-                                            @else
-                                                <button class="icon-btn"
-                                                    onclick="window.location.href='{{ route('login', 'front') }}'">
-                                                    <i class="fas fa-heart"></i>
-                                                </button>
-                                            @endauth
-                                            <button class="icon-btn">
-                                                <i class="fa-regular fa-bell"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="course-card-body">
-                                        <h5 class="course-title">
-                                            <a href="{{ route('courses.show', $relatedCourse) }}"
-                                                class="text-decoration-none text-dark">
-                                                {{ $relatedCourse->localized_name }}
-                                            </a>
-                                        </h5>
-                                        <p class="course-desc">
-                                            {{ Str::limit($relatedCourse->localized_description, 80) }}</p>
-                                        <a href="{{ route('courses.show', $relatedCourse) }}"
-                                            class="read-more">{{ custom_trans('Read More', 'front') }}
-                                            &rarr;</a>
-                                        <img src="https://eclass.mediacity.co.in/demo2/public/frontcss/img/icon/cou-icon.png"
-                                            class="book-icon" alt="book">
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
+                </header>
+                <div class="home-courses-slider__slider-wrap">
+                    <button type="button" class="home-courses-slider__arrow home-courses-slider__arrow--prev" aria-label="{{ custom_trans('Previous', 'front') }}" data-home-courses-prev>
+                        <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="home-courses-slider__arrow home-courses-slider__arrow--next" aria-label="{{ custom_trans('Next', 'front') }}" data-home-courses-next>
+                        <i class="fas fa-chevron-left" aria-hidden="true"></i>
+                    </button>
+                    <div class="home-courses-slider__track" data-home-courses-track role="region" aria-label="{{ custom_trans('Related Courses', 'front') }}">
+                        <div class="home-courses-slider__list">
+                            @foreach ($relatedCourses as $relatedCourse)
+                                @include('partials.home.course-card', ['course' => $relatedCourse])
+                            @endforeach
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1154,36 +1094,34 @@
                 }
             });
 
-            // Initialize Related Courses Swiper
-            @if ($relatedCourses && $relatedCourses->count() > 0)
-                const relatedCoursesSwiper = new Swiper('.relatedCoursesSwiper', {
-                    slidesPerView: 1,
-                    spaceBetween: 20,
-                    loop: {{ $relatedCourses->count() > 3 ? 'true' : 'false' }},
-                    autoplay: {
-                        delay: 3000,
-                        disableOnInteraction: false,
-                    },
-                    breakpoints: {
-                        640: {
-                            slidesPerView: 2,
-                            spaceBetween: 20,
-                        },
-                        768: {
-                            slidesPerView: 3,
-                            spaceBetween: 25,
-                        },
-                        1024: {
-                            slidesPerView: 4,
-                            spaceBetween: 30,
-                        },
-                    },
-                    navigation: {
-                        nextEl: '.related-courses-swiper-button-next',
-                        prevEl: '.related-courses-swiper-button-prev',
-                    },
+            // Related Courses: vanilla slider (same as home)
+            (function() {
+                var isRtl = document.documentElement.getAttribute('dir') === 'rtl';
+                document.querySelectorAll('[data-home-courses-slider]').forEach(function(wrap) {
+                    var track = wrap.querySelector('[data-home-courses-track]');
+                    var prevBtn = wrap.querySelector('[data-home-courses-prev]');
+                    var nextBtn = wrap.querySelector('[data-home-courses-next]');
+                    if (!track || !prevBtn || !nextBtn) return;
+                    var cardWidth = 0;
+                    function getScrollAmount() {
+                        if (!cardWidth && track.firstElementChild && track.firstElementChild.firstElementChild) {
+                            var card = track.firstElementChild.firstElementChild;
+                            var style = window.getComputedStyle(track.firstElementChild);
+                            var gap = parseFloat(style.gap) || 0;
+                            cardWidth = card.offsetWidth + gap;
+                        }
+                        return cardWidth || 280;
+                    }
+                    function scrollPrev() {
+                        track.scrollBy({ left: isRtl ? getScrollAmount() : -getScrollAmount(), behavior: 'smooth' });
+                    }
+                    function scrollNext() {
+                        track.scrollBy({ left: isRtl ? -getScrollAmount() : getScrollAmount(), behavior: 'smooth' });
+                    }
+                    prevBtn.addEventListener('click', scrollPrev);
+                    nextBtn.addEventListener('click', scrollNext);
                 });
-            @endif
+            })();
         });
     </script>
 @endpush

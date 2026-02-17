@@ -48,3 +48,28 @@
     display: none;
     border: 2px solid #ff7043;
 }
+
+/* Custom scrollbar - theme colors (same as LTR) */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #125875 #e9ecef;
+}
+*::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+*::-webkit-scrollbar-track {
+    background: #e9ecef;
+    border-radius: 5px;
+}
+*::-webkit-scrollbar-thumb {
+    background: #125875;
+    border-radius: 5px;
+    border: 2px solid #e9ecef;
+}
+*::-webkit-scrollbar-thumb:hover {
+    background: #0d4359;
+}
+*::-webkit-scrollbar-corner {
+    background: #e9ecef;
+}

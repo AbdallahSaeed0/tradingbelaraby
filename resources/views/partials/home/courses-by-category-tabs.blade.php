@@ -34,101 +34,47 @@
             <!-- Tab Content -->
             <div class="tab-content" id="categoryTabsContent">
                 @foreach ($allCategories->take(6) as $index => $category)
+                    @php
+                        $categoryCourses = \App\Models\Course::where('category_id', $category->id)
+                            ->published()
+                            ->with(['category', 'instructor', 'instructors', 'ratings'])
+                            ->withCount(['enrollments', 'ratings'])
+                            ->orderBy('created_at', 'desc')
+                            ->limit(8)
+                            ->get();
+                    @endphp
                     <div class="tab-pane fade {{ $index === 0 ? 'show active' : '' }}"
                         id="category-{{ $category->id }}" role="tabpanel"
                         aria-labelledby="category-{{ $category->id }}-tab">
 
-                        @php
-                            $categoryCourses = \App\Models\Course::where('category_id', $category->id)
-                                ->published()
-                                ->with(['category', 'instructor', 'instructors', 'ratings'])
-                                ->withCount(['enrollments', 'ratings'])
-                                ->orderBy('created_at', 'desc')
-                                ->limit(4)
-                                ->get();
-                        @endphp
-
                         @if ($categoryCourses->count() > 0)
-                            @php
-                                $direction = \App\Helpers\TranslationHelper::getFrontendLanguage()->direction ?? 'ltr';
-                            @endphp
-                            <!-- Swiper for this category -->
-                            <div class="swiper categorySwiper-{{ $category->id }}">
-                                <!-- Navigation buttons for category slider -->
-                                <div class="swiper-button-prev swiper-button-prev-category-{{ $category->id }}"></div>
-                                <div class="swiper-button-next swiper-button-next-category-{{ $category->id }}"></div>
-                                <div class="swiper-wrapper">
-                                    @foreach ($categoryCourses as $course)
-                                        <div class="swiper-slide">
-                                            <div class="course-card-custom">
-                                                <div class="course-img-wrap">
-                                                    <a href="{{ route('courses.show', $course) }}" class="d-block text-decoration-none">
-                                                        <img src="{{ $course->image_url }}" class="course-img"
-                                                            alt="{{ $course->localized_name }}">
-                                                    </a>
-
-                                                    @if ($course->is_featured)
-                                                        <span
-                                                            class="badge badge-green">{{ custom_trans('Featured', 'front') }}</span>
-                                                    @endif
-
-                                                    @if ($course->is_discounted)
-                                                        <span class="price-badge">
-                                                            <span
-                                                                class="discounted">{{ $course->formatted_price }}</span>
-                                                            <span
-                                                                class="original">{{ $course->formatted_original_price }}</span>
-                                                        </span>
-                                                    @else
-                                                        <span class="price-badge">
-                                                            <span
-                                                                class="discounted">{{ $course->formatted_price }}</span>
-                                                        </span>
-                                                    @endif
-
-
-                                                    <div class="course-hover-icons">
-                                                        <button class="icon-btn wishlist-btn"
-                                                            data-course-id="{{ $course->id }}">
-                                                            <i
-                                                                class="fas fa-heart {{ auth()->check() && auth()->user()->hasInWishlist($course) ? 'text-danger' : '' }}"></i>
-                                                        </button>
-                                                        <button class="icon-btn">
-                                                            <i class="fa-regular fa-bell"></i>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                                <div class="course-card-body">
-                                                    <h5 class="course-title">
-                                                        <a href="{{ route('courses.show', $course) }}"
-                                                            class="text-decoration-none text-dark">
-                                                            {{ $course->localized_name }}
-                                                        </a>
-                                                    </h5>
-                                                    <p class="course-desc">
-                                                        {{ Str::limit($course->localized_description, 80) }}
-                                                    </p>
-                                                    <div class="d-flex gap-2 flex-wrap mb-2">
-                                                        <a href="{{ route('courses.show', $course) }}" class="btn btn-outline-primary btn-sm">{{ custom_trans('Show details', 'front') }}</a>
-                                                        @auth
-                                                            @if (auth()->user()->enrollments()->where('course_id', $course->id)->exists())
-                                                                <a href="{{ route('courses.learn', $course->id) }}" class="btn btn-success btn-sm">{{ custom_trans('go_to_course', 'front') }}</a>
-                                                            @else
-                                                                <button type="button" class="btn btn-orange btn-sm enroll-btn" data-course-id="{{ $course->id }}" data-enroll-type="{{ $course->price > 0 ? 'paid' : 'free' }}">{{ $course->price > 0 ? custom_trans('Add to cart', 'front') : custom_trans('enroll_now', 'front') }}</button>
-                                                            @endif
-                                                        @else
-                                                            <a href="{{ route('login') }}" class="btn btn-orange btn-sm">{{ $course->price > 0 ? custom_trans('Add to cart', 'front') : custom_trans('enroll_now', 'front') }}</a>
-                                                        @endauth
-                                                    </div>
-                                                    <img src="https://eclass.mediacity.co.in/demo2/public/frontcss/img/icon/cou-icon.png"
-                                                        class="book-icon" alt="book">
-                                                </div>
+                            <section class="home-courses-slider home-courses-slider--white" id="category-slider-{{ $category->id }}" data-home-courses-slider>
+                                <div class="home-courses-slider__container">
+                                    <header class="home-courses-slider__header">
+                                        <div class="home-courses-slider__title-row">
+                                            <span class="home-courses-slider__label">
+                                                <i class="fas fa-th-large" aria-hidden="true"></i> {{ $category->localized_name }}
+                                            </span>
+                                            <h2 class="home-courses-slider__title">{{ $category->localized_name }} {{ custom_trans('Courses', 'front') }}</h2>
+                                        </div>
+                                    </header>
+                                    <div class="home-courses-slider__slider-wrap">
+                                        <button type="button" class="home-courses-slider__arrow home-courses-slider__arrow--prev" aria-label="{{ custom_trans('Previous', 'front') }}" data-home-courses-prev>
+                                            <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                                        </button>
+                                        <button type="button" class="home-courses-slider__arrow home-courses-slider__arrow--next" aria-label="{{ custom_trans('Next', 'front') }}" data-home-courses-next>
+                                            <i class="fas fa-chevron-left" aria-hidden="true"></i>
+                                        </button>
+                                        <div class="home-courses-slider__track" data-home-courses-track role="region" aria-label="{{ $category->localized_name }}">
+                                            <div class="home-courses-slider__list">
+                                                @foreach ($categoryCourses as $course)
+                                                    @include('partials.home.course-card', ['course' => $course])
+                                                @endforeach
                                             </div>
                                         </div>
-                                    @endforeach
+                                    </div>
                                 </div>
-                            </div>
-
+                            </section>
                             <div class="text-center mt-4">
                                 <a href="{{ route('categories.show', $category) }}" class="btn btn-outline-primary">
                                     {{ custom_trans('View All', 'front') }} {{ $category->localized_name }}
@@ -158,48 +104,4 @@
             @endif
         </div>
     </section>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize Swiper for each category
-            @foreach ($allCategories->take(6) as $category)
-                new Swiper('.categorySwiper-{{ $category->id }}', {
-                    slidesPerView: 1,
-                    spaceBetween: 30,
-                    loop: false,
-                    navigation: {
-                        nextEl: '.swiper-button-next-category-{{ $category->id }}',
-                        prevEl: '.swiper-button-prev-category-{{ $category->id }}',
-                    },
-                    breakpoints: {
-                        640: {
-                            slidesPerView: 2,
-                        },
-                        768: {
-                            slidesPerView: 2,
-                        },
-                        1024: {
-                            slidesPerView: 3,
-                        },
-                        1200: {
-                            slidesPerView: 4,
-                        }
-                    }
-                });
-            @endforeach
-
-            // Re-initialize Swiper when tab is shown (fixes display issues)
-            document.querySelectorAll('button[data-bs-toggle="pill"]').forEach(button => {
-                button.addEventListener('shown.bs.tab', function(event) {
-                    // Get the target category ID
-                    const targetId = event.target.getAttribute('data-bs-target').replace(
-                        '#category-', '');
-                    // Find the swiper instance and update it
-                    const swiperElement = document.querySelector('.categorySwiper-' + targetId);
-                    if (swiperElement && swiperElement.swiper) {
-                        swiperElement.swiper.update();
-                    }
-                });
-            });
-        });
-    </script>
 @endif

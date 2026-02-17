@@ -2041,5 +2041,117 @@ return [
         'en' => 'View all reviews',
         'ar' => 'عرض جميع التقييمات',
     ],
+    'grid' => [
+        'en' => 'Grid',
+        'ar' => 'شبكة',
+    ],
+    'list' => [
+        'en' => 'List',
+        'ar' => 'قائمة',
+    ],
+    'Related Courses' => [
+        'en' => 'Related Courses',
+        'ar' => 'دورات ذات صلة',
+    ],
+    'We Accept' => [
+        'en' => 'We Accept',
+        'ar' => 'نقبل',
+    ],
+    'Paid' => [
+        'en' => 'Paid',
+        'ar' => 'مدفوع',
+    ],
+    'Sort By' => [
+        'en' => 'Sort By',
+        'ar' => 'ترتيب حسب',
+    ],
+    'Latest' => [
+        'en' => 'Latest',
+        'ar' => 'الأحدث',
+    ],
+    'Most Popular' => [
+        'en' => 'Most Popular',
+        'ar' => 'الأكثر شعبية',
+    ],
+    'Highest Rated' => [
+        'en' => 'Highest Rated',
+        'ar' => 'الأعلى تقييماً',
+    ],
+    'Price: Low to High' => [
+        'en' => 'Price: Low to High',
+        'ar' => 'السعر: من الأقل إلى الأعلى',
+    ],
+    'Price: High to Low' => [
+        'en' => 'Price: High to Low',
+        'ar' => 'السعر: من الأعلى إلى الأقل',
+    ],
+    'View' => [
+        'en' => 'View',
+        'ar' => 'عرض',
+    ],
+    'Blog' => [
+        'en' => 'Blog',
+        'ar' => 'المدونة',
+    ],
+    'Categories' => [
+        'en' => 'Categories',
+        'ar' => 'التصنيفات',
+    ],
+    'All Categories' => [
+        'en' => 'All Categories',
+        'ar' => 'جميع التصنيفات',
+    ],
+    'Search Blogs' => [
+        'en' => 'Search Blogs',
+        'ar' => 'البحث في المدونة',
+    ],
+    'Search blogs...' => [
+        'en' => 'Search blogs...',
+        'ar' => 'البحث في المدونات...',
+    ],
+    'Filtered by:' => [
+        'en' => 'Filtered by:',
+        'ar' => 'تصفية حسب:',
+    ],
+    'Category:' => [
+        'en' => 'Category:',
+        'ar' => 'التصنيف:',
+    ],
+    'Clear All' => [
+        'en' => 'Clear All',
+        'ar' => 'مسح الكل',
+    ],
+    'Featured' => [
+        'en' => 'Featured',
+        'ar' => 'مميز',
+    ],
+    'views' => [
+        'en' => 'views',
+        'ar' => 'مشاهدات',
+    ],
+    'Read More' => [
+        'en' => 'Read More',
+        'ar' => 'اقرأ المزيد',
+    ],
+    'No blogs found' => [
+        'en' => 'No blogs found',
+        'ar' => 'لم يتم العثور على مدونات',
+    ],
+    'Check back later for new blog posts.' => [
+        'en' => 'Check back later for new blog posts.',
+        'ar' => 'عد لاحقاً للمزيد من المقالات.',
+    ],
+    'Summary' => [
+        'en' => 'Summary',
+        'ar' => 'ملخص',
+    ],
+    'Tags:' => [
+        'en' => 'Tags:',
+        'ar' => 'الوسوم:',
+    ],
+    'By' => [
+        'en' => 'By',
+        'ar' => 'بواسطة',
+    ],
 ];
 

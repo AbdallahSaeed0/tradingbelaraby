@@ -1,0 +1,34 @@
+/* Courses listing page RTL - list view mirror + sidebar alignment */
+
+[dir="rtl"] .courses-page .course-card--list__inner {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .courses-page .course-card--list__body {
+    text-align: right;
+}
+
+[dir="rtl"] .courses-page .course-card--list__footer {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .courses-page .course-card--list__actions {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .courses-page .courses-page__sidebar .form-check {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .courses-page .courses-page__sidebar .form-check-label {
+    text-align: right;
+}
+
+@media (max-width: 767px) {
+    [dir="rtl"] .courses-page .course-card--list__inner {
+        flex-direction: column;
+    }
+    [dir="rtl"] .courses-page .course-card--list__body {
+        text-align: right;
+    }
+}

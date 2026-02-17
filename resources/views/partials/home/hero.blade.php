@@ -209,13 +209,15 @@
             if (bgImage) {
                 element.style.backgroundImage = `url('${bgImage}')`;
                 element.style.backgroundSize = 'cover';
-                element.style.backgroundPosition = 'center';
+                element.style.backgroundPosition = 'center center';
                 element.style.backgroundRepeat = 'no-repeat';
             }
         });
 
+        const isRtl = document.documentElement.getAttribute('dir') === 'rtl';
         const heroSwiper = new Swiper('.hero-swiper', {
             loop: true,
+            rtl: isRtl,
             autoplay: {
                 delay: 5000,
                 disableOnInteraction: false,

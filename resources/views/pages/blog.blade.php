@@ -9,11 +9,11 @@
             class="blog-banner-bg position-absolute w-100 h-100 top-0 start-0">
         <div class="blog-banner-overlay position-absolute w-100 h-100 top-0 start-0"></div>
         <div class="container position-relative z-3 text-center">
-            <h1 class="display-3 fw-bold text-white mb-3">Blog</h1>
+            <h1 class="display-3 fw-bold text-white mb-3">{{ custom_trans('Blog', 'front') }}</h1>
             <div class="d-flex justify-content-center mb-2">
                 <span class="blog-label px-4 py-2 rounded-pill bg-white text-dark fw-semibold shadow">
-                    <a href="{{ route('home') }}" class="text-dark text-decoration-none hover-primary">Home</a> &nbsp;|&nbsp;
-                    Blog
+                    <a href="{{ route('home') }}" class="text-dark text-decoration-none hover-primary">{{ custom_trans('home', 'front') }}</a> &nbsp;|&nbsp;
+                    {{ custom_trans('Blog', 'front') }}
                 </span>
             </div>
         </div>
@@ -29,7 +29,7 @@
                         <div class="card shadow-sm">
                             <div class="card-header bg-primary text-white">
                                 <h5 class="mb-0">
-                                    <i class="fas fa-filter me-2"></i>Categories
+                                    <i class="fas fa-filter me-2"></i>{{ custom_trans('Categories', 'front') }}
                                 </h5>
                             </div>
                             <div class="card-body p-0">
@@ -37,7 +37,7 @@
                                     <a href="{{ route('blog.index') }}"
                                         class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {{ !request('category') ? 'active' : '' }}">
                                         <span>
-                                            <i class="fas fa-th-large me-2"></i>All Categories
+                                            <i class="fas fa-th-large me-2"></i>{{ custom_trans('All Categories', 'front') }}
                                         </span>
                                         <span
                                             class="badge bg-primary rounded-pill">{{ $categories->sum('blogs_count') }}</span>
@@ -61,7 +61,7 @@
                         <div class="card shadow-sm mt-4">
                             <div class="card-header bg-info text-white">
                                 <h6 class="mb-0">
-                                    <i class="fas fa-search me-2"></i>Search Blogs
+                                    <i class="fas fa-search me-2"></i>{{ custom_trans('Search Blogs', 'front') }}
                                 </h6>
                             </div>
                             <div class="card-body">
@@ -71,7 +71,7 @@
                                     @endif
                                     <div class="input-group">
                                         <input type="text" class="form-control" name="search"
-                                            placeholder="Search blogs..." value="{{ request('search') }}">
+                                            placeholder="{{ custom_trans('Search blogs...', 'front') }}" value="{{ request('search') }}">
                                         <button class="btn btn-outline-secondary" type="submit">
                                             <i class="fas fa-search"></i>
                                         </button>
@@ -89,24 +89,24 @@
                         @if (request('category') || request('search'))
                             <div class="mb-4">
                                 <div class="d-flex flex-wrap align-items-center gap-2">
-                                    <span class="text-muted">Filtered by:</span>
+                                    <span class="text-muted">{{ custom_trans('Filtered by:', 'front') }}</span>
                                     @if (request('category'))
                                         @php $selectedCategory = $categories->where('slug', request('category'))->first() @endphp
                                         <span class="badge bg-primary">
-                                            Category: {{ $selectedCategory ? \App\Helpers\TranslationHelper::getLocalizedContent($selectedCategory->name, $selectedCategory->name_ar) : request('category') }}
+                                            {{ custom_trans('Category:', 'front') }} {{ $selectedCategory ? \App\Helpers\TranslationHelper::getLocalizedContent($selectedCategory->name, $selectedCategory->name_ar) : request('category') }}
                                             <a href="{{ route('blog.index', ['search' => request('search')]) }}"
                                                 class="text-white ms-1">×</a>
                                         </span>
                                     @endif
                                     @if (request('search'))
                                         <span class="badge bg-info">
-                                            Search: "{{ request('search') }}"
+                                            {{ custom_trans('Search Blogs', 'front') }}: "{{ request('search') }}"
                                             <a href="{{ route('blog.index', ['category' => request('category')]) }}"
                                                 class="text-white ms-1">×</a>
                                         </span>
                                     @endif
                                     <a href="{{ route('blog.index') }}" class="btn btn-sm btn-outline-secondary">
-                                        <i class="fas fa-times me-1"></i>Clear All
+                                        <i class="fas fa-times me-1"></i>{{ custom_trans('Clear All', 'front') }}
                                     </a>
                                 </div>
                             </div>
@@ -118,8 +118,10 @@
                                     <div class="blog-card bg-white rounded-4 shadow-sm w-100 d-flex flex-column">
                                         <div class="blog-img-wrap position-relative overflow-hidden rounded-top-4">
                                             @if ($blog->getLocalizedImageUrl())
-                                                <img src="{{ $blog->getLocalizedImageUrl() }}" class="blog-img w-100"
-                                                    alt="{{ $blog->getLocalizedTitle() }}">
+                                                <a href="{{ route('blog.show', $blog->slug) }}" class="d-block text-decoration-none">
+                                                    <img src="{{ $blog->getLocalizedImageUrl() }}" class="blog-img w-100"
+                                                        alt="{{ $blog->getLocalizedTitle() }}">
+                                                </a>
                                             @else
                                                 <div
                                                     class="blog-placeholder d-flex align-items-center justify-content-center bg-light">
@@ -128,7 +130,7 @@
                                             @endif
                                             @if ($blog->is_featured)
                                                 <span class="badge bg-warning position-absolute top-0 start-0 m-2">
-                                                    <i class="fas fa-star me-1"></i>Featured
+                                                    <i class="fas fa-star me-1"></i>{{ custom_trans('Featured', 'front') }}
                                                 </span>
                                             @endif
                                         </div>
@@ -160,10 +162,10 @@
 
                                             <div class="d-flex justify-content-between align-items-center mt-auto">
                                                 <small class="text-muted">
-                                                    <i class="fas fa-eye me-1"></i> {{ $blog->views_count }} views
+                                                    <i class="fas fa-eye me-1"></i> {{ $blog->views_count }} {{ custom_trans('views', 'front') }}
                                                 </small>
                                                 <a href="{{ route('blog.show', $blog->slug) }}"
-                                                    class="btn btn-blog-read">Read More
+                                                    class="btn btn-blog-read">{{ custom_trans('Read More', 'front') }}
                                                     &rarr;</a>
                                             </div>
                                         </div>
@@ -228,8 +230,8 @@
                             <div class="mb-4">
                                 <i class="fas fa-newspaper fa-3x text-muted"></i>
                             </div>
-                            <h4 class="text-muted">No blogs found</h4>
-                            <p class="text-muted">Check back later for new blog posts.</p>
+                            <h4 class="text-muted">{{ custom_trans('No blogs found', 'front') }}</h4>
+                            <p class="text-muted">{{ custom_trans('Check back later for new blog posts.', 'front') }}</p>
                         </div>
                     @endif
                 </div>

@@ -20,8 +20,10 @@
                     <div class="col-md-6 col-lg-4 d-flex">
                         <div class="blog-card bg-white rounded-4 shadow-sm w-100 d-flex flex-column">
                             <div class="blog-img-wrap position-relative overflow-hidden rounded-top-4">
-                                <img src="{{ $blog->getLocalizedImageUrl() ?? asset('images/placeholder.jpg') }}"
-                                    class="blog-img w-100" alt="{{ $blog->getLocalizedTitle() }}">
+                                <a href="{{ route('blog.show', $blog->slug) }}" class="d-block text-decoration-none">
+                                    <img src="{{ $blog->getLocalizedImageUrl() ?? asset('images/placeholder.jpg') }}"
+                                        class="blog-img w-100" alt="{{ $blog->getLocalizedTitle() }}">
+                                </a>
                                 <span class="badge blog-date-badge position-absolute top-0 start-0 m-3 px-3 py-2"><i
                                         class="fa fa-calendar me-2"></i>{{ $blog->created_at->format('M d, Y') }}</span>
                             </div>

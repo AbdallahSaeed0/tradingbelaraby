@@ -61,12 +61,18 @@ class CourseController extends Controller
 
         $courses = $query->paginate(12)->appends($request->query());
 
+        // View mode: grid (default) or list
+        $viewMode = $request->get('view', 'grid');
+        if (!in_array($viewMode, ['grid', 'list'], true)) {
+            $viewMode = 'grid';
+        }
+
         $categories = CourseCategory::active()
             ->withCount('courses')
             ->orderBy('name')
             ->get();
 
-        return view('courses.index', compact('courses', 'categories'));
+        return view('courses.index', compact('courses', 'categories', 'viewMode'));
     }
 
     public function show(Course $course)

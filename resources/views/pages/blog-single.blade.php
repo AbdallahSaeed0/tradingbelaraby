@@ -17,7 +17,7 @@
                             <i class="fas fa-calendar me-1"></i> {{ $blog->created_at->format('F d, Y') }}
                         </span>
                         <span class="me-3">
-                            <i class="fas fa-eye me-1"></i> {{ $blog->views_count }} views
+                            <i class="fas fa-eye me-1"></i> {{ $blog->views_count }} {{ custom_trans('views', 'front') }}
                         </span>
                         @if ($blog->category)
                             <span>
@@ -28,7 +28,7 @@
                     </div>
                     @if ($blog->author_name)
                         <div class="text-white">
-                            <i class="fas fa-user me-1"></i> By {{ $blog->author_name }}
+                            <i class="fas fa-user me-1"></i> {{ custom_trans('By', 'front') }} {{ $blog->author_name }}
                         </div>
                     @endif
                 </div>
@@ -44,8 +44,10 @@
                     <!-- Blog Image -->
                     @if ($blog->getLocalizedImageUrl())
                         <div class="blog-image mb-4">
-                            <img src="{{ $blog->getLocalizedImageUrl() }}" alt="{{ $blog->getLocalizedTitle() }}"
-                                class="img-fluid rounded-4 w-100">
+                            <a href="{{ route('blog.show', $blog->slug) }}" class="d-block">
+                                <img src="{{ $blog->getLocalizedImageUrl() }}" alt="{{ $blog->getLocalizedTitle() }}"
+                                    class="img-fluid rounded-4 w-100">
+                            </a>
                         </div>
                     @endif
 
@@ -53,7 +55,7 @@
                     <div class="blog-content bg-white rounded-4 shadow-sm p-4 p-md-5 mb-5">
                         @if ($blog->getLocalizedExcerpt())
                             <div class="blog-excerpt mb-4 p-4 bg-light rounded">
-                                <h5 class="text-primary mb-2">Summary</h5>
+                                <h5 class="text-primary mb-2">{{ custom_trans('Summary', 'front') }}</h5>
                                 <p class="mb-0">{{ $blog->getLocalizedExcerpt() }}</p>
                             </div>
                         @endif
@@ -69,7 +71,7 @@
                         @if (!empty($tags))
                             <div class="blog-tags mb-4" style="word-wrap: break-word; overflow-wrap: break-word;">
                                 <h6 class="text-muted mb-2">
-                                    <i class="fas fa-tags me-1"></i> Tags:
+                                    <i class="fas fa-tags me-1"></i> {{ custom_trans('Tags:', 'front') }}
                                 </h6>
                                 <div class="d-flex flex-wrap gap-2" style="max-width: 100%;">
                                     @foreach ($tags as $tag)
