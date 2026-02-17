@@ -104,14 +104,14 @@
                                 <option value="price_low">{{ custom_trans('price_low_to_high', 'front') }}</option>
                                 <option value="price_high">{{ custom_trans('price_high_to_low', 'front') }}</option>
                             </select>
-                            <div class="view-toggle-group" role="group" aria-label="View toggle">
-                                <button class="btn active" id="listViewBtn" type="button" title="List View">
+                            <div class="view-toggle-group" role="group" aria-label="{{ custom_trans('View', 'front') }}">
+                                <button class="btn" id="listViewBtn" type="button" title="{{ custom_trans('list', 'front') }}">
                                     <i class="fas fa-list"></i>
-                                    <span class="d-none d-sm-inline">List</span>
+                                    <span class="d-none d-sm-inline">{{ custom_trans('list', 'front') }}</span>
                                 </button>
-                                <button class="btn" id="gridViewBtn" type="button" title="Grid View">
+                                <button class="btn active" id="gridViewBtn" type="button" title="{{ custom_trans('grid', 'front') }}">
                                     <i class="fas fa-th"></i>
-                                    <span class="d-none d-sm-inline">Grid</span>
+                                    <span class="d-none d-sm-inline">{{ custom_trans('grid', 'front') }}</span>
                                 </button>
                             </div>
                         </div>
@@ -120,7 +120,7 @@
                     <!-- Courses Grid -->
                     <div class="row g-4" id="coursesList">
                         @forelse($courses as $course)
-                            <div class="col-12 course-card-col">
+                            <div class="col-12 col-md-6 col-lg-4 course-card-col">
                                 <div class="card h-100 shadow-sm border-0" style="border-radius: 16px; overflow: hidden; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
                                     <div class="position-relative" style="height: 180px; overflow: hidden;">
                                         <a href="{{ route('courses.show', $course->id) }}" class="d-block h-100 text-decoration-none">

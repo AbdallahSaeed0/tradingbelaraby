@@ -119,18 +119,18 @@
                 <!-- Courses List/Grid -->
                 <div class="col-lg-9">
                     <div class="d-flex justify-content-end align-items-center mb-3">
-                        <div class="view-toggle-group" role="group" aria-label="View toggle">
-                            <button class="btn active" id="listViewBtn" type="button" title="List View">
+                        <div class="view-toggle-group" role="group" aria-label="{{ custom_trans('View', 'front') }}">
+                            <button class="btn" id="listViewBtn" type="button" title="{{ custom_trans('list', 'front') }}">
                                 <i class="fas fa-list"></i>
-                                <span class="d-none d-sm-inline">List</span>
+                                <span class="d-none d-sm-inline">{{ custom_trans('list', 'front') }}</span>
                             </button>
-                            <button class="btn" id="gridViewBtn" type="button" title="Grid View">
+                            <button class="btn active" id="gridViewBtn" type="button" title="{{ custom_trans('grid', 'front') }}">
                                 <i class="fas fa-th"></i>
-                                <span class="d-none d-sm-inline">Grid</span>
+                                <span class="d-none d-sm-inline">{{ custom_trans('grid', 'front') }}</span>
                             </button>
                         </div>
                     </div>
-                    <div class="row g-4" id="coursesList">
+                    <div class="row g-4 row-cols-md-2 row-cols-lg-3" id="coursesList">
                         @forelse($courses as $course)
                             <div class="col-12 course-card-col">
                                 <div class="card h-100 shadow-sm border-0" style="border-radius: 16px; overflow: hidden; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
