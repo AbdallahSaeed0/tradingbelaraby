@@ -12,6 +12,11 @@ class CourseController extends Controller
 {
     public function index(Request $request)
     {
+        // Force view=grid when no view parameter is present (redirect before any processing)
+        if (!$request->has('view')) {
+            return redirect()->route('courses.index', array_merge($request->all(), ['view' => 'grid']));
+        }
+
         $query = Course::published()
             ->with(['category', 'instructor', 'instructors', 'ratings'])
             ->withCount(['enrollments', 'ratings']);
@@ -61,14 +66,10 @@ class CourseController extends Controller
 
         $courses = $query->paginate(12)->appends($request->query());
 
-        // View mode: grid (default) or list — force default to grid when no view param
-        $viewMode = $request->get('view');
-        if ($viewMode === null || !in_array($viewMode, ['grid', 'list'], true)) {
+        // View mode: grid or list (already validated by redirect above)
+        $viewMode = $request->get('view', 'grid');
+        if (!in_array($viewMode, ['grid', 'list'], true)) {
             $viewMode = 'grid';
-            // Redirect so URL has view=grid and grid button is clearly active
-            if (!$request->has('view')) {
-                return redirect()->route('courses.index', array_merge($request->query(), ['view' => 'grid']));
-            }
         }
 
         $categories = CourseCategory::active()

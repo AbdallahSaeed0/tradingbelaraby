@@ -78,7 +78,20 @@ class TranslationHelper
                 }
             }
 
-            // Return key if no translation found in any group
+            // Final fallback: try to load from front_page_translations.php data file
+            if ($group === 'front' || $group === 'general') {
+                $translationsFile = database_path('seeders/data/front_page_translations.php');
+                if (file_exists($translationsFile)) {
+                    $translations = include $translationsFile;
+                    if (isset($translations[$key])) {
+                        $langCode = $currentLanguage->code;
+                        // Return translation for current language or fallback to English or key
+                        return $translations[$key][$langCode] ?? $translations[$key]['en'] ?? $key;
+                    }
+                }
+            }
+
+            // Return key if no translation found in any group or file
             return $key;
         });
     }
