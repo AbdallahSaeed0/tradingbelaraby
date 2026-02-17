@@ -118,14 +118,14 @@ class SettingsController extends Controller
     {
         \App::setLocale(session('admin_locale', 'en'));
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
+            'title' => 'nullable|string|max:255',
             'title_ar' => 'nullable|string|max:255',
-            'welcome_text' => 'required|string|max:255',
+            'welcome_text' => 'nullable|string|max:255',
             'welcome_text_ar' => 'nullable|string|max:255',
-            'subtitle' => 'required|string|max:255',
+            'subtitle' => 'nullable|string|max:255',
             'subtitle_ar' => 'nullable|string|max:255',
-            'text_position' => 'required|string|in:top-left,top-center,top-right,center-left,center-center,center-right,bottom-left,bottom-center,bottom-right',
-            'background_image' => 'required|image|mimes:jpeg,jpg,png,webp|max:5120',
+            'text_position' => 'nullable|string|in:top-left,top-center,top-right,center-left,center-center,center-right,bottom-left,bottom-center,bottom-right',
+            'background_image' => 'required|image|mimes:jpeg,jpg,png,webp,gif|max:5120',
             'button_text' => 'nullable|string|max:100',
             'button_text_ar' => 'nullable|string|max:100',
             'button_url' => 'nullable|url|max:255',
@@ -137,8 +137,8 @@ class SettingsController extends Controller
 
         $messages = [
             'background_image.required' => custom_trans('Please select an image to upload.', 'admin'),
-            'background_image.image' => custom_trans('The file must be an image (jpg, jpeg, png, webp).', 'admin'),
-            'background_image.mimes' => custom_trans('The image must be a file of type: jpg, jpeg, png, webp.', 'admin'),
+            'background_image.image' => custom_trans('The file must be an image (jpg, jpeg, png, webp, gif).', 'admin'),
+            'background_image.mimes' => custom_trans('The image must be a file of type: jpg, jpeg, png, webp, gif.', 'admin'),
             'background_image.max' => custom_trans('The image may not be greater than 5MB.', 'admin'),
             'background_image.uploaded' => custom_trans('The image could not be uploaded. Please ensure it is under 5MB and is a valid image file.', 'admin'),
         ];
@@ -185,14 +185,14 @@ class SettingsController extends Controller
     {
         \App::setLocale(session('admin_locale', 'en'));
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
+            'title' => 'nullable|string|max:255',
             'title_ar' => 'nullable|string|max:255',
-            'welcome_text' => 'required|string|max:255',
+            'welcome_text' => 'nullable|string|max:255',
             'welcome_text_ar' => 'nullable|string|max:255',
-            'subtitle' => 'required|string|max:255',
+            'subtitle' => 'nullable|string|max:255',
             'subtitle_ar' => 'nullable|string|max:255',
-            'text_position' => 'required|string|in:top-left,top-center,top-right,center-left,center-center,center-right,bottom-left,bottom-center,bottom-right',
-            'background_image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:5120',
+            'text_position' => 'nullable|string|in:top-left,top-center,top-right,center-left,center-center,center-right,bottom-left,bottom-center,bottom-right',
+            'background_image' => 'nullable|image|mimes:jpeg,jpg,png,webp,gif|max:5120',
             'button_text' => 'nullable|string|max:100',
             'button_text_ar' => 'nullable|string|max:100',
             'button_url' => 'nullable|url|max:255',
@@ -203,8 +203,8 @@ class SettingsController extends Controller
         ]);
 
         $messages = [
-            'background_image.image' => custom_trans('The file must be an image (jpg, jpeg, png, webp).', 'admin'),
-            'background_image.mimes' => custom_trans('The image must be a file of type: jpg, jpeg, png, webp.', 'admin'),
+            'background_image.image' => custom_trans('The file must be an image (jpg, jpeg, png, webp, gif).', 'admin'),
+            'background_image.mimes' => custom_trans('The image must be a file of type: jpg, jpeg, png, webp, gif.', 'admin'),
             'background_image.max' => custom_trans('The image may not be greater than 5MB.', 'admin'),
             'background_image.uploaded' => custom_trans('The image could not be uploaded. Please ensure it is under 5MB and is a valid image file.', 'admin'),
         ];

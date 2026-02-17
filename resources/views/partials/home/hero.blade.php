@@ -47,13 +47,6 @@
                                 <p class="hero-sub mb-4">
                                     {{ get_current_language_code() === 'ar' && $slider->subtitle_ar ? $slider->subtitle_ar : $slider->subtitle }}
                                 </p>
-                                <form
-                                    class="search-box search-box-colored d-flex max-w-480 @if ($horizontal == 'center') mx-auto @elseif($horizontal == 'right') ms-auto @endif">
-                                    <input type="text" class="form-control rounded-start-pill"
-                                        placeholder="{{ get_current_language_code() === 'ar' && $slider->search_placeholder_ar ? $slider->search_placeholder_ar : $slider->search_placeholder }}">
-                                    <button type="submit"
-                                        class="btn btn-primary rounded-end-pill px-4 btn-orange">{{ get_current_language_code() === 'ar' && $slider->button_text_ar ? $slider->button_text_ar : $slider->button_text }}</button>
-                                </form>
                             </div>
                         </div>
                     </div>
@@ -69,12 +62,6 @@
                                     class="hero-underline"></span></span>
                             <h1 class="fw-bold mb-3">Education is the best key success in life</h1>
                             <p class="hero-sub mb-4">Online Courses</p>
-                            <form class="search-box search-box-colored d-flex mx-auto mx-lg-0 max-w-480">
-                                <input type="text" class="form-control rounded-start-pill"
-                                    placeholder="Search Courses">
-                                <button type="submit"
-                                    class="btn btn-primary rounded-end-pill px-4 btn-orange">Search</button>
-                            </form>
                         </div>
                     </div>
                 </div>

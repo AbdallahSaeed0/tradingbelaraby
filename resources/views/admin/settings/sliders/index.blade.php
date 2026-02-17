@@ -184,40 +184,57 @@
 
                         <!-- English Content -->
                         <div id="add-content-en" class="language-content active">
-                                <div class="mb-3">
-                                    <label for="title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
-                                    <input type="text" class="form-control" id="title" name="title" required>
-                                </div>
-                                <div class="mb-3">
-                                <label for="welcome_text" class="form-label">{{ custom_trans('Welcome Text', 'admin') }} *</label>
-                                <input type="text" class="form-control" id="welcome_text" name="welcome_text" required>
-                                </div>
-                                <div class="mb-3">
-                                <label for="subtitle" class="form-label">{{ custom_trans('Subtitle', 'admin') }} *</label>
-                                <input type="text" class="form-control" id="subtitle" name="subtitle" required>
-                                </div>
+                            <div class="mb-3">
+                                <label for="title" class="form-label">{{ custom_trans('Title', 'admin') }}</label>
+                                <input type="text" class="form-control" id="title" name="title">
                             </div>
+                            <div class="mb-3">
+                                <label for="welcome_text" class="form-label">{{ custom_trans('Welcome Text', 'admin') }}</label>
+                                <input type="text" class="form-control" id="welcome_text" name="welcome_text">
+                            </div>
+                            <div class="mb-3">
+                                <label for="subtitle" class="form-label">{{ custom_trans('Subtitle', 'admin') }}</label>
+                                <input type="text" class="form-control" id="subtitle" name="subtitle">
+                            </div>
+                            <div class="mb-3">
+                                <label for="button_text" class="form-label">{{ custom_trans('Button Text', 'admin') }}</label>
+                                <input type="text" class="form-control" id="button_text" name="button_text" value="Search">
+                            </div>
+                            <div class="mb-3">
+                                <label for="search_placeholder" class="form-label">{{ custom_trans('Search Placeholder', 'admin') }}</label>
+                                <input type="text" class="form-control" id="search_placeholder" name="search_placeholder" value="Search Courses">
+                            </div>
+                        </div>
 
                         <!-- Arabic Content -->
                         <div id="add-content-ar" class="language-content">
-                                <div class="mb-3">
+                            <div class="mb-3">
                                 <label for="title_ar" class="form-label">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
                                 <input type="text" class="form-control" id="title_ar" name="title_ar" dir="rtl">
-                                </div>
-                                <div class="mb-3">
+                            </div>
+                            <div class="mb-3">
                                 <label for="welcome_text_ar" class="form-label">{{ custom_trans('Welcome Text (Arabic)', 'admin') }}</label>
                                 <input type="text" class="form-control" id="welcome_text_ar" name="welcome_text_ar" dir="rtl">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="subtitle_ar" class="form-label">{{ custom_trans('Subtitle (Arabic)', 'admin') }}</label>
+                            </div>
+                            <div class="mb-3">
+                                <label for="subtitle_ar" class="form-label">{{ custom_trans('Subtitle (Arabic)', 'admin') }}</label>
                                 <input type="text" class="form-control" id="subtitle_ar" name="subtitle_ar" dir="rtl">
                             </div>
+                            <div class="mb-3">
+                                <label for="button_text_ar" class="form-label">{{ custom_trans('Button Text (Arabic)', 'admin') }}</label>
+                                <input type="text" class="form-control" id="button_text_ar" name="button_text_ar" dir="rtl">
+                            </div>
+                            <div class="mb-3">
+                                <label for="search_placeholder_ar" class="form-label">{{ custom_trans('Search Placeholder (Arabic)', 'admin') }}</label>
+                                <input type="text" class="form-control" id="search_placeholder_ar" name="search_placeholder_ar" dir="rtl">
+                            </div>
                         </div>
+
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="mb-3">
-                                    <label for="text_position" class="form-label">{{ custom_trans('Text Position', 'admin') }} *</label>
-                                    <select class="form-select" id="text_position" name="text_position" required>
+                                    <label for="text_position" class="form-label">{{ custom_trans('Text Position', 'admin') }}</label>
+                                    <select class="form-select" id="text_position" name="text_position">
                                         <option value="top-left">{{ custom_trans('Top Left', 'admin') }}</option>
                                         <option value="top-center">{{ custom_trans('Top Center', 'admin') }}</option>
                                         <option value="top-right">{{ custom_trans('Top Right', 'admin') }}</option>
@@ -233,41 +250,7 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Language Tabs for Button and Search -->
-                        <div class="language-tabs mb-3">
-                            <button type="button" class="language-tab active" data-lang="btn-en">
-                                <i class="fas fa-globe me-1"></i> English
-                            </button>
-                            <button type="button" class="language-tab" data-lang="btn-ar">
-                                <i class="fas fa-globe me-1"></i> العربية
-                            </button>
-                        </div>
-
-                        <!-- English Button/Search Content -->
-                        <div id="add-btn-en" class="language-content active">
-                                <div class="mb-3">
-                                    <label for="button_text" class="form-label">{{ custom_trans('Button Text', 'admin') }}</label>
-                                <input type="text" class="form-control" id="button_text" name="button_text" value="Search">
-                                </div>
-                                <div class="mb-3">
-                                <label for="search_placeholder" class="form-label">{{ custom_trans('Search Placeholder', 'admin') }}</label>
-                                <input type="text" class="form-control" id="search_placeholder" name="search_placeholder" value="Search Courses">
-                                </div>
-                            </div>
-
-                        <!-- Arabic Button/Search Content -->
-                        <div id="add-btn-ar" class="language-content">
-                                <div class="mb-3">
-                                <label for="button_text_ar" class="form-label">{{ custom_trans('Button Text (Arabic)', 'admin') }}</label>
-                                <input type="text" class="form-control" id="button_text_ar" name="button_text_ar" dir="rtl">
-                                </div>
-                                <div class="mb-3">
-                                <label for="search_placeholder_ar" class="form-label">{{ custom_trans('Search Placeholder (Arabic)', 'admin') }}</label>
-                                <input type="text" class="form-control" id="search_placeholder_ar" name="search_placeholder_ar" dir="rtl">
-                                </div>
-                            </div>
-
-                                <div class="mb-3">
+                        <div class="mb-3">
                             <label for="button_url" class="form-label">{{ custom_trans('Button URL', 'admin') }}</label>
                             <input type="url" class="form-control" id="button_url" name="button_url">
                         </div>
@@ -283,8 +266,8 @@
                                 <div class="mb-3">
                                     <label for="background_image" class="form-label">{{ custom_trans('Background Image', 'admin') }} *</label>
                                     <input type="file" class="form-control" id="background_image"
-                                        name="background_image" accept="image/jpeg,image/jpg,image/png,image/webp" required>
-                                    <small class="form-text text-muted d-block mt-1">{{ custom_trans('Max size: 5MB. Formats: JPG, JPEG, PNG, WEBP', 'admin') }}</small>
+                                        name="background_image" accept="image/jpeg,image/jpg,image/png,image/webp,image/gif" required>
+                                    <small class="form-text text-muted d-block mt-1">{{ custom_trans('Max size: 5MB. Formats: JPG, JPEG, PNG, WEBP, GIF', 'admin') }}</small>
                                     <div id="background_image_error" class="invalid-feedback d-none"></div>
                                     <div id="background_image_preview" class="mt-2"></div>
                                 </div>
@@ -334,41 +317,57 @@
 
                         <!-- English Content -->
                         <div id="edit-content-en" class="language-content active">
-                                <div class="mb-3">
-                                    <label for="edit_title" class="form-label">{{ custom_trans('Title', 'admin') }} *</label>
-                                    <input type="text" class="form-control" id="edit_title" name="title" required>
-                                </div>
-                                <div class="mb-3">
-                                <label for="edit_welcome_text" class="form-label">{{ custom_trans('Welcome Text', 'admin') }} *</label>
-                                <input type="text" class="form-control" id="edit_welcome_text" name="welcome_text" required>
-                                </div>
-                                <div class="mb-3">
-                                <label for="edit_subtitle" class="form-label">{{ custom_trans('Subtitle', 'admin') }} *</label>
-                                <input type="text" class="form-control" id="edit_subtitle" name="subtitle" required>
-                                </div>
+                            <div class="mb-3">
+                                <label for="edit_title" class="form-label">{{ custom_trans('Title', 'admin') }}</label>
+                                <input type="text" class="form-control" id="edit_title" name="title">
                             </div>
+                            <div class="mb-3">
+                                <label for="edit_welcome_text" class="form-label">{{ custom_trans('Welcome Text', 'admin') }}</label>
+                                <input type="text" class="form-control" id="edit_welcome_text" name="welcome_text">
+                            </div>
+                            <div class="mb-3">
+                                <label for="edit_subtitle" class="form-label">{{ custom_trans('Subtitle', 'admin') }}</label>
+                                <input type="text" class="form-control" id="edit_subtitle" name="subtitle">
+                            </div>
+                            <div class="mb-3">
+                                <label for="edit_button_text" class="form-label">{{ custom_trans('Button Text', 'admin') }}</label>
+                                <input type="text" class="form-control" id="edit_button_text" name="button_text">
+                            </div>
+                            <div class="mb-3">
+                                <label for="edit_search_placeholder" class="form-label">{{ custom_trans('Search Placeholder', 'admin') }}</label>
+                                <input type="text" class="form-control" id="edit_search_placeholder" name="search_placeholder">
+                            </div>
+                        </div>
 
                         <!-- Arabic Content -->
                         <div id="edit-content-ar" class="language-content">
-                                <div class="mb-3">
+                            <div class="mb-3">
                                 <label for="edit_title_ar" class="form-label">{{ custom_trans('Title (Arabic)', 'admin') }}</label>
                                 <input type="text" class="form-control" id="edit_title_ar" name="title_ar" dir="rtl">
-                                </div>
-                                <div class="mb-3">
+                            </div>
+                            <div class="mb-3">
                                 <label for="edit_welcome_text_ar" class="form-label">{{ custom_trans('Welcome Text (Arabic)', 'admin') }}</label>
                                 <input type="text" class="form-control" id="edit_welcome_text_ar" name="welcome_text_ar" dir="rtl">
-                                </div>
-                                <div class="mb-3">
+                            </div>
+                            <div class="mb-3">
                                 <label for="edit_subtitle_ar" class="form-label">{{ custom_trans('Subtitle (Arabic)', 'admin') }}</label>
                                 <input type="text" class="form-control" id="edit_subtitle_ar" name="subtitle_ar" dir="rtl">
                             </div>
+                            <div class="mb-3">
+                                <label for="edit_button_text_ar" class="form-label">{{ custom_trans('Button Text (Arabic)', 'admin') }}</label>
+                                <input type="text" class="form-control" id="edit_button_text_ar" name="button_text_ar" dir="rtl">
+                            </div>
+                            <div class="mb-3">
+                                <label for="edit_search_placeholder_ar" class="form-label">{{ custom_trans('Search Placeholder (Arabic)', 'admin') }}</label>
+                                <input type="text" class="form-control" id="edit_search_placeholder_ar" name="search_placeholder_ar" dir="rtl">
+                            </div>
                         </div>
+
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="mb-3">
-                                    <label for="edit_text_position" class="form-label">{{ custom_trans('Text Position', 'admin') }}
-                                        *</label>
-                                    <select class="form-select" id="edit_text_position" name="text_position" required>
+                                    <label for="edit_text_position" class="form-label">{{ custom_trans('Text Position', 'admin') }}</label>
+                                    <select class="form-select" id="edit_text_position" name="text_position">
                                         <option value="top-left">{{ custom_trans('Top Left', 'admin') }}</option>
                                         <option value="top-center">{{ custom_trans('Top Center', 'admin') }}</option>
                                         <option value="top-right">{{ custom_trans('Top Right', 'admin') }}</option>
@@ -384,41 +383,7 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Language Tabs for Button and Search -->
-                        <div class="language-tabs mb-3">
-                            <button type="button" class="language-tab active" data-lang="edit-btn-en">
-                                <i class="fas fa-globe me-1"></i> English
-                            </button>
-                            <button type="button" class="language-tab" data-lang="edit-btn-ar">
-                                <i class="fas fa-globe me-1"></i> العربية
-                            </button>
-                        </div>
-
-                        <!-- English Button/Search Content -->
-                        <div id="edit-btn-en" class="language-content active">
-                                <div class="mb-3">
-                                    <label for="edit_button_text" class="form-label">{{ custom_trans('Button Text', 'admin') }}</label>
-                                    <input type="text" class="form-control" id="edit_button_text" name="button_text">
-                                </div>
-                                <div class="mb-3">
-                                <label for="edit_search_placeholder" class="form-label">{{ custom_trans('Search Placeholder', 'admin') }}</label>
-                                <input type="text" class="form-control" id="edit_search_placeholder" name="search_placeholder">
-                                </div>
-                            </div>
-
-                        <!-- Arabic Button/Search Content -->
-                        <div id="edit-btn-ar" class="language-content">
-                                <div class="mb-3">
-                                <label for="edit_button_text_ar" class="form-label">{{ custom_trans('Button Text (Arabic)', 'admin') }}</label>
-                                <input type="text" class="form-control" id="edit_button_text_ar" name="button_text_ar" dir="rtl">
-                                </div>
-                                <div class="mb-3">
-                                <label for="edit_search_placeholder_ar" class="form-label">{{ custom_trans('Search Placeholder (Arabic)', 'admin') }}</label>
-                                <input type="text" class="form-control" id="edit_search_placeholder_ar" name="search_placeholder_ar" dir="rtl">
-                                </div>
-                            </div>
-
-                                <div class="mb-3">
+                        <div class="mb-3">
                             <label for="edit_button_url" class="form-label">{{ custom_trans('Button URL', 'admin') }}</label>
                             <input type="url" class="form-control" id="edit_button_url" name="button_url">
                         </div>
@@ -434,8 +399,8 @@
                                 <div class="mb-3">
                                     <label for="edit_background_image" class="form-label">{{ custom_trans('Background Image', 'admin') }}</label>
                                     <input type="file" class="form-control" id="edit_background_image"
-                                        name="background_image" accept="image/jpeg,image/jpg,image/png,image/webp">
-                                    <small class="form-text text-muted d-block mt-1">{{ custom_trans('Max size: 5MB. Formats: JPG, JPEG, PNG, WEBP', 'admin') }}</small>
+                                        name="background_image" accept="image/jpeg,image/jpg,image/png,image/webp,image/gif">
+                                    <small class="form-text text-muted d-block mt-1">{{ custom_trans('Max size: 5MB. Formats: JPG, JPEG, PNG, WEBP, GIF', 'admin') }}</small>
                                     <div id="edit_background_image_error" class="invalid-feedback d-none"></div>
                                     <div id="current_image_preview" class="mt-2"></div>
                                 </div>
@@ -609,10 +574,6 @@
                     modal.find('#add-content-en').addClass('active');
                 } else if (lang === 'ar') {
                     modal.find('#add-content-ar').addClass('active');
-                } else if (lang === 'btn-en') {
-                    modal.find('#add-btn-en').addClass('active');
-                } else if (lang === 'btn-ar') {
-                    modal.find('#add-btn-ar').addClass('active');
                 }
             });
 
@@ -631,10 +592,6 @@
                     modal.find('#edit-content-en').addClass('active');
                 } else if (lang === 'edit-ar') {
                     modal.find('#edit-content-ar').addClass('active');
-                } else if (lang === 'edit-btn-en') {
-                    modal.find('#edit-btn-en').addClass('active');
-                } else if (lang === 'edit-btn-ar') {
-                    modal.find('#edit-btn-ar').addClass('active');
                 }
             });
 

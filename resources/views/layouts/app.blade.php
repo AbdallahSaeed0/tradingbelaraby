@@ -1007,9 +1007,9 @@
                     const enrollType = this.dataset.enrollType || 'free';
                     const originalText = this.innerHTML;
 
-                    // Disable button and show loading
+                    // Disable button and show loading (spinner only, no text)
                     this.disabled = true;
-                    this.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Processing...';
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>';
 
                     // Get CSRF token
                     const csrfToken = document.querySelector('meta[name="csrf-token"]');
