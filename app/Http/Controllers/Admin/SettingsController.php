@@ -117,6 +117,22 @@ class SettingsController extends Controller
     public function storeSlider(Request $request)
     {
         \App::setLocale(session('admin_locale', 'en'));
+
+        // Check if file upload failed due to PHP/server limits (before validation)
+        if ($request->hasFile('background_image') && !$request->file('background_image')->isValid()) {
+            $err = $request->file('background_image')->getError();
+            if ($err === UPLOAD_ERR_INI_SIZE || $err === UPLOAD_ERR_FORM_SIZE) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => [
+                        'background_image' => [
+                            custom_trans('The image exceeds the server upload limit. Please contact your hosting provider to increase upload_max_filesize and post_max_size to at least 6MB.', 'admin')
+                        ]
+                    ]
+                ], 422);
+            }
+        }
+
         $validator = Validator::make($request->all(), [
             'title' => 'nullable|string|max:255',
             'title_ar' => 'nullable|string|max:255',
@@ -184,6 +200,22 @@ class SettingsController extends Controller
     public function updateSlider(Request $request, Slider $slider)
     {
         \App::setLocale(session('admin_locale', 'en'));
+
+        // Check if file upload failed due to PHP/server limits (before validation)
+        if ($request->hasFile('background_image') && !$request->file('background_image')->isValid()) {
+            $err = $request->file('background_image')->getError();
+            if ($err === UPLOAD_ERR_INI_SIZE || $err === UPLOAD_ERR_FORM_SIZE) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => [
+                        'background_image' => [
+                            custom_trans('The image exceeds the server upload limit. Please contact your hosting provider to increase upload_max_filesize and post_max_size to at least 6MB.', 'admin')
+                        ]
+                    ]
+                ], 422);
+            }
+        }
+
         $validator = Validator::make($request->all(), [
             'title' => 'nullable|string|max:255',
             'title_ar' => 'nullable|string|max:255',
