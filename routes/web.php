@@ -41,7 +41,7 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('login.attempt');
     Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
     Route::get('/register/check-email', [AuthController::class, 'checkEmail'])->name('register.check-email');
-    Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:3,15')->name('register.attempt');
+    Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:20,1')->name('register.attempt');
 });
 
 // Email Verification Routes
