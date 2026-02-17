@@ -185,7 +185,9 @@ class AuthController extends Controller
         // Fire the Registered event which will trigger the email verification notification
         event(new Registered($user));
 
-        // Don't auto-login, require email verification first
-        return redirect()->route('verification.notice')->with('success', 'Registration successful! Please check your email to verify your account before logging in.');
+        // Log user in so they can see the verification notice page (which requires auth)
+        Auth::login($user);
+
+        return redirect()->route('verification.notice')->with('success', custom_trans('Registration successful! Please check your email to verify your account before logging in.', 'front'));
     }
 }

@@ -50,7 +50,8 @@ class AdminPermissionMiddleware
                 ], 403);
             }
 
-            return redirect()->route('admin.dashboard')->with('error', 'Access denied. You do not have permission to access this page.');
+            // Redirect to profile (not dashboard) to avoid redirect loop when dashboard requires the failed permission
+            return redirect()->route('admin.profile')->with('error', 'Access denied. You do not have permission to access this page.');
         }
 
         return $next($request);

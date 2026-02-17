@@ -2177,5 +2177,25 @@ return [
         'en' => 'By',
         'ar' => 'بواسطة',
     ],
+    'verify_email_title' => [
+        'en' => 'Verify Your Email Address',
+        'ar' => 'تأكيد عنوان بريدك الإلكتروني',
+    ],
+    'verify_email_message' => [
+        'en' => 'Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.',
+        'ar' => 'شكراً لتسجيلك! قبل البدء، هل يمكنك تأكيد عنوان بريدك الإلكتروني بالنقر على الرابط الذي أرسلناه لك للتو؟ إذا لم تستلم البريد الإلكتروني، فسنرسل لك آخر بكل سرور.',
+    ],
+    'verify_email_link_sent' => [
+        'en' => 'A new verification link has been sent to the email address you provided during registration.',
+        'ar' => 'تم إرسال رابط تحقق جديد إلى عنوان البريد الإلكتروني الذي قدمته أثناء التسجيل.',
+    ],
+    'resend_verification_email' => [
+        'en' => 'Resend Verification Email',
+        'ar' => 'إعادة إرسال بريد التحقق',
+    ],
+    'Registration successful! Please check your email to verify your account before logging in.' => [
+        'en' => 'Registration successful! Please check your email to verify your account before logging in.',
+        'ar' => 'تم التسجيل بنجاح! يرجى التحقق من بريدك الإلكتروني لتأكيد حسابك قبل تسجيل الدخول.',
+    ],
 ];
 
