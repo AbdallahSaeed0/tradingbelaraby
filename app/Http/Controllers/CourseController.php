@@ -61,10 +61,14 @@ class CourseController extends Controller
 
         $courses = $query->paginate(12)->appends($request->query());
 
-        // View mode: grid (default) or list
-        $viewMode = $request->get('view', 'grid');
-        if (!in_array($viewMode, ['grid', 'list'], true)) {
+        // View mode: grid (default) or list — force default to grid when no view param
+        $viewMode = $request->get('view');
+        if ($viewMode === null || !in_array($viewMode, ['grid', 'list'], true)) {
             $viewMode = 'grid';
+            // Redirect so URL has view=grid and grid button is clearly active
+            if (!$request->has('view')) {
+                return redirect()->route('courses.index', array_merge($request->query(), ['view' => 'grid']));
+            }
         }
 
         $categories = CourseCategory::active()

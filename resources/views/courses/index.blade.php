@@ -113,10 +113,10 @@
                             <option value="price_high" {{ request('sort') == 'price_high' ? 'selected' : '' }}>{{ custom_trans('Price: High to Low', 'front') }}</option>
                         </select>
                         <div class="btn-group" role="group" aria-label="{{ custom_trans('View', 'front') }}">
-                            <a href="{{ request()->fullUrlWithQuery(['view' => 'grid']) }}" class="btn btn-outline-primary {{ ($viewMode ?? 'grid') === 'grid' ? 'active' : '' }}" title="{{ custom_trans('grid', 'front') }}">
+                            <a id="gridViewBtn" href="{{ request()->fullUrlWithQuery(['view' => 'grid']) }}" class="btn btn-outline-primary {{ ($viewMode ?? 'grid') === 'grid' ? 'active' : '' }}" title="{{ custom_trans('grid', 'front') }}">
                                 <i class="fas fa-th-large"></i><span class="d-none d-sm-inline ms-1">{{ custom_trans('grid', 'front') }}</span>
                             </a>
-                            <a href="{{ request()->fullUrlWithQuery(['view' => 'list']) }}" class="btn btn-outline-primary {{ ($viewMode ?? 'grid') === 'list' ? 'active' : '' }}" title="{{ custom_trans('list', 'front') }}">
+                            <a id="listViewBtn" href="{{ request()->fullUrlWithQuery(['view' => 'list']) }}" class="btn btn-outline-primary {{ ($viewMode ?? 'grid') === 'list' ? 'active' : '' }}" title="{{ custom_trans('list', 'front') }}">
                                 <i class="fas fa-list"></i><span class="d-none d-sm-inline ms-1">{{ custom_trans('list', 'front') }}</span>
                             </a>
                         </div>
