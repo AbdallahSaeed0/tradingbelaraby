@@ -9,12 +9,9 @@
 .newsletter-section {
     background: #156481;
     color: #fff;
-    width: 100vw;
+    width: 100%;
     position: relative;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
+    /* Removed 100vw and negative margins that caused horizontal overflow */
 }
 
 .newsletter-btn {

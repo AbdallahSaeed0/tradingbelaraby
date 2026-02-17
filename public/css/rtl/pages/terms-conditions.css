@@ -9,7 +9,7 @@
 
 .contact-banner-bg {
     object-fit: cover;
-    width: 100vw;
+    width: 100%;
     height: 100%;
     right: 0;
     left: auto;
