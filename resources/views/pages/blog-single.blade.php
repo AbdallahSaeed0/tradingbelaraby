@@ -14,7 +14,7 @@
                     <h1 class="display-4 fw-bold text-white mb-3">{{ $blog->getLocalizedTitle() }}</h1>
                     <div class="d-flex justify-content-center align-items-center mb-3 text-white">
                         <span class="me-3">
-                            <i class="fas fa-calendar me-1"></i> {{ $blog->created_at->format('F d, Y') }}
+                            <i class="fas fa-calendar me-1"></i> {{ $blog->created_at->translatedFormat('F d, Y') }}
                         </span>
                         <span class="me-3">
                             <i class="fas fa-eye me-1"></i> {{ $blog->views_count }} {{ custom_trans('views', 'front') }}
@@ -85,10 +85,10 @@
                         <div class="blog-meta d-flex justify-content-between align-items-center">
                             <div class="d-flex align-items-center">
                                 <span class="text-muted me-3">
-                                    <i class="fas fa-calendar me-1"></i> {{ $blog->created_at->format('M d, Y') }}
+                                    <i class="fas fa-calendar me-1"></i> {{ $blog->created_at->translatedFormat('M d, Y') }}
                                 </span>
                                 <span class="text-muted me-3">
-                                    <i class="fas fa-eye me-1"></i> {{ $blog->views_count }} views
+                                    <i class="fas fa-eye me-1"></i> {{ $blog->views_count }} {{ custom_trans('views', 'front') }}
                                 </span>
                                 @if ($blog->category)
                                     <span class="text-muted">
@@ -99,10 +99,10 @@
                             </div>
                             <div class="d-flex gap-2">
                                 <button class="btn btn-outline-primary btn-sm" onclick="shareBlog()">
-                                    <i class="fas fa-share me-1"></i> Share
+                                    <i class="fas fa-share me-1"></i> {{ custom_trans('Share', 'front') }}
                                 </button>
                                 <a href="{{ route('blog.index') }}" class="btn btn-outline-secondary btn-sm">
-                                    <i class="fas fa-arrow-left me-1"></i> Back to Blog
+                                    <i class="fas fa-arrow-left me-1"></i> {{ custom_trans('Back to Blog', 'front') }}
                                 </a>
                             </div>
                         </div>
@@ -111,7 +111,7 @@
                     <!-- Related Blogs -->
                     @if ($relatedBlogs->count() > 0)
                         <div class="related-blogs">
-                            <h3 class="mb-4">Related Articles</h3>
+                            <h3 class="mb-4">{{ custom_trans('Related Articles', 'front') }}</h3>
                             <div class="row g-4">
                                 @foreach ($relatedBlogs as $relatedBlog)
                                     <div class="col-md-6">
@@ -134,11 +134,11 @@
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <small class="text-muted">
                                                         <i class="fas fa-calendar me-1"></i>
-                                                        {{ $relatedBlog->created_at->format('M d, Y') }}
+                                                        {{ $relatedBlog->created_at->translatedFormat('M d, Y') }}
                                                     </small>
                                                     <a href="{{ route('blog.show', $relatedBlog->slug) }}"
                                                         class="btn btn-sm btn-outline-primary">
-                                                        Read More
+                                                        {{ custom_trans('Read More', 'front') }}
                                                     </a>
                                                 </div>
                                             </div>
@@ -157,7 +157,7 @@
                         @if ($categories->count() > 0)
                             <div class="card shadow-sm mb-4">
                                 <div class="card-header">
-                                    <h5 class="mb-0">Categories</h5>
+                                    <h5 class="mb-0">{{ custom_trans('Categories', 'front') }}</h5>
                                 </div>
                                 <div class="card-body">
                                     <div class="list-group list-group-flush">
@@ -177,7 +177,7 @@
                         <!-- Recent Posts -->
                         <div class="card shadow-sm">
                             <div class="card-header">
-                                <h5 class="mb-0">Recent Posts</h5>
+                                <h5 class="mb-0">{{ custom_trans('Recent Posts', 'front') }}</h5>
                             </div>
                             <div class="card-body">
                                 @php
@@ -209,12 +209,12 @@
                                                     </a>
                                                 </h6>
                                                 <small
-                                                    class="text-muted">{{ $recentBlog->created_at->format('M d, Y') }}</small>
+                                                    class="text-muted">{{ $recentBlog->created_at->translatedFormat('M d, Y') }}</small>
                                             </div>
                                         </div>
                                     @endforeach
                                 @else
-                                    <p class="text-muted mb-0">No recent posts.</p>
+                                    <p class="text-muted mb-0">{{ custom_trans('No recent posts.', 'front') }}</p>
                                 @endif
                             </div>
                         </div>

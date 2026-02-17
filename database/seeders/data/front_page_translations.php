@@ -2137,6 +2137,26 @@ return [
         'en' => 'No blogs found',
         'ar' => 'لم يتم العثور على مدونات',
     ],
+    'Recent Posts' => [
+        'en' => 'Recent Posts',
+        'ar' => 'المقالات الأخيرة',
+    ],
+    'Back to Blog' => [
+        'en' => 'Back to Blog',
+        'ar' => 'العودة إلى المدونة',
+    ],
+    'Share' => [
+        'en' => 'Share',
+        'ar' => 'مشاركة',
+    ],
+    'Related Articles' => [
+        'en' => 'Related Articles',
+        'ar' => 'مقالات ذات صلة',
+    ],
+    'No recent posts.' => [
+        'en' => 'No recent posts.',
+        'ar' => 'لا توجد مقالات حديثة.',
+    ],
     'Check back later for new blog posts.' => [
         'en' => 'Check back later for new blog posts.',
         'ar' => 'عد لاحقاً للمزيد من المقالات.',

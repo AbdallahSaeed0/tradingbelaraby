@@ -89,7 +89,7 @@
                                         <div class="d-flex justify-content-between align-items-center">
                                             <div class="course-price">
                                                 @if ($course->is_free)
-                                                    <span class="text-success fw-bold">Free</span>
+                                                    <span class="text-success fw-bold">{{ custom_trans('free', 'front') }}</span>
                                                 @else
                                                     <span
                                                         class="text-primary fw-bold">${{ number_format($course->price, 2) }}</span>
@@ -205,7 +205,7 @@
                                         <div class="d-flex justify-content-between align-items-center">
                                             <div class="course-price">
                                                 @if ($course->is_free)
-                                                    <span class="text-success fw-bold">Free</span>
+                                                    <span class="text-success fw-bold">{{ custom_trans('free', 'front') }}</span>
                                                 @else
                                                     <span
                                                         class="text-primary fw-bold">${{ number_format($course->price, 2) }}</span>

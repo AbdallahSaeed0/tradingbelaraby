@@ -23,13 +23,13 @@
         <p class="home-courses-slider__card-desc">{{ Str::limit($course->localized_description, 80) }}</p>
         <div class="home-courses-slider__card-price">
             @if ($course->is_discounted)
-                <span class="home-courses-slider__price-current">{{ $course->formatted_price }}</span>
+                <span class="home-courses-slider__price-current">{{ $course->is_free ? custom_trans('free', 'front') : $course->formatted_price }}</span>
                 <span class="home-courses-slider__price-old" aria-hidden="true">{{ $course->formatted_original_price }}</span>
                 @if ($course->discount_percentage)
                     <span class="home-courses-slider__discount-pill">{{ $course->discount_percentage }}% {{ custom_trans('Discount', 'front') }}</span>
                 @endif
             @else
-                <span class="home-courses-slider__price-current">{{ $course->formatted_price }}</span>
+                <span class="home-courses-slider__price-current">{{ $course->is_free ? custom_trans('free', 'front') : $course->formatted_price }}</span>
             @endif
         </div>
         <div class="home-courses-slider__card-ctas">
