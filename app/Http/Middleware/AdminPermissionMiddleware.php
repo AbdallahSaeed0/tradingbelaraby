@@ -30,10 +30,10 @@ class AdminPermissionMiddleware
             return $next($request);
         }
 
-        // Handle multiple permissions (comma-separated)
+        // Handle multiple permissions (comma-separated) - OR logic: pass if admin has ANY
         $permissions = array_map('trim', explode(',', $permission));
 
-        // Check if admin has ANY of the required permissions
+        // Check if admin has ANY of the required permissions (e.g. manage_courses,manage_own_courses)
         $hasPermission = false;
         foreach ($permissions as $perm) {
             if ($admin->hasPermission($perm)) {

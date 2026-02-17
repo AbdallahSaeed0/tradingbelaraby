@@ -101,10 +101,31 @@ class CoursesController extends Controller
     }
 
     /**
+     * Authorize that the current admin can access this course.
+     * Admins with manage_courses can access any course; those with only manage_own_courses can access only their own.
+     */
+    protected function authorizeCourseAccess(Course $course): void
+    {
+        $admin = auth('admin')->user();
+        if ($admin->hasPermission('manage_courses')) {
+            return; // Full access
+        }
+        if ($admin->hasPermission('manage_own_courses')) {
+            $isOwner = $course->instructor_id === $admin->id
+                || $course->instructors()->where('admins.id', $admin->id)->exists();
+            if ($isOwner) {
+                return;
+            }
+        }
+        abort(403, 'Access denied. You do not have permission to access this course.');
+    }
+
+    /**
      * Duplicate a course and redirect to the edit page for the new copy.
      */
     public function duplicate(Course $course)
     {
+        $this->authorizeCourseAccess($course);
         $newCourse = $this->duplicateService->duplicate($course);
 
         return redirect()
@@ -115,9 +136,14 @@ class CoursesController extends Controller
     public function create()
     {
         $categories = CourseCategory::all();
-        $instructors = Admin::whereHas('adminType', function($query) {
-            $query->where('name', 'instructor');
-        })->get();
+        $admin = auth('admin')->user();
+        if ($admin->hasPermission('manage_own_courses') && !$admin->hasPermission('manage_courses')) {
+            $instructors = collect([$admin]);
+        } else {
+            $instructors = Admin::whereHas('adminType', function($query) {
+                $query->where('name', 'instructor');
+            })->get();
+        }
         return view('admin.courses.create', compact('categories', 'instructors'));
     }
 
@@ -181,7 +207,12 @@ class CoursesController extends Controller
         ]);
 
         // Set the first instructor as the main instructor_id for legacy compatibility
-        if (!empty($request->instructor_ids)) {
+        $admin = auth('admin')->user();
+        if ($admin->hasPermission('manage_own_courses') && !$admin->hasPermission('manage_courses')) {
+            // Instructor: force themselves as the only instructor, prevent spoofing
+            $data['instructor_id'] = $admin->id;
+            $data['instructor_ids'] = [$admin->id];
+        } elseif (!empty($request->instructor_ids)) {
             $data['instructor_id'] = $request->instructor_ids[0];
         }
 
@@ -246,8 +277,8 @@ class CoursesController extends Controller
         $course = Course::create($data);
 
         // Sync instructors (many-to-many relationship)
-        if (!empty($request->instructor_ids)) {
-            $course->instructors()->sync($request->instructor_ids);
+        if (!empty($data['instructor_ids'])) {
+            $course->instructors()->sync($data['instructor_ids']);
         }
 
         // Handle learning items (what you'll learn)
@@ -319,6 +350,7 @@ class CoursesController extends Controller
 
     public function show(Course $course)
     {
+        $this->authorizeCourseAccess($course);
         $course->load(['category', 'instructor', 'sections.lectures', 'enrollments.user']);
 
         // Get course statistics
@@ -343,6 +375,7 @@ class CoursesController extends Controller
 
     public function edit(Course $course)
     {
+        $this->authorizeCourseAccess($course);
         $categories = CourseCategory::all();
         $instructors = Admin::whereHas('adminType', function($query) {
             $query->where('name', 'instructor');
@@ -353,6 +386,7 @@ class CoursesController extends Controller
 
     public function update(Request $request, Course $course)
     {
+        $this->authorizeCourseAccess($course);
         try {
             $data = $request->validate([
             // Basic fields
@@ -428,7 +462,15 @@ class CoursesController extends Controller
         ]);
 
         // Set the first instructor as the main instructor_id for legacy compatibility
-        if (!empty($request->instructor_ids)) {
+        $admin = auth('admin')->user();
+        if ($admin->hasPermission('manage_own_courses') && !$admin->hasPermission('manage_courses')) {
+            // Instructor: cannot change course ownership; preserve existing instructors
+            $data['instructor_id'] = $course->instructor_id;
+            $data['instructor_ids'] = $course->instructors->pluck('id')->toArray();
+            if (empty($data['instructor_ids']) && $course->instructor_id) {
+                $data['instructor_ids'] = [$course->instructor_id];
+            }
+        } elseif (!empty($request->instructor_ids)) {
             $data['instructor_id'] = $request->instructor_ids[0];
         }
 
@@ -743,6 +785,7 @@ class CoursesController extends Controller
 
     public function destroy(Course $course)
     {
+        $this->authorizeCourseAccess($course);
         $course->delete();
         return redirect()->route('admin.courses.index')->with('success', 'Course deleted successfully.');
     }
@@ -1056,7 +1099,15 @@ class CoursesController extends Controller
             'course_ids.*' => 'exists:courses,id'
         ]);
 
-        $deleted = Course::whereIn('id', $request->course_ids)->delete();
+        $query = Course::whereIn('id', $request->course_ids);
+        $admin = auth('admin')->user();
+        if ($admin->hasPermission('manage_own_courses') && !$admin->hasPermission('manage_courses')) {
+            $query->where(function ($q) use ($admin) {
+                $q->where('instructor_id', $admin->id)
+                    ->orWhereHas('instructors', fn($rel) => $rel->where('admins.id', $admin->id));
+            });
+        }
+        $deleted = $query->delete();
 
         return redirect()->route('admin.courses.index')
             ->with('success', "Successfully deleted {$deleted} courses.");
@@ -1070,8 +1121,15 @@ class CoursesController extends Controller
             'status' => 'required|in:published,draft,archived'
         ]);
 
-        $updated = Course::whereIn('id', $request->course_ids)
-            ->update(['status' => $request->status]);
+        $query = Course::whereIn('id', $request->course_ids);
+        $admin = auth('admin')->user();
+        if ($admin->hasPermission('manage_own_courses') && !$admin->hasPermission('manage_courses')) {
+            $query->where(function ($q) use ($admin) {
+                $q->where('instructor_id', $admin->id)
+                    ->orWhereHas('instructors', fn($rel) => $rel->where('admins.id', $admin->id));
+            });
+        }
+        $updated = $query->update(['status' => $request->status]);
 
         return redirect()->route('admin.courses.index')
             ->with('success', "Successfully updated status for {$updated} courses.");
@@ -1079,6 +1137,7 @@ class CoursesController extends Controller
 
     public function updateStatus(Request $request, Course $course)
     {
+        $this->authorizeCourseAccess($course);
         $request->validate([
             'status' => 'required|in:published,draft,archived'
         ]);

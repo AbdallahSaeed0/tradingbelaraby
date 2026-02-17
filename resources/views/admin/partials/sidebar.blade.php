@@ -27,6 +27,8 @@
                     <i class="fa fa-book"></i>
                     <span class="sidebar-nav-text">Courses</span>
                 </a>
+            @endif
+            @if (auth('admin')->user()->hasPermission('manage_courses'))
                 <a href="{{ route('admin.bundles.index') }}"
                     class="list-group-item list-group-item-action {{ request()->routeIs('admin.bundles.*') ? 'active' : '' }}"
                     title="Bundles">
