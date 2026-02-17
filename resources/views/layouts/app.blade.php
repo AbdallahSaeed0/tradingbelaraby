@@ -834,7 +834,7 @@
     <div class="mobile-bottom-bar">
         <a href="{{ route('home') }}" class="mobile-nav-item {{ request()->routeIs('home') ? 'active' : '' }}">
             <i class="fas fa-home"></i>
-            <span>Home</span>
+            <span>{{ custom_trans('home', 'front') }}</span>
         </a>
         <a href="{{ route('categories.index') }}"
             class="mobile-nav-item {{ request()->routeIs('categories.*') ? 'active' : '' }}">
