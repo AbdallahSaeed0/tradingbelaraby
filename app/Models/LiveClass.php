@@ -15,7 +15,9 @@ class LiveClass extends Model
         'course_id',
         'instructor_id',
         'name',
+        'name_ar',
         'description',
+        'description_ar',
         'link',
         'scheduled_at',
         'duration_minutes',
@@ -27,7 +29,44 @@ class LiveClass extends Model
         'is_free',
         'requires_registration',
         'instructions',
+        'instructions_ar',
     ];
+
+    /**
+     * Get localized name based on current language
+     */
+    public function getLocalizedNameAttribute(): string
+    {
+        $lang = \App\Helpers\TranslationHelper::getCurrentLanguage();
+        if ($lang && $lang->code === 'ar' && $this->name_ar) {
+            return $this->name_ar;
+        }
+        return $this->name ?? '';
+    }
+
+    /**
+     * Get localized description
+     */
+    public function getLocalizedDescriptionAttribute(): ?string
+    {
+        $lang = \App\Helpers\TranslationHelper::getCurrentLanguage();
+        if ($lang && $lang->code === 'ar' && $this->description_ar) {
+            return $this->description_ar;
+        }
+        return $this->description;
+    }
+
+    /**
+     * Get localized instructions
+     */
+    public function getLocalizedInstructionsAttribute(): ?string
+    {
+        $lang = \App\Helpers\TranslationHelper::getCurrentLanguage();
+        if ($lang && $lang->code === 'ar' && $this->instructions_ar) {
+            return $this->instructions_ar;
+        }
+        return $this->instructions;
+    }
 
     protected $casts = [
         'scheduled_at' => 'datetime',

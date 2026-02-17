@@ -138,7 +138,36 @@ class StudentController extends Controller
             }]);
         }]);
 
-        return view('student.learn-course', compact('enrollment', 'course'));
+        // Compute last/next lecture for "Continue to Lecture" modal
+        $resumeLecture = null;
+        $lastCompletion = LectureCompletion::where('user_id', $user->id)
+            ->where('course_id', $course->id)
+            ->whereIn('lecture_id', $course->sections->flatMap->lectures->pluck('id'))
+            ->orderByDesc('last_accessed_at')
+            ->with('lecture.section')
+            ->first();
+        if ($lastCompletion && $lastCompletion->lecture && $lastCompletion->lecture->section) {
+            $lecture = $lastCompletion->lecture;
+            $resumeLecture = [
+                'id' => $lecture->id,
+                'section_id' => $lecture->section->id,
+                'title' => $lecture->title,
+                'title_ar' => $lecture->title_ar,
+            ];
+        } else {
+            $firstSection = $course->sections()->orderBy('order')->first();
+            $firstLecture = $firstSection ? $firstSection->lectures()->orderBy('order')->first() : null;
+            if ($firstLecture) {
+                $resumeLecture = [
+                    'id' => $firstLecture->id,
+                    'section_id' => $firstLecture->section_id,
+                    'title' => $firstLecture->title,
+                    'title_ar' => $firstLecture->title_ar,
+                ];
+            }
+        }
+
+        return view('student.learn-course', compact('enrollment', 'course', 'resumeLecture'));
     }
 
     /**

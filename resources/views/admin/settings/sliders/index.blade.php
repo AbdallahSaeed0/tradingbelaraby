@@ -35,36 +35,31 @@
         <div class="card mb-4">
             <div class="card-body">
                 <form method="GET" action="{{ route('admin.settings.sliders.index') }}" id="filterForm">
-                                <div class="row g-3">
+                                <div class="row g-3 align-items-end">
                                     <div class="col-md-3">
-                            <select class="form-select" name="status" id="status_filter">
+                                        <label class="form-label small mb-1">{{ custom_trans('Status', 'admin') }}</label>
+                                        <select class="form-select" name="status" id="status_filter">
                                             <option value="">{{ custom_trans('All Status', 'admin') }}</option>
-                                <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>{{ custom_trans('Active', 'admin') }}</option>
-                                <option value="0" {{ request('status') == '0' ? 'selected' : '' }}>{{ custom_trans('Inactive', 'admin') }}</option>
+                                            <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>{{ custom_trans('Active', 'admin') }}</option>
+                                            <option value="0" {{ request('status') == '0' ? 'selected' : '' }}>{{ custom_trans('Inactive', 'admin') }}</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="input-group">
-                                <span class="input-group-text"><i class="fa fa-search"></i></span>
-                                <input type="text" class="form-control" name="search" id="search_filter"
-                                                placeholder="{{ custom_trans('Search by title, welcome text, or subtitle...', 'admin') }}"
-                                    value="{{ request('search') }}" autocomplete="off">
-                                        </div>
-                                    </div>
                                     <div class="col-md-3">
-                            <select class="form-select" name="order" id="order_filter">
+                                        <label class="form-label small mb-1">{{ custom_trans('Sort by', 'admin') }}</label>
+                                        <select class="form-select" name="order" id="order_filter">
                                             <option value="order">{{ custom_trans('Order', 'admin') }}</option>
                                             <option value="title">{{ custom_trans('Title', 'admin') }}</option>
                                             <option value="created_at">{{ custom_trans('Created Date', 'admin') }}</option>
                                         </select>
                                     </div>
                                     <div class="col-md-2">
-                            <div class="d-flex gap-2">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fa fa-search me-1"></i>{{ custom_trans('Filter', 'admin') }}
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fa fa-filter me-1"></i>{{ custom_trans('Filter', 'admin') }}
                                         </button>
-                                <button type="button" class="btn btn-outline-secondary" id="clear_filters">
-                                    <i class="fa fa-refresh me-1"></i>{{ custom_trans('Clear', 'admin') }}
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-outline-secondary" id="clear_filters">
+                                            <i class="fa fa-refresh me-1"></i>{{ custom_trans('Clear', 'admin') }}
                                         </button>
                                     </div>
                                 </div>
@@ -286,12 +281,12 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="background_image" class="form-label">{{ custom_trans('Background Image', 'admin') }}
-                                        *</label>
+                                    <label for="background_image" class="form-label">{{ custom_trans('Background Image', 'admin') }} *</label>
                                     <input type="file" class="form-control" id="background_image"
-                                        name="background_image" accept="image/*" required>
-                                    <small
-                                        class="form-text text-muted">{{ custom_trans('Max size: 2MB. Formats: JPEG, PNG, JPG, GIF', 'admin') }}</small>
+                                        name="background_image" accept="image/jpeg,image/jpg,image/png,image/webp" required>
+                                    <small class="form-text text-muted d-block mt-1">{{ custom_trans('Max size: 5MB. Formats: JPG, JPEG, PNG, WEBP', 'admin') }}</small>
+                                    <div id="background_image_error" class="invalid-feedback d-none"></div>
+                                    <div id="background_image_preview" class="mt-2"></div>
                                 </div>
                             </div>
                         </div>
@@ -437,12 +432,11 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="edit_background_image"
-                                        class="form-label">{{ custom_trans('Background Image', 'admin') }}</label>
+                                    <label for="edit_background_image" class="form-label">{{ custom_trans('Background Image', 'admin') }}</label>
                                     <input type="file" class="form-control" id="edit_background_image"
-                                        name="background_image" accept="image/*">
-                                    <small
-                                        class="form-text text-muted">{{ custom_trans('Max size: 2MB. Formats: JPEG, PNG, JPG, GIF', 'admin') }}</small>
+                                        name="background_image" accept="image/jpeg,image/jpg,image/png,image/webp">
+                                    <small class="form-text text-muted d-block mt-1">{{ custom_trans('Max size: 5MB. Formats: JPG, JPEG, PNG, WEBP', 'admin') }}</small>
+                                    <div id="edit_background_image_error" class="invalid-feedback d-none"></div>
                                     <div id="current_image_preview" class="mt-2"></div>
                                 </div>
                             </div>
@@ -781,61 +775,81 @@
                 }
             });
 
-            // Debounce function for search
-            function debounce(func, wait) {
-                let timeout;
-                return function executedFunction(...args) {
-                    const later = () => {
-                        clearTimeout(timeout);
-                        func(...args);
-                    };
-                    clearTimeout(timeout);
-                    timeout = setTimeout(later, wait);
-                };
-            }
-
             // Apply filters function
             function applyFilters() {
                 const status = $('#status_filter').val();
-                const search = $('#search_filter').val();
                 const orderBy = $('#order_filter').val();
-
-                window.location.href = '{{ route('admin.settings.sliders.index') }}?' + $.param({
-                    status: status,
-                    search: search,
-                    order_by: orderBy
-                });
+                const params = {};
+                if (status) params.status = status;
+                if (orderBy && orderBy !== 'order') params.order_by = orderBy;
+                window.location.href = '{{ route('admin.settings.sliders.index') }}' + (Object.keys(params).length ? '?' + $.param(params) : '');
             }
 
-            // Debounced search function
-            const debouncedSearch = debounce(applyFilters, 500);
-
-            // Filters
-            $('#apply_filters').on('click', function() {
-                applyFilters();
-            });
-
-            // Automatic search on input change
-            $('#search_filter').on('input', function() {
-                debouncedSearch();
-            });
-
-            // Automatic filter on status change
+            // Automatic filter on change
             $('#status_filter, #order_filter').on('change', function() {
                 applyFilters();
             });
 
             $('#clear_filters').on('click', function() {
                 $('#status_filter').val('');
-                $('#search_filter').val('');
                 $('#order_filter').val('order');
                 applyFilters();
+            });
+
+            $('#addSliderModal').on('hidden.bs.modal', function() {
+                $('#addSliderForm')[0].reset();
+                $('#background_image_preview').empty();
+                $('#background_image_error').addClass('d-none').text('');
+                $('#background_image').removeClass('is-invalid');
+            });
+
+            // Add form: image preview and clear errors
+            $('#background_image').on('change', function() {
+                const err = $('#background_image_error');
+                err.addClass('d-none').text('');
+                $('#background_image').removeClass('is-invalid');
+                const preview = $('#background_image_preview');
+                preview.empty();
+                const file = this.files[0];
+                if (file) {
+                    if (file.size > 5 * 1024 * 1024) {
+                        err.text('{{ custom_trans('The image may not be greater than 5MB.', 'admin') }}').removeClass('d-none');
+                        $('#background_image').addClass('is-invalid');
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.html('<img src="' + e.target.result + '" alt="Preview" class="img-thumbnail" style="max-height:120px">');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Edit form: image preview and clear errors
+            $('#edit_background_image').on('change', function() {
+                const err = $('#edit_background_image_error');
+                err.addClass('d-none').text('');
+                $('#edit_background_image').removeClass('is-invalid');
+                const file = this.files[0];
+                if (file) {
+                    if (file.size > 5 * 1024 * 1024) {
+                        err.text('{{ custom_trans('The image may not be greater than 5MB.', 'admin') }}').removeClass('d-none');
+                        $('#edit_background_image').addClass('is-invalid');
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#current_image_preview').html('<img src="' + e.target.result + '" alt="Preview" class="img-thumbnail" style="max-height:120px">');
+                    };
+                    reader.readAsDataURL(file);
+                }
             });
 
             // Add Slider Form Submission
             $('#addSliderForm').on('submit', function(e) {
                 e.preventDefault();
-
+                $('#background_image_error').addClass('d-none').text('');
+                $('#background_image').removeClass('is-invalid');
                 const formData = new FormData(this);
 
                 $.ajax({
@@ -854,6 +868,10 @@
                     error: function(xhr) {
                         if (xhr.status === 422) {
                             const errors = xhr.responseJSON.errors;
+                            if (errors.background_image) {
+                                $('#background_image_error').text(errors.background_image[0]).removeClass('d-none');
+                                $('#background_image').addClass('is-invalid');
+                            }
                             Object.keys(errors).forEach(function(key) {
                                 toastr.error(errors[key][0]);
                             });
@@ -919,7 +937,8 @@
             // Edit Slider Form Submission
             $('#editSliderForm').on('submit', function(e) {
                 e.preventDefault();
-
+                $('#edit_background_image_error').addClass('d-none').text('');
+                $('#edit_background_image').removeClass('is-invalid');
                 const sliderId = $('#edit_slider_id').val();
                 const formData = new FormData(this);
 
@@ -939,6 +958,10 @@
                     error: function(xhr) {
                         if (xhr.status === 422) {
                             const errors = xhr.responseJSON.errors;
+                            if (errors.background_image) {
+                                $('#edit_background_image_error').text(errors.background_image[0]).removeClass('d-none');
+                                $('#edit_background_image').addClass('is-invalid');
+                            }
                             Object.keys(errors).forEach(function(key) {
                                 toastr.error(errors[key][0]);
                             });

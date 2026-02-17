@@ -89,14 +89,19 @@ class EnrollmentController extends Controller
         }
 
         // Return JSON for AJAX requests, redirect for regular requests
+        $locale = Session::get('frontend_locale', config('app.locale'));
+        $locale = in_array($locale, ['ar', 'en']) ? $locale : 'en';
+        \App::setLocale($locale);
+        $successMessage = $locale === 'ar' ? 'تم التسجيل بنجاح' : 'Enrolled successfully';
+
         if ($request->expectsJson()) {
             return response()->json([
                 'success' => true,
-                'message' => 'Successfully enrolled in course!'
+                'message' => $successMessage
             ]);
         }
 
-        return redirect()->route('courses.show', $course->id)->with('success', 'Enrolled successfully!');
+        return redirect()->route('courses.show', $course->id)->with('success', $successMessage);
 
         } catch (\Exception $e) {
             Log::error('Enrollment error', [

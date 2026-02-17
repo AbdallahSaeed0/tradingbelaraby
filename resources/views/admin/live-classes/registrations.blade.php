@@ -11,7 +11,7 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <h4 class="mb-0">
                                 <i class="fas fa-users me-2"></i>
-                                Registrations for: {{ $liveClass->title }}
+                                Registrations for: {{ $liveClass->name }}
                             </h4>
                             <div>
                                 <a href="{{ route('admin.live-classes.index') }}" class="btn btn-outline-secondary">
@@ -28,7 +28,7 @@
                                 <table class="table table-borderless">
                                     <tr>
                                         <td><strong>Title:</strong></td>
-                                        <td>{{ $liveClass->title }}</td>
+                                        <td>{{ $liveClass->name }}</td>
                                     </tr>
                                     <tr>
                                         <td><strong>Course:</strong></td>

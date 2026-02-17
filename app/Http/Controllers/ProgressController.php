@@ -490,7 +490,7 @@ class ProgressController extends Controller
             ->map(function($registration) {
                 return [
                     'type' => 'live_class_attended',
-                    'title' => 'Attended: ' . $registration->liveClass->title,
+                    'title' => 'Attended: ' . $registration->liveClass->localized_name,
                     'course' => $registration->liveClass->course->name,
                     'date' => $registration->joined_at,
                     'details' => [

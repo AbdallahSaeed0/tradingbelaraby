@@ -88,7 +88,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group mb-3">
-                                            <label for="name" class="form-label">Class Name <span
+                                            <label for="name" class="form-label">Class Name (English) <span
                                                     class="text-danger">*</span></label>
                                             <input type="text" class="form-control @error('name') is-invalid @enderror"
                                                 id="name" name="name" value="{{ old('name', $liveClass->name) }}"
@@ -98,7 +98,16 @@
                                             @enderror
                                         </div>
                                     </div>
-
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label for="name_ar" class="form-label">Class Name (Arabic)</label>
+                                            <input type="text" class="form-control @error('name_ar') is-invalid @enderror"
+                                                id="name_ar" name="name_ar" value="{{ old('name_ar', $liveClass->name_ar) }}" dir="rtl">
+                                            @error('name_ar')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
                                     <div class="col-md-6">
                                         <div class="form-group mb-3">
                                             <label for="course_id" class="form-label">Course <span
@@ -121,10 +130,18 @@
                                 </div>
 
                                 <div class="form-group mb-3">
-                                    <label for="description" class="form-label">Description</label>
+                                    <label for="description" class="form-label">Description (English)</label>
                                     <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description"
                                         rows="3" placeholder="Enter class description...">{{ old('description', $liveClass->description) }}</textarea>
                                     @error('description')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="description_ar" class="form-label">Description (Arabic)</label>
+                                    <textarea class="form-control @error('description_ar') is-invalid @enderror" id="description_ar" name="description_ar"
+                                        rows="3" placeholder="أدخل وصف المحاضرة..." dir="rtl">{{ old('description_ar', $liveClass->description_ar) }}</textarea>
+                                    @error('description_ar')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -141,10 +158,18 @@
                                 </div>
 
                                 <div class="form-group mb-3">
-                                    <label for="instructions" class="form-label">Pre-class Instructions</label>
+                                    <label for="instructions" class="form-label">Pre-class Instructions (English)</label>
                                     <textarea class="form-control @error('instructions') is-invalid @enderror" id="instructions" name="instructions"
                                         rows="3" placeholder="Enter instructions for students...">{{ old('instructions', $liveClass->instructions) }}</textarea>
                                     @error('instructions')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="instructions_ar" class="form-label">Pre-class Instructions (Arabic)</label>
+                                    <textarea class="form-control @error('instructions_ar') is-invalid @enderror" id="instructions_ar" name="instructions_ar"
+                                        rows="3" placeholder="أدخل تعليمات الطلاب قبل المحاضرة..." dir="rtl">{{ old('instructions_ar', $liveClass->instructions_ar) }}</textarea>
+                                    @error('instructions_ar')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>

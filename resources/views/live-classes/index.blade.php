@@ -22,7 +22,7 @@
                         @forelse ($liveClasses as $liveClass)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $liveClass->title }}</td>
+                                <td>{{ $liveClass->localized_name }}</td>
                                 <td>{{ $liveClass->course->name ?? '-' }}</td>
                                 <td>{{ $liveClass->scheduled_at ? $liveClass->scheduled_at->format('M d, Y H:i') : '-' }}
                                 </td>

@@ -38,7 +38,7 @@
                                 <div class="col-md-8">
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
-                                            <label for="name" class="form-label">Full Name <span
+                                            <label for="name" class="form-label">Full Name (English) <span
                                                     class="text-danger">*</span></label>
                                             <input type="text" name="name" id="name"
                                                 class="form-control @error('name') is-invalid @enderror"
@@ -47,7 +47,17 @@
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
-
+                                        <div class="col-md-6 mb-3">
+                                            <label for="name_ar" class="form-label">Full Name (Arabic)</label>
+                                            <input type="text" name="name_ar" id="name_ar"
+                                                class="form-control @error('name_ar') is-invalid @enderror"
+                                                value="{{ old('name_ar', $admin->name_ar) }}" dir="rtl">
+                                            @error('name_ar')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label for="email" class="form-label">Email Address <span
                                                     class="text-danger">*</span></label>
@@ -58,9 +68,6 @@
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
-                                    </div>
-
-                                    <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label for="phone" class="form-label">Phone Number</label>
                                             <input type="text" name="phone" id="phone"
@@ -136,12 +143,12 @@
                                             </div>
                                         @endif
 
-                                        <div class="avatar-upload-area" id="avatarUploadArea">
+                                        <div class="avatar-upload-area border rounded p-4 text-center" id="avatarUploadArea">
                                             <i class="fa fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
                                             <p class="text-muted mb-2">Drag and drop an image here or click to select</p>
-                                            <p class="text-muted small">Recommended size: 200x200px</p>
+                                            <p class="text-muted small mb-0">Max 5MB. JPG, PNG, WEBP</p>
                                             <input type="file" class="d-none" id="avatar" name="avatar"
-                                                accept="image/*">
+                                                accept="image/jpeg,image/jpg,image/png,image/webp">
                                         </div>
                                         <div id="avatarPreview" class="mt-3 text-center d-none-initially">
                                             <img id="previewImg" class="avatar-preview mb-2">
@@ -170,13 +177,12 @@
                                             </div>
                                         @endif
 
-                                        <div class="cover-upload-area" id="coverUploadArea">
+                                        <div class="cover-upload-area border rounded p-4 text-center" id="coverUploadArea">
                                             <i class="fa fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
-                                            <p class="text-muted mb-2">Drag and drop a cover image here or click to select
-                                            </p>
-                                            <p class="text-muted small">Recommended size: 800x400px</p>
+                                            <p class="text-muted mb-2">Drag and drop a cover image here or click to select</p>
+                                            <p class="text-muted small mb-0">Max 5MB. JPG, PNG, WEBP</p>
                                             <input type="file" class="d-none" id="cover" name="cover"
-                                                accept="image/*">
+                                                accept="image/jpeg,image/jpg,image/png,image/webp">
                                         </div>
                                         <div id="coverPreview" class="mt-3 text-center d-none-initially">
                                             <img id="previewCoverImg" class="cover-preview mb-2">

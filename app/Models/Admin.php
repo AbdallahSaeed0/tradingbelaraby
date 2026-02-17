@@ -12,6 +12,7 @@ class Admin extends Authenticatable
 
     protected $fillable = [
         'name',
+        'name_ar',
         'email',
         'password',
         'admin_type_id',
@@ -122,6 +123,18 @@ class Admin extends Authenticatable
     public function isEmployee()
     {
         return $this->isType('employee');
+    }
+
+    /**
+     * Get localized name based on current language
+     */
+    public function getLocalizedName(): ?string
+    {
+        $currentLanguage = \App\Helpers\TranslationHelper::getCurrentLanguage();
+        if ($currentLanguage && $currentLanguage->code === 'ar' && $this->name_ar) {
+            return $this->name_ar;
+        }
+        return $this->name;
     }
 
     /**

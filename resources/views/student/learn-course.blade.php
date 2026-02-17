@@ -22,6 +22,7 @@
     @include('courses.partials.course-progress', [
         'course' => $course,
         'userEnrollment' => $enrollment,
+        'resumeLecture' => $resumeLecture ?? null,
     ])
 
     <!-- Tabs Section -->
@@ -88,13 +89,13 @@
                                         <div class="col-lg-6">
                                             <div class="live-class-card bg-white p-4 rounded-4 shadow-sm h-100">
                                                 <div class="d-flex justify-content-between align-items-start mb-3">
-                                                    <h5 class="fw-bold mb-0">{{ $liveClass->title }}</h5>
+                                                    <h5 class="fw-bold mb-0" @if (\App\Helpers\TranslationHelper::getFrontendLanguage()->code === 'ar') dir="rtl" @endif>{{ $liveClass->localized_name }}</h5>
                                                     <span
                                                         class="badge bg-{{ $liveClass->status === 'scheduled' ? 'primary' : ($liveClass->status === 'live' ? 'success' : 'secondary') }}">
                                                         {{ ucfirst($liveClass->status) }}
                                                     </span>
                                                 </div>
-                                                <p class="text-muted mb-3">{{ $liveClass->description }}</p>
+                                                <p class="text-muted mb-3" @if (\App\Helpers\TranslationHelper::getFrontendLanguage()->code === 'ar') dir="rtl" @endif>{{ $liveClass->localized_description ?? '' }}</p>
 
                                                 @if ($isRegistered)
                                                     <div class="alert alert-success mb-3">
@@ -130,13 +131,8 @@
                                                         </div>
                                                         <div class="col-6">
                                                             <small class="text-muted">{{ custom_trans('Duration', 'front') }}:</small>
-                                                            <div class="fw-bold">{{ $liveClass->duration ?? '60' }}
+                                                            <div class="fw-bold">{{ $liveClass->duration_minutes ?? '60' }}
                                                                 {{ custom_trans('minutes', 'front') }}</div>
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <small class="text-muted">{{ custom_trans('Capacity', 'front') }}:</small>
-                                                            <div class="fw-bold">
-                                                                {{ $liveClass->max_participants ?? 'Unlimited' }}</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -683,6 +679,45 @@
         // Course Content Functionality
         document.addEventListener('DOMContentLoaded', function() {
             const courseId = {{ $course->id }};
+            const isRtl = document.documentElement.getAttribute('dir') === 'rtl';
+
+            // Continue to Lecture modal
+            const continueBtn = document.querySelector('.continue-to-lecture-btn');
+            const continueModalEl = document.getElementById('continueToLectureModal');
+            if (continueBtn && continueModalEl) {
+                const data = continueBtn.dataset.resumeLecture;
+                if (data) {
+                    try {
+                        const lecture = JSON.parse(data);
+                        continueBtn.addEventListener('click', function() {
+                            const titleEl = document.getElementById('continueToLectureTitle');
+                            const lang = isRtl ? 'ar' : 'en';
+                            titleEl.textContent = (lang === 'ar' ? lecture.title_ar || lecture.title : lecture.title || lecture.title_ar) || '';
+                            if (titleEl.getAttribute('dir') !== (lang === 'ar' ? 'rtl' : 'ltr')) {
+                                titleEl.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+                            }
+                            const modal = new bootstrap.Modal(continueModalEl);
+                            modal.show();
+                            document.getElementById('continueToLectureGoBtn').onclick = function() {
+                                modal.hide();
+                                const contentTab = document.getElementById('content-tab');
+                                const sectionCollapse = document.getElementById('section' + lecture.section_id);
+                                if (contentTab && sectionCollapse) {
+                                    bootstrap.Tab.getOrCreateInstance(contentTab).show();
+                                    const bsCollapse = bootstrap.Collapse.getOrCreateInstance(sectionCollapse);
+                                    bsCollapse.show();
+                                    setTimeout(function() {
+                                        const lectureCard = document.querySelector('[data-lecture="' + lecture.id + '"]');
+                                        if (lectureCard) {
+                                            lectureCard.closest('.class-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                        }
+                                    }, 350);
+                                }
+                            };
+                        });
+                    } catch (e) {}
+                }
+            }
             const sectionSelectCheckboxes = document.querySelectorAll('.section-select-checkbox');
             const lectureSelectCheckboxes = document.querySelectorAll('.lecture-select-checkbox');
             const markCompleteBtn = document.getElementById('markCompleteBtn');

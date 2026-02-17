@@ -1089,23 +1089,23 @@
                         })
                         .then(data => {
                             if (data && data.success) {
-                                // Show enrolled state first
-                                this.className = 'btn btn-success flex-fill';
-                                this.innerHTML = '<i class="fa fa-check me-1"></i>Enrolled';
+                                // Preserve button style (btn-orange / home slider primary)
+                                const btnClasses = this.className.replace(/\benroll-btn\b/, '').trim();
+                                const enrolledText = '{{ custom_trans("enrolled", "front") }}';
+                                this.className = btnClasses;
+                                this.innerHTML = '<i class="fa fa-check me-1"></i>' + enrolledText;
                                 this.disabled = true;
 
-                                // Show success message
-                                toastr.success(data.message ||
-                                    'Successfully enrolled in course!');
+                                // Show success message (server returns translated message)
+                                toastr.success(data.message || '{{ custom_trans("Enrolled successfully", "front") }}');
 
-                                // After 2 seconds, replace with "Go to Course" link
+                                // After 2 seconds, replace with "Go to Course" link - same style
+                                const goToCourseText = '{{ custom_trans("go_to_course", "front") }}';
                                 setTimeout(() => {
                                     const goToCourseLink = document.createElement('a');
                                     goToCourseLink.href = `/courses/${courseId}/learn`;
-                                    goToCourseLink.className =
-                                        'btn btn-success flex-fill';
-                                    goToCourseLink.innerHTML =
-                                        '<i class="fa fa-graduation-cap me-1"></i>Go to Course';
+                                    goToCourseLink.className = btnClasses;
+                                    goToCourseLink.innerHTML = '<i class="fa fa-graduation-cap me-1"></i>' + goToCourseText;
 
                                     this.parentNode.replaceChild(goToCourseLink, this);
                                 }, 2000);

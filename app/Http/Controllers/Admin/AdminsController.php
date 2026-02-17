@@ -101,12 +101,13 @@ class AdminsController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
+            'name_ar' => 'nullable|string|max:255',
             'email' => 'required|email|max:255|unique:admins,email',
             'password' => 'required|min:6',
             'admin_type_id' => 'required|exists:admin_types,id',
             'phone' => 'nullable|string|max:20',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'cover' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'avatar' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:5120',
+            'cover' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:5120',
             'about_me' => 'nullable|string',
             'about_me_ar' => 'nullable|string',
             'is_active' => 'boolean',
@@ -152,6 +153,7 @@ class AdminsController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
+            'name_ar' => 'nullable|string|max:255',
             'email' => 'required|email|max:255|unique:admins,email,' . $admin->id,
             'password' => 'nullable|min:6',
             'admin_type_id' => 'required|exists:admin_types,id',

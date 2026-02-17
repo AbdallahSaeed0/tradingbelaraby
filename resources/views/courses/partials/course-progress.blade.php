@@ -58,9 +58,36 @@
                         @endif
                     @endif
                 @else
-                    <button class="btn btn-orange px-4 py-2 fw-bold">{{ custom_trans('Continue To Lecture', 'front') }}</button>
+                    @php
+                        $resumeLecture = $resumeLecture ?? null;
+                    @endphp
+                    <button type="button" class="btn btn-orange px-4 py-2 fw-bold continue-to-lecture-btn"
+                        data-resume-lecture="{{ $resumeLecture ? json_encode($resumeLecture) : '' }}">
+                        {{ custom_trans('Continue To Lecture', 'front') }}
+                    </button>
                 @endif
             </div>
         </div>
     </div>
 </section>
+
+@if (isset($resumeLecture) && $resumeLecture && !($userEnrollment && $userEnrollment->status == 'completed'))
+{{-- Continue to Lecture Modal - rendered when resumeLecture exists --}}
+<div class="modal fade" id="continueToLectureModal" tabindex="-1" aria-labelledby="continueToLectureModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="continueToLectureModalLabel">{{ custom_trans('Continue To Lecture', 'front') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-0" id="continueToLectureTitle" @if (\App\Helpers\TranslationHelper::getFrontendLanguage()->code === 'ar') dir="rtl" @endif></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ custom_trans('Close', 'front') }}</button>
+                <button type="button" class="btn btn-orange" id="continueToLectureGoBtn">{{ custom_trans('Continue', 'front') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+@endif

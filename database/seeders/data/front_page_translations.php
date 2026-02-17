@@ -483,7 +483,7 @@ return [
         'ar' => 'انضم إلى الفصل',
     ],
     'Join Live Class' => [
-        'ar' => 'انضم إلى الفصل المباشر',
+        'ar' => 'انضم إلى المحاضرة المباشرة',
     ],
     'Join Meeting' => [
         'ar' => 'انضم إلى الاجتماع',
@@ -507,7 +507,7 @@ return [
         'ar' => 'اذكر شهاداتك ومؤهلاتك',
     ],
     'Live Class' => [
-        'ar' => 'فصل مباشر',
+        'ar' => 'محاضرة مباشرة',
     ],
     'Live Classes' => [
         'ar' => 'حصص مباشرة',
@@ -777,7 +777,7 @@ return [
         'ar' => 'جدولة فصل',
     ],
     'Schedule Live Class' => [
-        'ar' => 'جدولة فصل مباشر',
+        'ar' => 'جدولة محاضرة مباشرة',
     ],
     'Score' => [
         'ar' => 'النتيجة',
@@ -1003,7 +1003,7 @@ return [
         'ar' => 'سيتم إخطارك عند نشر واجب منزلي.',
     ],
     'You will be notified when a live class is scheduled.' => [
-        'ar' => 'سيتم إخطارك عند جدولة فصل مباشر.',
+        'ar' => 'سيتم إخطارك عند جدولة محاضرة مباشرة.',
     ],
     'Your Answer' => [
         'ar' => 'إجابتك',
@@ -1307,6 +1307,10 @@ return [
     'enrolled' => [
         'en' => 'Enrolled',
         'ar' => 'مسجل',
+    ],
+    'Enrolled successfully' => [
+        'en' => 'Enrolled successfully',
+        'ar' => 'تم التسجيل بنجاح',
     ],
     'enrolled_courses' => [
         'en' => 'Enrolled Courses',

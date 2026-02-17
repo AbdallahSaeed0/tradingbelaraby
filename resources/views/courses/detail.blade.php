@@ -913,15 +913,15 @@
                 });
             }
 
-            // Enroll button logic (paid -> cart + modal, free -> direct enroll) - detail page only
-            const enrollBtn = document.querySelector('.detail-enroll-btn');
-            if (enrollBtn) {
-                enrollBtn.addEventListener('click', async function(e) {
+            // Enroll button logic (paid -> cart + modal, free -> direct enroll) - detail page only (delegated for multiple buttons)
+            document.addEventListener('click', async function(e) {
+                const enrollBtn = e.target.closest('.detail-enroll-btn');
+                if (!enrollBtn) return;
                     e.preventDefault();
                     e.stopPropagation();
 
-                    const enrollType = this.dataset.enrollType;
-                    const courseId = this.dataset.courseId;
+                    const enrollType = enrollBtn.dataset.enrollType;
+                    const courseId = enrollBtn.dataset.courseId;
 
                     if (!courseId) {
                         return;
@@ -944,7 +944,7 @@
                             const data = await response.json();
 
                             if (data.success) {
-                                showToast('{{ custom_trans('Enrolled successfully!', 'front') }}',
+                                showToast(data.message || '{{ custom_trans('Enrolled successfully', 'front') }}',
                                     'success');
                                 setTimeout(() => {
                                     window.location.href =
@@ -1009,10 +1009,9 @@
                         console.error('Add to cart error:', error);
                         showToast(
                             '{{ custom_trans('An unexpected error occurred. Please try again later.', 'front') }}',
-                            'info');
+                                'info');
                     }
-                });
-            }
+            });
 
             // Share functionality
             const shareDropdowns = document.querySelectorAll('.share-dropdown');
