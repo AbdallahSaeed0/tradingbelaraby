@@ -62,6 +62,21 @@ class AdminType extends Model
             return true;
         }
 
+        // Instructors always have manage_own_* and view_own_analytics (even if not in DB)
+        if ($this->name === 'instructor') {
+            $instructorPermissions = [
+                'manage_own_courses',
+                'manage_own_quizzes',
+                'manage_own_homework',
+                'manage_own_live_classes',
+                'view_own_analytics',
+                'manage_own_questions_answers',
+            ];
+            if (in_array($permission, $instructorPermissions)) {
+                return true;
+            }
+        }
+
         if (!$this->permissions) {
             return false;
         }
