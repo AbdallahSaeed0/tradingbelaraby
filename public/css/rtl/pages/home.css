@@ -1019,60 +1019,112 @@ footer {
     background: #f15a29;
 }
 
-/* Responsive Hero Slider Styles */
+/* Responsive Hero Slider Styles - scoped to .hero-slider, RTL-aware arrows */
+.hero-slider {
+    overflow-x: hidden;
+}
+
 @media (max-width: 768px) {
-    .hero-swiper,
-    .hero-slide,
-    .hero-slide-bg {
-        min-height: 420px;
+    .hero-slider.hero-colored {
+        min-height: clamp(280px, 55vh, 420px);
     }
-
-    .hero-colored {
-        min-height: 420px;
+    .hero-slider .hero-swiper,
+    .hero-slider .hero-slide,
+    .hero-slider .hero-slide-bg {
+        min-height: clamp(280px, 55vh, 420px);
+        height: clamp(280px, 55vh, 420px);
     }
-
-    .hero-swiper-button-next,
-    .hero-swiper-button-prev {
-        width: 44px !important;
-        height: 44px !important;
-        min-width: 44px;
-        min-height: 44px;
+    .hero-slider .hero-slide-bg {
+        background-position: center top !important;
     }
-    .hero-swiper-button-next {
-        left: 12px !important;
+    .hero-slider .hero-slide .container-fluid {
+        padding-left: 1rem;
+        padding-right: 1rem;
     }
-    .hero-swiper-button-prev {
-        right: 12px !important;
+    .hero-slider .hero-welcome {
+        font-size: 12px;
+        margin-bottom: 6px;
     }
-    .hero-swiper-button-next::after,
-    .hero-swiper-button-prev::after {
-        font-size: 16px;
+    .hero-slider .hero-content-left h1,
+    .hero-slider .hero-slide h1 {
+        font-size: 26px;
+        line-height: 1.25;
+        max-width: 100%;
+        word-wrap: break-word;
+    }
+    .hero-slider .hero-sub {
+        font-size: 14px;
+        margin-bottom: 16px;
+        line-height: 1.4;
+        max-width: 100%;
+    }
+    .hero-slider .hero-swiper-button-next,
+    .hero-slider .hero-swiper-button-prev {
+        width: 40px !important;
+        height: 40px !important;
+        min-width: 40px;
+        min-height: 40px;
+    }
+    /* RTL: next on left, prev on right */
+    .hero-slider .hero-swiper-button-next {
+        left: 10px !important;
+        right: auto !important;
+    }
+    .hero-slider .hero-swiper-button-prev {
+        right: 10px !important;
+        left: auto !important;
+    }
+    .hero-slider .hero-swiper-button-next::after,
+    .hero-slider .hero-swiper-button-prev::after {
+        font-size: 14px;
+    }
+    .hero-slider .hero-swiper-pagination {
+        bottom: 12px;
+    }
+    .hero-slider .hero-swiper-pagination .swiper-pagination-bullet {
+        width: 8px;
+        height: 8px;
     }
 }
 
 @media (max-width: 576px) {
-    .hero-swiper,
-    .hero-slide,
-    .hero-slide-bg {
-        min-height: 380px;
+    .hero-slider.hero-colored {
+        min-height: clamp(260px, 50vh, 380px);
     }
-
-    .hero-colored {
-        min-height: 380px;
+    .hero-slider .hero-swiper,
+    .hero-slider .hero-slide,
+    .hero-slider .hero-slide-bg {
+        min-height: clamp(260px, 50vh, 380px);
+        height: clamp(260px, 50vh, 380px);
     }
-
-    .hero-swiper-button-next,
-    .hero-swiper-button-prev {
-        width: 42px !important;
-        height: 42px !important;
-        min-width: 42px;
-        min-height: 42px;
+    .hero-slider .hero-welcome {
+        font-size: 11px;
     }
-    .hero-swiper-button-next {
-        left: 10px !important;
+    .hero-slider .hero-content-left h1,
+    .hero-slider .hero-slide h1 {
+        font-size: 22px;
     }
-    .hero-swiper-button-prev {
-        right: 10px !important;
+    .hero-slider .hero-sub {
+        font-size: 13px;
+        margin-bottom: 12px;
+    }
+    .hero-slider .hero-swiper-button-next,
+    .hero-slider .hero-swiper-button-prev {
+        width: 36px !important;
+        height: 36px !important;
+        min-width: 36px;
+        min-height: 36px;
+    }
+    .hero-slider .hero-swiper-button-next {
+        left: 8px !important;
+        right: auto !important;
+    }
+    .hero-slider .hero-swiper-button-prev {
+        right: 8px !important;
+        left: auto !important;
+    }
+    .hero-slider .hero-swiper-pagination {
+        bottom: 10px;
     }
 }
 .hero-flex {
@@ -2570,11 +2622,12 @@ footer {
         display: none !important;
     }
 
-    /* Show mobile menu button */
+    /* Show mobile menu button - RTL: on start side (right) */
     .mobile-menu-btn {
         display: block;
         position: absolute;
-        left: 20px;
+        left: auto;
+        right: 20px;
         top: 50%;
         transform: translateY(-50%);
         z-index: 1001;

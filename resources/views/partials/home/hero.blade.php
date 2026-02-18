@@ -1,5 +1,5 @@
-<!-- Hero Section -->
-<section class="hero hero-colored">
+<!-- Hero Section - .hero-slider scopes mobile fixes -->
+<section class="hero hero-colored hero-slider">
     <!-- Hero Slider -->
     <div class="swiper hero-swiper">
         <div class="swiper-wrapper">
