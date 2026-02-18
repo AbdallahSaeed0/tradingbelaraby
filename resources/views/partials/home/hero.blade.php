@@ -47,6 +47,11 @@
                                 <p class="hero-sub mb-4">
                                     {{ get_current_language_code() === 'ar' && $slider->subtitle_ar ? $slider->subtitle_ar : $slider->subtitle }}
                                 </p>
+                                @if ($slider->button_text && $slider->button_url)
+                                    <a href="{{ $slider->button_url }}" class="btn btn-register-colored btn-lg">
+                                        {{ get_current_language_code() === 'ar' && $slider->button_text_ar ? $slider->button_text_ar : $slider->button_text }}
+                                    </a>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -62,6 +67,7 @@
                                     class="hero-underline"></span></span>
                             <h1 class="fw-bold mb-3">Education is the best key success in life</h1>
                             <p class="hero-sub mb-4">Online Courses</p>
+                            <a href="{{ route('courses.index') }}" class="btn btn-register-colored btn-lg">{{ custom_trans('browse_courses', 'front') ?? 'Browse Courses' }}</a>
                         </div>
                     </div>
                 </div>
