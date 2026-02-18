@@ -92,10 +92,11 @@
 <body>
     @php
         $contactSettings = \App\Models\ContactSettings::getActive();
+        $showGuestNav = Route::currentRouteName() === 'verification.notice';
     @endphp
 
     <!-- Header Section -->
-    <header>
+    <header class="site-header">
         <div class="top-bar-colored">
             <div class="top-bar-bg">
                 <div class="container">
@@ -174,6 +175,13 @@
                 @php
                     $mainContentSettings = \App\Models\MainContentSettings::getActive();
                 @endphp
+                <div class="nav-mobile-left d-lg-none">
+                    <button type="button" class="mobile-icon-btn mobile-menu-btn" data-bs-toggle="offcanvas"
+                        data-bs-target="#mobileNavOffcanvas" aria-controls="mobileNavOffcanvas"
+                        aria-label="{{ __('Toggle navigation') }}">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
                 <div class="logo">
                     <a href="{{ route('home') }}" class="logo-link">
                         <img src="{{ $mainContentSettings ? $mainContentSettings->logo_url : asset('images/default-logo.svg') }}"
@@ -182,24 +190,21 @@
                     </a>
                 </div>
                 <div class="mobile-header-actions d-lg-none">
-                    <button type="button" class="mobile-icon-btn mobile-menu-btn" data-bs-toggle="offcanvas"
-                        data-bs-target="#mobileNavOffcanvas" aria-controls="mobileNavOffcanvas"
-                        aria-label="{{ __('Toggle navigation') }}">
-                        <i class="fas fa-bars"></i>
-                    </button>
+                    @if (!$showGuestNav)
+                        <a href="{{ route('cart.index') }}" class="mobile-icon-btn mobile-cart-btn position-relative"
+                            aria-label="{{ custom_trans('cart', 'front') }}">
+                            <i class="fas fa-shopping-cart"></i>
+                            @if (auth()->check() && auth()->user()->cartItems && auth()->user()->cartItems->count() > 0)
+                                <span
+                                    class="badge bg-danger cart-count-badge">{{ auth()->user()->cartItems->count() }}</span>
+                            @endif
+                        </a>
+                    @endif
                     <button type="button" class="mobile-icon-btn mobile-search-btn" data-bs-toggle="modal"
                         data-bs-target="#mobileSearchModal"
                         aria-label="{{ custom_trans('search_courses', 'front') }}">
                         <i class="fas fa-search"></i>
                     </button>
-                    <a href="{{ route('cart.index') }}" class="mobile-icon-btn mobile-cart-btn position-relative"
-                        aria-label="{{ custom_trans('cart', 'front') }}">
-                        <i class="fas fa-shopping-cart"></i>
-                        @if (auth()->check() && auth()->user()->cartItems && auth()->user()->cartItems->count() > 0)
-                            <span
-                                class="badge bg-danger cart-count-badge">{{ auth()->user()->cartItems->count() }}</span>
-                        @endif
-                    </a>
                 </div>
                 <div class="nav-desktop-actions d-none d-lg-flex">
                     <ul class="nav-links">
@@ -269,6 +274,7 @@
                     <!-- User Actions -->
                     <div class="user-actions me-3">
                         @auth
+                        @if (!$showGuestNav)
                             <!-- Notifications -->
                             <div class="dropdown">
                                 <button class="btn btn-outline-dark position-relative notification-btn" type="button"
@@ -440,21 +446,17 @@
                                     </li>
                                 </ul>
                             </div>
+                        @endif
                         @endauth
                     </div>
 
                     <div class="auth-buttons">
-                        @guest
+                        @if (!auth()->check() || $showGuestNav)
                             <a href="{{ route('login') }}"
                                 class="btn btn-login-colored">{{ custom_trans('login', 'front') }}</a>
-                        @else
-                            <!-- User dropdown is now handled above -->
-                        @endguest
-
-                        @guest
                             <a href="{{ route('register') }}"
                                 class="btn btn-register-colored">{{ custom_trans('register', 'front') }}</a>
-                        @endguest
+                        @endif
                     </div>
                 </div>
             </div>
@@ -557,7 +559,7 @@
                 </div>
 
                 <div class="mobile-offcanvas-actions mt-auto">
-                    @auth
+                    @if (auth()->check() && !$showGuestNav)
                         <div class="d-grid gap-2">
                             <a href="{{ route('student.my-courses') }}" class="btn btn-outline-primary">
                                 <i class="fas fa-graduation-cap me-2"></i>{{ custom_trans('my_courses', 'front') }}
@@ -584,7 +586,7 @@
                                 <i class="fas fa-user-plus me-2"></i>{{ custom_trans('register', 'front') }}
                             </a>
                         </div>
-                    @endauth
+                    @endif
                 </div>
             </div>
         </div>

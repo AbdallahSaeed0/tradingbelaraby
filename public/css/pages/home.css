@@ -1086,6 +1086,11 @@ footer {
         width: 8px;
         height: 8px;
     }
+    /* Padding to prevent text/arrows overlap */
+    .hero-slider .hero-slide .container-fluid {
+        padding-left: 2.25rem;
+        padding-right: 2.25rem;
+    }
 }
 
 @media (max-width: 576px) {
@@ -1109,21 +1114,31 @@ footer {
         font-size: 13px;
         margin-bottom: 12px;
     }
+    /* Arrows: smaller, more inward to avoid overlapping text */
     .hero-slider .hero-swiper-button-next,
     .hero-slider .hero-swiper-button-prev {
-        width: 36px !important;
-        height: 36px !important;
-        min-width: 36px;
-        min-height: 36px;
-        right: 8px !important;
+        width: 32px !important;
+        height: 32px !important;
+        min-width: 32px;
+        min-height: 32px;
+        right: 6px !important;
         left: auto !important;
     }
     .hero-slider .hero-swiper-button-prev {
-        left: 8px !important;
+        left: 6px !important;
         right: auto !important;
     }
+    .hero-slider .hero-swiper-button-next::after,
+    .hero-slider .hero-swiper-button-prev::after {
+        font-size: 12px;
+    }
+    /* More padding on content to clear arrows */
+    .hero-slider .hero-slide .container-fluid {
+        padding-left: 2.5rem;
+        padding-right: 2.5rem;
+    }
     .hero-slider .hero-swiper-pagination {
-        bottom: 10px;
+        bottom: 12px;
     }
 }
 .hero-flex {

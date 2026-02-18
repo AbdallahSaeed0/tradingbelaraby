@@ -27,15 +27,8 @@
 
             <form method="POST" action="{{ route('verification.send') }}">
                 @csrf
-                <button type="submit" class="btn btn-primary w-100 mb-3">
+                <button type="submit" class="btn btn-primary w-100">
                     {{ custom_trans('resend_verification_email', 'front') }}
-                </button>
-            </form>
-
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="btn btn-link w-100 text-decoration-none">
-                    {{ custom_trans('logout', 'front') }}
                 </button>
             </form>
         </div>
