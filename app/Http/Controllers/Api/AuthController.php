@@ -25,7 +25,9 @@ class AuthController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Password::defaults()],
             'country' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:20'],
+            'phone' => ['required', 'string', 'max:20', 'regex:/^\+?[0-9]+$/'],
+        ], [
+            'phone.regex' => 'Phone number must contain only numbers (and an optional + at the start).',
         ]);
 
         if ($validator->fails()) {

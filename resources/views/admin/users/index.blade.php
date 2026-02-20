@@ -98,16 +98,6 @@
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <select class="form-select" name="role" id="roleFilter">
-                                <option value="">All Roles</option>
-                                <option value="student" {{ request('role') == 'student' ? 'selected' : '' }}>Student
-                                </option>
-                                <option value="instructor" {{ request('role') == 'instructor' ? 'selected' : '' }}>
-                                    Instructor</option>
-                                <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
                             <select class="form-select" name="sort" id="sortFilter">
                                 <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Latest</option>
                                 <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Oldest</option>
@@ -146,7 +136,7 @@
                                 </th>
                                 <th>User</th>
                                 <th>Email</th>
-                                <th>Role</th>
+                                <th>Phone</th>
                                 <th>Status</th>
                                 <th>Verified</th>
                                 <th>Enrollments</th>
@@ -181,9 +171,7 @@
                                         </div>
                                     </td>
                                     <td>{{ $user->email }}</td>
-                                    <td>
-                                        <span class="badge bg-info">{{ ucfirst($user->role ?? 'student') }}</span>
-                                    </td>
+                                    <td>{{ $user->phone ?? '-' }}</td>
                                     <td>
                                         <span
                                             class="badge {{ $user->is_active ? 'bg-success' : 'bg-danger' }} status-badge"
@@ -526,10 +514,6 @@
                 performAjaxSearch();
             });
 
-            document.getElementById('roleFilter').addEventListener('change', function() {
-                performAjaxSearch();
-            });
-
             document.getElementById('sortFilter').addEventListener('change', function() {
                 performAjaxSearch();
             });
@@ -541,7 +525,6 @@
                     // Clear all form fields
                     document.getElementById('searchInput').value = '';
                     document.getElementById('statusFilter').value = '';
-                    document.getElementById('roleFilter').value = '';
                     document.getElementById('sortFilter').value = 'latest';
 
                     // Update URL without parameters

@@ -61,8 +61,10 @@
             <div class="mb-3">
                 <label for="phone" class="form-label">{{ custom_trans('Phone Number', 'front') }}</label>
                 <input type="tel" name="phone" id="phone" value="{{ old('phone') }}" required
+                    inputmode="numeric" pattern="\+?[0-9]+" maxlength="20"
                     class="form-control @error('phone') is-invalid @enderror"
-                    placeholder="{{ custom_trans('Phone Number', 'front') }}">
+                    placeholder="{{ custom_trans('Phone Number', 'front') }}"
+                    autocomplete="tel">
                 @error('phone')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -114,6 +116,20 @@
             }
             emailInput.addEventListener('input', clearEmailError);
             emailInput.addEventListener('blur', clearEmailError);
+
+            // Restrict phone input to numbers only (optional leading +)
+            const phoneInput = document.getElementById('phone');
+            if (phoneInput) {
+                phoneInput.addEventListener('input', function() {
+                    let val = this.value.replace(/[^\d+]/g, '');
+                    if (val.length > 1 && val.startsWith('+')) {
+                        val = '+' + val.slice(1).replace(/\D/g, '');
+                    } else if (!val.startsWith('+')) {
+                        val = val.replace(/\D/g, '');
+                    }
+                    this.value = val.slice(0, 20);
+                });
+            }
 
             // Update form start time when form is loaded
             const startTimeInput = form.querySelector('input[name="form_start_time"]');

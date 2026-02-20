@@ -31,11 +31,6 @@ class UsersController extends Controller
             }
         }
 
-        // Apply role filter
-        if ($request->filled('role')) {
-            $query->where('role', $request->role);
-        }
-
         // Apply sorting
         if ($request->filled('sort')) {
             switch ($request->sort) {
@@ -96,8 +91,10 @@ class UsersController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email',
             'country' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
+            'phone' => ['required', 'string', 'max:20', 'regex:/^\+?[0-9]+$/'],
             'password' => 'required|min:6',
+        ], [
+            'phone.regex' => 'Phone number must contain only numbers (and an optional + at the start).',
         ]);
         $data['password'] = Hash::make($data['password']);
         User::create($data);
@@ -120,8 +117,10 @@ class UsersController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
             'country' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
+            'phone' => ['required', 'string', 'max:20', 'regex:/^\+?[0-9]+$/'],
             'password' => 'nullable|min:6',
+        ], [
+            'phone.regex' => 'Phone number must contain only numbers (and an optional + at the start).',
         ]);
         if($data['password']){
             $data['password'] = Hash::make($data['password']);
