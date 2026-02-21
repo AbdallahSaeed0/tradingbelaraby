@@ -46,7 +46,8 @@ class ForgotPasswordController extends Controller
         $language = in_array($language, ['ar', 'en']) ? $language : 'en';
         $user->notify(new ForgotPasswordOtpNotification($otp, $language));
 
-        return redirect()->route('password.verify-otp.form')->with('email', $email);
+        $request->session()->put('email', $email);
+        return redirect()->route('password.verify-otp.form');
     }
 
     /**
@@ -80,7 +81,8 @@ class ForgotPasswordController extends Controller
             return back()->withErrors(['otp' => custom_trans('Invalid or expired OTP. Please request a new one.', 'front')])->withInput($request->only('email'));
         }
 
-        return redirect()->route('password.reset.form')->with(['email' => $email, 'otp' => $otp]);
+        $request->session()->put(['email' => $email, 'otp' => $otp]);
+        return redirect()->route('password.reset.form');
     }
 
     /**
