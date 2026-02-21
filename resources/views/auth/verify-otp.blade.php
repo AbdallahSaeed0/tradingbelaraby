@@ -36,7 +36,11 @@
         </form>
 
         <p class="text-center mt-3">
-            <a href="{{ route('password.forgot.form') }}">{{ custom_trans('Request new OTP', 'front') }}</a>
+            <form method="POST" action="{{ route('password.forgot.send') }}" style="display: inline;">
+                @csrf
+                <input type="hidden" name="email" value="{{ $email }}">
+                <button type="submit" class="btn btn-link p-0 text-decoration-none">{{ custom_trans('Request new OTP', 'front') }}</button>
+            </form>
         </p>
         <p class="text-center mt-2">
             <a href="{{ route('login') }}">{{ custom_trans('Back to login', 'front') }}</a>

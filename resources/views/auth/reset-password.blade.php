@@ -41,9 +41,6 @@
             <button type="submit" class="btn btn-primary w-100">{{ custom_trans('Reset Password', 'front') }}</button>
         </form>
 
-        <p class="text-center mt-3">
-            <a href="{{ route('password.forgot.form') }}">{{ custom_trans('Start over', 'front') }}</a>
-        </p>
         <p class="text-center mt-2">
             <a href="{{ route('login') }}">{{ custom_trans('Back to login', 'front') }}</a>
         </p>

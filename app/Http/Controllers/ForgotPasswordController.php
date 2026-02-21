@@ -103,11 +103,18 @@ class ForgotPasswordController extends Controller
      */
     public function resetPassword(Request $request)
     {
-        $request->validate([
+        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
             'email' => ['required', 'email'],
             'otp' => ['required', 'string', 'size:6'],
-            'password' => ['required', 'confirmed', Password::defaults()],
+            'password' => ['required', 'confirmed', Password::min(6)],
+        ], [
+            'password.min' => custom_trans('Password must be at least 6 characters.', 'front'),
+            'password.confirmed' => custom_trans('Passwords do not match.', 'front'),
         ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput($request->only('email'));
+        }
 
         $email = $request->email;
         $otp = $request->otp;
