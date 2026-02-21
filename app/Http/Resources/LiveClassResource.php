@@ -47,6 +47,9 @@ class LiveClassResource extends JsonResource
                 fn () => $this->registrations()->pluck('user_id')->map(fn ($id) => (string) $id)->toArray(),
                 []
             ),
+            'user_registered' => $request->user()
+                ? $this->registrations()->where('user_id', $request->user()->id)->exists()
+                : false,
             'created_at' => $this->created_at?->toIso8601String(),
             'updated_at' => $this->updated_at?->toIso8601String(),
         ];

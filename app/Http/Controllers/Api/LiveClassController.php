@@ -51,10 +51,18 @@ class LiveClassController extends Controller
     }
 
     /**
-     * Display the specified live class
+     * Display the specified live class.
+     * When Bearer token is present, authenticates so the response includes user_registered.
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
+        if ($request->bearerToken()) {
+            $user = Auth::guard('sanctum')->user();
+            if ($user) {
+                Auth::setUser($user);
+            }
+        }
+
         $liveClass = LiveClass::with(['course', 'instructor'])
             ->findOrFail($id);
 
