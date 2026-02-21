@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\BlogController;
 use App\Http\Controllers\Api\LanguageController;
 use App\Http\Controllers\Api\AboutAcademyController;
+use App\Http\Controllers\Api\LiveClassController;
 
 /*
 |--------------------------------------------------------------------------
@@ -87,6 +88,10 @@ Route::get('/languages', [LanguageController::class, 'index'])->name('api.langua
 
 // About Academy API Routes
 Route::get('/about-academy', [AboutAcademyController::class, 'index'])->name('api.about-academy.index');
+
+// Live Classes API Routes
+Route::get('/live-classes', [LiveClassController::class, 'index'])->name('api.live-classes.index');
+Route::get('/live-classes/{id}', [LiveClassController::class, 'show'])->name('api.live-classes.show');
 
 // Sliders API (home page banner - same as website)
 Route::get('/sliders', [App\Http\Controllers\Api\SliderController::class, 'index'])->name('api.sliders.index');
