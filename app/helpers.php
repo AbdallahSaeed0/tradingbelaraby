@@ -26,14 +26,30 @@ if (!function_exists('format_currency')) {
 
 if (!function_exists('truncate_text')) {
     /**
-     * Truncate text to a specific length
+     * Truncate text to a specific length (UTF-8 safe)
      */
     function truncate_text($text, $length = 100, $suffix = '...')
     {
-        if (strlen($text) <= $length) {
+        if (mb_strlen($text) <= $length) {
             return $text;
         }
-        return substr($text, 0, $length) . $suffix;
+        return mb_substr($text, 0, $length) . $suffix;
+    }
+}
+
+if (!function_exists('sanitize_utf8')) {
+    /**
+     * Remove replacement characters and invalid UTF-8 sequences from text.
+     * Use to prevent the replacement character () from displaying on the site.
+     */
+    function sanitize_utf8($text)
+    {
+        if ($text === null || $text === '') {
+            return $text;
+        }
+        $text = (string) $text;
+        $text = mb_convert_encoding($text, 'UTF-8', 'UTF-8');
+        return preg_replace('/\x{FFFD}/u', '', $text);
     }
 }
 

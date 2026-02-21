@@ -20,17 +20,17 @@
                         <i class="fas fa-graduation-cap"></i> {{ custom_trans('About Our University', 'front') }}
                     </span>
                     <h2 class="fw-bold mb-3 fs-25">
-                        {{ get_current_language_code() === 'ar' && $aboutUniversity->title_ar ? $aboutUniversity->title_ar : $aboutUniversity->title }}
+                        {{ sanitize_utf8(get_current_language_code() === 'ar' && $aboutUniversity->title_ar ? $aboutUniversity->title_ar : $aboutUniversity->title) }}
                     </h2>
                     @php
-                        $description =
-                            get_current_language_code() === 'ar' && $aboutUniversity->description_ar
-                                ? $aboutUniversity->description_ar
-                                : $aboutUniversity->description;
+                        $description = get_current_language_code() === 'ar' && $aboutUniversity->description_ar
+                            ? $aboutUniversity->description_ar
+                            : $aboutUniversity->description;
+                        $description = sanitize_utf8($description ?? '');
                         $descriptionLimit = 200;
-                        $isLongDescription = strlen($description) > $descriptionLimit;
+                        $isLongDescription = mb_strlen($description) > $descriptionLimit;
                         $shortDescription = $isLongDescription
-                            ? substr($description, 0, $descriptionLimit) . '...'
+                            ? mb_substr($description, 0, $descriptionLimit) . '...'
                             : $description;
                     @endphp
                     <div class="about-description-wrapper mb-4">
@@ -52,17 +52,17 @@
                                     <span class="about-number me-3">{{ $feature->number }}</span>
                                     <div>
                                         <div class="fw-bold">
-                                            {{ get_current_language_code() === 'ar' && $feature->title_ar ? $feature->title_ar : $feature->title }}
+                                            {{ sanitize_utf8(get_current_language_code() === 'ar' && $feature->title_ar ? $feature->title_ar : $feature->title) }}
                                         </div>
                                         @php
-                                            $featureDesc =
-                                                get_current_language_code() === 'ar' && $feature->description_ar
-                                                    ? $feature->description_ar
-                                                    : $feature->description;
+                                            $featureDesc = get_current_language_code() === 'ar' && $feature->description_ar
+                                                ? $feature->description_ar
+                                                : $feature->description;
+                                            $featureDesc = sanitize_utf8($featureDesc ?? '');
                                             $featureLimit = 80;
                                             $truncatedFeatureDesc =
-                                                strlen($featureDesc) > $featureLimit
-                                                    ? substr($featureDesc, 0, $featureLimit) . '...'
+                                                mb_strlen($featureDesc) > $featureLimit
+                                                    ? mb_substr($featureDesc, 0, $featureLimit) . '...'
                                                     : $featureDesc;
                                         @endphp
                                         <div class="text-muted small" title="{{ $featureDesc }}">
