@@ -138,6 +138,11 @@ class StudentController extends Controller
             }]);
         }]);
 
+        // Load quizzes with question count for the Quiz tab
+        $course->load(['quizzes' => function($query) {
+            $query->withCount('questions')->where('is_published', true)->orderBy('id');
+        }]);
+
         // Compute last/next lecture for "Continue to Lecture" modal
         $resumeLecture = null;
         $lastCompletion = LectureCompletion::where('user_id', $user->id)
