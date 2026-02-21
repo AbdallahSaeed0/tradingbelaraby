@@ -47,6 +47,8 @@ Route::middleware('guest')->group(function () {
     // Forgot password (OTP-based)
     Route::get('/forgot-password', [ForgotPasswordController::class, 'showForgotForm'])->name('password.forgot.form');
     Route::post('/forgot-password', [ForgotPasswordController::class, 'sendOtp'])->middleware('throttle:5,1')->name('password.forgot.send');
+    Route::get('/verify-otp', [ForgotPasswordController::class, 'showVerifyOtpForm'])->name('password.verify-otp.form');
+    Route::post('/verify-otp', [ForgotPasswordController::class, 'verifyOtp'])->middleware('throttle:10,1')->name('password.verify-otp.attempt');
     Route::get('/reset-password', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset.form');
     Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('password.reset.attempt');
 });

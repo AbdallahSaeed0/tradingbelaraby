@@ -31,6 +31,7 @@ Route::post('/tabby/webhook', [TabbyController::class, 'webhook'])->name('api.ta
 Route::post('/auth/register', [AuthController::class, 'register'])->name('api.auth.register');
 Route::post('/auth/login', [AuthController::class, 'login'])->name('api.auth.login');
 Route::post('/auth/forgot-password', [ForgotPasswordController::class, 'sendOtp'])->name('api.auth.forgot-password');
+Route::post('/auth/verify-otp', [ForgotPasswordController::class, 'verifyOtp'])->name('api.auth.verify-otp');
 Route::post('/auth/verify-otp-reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('api.auth.verify-otp-reset-password');
 
 // Protected Auth Routes
@@ -92,6 +93,9 @@ Route::get('/languages', [LanguageController::class, 'index'])->name('api.langua
 
 // About Academy API Routes
 Route::get('/about-academy', [AboutAcademyController::class, 'index'])->name('api.about-academy.index');
+
+// Academy Policy API (for app Privacy Policy screen)
+Route::get('/academy-policy', [App\Http\Controllers\Api\AcademyPolicyController::class, 'index'])->name('api.academy-policy.index');
 
 // Live Classes API Routes
 Route::get('/live-classes', [LiveClassController::class, 'index'])->name('api.live-classes.index');

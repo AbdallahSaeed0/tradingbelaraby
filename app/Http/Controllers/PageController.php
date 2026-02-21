@@ -127,6 +127,10 @@ class PageController extends Controller
      */
     public function academyPolicy()
     {
+        // Use frontend locale from session (set by language switcher)
+        $locale = \Illuminate\Support\Facades\Session::get('frontend_locale', config('app.locale'));
+        app()->setLocale($locale);
+
         $academyPolicy = \App\Models\AcademyPolicy::where('is_active', true)->first();
 
         if (!$academyPolicy) {

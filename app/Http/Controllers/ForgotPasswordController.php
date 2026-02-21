@@ -46,23 +46,58 @@ class ForgotPasswordController extends Controller
         $language = in_array($language, ['ar', 'en']) ? $language : 'en';
         $user->notify(new ForgotPasswordOtpNotification($otp, $language));
 
-        return redirect()->route('password.reset.form')->with('email', $email);
+        return redirect()->route('password.verify-otp.form')->with('email', $email);
     }
 
     /**
-     * Show reset password form (OTP + new password)
+     * Show verify OTP form (OTP only)
+     */
+    public function showVerifyOtpForm(Request $request)
+    {
+        $email = $request->session()->get('email');
+        if (!$email) {
+            return redirect()->route('password.forgot.form')->withErrors(['email' => custom_trans('Please enter your email first.', 'front')]);
+        }
+        return view('auth.verify-otp', ['email' => $email]);
+    }
+
+    /**
+     * Verify OTP and redirect to set new password
+     */
+    public function verifyOtp(Request $request)
+    {
+        $request->validate([
+            'email' => ['required', 'email'],
+            'otp' => ['required', 'string', 'size:6'],
+        ]);
+
+        $email = $request->email;
+        $otp = $request->otp;
+        $cacheKey = self::OTP_CACHE_PREFIX . $email;
+        $storedOtp = Cache::get($cacheKey);
+
+        if (!$storedOtp || $storedOtp !== $otp) {
+            return back()->withErrors(['otp' => custom_trans('Invalid or expired OTP. Please request a new one.', 'front')])->withInput($request->only('email'));
+        }
+
+        return redirect()->route('password.reset.form')->with(['email' => $email, 'otp' => $otp]);
+    }
+
+    /**
+     * Show reset password form (password only - OTP already verified)
      */
     public function showResetForm(Request $request)
     {
         $email = $request->session()->get('email');
-        if (!$email) {
-            return redirect()->route('password.forgot.form')->withErrors(['email' => 'Please enter your email first.']);
+        $otp = $request->session()->get('otp');
+        if (!$email || !$otp) {
+            return redirect()->route('password.forgot.form')->withErrors(['email' => custom_trans('Please verify your OTP first.', 'front')]);
         }
-        return view('auth.reset-password', ['email' => $email]);
+        return view('auth.reset-password', ['email' => $email, 'otp' => $otp]);
     }
 
     /**
-     * Verify OTP and reset password
+     * Reset password (OTP already verified in session)
      */
     public function resetPassword(Request $request)
     {
@@ -74,6 +109,8 @@ class ForgotPasswordController extends Controller
 
         $email = $request->email;
         $otp = $request->otp;
+
+        // Re-verify OTP (might have expired)
         $cacheKey = self::OTP_CACHE_PREFIX . $email;
         $storedOtp = Cache::get($cacheKey);
 
@@ -90,7 +127,7 @@ class ForgotPasswordController extends Controller
         $user->update(['password' => Hash::make($request->password)]);
         Cache::forget($cacheKey);
 
-        $request->session()->forget('email');
+        $request->session()->forget(['email', 'otp']);
         return redirect()->route('login')->with('success', custom_trans('Password reset successfully. You can now log in with your new password.', 'front'));
     }
 }

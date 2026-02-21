@@ -61,6 +61,42 @@ class ForgotPasswordController extends Controller
     }
 
     /**
+     * Verify OTP only (does not consume OTP - used to proceed to password reset step)
+     */
+    public function verifyOtp(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => ['required', 'email'],
+            'otp' => ['required', 'string', 'size:6'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $email = $request->email;
+        $otp = $request->otp;
+        $cacheKey = self::OTP_CACHE_PREFIX . $email;
+        $storedOtp = Cache::get($cacheKey);
+
+        if (!$storedOtp || $storedOtp !== $otp) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid or expired OTP. Please request a new one.',
+            ], 400);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'OTP verified successfully.',
+        ]);
+    }
+
+    /**
      * Verify OTP and reset password
      */
     public function resetPassword(Request $request): JsonResponse

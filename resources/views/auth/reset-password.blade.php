@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', custom_trans('Reset Password', 'front') . ' - ' . (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site Name'))
+@section('title', custom_trans('Set New Password', 'front') . ' - ' . (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site Name'))
 
 @section('content')
     <div class="container py-5 max-w-520">
-        <h2 class="text-center mb-4">{{ custom_trans('Reset Password', 'front') }}</h2>
+        <h2 class="text-center mb-4">{{ custom_trans('Set New Password', 'front') }}</h2>
 
         @if ($errors->any())
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -13,23 +13,13 @@
             </div>
         @endif
 
-        <p class="text-center mb-4 text-muted">{{ custom_trans('Enter the 6-digit OTP sent to your email and your new password.', 'front') }}</p>
+        <p class="text-center mb-4 text-muted">{{ custom_trans('Enter your new password below.', 'front') }}</p>
 
         <form method="POST" action="{{ route('password.reset.attempt') }}" class="card p-4 shadow-sm">
             @csrf
 
             <input type="hidden" name="email" value="{{ $email }}">
-
-            <div class="mb-3">
-                <label for="otp" class="form-label">{{ custom_trans('OTP Code (6 digits)', 'front') }}</label>
-                <input type="text" name="otp" id="otp" value="{{ old('otp') }}" required autofocus
-                    maxlength="6" pattern="[0-9]{6}" inputmode="numeric"
-                    class="form-control form-control-lg text-center @error('otp') is-invalid @enderror"
-                    placeholder="000000">
-                @error('otp')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
+            <input type="hidden" name="otp" value="{{ $otp }}">
 
             <div class="mb-3">
                 <label for="password" class="form-label">{{ custom_trans('New Password', 'front') }}</label>
@@ -52,7 +42,7 @@
         </form>
 
         <p class="text-center mt-3">
-            <a href="{{ route('password.forgot.form') }}">{{ custom_trans('Request new OTP', 'front') }}</a>
+            <a href="{{ route('password.forgot.form') }}">{{ custom_trans('Start over', 'front') }}</a>
         </p>
         <p class="text-center mt-2">
             <a href="{{ route('login') }}">{{ custom_trans('Back to login', 'front') }}</a>
