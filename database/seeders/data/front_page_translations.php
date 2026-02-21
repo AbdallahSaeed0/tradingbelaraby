@@ -75,6 +75,50 @@ return [
         'en' => 'Confirm Password',
         'ar' => 'تأكيد كلمة المرور',
     ],
+    'Forgot Password' => [
+        'en' => 'Forgot Password',
+        'ar' => 'نسيت كلمة المرور',
+    ],
+    "I don't remember my password" => [
+        'en' => "I don't remember my password",
+        'ar' => 'لا أتذكر كلمة المرور',
+    ],
+    'Enter your email and we will send you a 6-digit OTP to reset your password.' => [
+        'en' => 'Enter your email and we will send you a 6-digit OTP to reset your password.',
+        'ar' => 'أدخل بريدك الإلكتروني وسنرسل لك رمز التحقق المكون من 6 أرقام لإعادة تعيين كلمة المرور.',
+    ],
+    'Send OTP' => [
+        'en' => 'Send OTP',
+        'ar' => 'إرسال رمز التحقق',
+    ],
+    'Back to login' => [
+        'en' => 'Back to login',
+        'ar' => 'العودة لتسجيل الدخول',
+    ],
+    'Reset Password' => [
+        'en' => 'Reset Password',
+        'ar' => 'إعادة تعيين كلمة المرور',
+    ],
+    'Enter the 6-digit OTP sent to your email and your new password.' => [
+        'en' => 'Enter the 6-digit OTP sent to your email and your new password.',
+        'ar' => 'أدخل رمز التحقق المكون من 6 أرقام المرسل لبريدك الإلكتروني وكلمة المرور الجديدة.',
+    ],
+    'OTP Code (6 digits)' => [
+        'en' => 'OTP Code (6 digits)',
+        'ar' => 'رمز التحقق (6 أرقام)',
+    ],
+    'New Password' => [
+        'en' => 'New Password',
+        'ar' => 'كلمة المرور الجديدة',
+    ],
+    'Request new OTP' => [
+        'en' => 'Request new OTP',
+        'ar' => 'طلب رمز تحقق جديد',
+    ],
+    'Password reset successfully. You can now log in with your new password.' => [
+        'en' => 'Password reset successfully. You can now log in with your new password.',
+        'ar' => 'تم إعادة تعيين كلمة المرور بنجاح. يمكنك الآن تسجيل الدخول بكلمة المرور الجديدة.',
+    ],
     'Register' => [
         'en' => 'Register',
         'ar' => 'تسجيل',

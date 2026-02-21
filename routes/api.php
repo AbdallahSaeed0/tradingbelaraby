@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\BlogController;
 use App\Http\Controllers\Api\LanguageController;
 use App\Http\Controllers\Api\AboutAcademyController;
 use App\Http\Controllers\Api\LiveClassController;
+use App\Http\Controllers\Api\ForgotPasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +30,8 @@ Route::post('/tabby/webhook', [TabbyController::class, 'webhook'])->name('api.ta
 // Auth API Routes
 Route::post('/auth/register', [AuthController::class, 'register'])->name('api.auth.register');
 Route::post('/auth/login', [AuthController::class, 'login'])->name('api.auth.login');
+Route::post('/auth/forgot-password', [ForgotPasswordController::class, 'sendOtp'])->name('api.auth.forgot-password');
+Route::post('/auth/verify-otp-reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('api.auth.verify-otp-reset-password');
 
 // Protected Auth Routes
 Route::middleware('auth:sanctum')->group(function () {
@@ -37,6 +40,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/users/profile', [AuthController::class, 'updateProfile'])->name('api.users.profile.update');
     Route::post('/auth/verify-email', [AuthController::class, 'verifyEmail'])->name('api.auth.verify');
     Route::post('/auth/resend-verification', [AuthController::class, 'resendVerification'])->name('api.auth.resend');
+    Route::delete('/users/account', [AuthController::class, 'deleteAccount'])->name('api.users.account.delete');
 });
 
 // Course API Routes

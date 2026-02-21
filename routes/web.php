@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CartController;
@@ -42,6 +43,12 @@ Route::middleware('guest')->group(function () {
     Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
     Route::get('/register/check-email', [AuthController::class, 'checkEmail'])->name('register.check-email');
     Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:20,1')->name('register.attempt');
+
+    // Forgot password (OTP-based)
+    Route::get('/forgot-password', [ForgotPasswordController::class, 'showForgotForm'])->name('password.forgot.form');
+    Route::post('/forgot-password', [ForgotPasswordController::class, 'sendOtp'])->middleware('throttle:5,1')->name('password.forgot.send');
+    Route::get('/reset-password', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset.form');
+    Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('password.reset.attempt');
 });
 
 // Email Verification Routes

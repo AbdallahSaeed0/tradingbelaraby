@@ -9,6 +9,7 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
@@ -241,6 +242,62 @@ class AuthController extends Controller
             'success' => true,
             'message' => 'Profile updated successfully',
             'data' => new UserResource($user),
+        ]);
+    }
+
+    /**
+     * Delete user account (auth required)
+     */
+    public function deleteAccount(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'password' => ['required', 'string'],
+            'confirmation' => ['required', 'string', 'in:DELETE'],
+        ], [
+            'confirmation.in' => 'Please type DELETE to confirm account deletion.',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $user = $request->user();
+
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid password',
+            ], 401);
+        }
+
+        // Revoke all tokens
+        $user->tokens()->delete();
+
+        DB::transaction(function () use ($user) {
+            $user->wishlistItems()->delete();
+            $user->cartItems()->delete();
+            $user->lectureCompletions()->delete();
+            \App\Models\LiveClassRegistration::where('user_id', $user->id)->delete();
+            $user->enrollments()->delete();
+            foreach ($user->orders as $order) {
+                $order->items()->delete();
+            }
+            $user->orders()->delete();
+            \App\Models\CourseRating::where('user_id', $user->id)->delete();
+            \App\Models\QuestionsAnswer::where('user_id', $user->id)->delete();
+            \App\Models\QuizAttempt::where('user_id', $user->id)->delete();
+            \App\Models\HomeworkSubmission::where('user_id', $user->id)->delete();
+            \App\Models\CouponUsage::where('user_id', $user->id)->delete();
+            $user->delete();
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Account deleted successfully',
         ]);
     }
 }

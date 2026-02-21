@@ -29,10 +29,13 @@
                 @enderror
             </div>
 
-            <div class="mb-3 form-check">
-                <input type="checkbox" name="remember" id="remember" class="form-check-input"
-                    {{ old('remember') ? 'checked' : '' }}>
-                <label class="form-check-label" for="remember">{{ custom_trans('Remember me', 'front') }}</label>
+            <div class="mb-3 form-check d-flex justify-content-between align-items-center">
+                <div>
+                    <input type="checkbox" name="remember" id="remember" class="form-check-input"
+                        {{ old('remember') ? 'checked' : '' }}>
+                    <label class="form-check-label" for="remember">{{ custom_trans('Remember me', 'front') }}</label>
+                </div>
+                <a href="{{ route('password.forgot.form') }}">{{ custom_trans("I don't remember my password", 'front') }}</a>
             </div>
 
             <button type="submit" class="btn btn-primary w-100">{{ custom_trans('Sign in', 'front') }}</button>
