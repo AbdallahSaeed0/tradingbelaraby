@@ -23,11 +23,11 @@ class ForgotPasswordOtpNotification extends Notification implements ShouldQueue
 
     public function toMail(object $notifiable): MailMessage
     {
-        $siteName = \App\Models\MainContentSettings::getActive()?->site_name ?? 'Our Platform';
+        $appName = config('app.name');
         $texts = $this->getTexts($this->language);
 
         return (new MailMessage)
-            ->subject($texts['subject'] . ' - ' . $siteName)
+            ->subject($texts['subject'] . ' - ' . $appName)
             ->greeting($texts['greeting'] . ' ' . $notifiable->name . '!')
             ->line($texts['line1'])
             ->line('**' . $this->otp . '**')

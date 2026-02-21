@@ -27,24 +27,24 @@ class VerifyEmailNotification extends VerifyEmail implements ShouldQueue
     public function toMail($notifiable)
     {
         $verificationUrl = $this->verificationUrl($notifiable);
-        $siteName = \App\Models\MainContentSettings::getActive()?->site_name ?? 'Our Platform';
+        $appName = config('app.name');
         $lang = $this->getUserLanguage();
 
         $texts = $this->getTexts($lang);
 
         $fromAddress = config('mail.from.address');
-        $fromName = config('mail.from.name', $siteName);
+        $fromName = config('mail.from.name', $appName);
 
         return (new MailMessage)
             ->from($fromAddress, $fromName)
             ->replyTo($fromAddress, $fromName)
-            ->subject($texts['subject'] . ' - ' . $siteName)
+            ->subject($texts['subject'] . ' - ' . $appName)
             ->greeting($texts['greeting'] . ' ' . $notifiable->name . '!')
             ->line($texts['line1'])
             ->action($texts['action'], $verificationUrl)
             ->line($texts['line2'])
             ->line($texts['line3'])
-            ->line($texts['thank_you'] . ' ' . $siteName . '!')
+            ->line($texts['thank_you'] . ' ' . $appName . '!')
             ->salutation($texts['regards'] . "\n" . config('app.name'));
     }
 

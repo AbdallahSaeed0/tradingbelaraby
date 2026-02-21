@@ -103,7 +103,7 @@ class CourseEnrollmentNotification extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $siteName = \App\Models\MainContentSettings::getActive()?->site_name ?? 'Our Platform';
+        $appName = config('app.name');
         $lang = $this->getUserLanguage();
         $isRTL = $lang === 'ar';
         
@@ -161,7 +161,7 @@ class CourseEnrollmentNotification extends Notification implements ShouldQueue
 
         $mailMessage->line($this->getText('start_learning'))
             ->action($this->getText('view_course'), route('courses.show', $this->course))
-            ->line($this->getText('thank_you') . ' ' . $siteName . '!');
+            ->line($this->getText('thank_you') . ' ' . $appName . '!');
 
         return $mailMessage;
     }
