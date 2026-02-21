@@ -44,7 +44,8 @@ class VerifyEmailNotification extends VerifyEmail implements ShouldQueue
             ->action($texts['action'], $verificationUrl)
             ->line($texts['line2'])
             ->line($texts['line3'])
-            ->line($texts['thank_you'] . ' ' . $siteName . '!');
+            ->line($texts['thank_you'] . ' ' . $siteName . '!')
+            ->salutation($texts['regards'] . "\n" . config('app.name'));
     }
 
     /**
@@ -69,6 +70,7 @@ class VerifyEmailNotification extends VerifyEmail implements ShouldQueue
                 'line2' => 'If you did not create an account, no further action is required.',
                 'line3' => 'This verification link will expire in 60 minutes.',
                 'thank_you' => 'Thank you for using',
+                'regards' => 'Regards,',
             ],
             'ar' => [
                 'subject' => 'تحقق من عنوان بريدك الإلكتروني',
@@ -78,6 +80,7 @@ class VerifyEmailNotification extends VerifyEmail implements ShouldQueue
                 'line2' => 'إذا لم تقم بإنشاء حساب، فلا حاجة لاتخاذ أي إجراء إضافي.',
                 'line3' => 'ستنتهي صلاحية رابط التحقق هذا خلال 60 دقيقة.',
                 'thank_you' => 'شكراً لاستخدامك',
+                'regards' => 'مع التحية،',
             ],
         ];
 

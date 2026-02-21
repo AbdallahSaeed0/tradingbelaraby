@@ -115,6 +115,26 @@ return [
         'en' => 'Request new OTP',
         'ar' => 'طلب رمز تحقق جديد',
     ],
+    'Verify OTP' => [
+        'en' => 'Verify OTP',
+        'ar' => 'التحقق من رمز التحقق',
+    ],
+    'Enter the 6-digit OTP sent to your email.' => [
+        'en' => 'Enter the 6-digit OTP sent to your email.',
+        'ar' => 'أدخل رمز التحقق المكون من 6 أرقام المرسل إلى بريدك الإلكتروني.',
+    ],
+    'Email:' => [
+        'en' => 'Email:',
+        'ar' => 'البريد الإلكتروني:',
+    ],
+    'Set New Password' => [
+        'en' => 'Set New Password',
+        'ar' => 'تعيين كلمة مرور جديدة',
+    ],
+    'Enter your new password below.' => [
+        'en' => 'Enter your new password below.',
+        'ar' => 'أدخل كلمة المرور الجديدة أدناه.',
+    ],
     'Password reset successfully. You can now log in with your new password.' => [
         'en' => 'Password reset successfully. You can now log in with your new password.',
         'ar' => 'تم إعادة تعيين كلمة المرور بنجاح. يمكنك الآن تسجيل الدخول بكلمة المرور الجديدة.',

@@ -42,7 +42,7 @@ class ForgotPasswordController extends Controller
         $cacheKey = self::OTP_CACHE_PREFIX . $email;
         Cache::put($cacheKey, $otp, now()->addMinutes(self::OTP_EXPIRY_MINUTES));
 
-        $language = app()->getLocale();
+        $language = \Illuminate\Support\Facades\Session::get('frontend_locale', config('app.locale'));
         $language = in_array($language, ['ar', 'en']) ? $language : 'en';
         $user->notify(new ForgotPasswordOtpNotification($otp, $language));
 

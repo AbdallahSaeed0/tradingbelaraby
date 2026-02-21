@@ -36,6 +36,11 @@ class ForgotPasswordTranslationsSeeder extends Seeder
                 'ar' => 'البريد الإلكتروني:',
             ],
             [
+                'key' => 'Email:',
+                'en' => 'Email:',
+                'ar' => 'البريد الإلكتروني:',
+            ],
+            [
                 'key' => 'OTP Code (6 digits)',
                 'en' => 'OTP Code (6 digits)',
                 'ar' => 'رمز التحقق (6 أرقام)',
