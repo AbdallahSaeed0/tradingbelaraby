@@ -92,6 +92,9 @@ Route::get('/about-academy', [AboutAcademyController::class, 'index'])->name('ap
 // Live Classes API Routes
 Route::get('/live-classes', [LiveClassController::class, 'index'])->name('api.live-classes.index');
 Route::get('/live-classes/{id}', [LiveClassController::class, 'show'])->name('api.live-classes.show');
+Route::post('/live-classes/{id}/register', [LiveClassController::class, 'register'])
+    ->middleware('auth:sanctum')
+    ->name('api.live-classes.register');
 
 // Sliders API (home page banner - same as website)
 Route::get('/sliders', [App\Http\Controllers\Api\SliderController::class, 'index'])->name('api.sliders.index');
