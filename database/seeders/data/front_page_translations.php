@@ -633,6 +633,12 @@ return [
     'No questions yet' => [
         'ar' => 'لا توجد أسئلة بعد',
     ],
+    'No Quizzes Yet' => [
+        'ar' => 'لا توجد اختبارات بعد',
+    ],
+    'Quizzes for this course will appear here when added by your instructor.' => [
+        'ar' => 'ستظهر اختبارات هذه الدورة هنا عند إضافتها من قبل المدرب.',
+    ],
     'No ratings yet' => [
         'ar' => 'لا توجد تقييمات بعد',
     ],
