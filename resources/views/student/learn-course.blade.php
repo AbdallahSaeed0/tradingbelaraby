@@ -140,7 +140,7 @@
                                                 <div class="d-flex gap-2">
                                                     @if (!$isRegistered)
                                                         <button class="btn btn-outline-primary flex-fill"
-                                                            onclick="joinLiveClass({{ $liveClass->id }})">
+                                                            onclick="joinLiveClass({{ $liveClass->id }}, {{ json_encode($liveClass->link ?? '') }})">
                                                             <i class="fa fa-video me-2"></i>{{ custom_trans('Join Live Class', 'front') }}
                                                         </button>
                                                     @else
@@ -500,34 +500,6 @@
                         data-bs-dismiss="modal">{{ custom_trans('Cancel', 'front') }}</button>
                     <button type="submit" form="scheduleLiveClassForm"
                         class="btn btn-orange">{{ custom_trans('Schedule Class', 'front') }}</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Join Live Class Modal -->
-    <div class="modal fade" id="joinLiveClassModal" tabindex="-1" aria-labelledby="joinLiveClassModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="joinLiveClassModalLabel">{{ custom_trans('Join Live Class', 'front') }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="joinLiveClassForm">
-                        <div class="mb-3">
-                            <label for="joinReason" class="form-label">{{ custom_trans('Reason for joining', 'front') }}</label>
-                            <textarea class="form-control" id="joinReason" name="reason" rows="3"
-                                placeholder="{{ custom_trans('Why do you want to join this live class?', 'front') }}"></textarea>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary"
-                        data-bs-dismiss="modal">{{ custom_trans('Cancel', 'front') }}</button>
-                    <button type="submit" form="joinLiveClassForm"
-                        class="btn btn-primary">{{ custom_trans('Join Class', 'front') }}</button>
                 </div>
             </div>
         </div>
@@ -1357,39 +1329,35 @@
 
         // New functions for Live Class functionality
 
-        function joinLiveClass(liveClassId) {
+        function joinLiveClass(liveClassId, meetingLink) {
             const courseId = {{ $course->id }};
-            const modal = new bootstrap.Modal(document.getElementById('joinLiveClassModal'));
-            modal.show();
+            const formData = new FormData();
+            formData.append('live_class_id', liveClassId);
+            formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
 
-            document.getElementById('joinLiveClassForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const formData = new FormData(this);
-                formData.append('live_class_id', liveClassId);
-                fetch(`/courses/${courseId}/join-live-class`, {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
-                                .getAttribute('content')
-                        },
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            showToast('{{ custom_trans('You have joined the live class!', 'front') }}', 'success');
-                            modal.hide();
-                            // Optionally, update the live class status or UI
-                            location.reload(); // Simple refresh to show updated live class
-                        } else {
-                            showToast('{{ custom_trans('Failed to join live class.', 'front') }}', 'danger');
-                            console.error(data.message);
-                        }
-                    })
-                    .catch(error => {
-                        showToast('{{ custom_trans('Error joining live class.', 'front') }}', 'danger');
-                        console.error(error);
-                    });
+            fetch(`/courses/${courseId}/join-live-class`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('{{ custom_trans('You have joined the live class!', 'front') }}', 'success');
+                    if (meetingLink && meetingLink.trim() !== '') {
+                        window.open(meetingLink, '_blank');
+                    }
+                    location.reload();
+                } else {
+                    showToast(data.message || '{{ custom_trans('Failed to join live class.', 'front') }}', 'danger');
+                    console.error(data.message);
+                }
+            })
+            .catch(error => {
+                showToast('{{ custom_trans('Error joining live class.', 'front') }}', 'danger');
+                console.error(error);
             });
         }
 
