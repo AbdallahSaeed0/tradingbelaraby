@@ -69,6 +69,10 @@ Route::middleware(['auth'])->group(function () {
         $request->user()->sendEmailVerificationNotification();
         return back()->with('success', 'Verification link sent! Please check your email.');
     })->middleware(['throttle:6,1'])->name('verification.send');
+
+    // X (Twitter) sign-in: collect email when X did not provide one
+    Route::get('/auth/x/complete-profile', [App\Http\Controllers\SocialAuthController::class, 'showCompleteProfileForm'])->name('auth.x.complete-profile');
+    Route::post('/auth/x/complete-profile', [App\Http\Controllers\SocialAuthController::class, 'saveCompleteProfile'])->name('auth.x.complete-profile.save')->middleware('throttle:10,1');
 });
 
 // Email verification link (works without auth - uses signed URL for security)

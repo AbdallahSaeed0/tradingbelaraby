@@ -130,7 +130,53 @@ class SocialAuthController extends Controller
         }
 
         Auth::login($user, true);
+
+        if ($this->isPlaceholderEmail($user->email)) {
+            return redirect()->route('auth.x.complete-profile');
+        }
+
         return redirect()->intended(route('home'));
+    }
+
+    /**
+     * Show form to collect email after first X sign-in when X did not provide one.
+     */
+    public function showCompleteProfileForm(): \Illuminate\View\View|RedirectResponse
+    {
+        $user = Auth::user();
+        if (!$user || !$this->isPlaceholderEmail($user->email)) {
+            return redirect()->intended(route('home'));
+        }
+        return view('auth.complete-email');
+    }
+
+    /**
+     * Save email from complete-profile form (first-time X sign-in).
+     */
+    public function saveCompleteProfile(\Illuminate\Http\Request $request): RedirectResponse
+    {
+        $user = Auth::user();
+        if (!$user || !$this->isPlaceholderEmail($user->email)) {
+            return redirect()->intended(route('home'));
+        }
+
+        $validated = $request->validate([
+            'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
+        ], [
+            'email.unique' => __('This email is already registered. Use another or sign in with that account.'),
+        ]);
+
+        $user->update([
+            'email' => $validated['email'],
+            'email_verified_at' => now(),
+        ]);
+
+        return redirect()->intended(route('home'))->with('success', __('Your email has been saved.'));
+    }
+
+    private function isPlaceholderEmail(string $email): bool
+    {
+        return (bool) preg_match('/^x\+.+@users\.noreply\.local$/', $email);
     }
 
     /**
