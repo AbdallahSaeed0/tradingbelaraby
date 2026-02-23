@@ -18,7 +18,7 @@ class SocialAuthController extends Controller
     public function redirectToGoogle(SocialLoginSettingsService $settings): RedirectResponse
     {
         if (!$settings->isGoogleEnabled()) {
-            return redirect()->route('login')->with('error', __('Google login is not available.'));
+            return redirect()->route('login')->with('error', custom_trans('Google login is not available.', 'front'));
         }
         try {
             Config::set('services.google', $settings->getGoogleConfig());
@@ -27,7 +27,7 @@ class SocialAuthController extends Controller
             Log::error('Google redirect failed: ' . $e->getMessage(), ['exception' => $e]);
             $message = config('app.debug')
                 ? 'Google: ' . $e->getMessage()
-                : __('Social login is temporarily unavailable. Please try again later.');
+                : custom_trans('Social login is temporarily unavailable. Please try again later.', 'front');
             return redirect()->route('login')->with('error', $message);
         }
     }
@@ -40,17 +40,17 @@ class SocialAuthController extends Controller
     public function handleGoogleCallback(SocialLoginSettingsService $settings): RedirectResponse
     {
         if (!$settings->isGoogleEnabled()) {
-            return redirect()->route('login')->with('error', __('Google login is not available.'));
+            return redirect()->route('login')->with('error', custom_trans('Google login is not available.', 'front'));
         }
         try {
             Config::set('services.google', $settings->getGoogleConfig());
             $googleUser = Socialite::driver('google')->user();
         } catch (\Laravel\Socialite\Two\InvalidStateException $e) {
             Log::warning('Google callback invalid state');
-            return redirect()->route('login')->with('error', __('Session expired. Please try again.'));
+            return redirect()->route('login')->with('error', custom_trans('Session expired. Please try again.', 'front'));
         } catch (\Throwable $e) {
             Log::error('Google callback failed: ' . $e->getMessage(), ['exception' => $e]);
-            $message = config('app.debug') ? 'Google callback: ' . $e->getMessage() : __('Unable to sign in with Google. Please try again.');
+            $message = config('app.debug') ? 'Google callback: ' . $e->getMessage() : custom_trans('Unable to sign in with Google. Please try again.', 'front');
             return redirect()->route('login')->with('error', $message);
         }
 
@@ -63,7 +63,7 @@ class SocialAuthController extends Controller
         );
 
         if (!$user) {
-            return redirect()->route('login')->with('error', __('We could not get your email from Google. Please use email/password or ensure your Google account has an email.'));
+            return redirect()->route('login')->with('error', custom_trans('We could not get your email from Google. Please use email/password or ensure your Google account has an email.', 'front'));
         }
 
         Auth::login($user, true);
@@ -76,7 +76,7 @@ class SocialAuthController extends Controller
     public function redirectToTwitter(SocialLoginSettingsService $settings): RedirectResponse
     {
         if (!$settings->isTwitterEnabled()) {
-            return redirect()->route('login')->with('error', __('Twitter login is not available.'));
+            return redirect()->route('login')->with('error', custom_trans('Twitter login is not available.', 'front'));
         }
         try {
             Config::set('services.twitter', $settings->getTwitterConfig());
@@ -87,7 +87,7 @@ class SocialAuthController extends Controller
             if (str_contains(strtolower($msg), 'driver') || str_contains(strtolower($msg), 'not supported')) {
                 $message = 'Twitter login: run "composer require socialiteproviders/twitter" then "composer update".';
             } else {
-                $message = config('app.debug') ? 'Twitter: ' . $msg : __('Social login is temporarily unavailable. Please try again later.');
+                $message = config('app.debug') ? 'Twitter: ' . $msg : custom_trans('Social login is temporarily unavailable. Please try again later.', 'front');
             }
             return redirect()->route('login')->with('error', $message);
         }
@@ -99,17 +99,17 @@ class SocialAuthController extends Controller
     public function handleTwitterCallback(SocialLoginSettingsService $settings): RedirectResponse
     {
         if (!$settings->isTwitterEnabled()) {
-            return redirect()->route('login')->with('error', __('Twitter login is not available.'));
+            return redirect()->route('login')->with('error', custom_trans('Twitter login is not available.', 'front'));
         }
         try {
             Config::set('services.twitter', $settings->getTwitterConfig());
             $twitterUser = Socialite::driver('twitter')->user();
         } catch (\Laravel\Socialite\Two\InvalidStateException $e) {
             Log::warning('Twitter callback invalid state');
-            return redirect()->route('login')->with('error', __('Session expired. Please try again.'));
+            return redirect()->route('login')->with('error', custom_trans('Session expired. Please try again.', 'front'));
         } catch (\Throwable $e) {
             Log::error('Twitter callback failed: ' . $e->getMessage(), ['exception' => $e]);
-            $message = config('app.debug') ? 'Twitter callback: ' . $e->getMessage() : __('Unable to sign in with X. Please try again.');
+            $message = config('app.debug') ? 'Twitter callback: ' . $e->getMessage() : custom_trans('Unable to sign in with X. Please try again.', 'front');
             return redirect()->route('login')->with('error', $message);
         }
 
@@ -126,7 +126,7 @@ class SocialAuthController extends Controller
         );
 
         if (!$user) {
-            return redirect()->route('login')->with('error', __('We could not sign you in with X. Please try again or use email/password.'));
+            return redirect()->route('login')->with('error', custom_trans('We could not sign you in with X. Please try again or use email/password.', 'front'));
         }
 
         Auth::login($user, true);
@@ -163,7 +163,7 @@ class SocialAuthController extends Controller
         $validated = $request->validate([
             'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
         ], [
-            'email.unique' => __('This email is already registered. Use another or sign in with that account.'),
+            'email.unique' => custom_trans('This email is already registered. Use another or sign in with that account.', 'front'),
         ]);
 
         $user->update([
@@ -171,7 +171,7 @@ class SocialAuthController extends Controller
             'email_verified_at' => now(),
         ]);
 
-        return redirect()->intended(route('home'))->with('success', __('Your email has been saved.'));
+        return redirect()->intended(route('home'))->with('success', custom_trans('Your email has been saved.', 'front'));
     }
 
     private function isPlaceholderEmail(string $email): bool

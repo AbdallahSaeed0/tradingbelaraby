@@ -2267,5 +2267,71 @@ return [
         'en' => 'Registration successful! Please check your email to verify your account before logging in.',
         'ar' => 'تم التسجيل بنجاح! يرجى التحقق من بريدك الإلكتروني لتأكيد حسابك قبل تسجيل الدخول.',
     ],
+
+    // Social login (Google, X/Twitter) and complete profile
+    'Continue with Google' => [
+        'en' => 'Continue with Google',
+        'ar' => 'متابعة باستخدام Google',
+    ],
+    'Continue with X' => [
+        'en' => 'Continue with X',
+        'ar' => 'متابعة باستخدام X',
+    ],
+    'Google login is not available.' => [
+        'en' => 'Google login is not available.',
+        'ar' => 'تسجيل الدخول عبر Google غير متاح.',
+    ],
+    'Twitter login is not available.' => [
+        'en' => 'Twitter login is not available.',
+        'ar' => 'تسجيل الدخول عبر X غير متاح.',
+    ],
+    'Social login is temporarily unavailable. Please try again later.' => [
+        'en' => 'Social login is temporarily unavailable. Please try again later.',
+        'ar' => 'تسجيل الدخول عبر الشبكات الاجتماعية غير متاح مؤقتاً. يرجى المحاولة لاحقاً.',
+    ],
+    'Session expired. Please try again.' => [
+        'en' => 'Session expired. Please try again.',
+        'ar' => 'انتهت الجلسة. يرجى المحاولة مرة أخرى.',
+    ],
+    'Unable to sign in with Google. Please try again.' => [
+        'en' => 'Unable to sign in with Google. Please try again.',
+        'ar' => 'تعذر تسجيل الدخول عبر Google. يرجى المحاولة مرة أخرى.',
+    ],
+    'Unable to sign in with X. Please try again.' => [
+        'en' => 'Unable to sign in with X. Please try again.',
+        'ar' => 'تعذر تسجيل الدخول عبر X. يرجى المحاولة مرة أخرى.',
+    ],
+    'We could not get your email from Google. Please use email/password or ensure your Google account has an email.' => [
+        'en' => 'We could not get your email from Google. Please use email/password or ensure your Google account has an email.',
+        'ar' => 'لم نتمكن من الحصول على بريدك من Google. يرجى استخدام البريد/كلمة المرور أو التأكد من ربط بريد بحساب Google.',
+    ],
+    'We could not sign you in with X. Please try again or use email/password.' => [
+        'en' => 'We could not sign you in with X. Please try again or use email/password.',
+        'ar' => 'تعذر تسجيل دخولك عبر X. يرجى المحاولة مرة أخرى أو استخدام البريد/كلمة المرور.',
+    ],
+    'Complete your profile' => [
+        'en' => 'Complete your profile',
+        'ar' => 'أكمل ملفك الشخصي',
+    ],
+    'Add your email' => [
+        'en' => 'Add your email',
+        'ar' => 'أضف بريدك الإلكتروني',
+    ],
+    'You signed in with X. To complete your account, please enter your email address.' => [
+        'en' => 'You signed in with X. To complete your account, please enter your email address.',
+        'ar' => 'سجّلت الدخول عبر X. لإكمال حسابك، يرجى إدخال بريدك الإلكتروني.',
+    ],
+    'Save and continue' => [
+        'en' => 'Save and continue',
+        'ar' => 'حفظ ومتابعة',
+    ],
+    'This email is already registered. Use another or sign in with that account.' => [
+        'en' => 'This email is already registered. Use another or sign in with that account.',
+        'ar' => 'هذا البريد مسجّل مسبقاً. استخدم بريداً آخر أو سجّل الدخول بهذا الحساب.',
+    ],
+    'Your email has been saved.' => [
+        'en' => 'Your email has been saved.',
+        'ar' => 'تم حفظ بريدك الإلكتروني.',
+    ],
 ];
 
