@@ -11,6 +11,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
 
@@ -111,6 +113,235 @@ class AuthController extends Controller
                 'token' => $token,
             ],
         ]);
+    }
+
+    /**
+     * Login with Google ID token (for Flutter app). Verifies token then find/create user, return Sanctum token.
+     */
+    public function loginWithGoogle(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'id_token' => ['required', 'string'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $settings = app(\App\Services\SocialLoginSettingsService::class);
+        $googleConfig = $settings->getGoogleConfig();
+        $clientId = $googleConfig['client_id'] ?? null;
+        $allowedAudiences = array_filter([
+            $clientId,
+            $googleConfig['android_client_id'] ?? null,
+            $googleConfig['ios_client_id'] ?? null,
+        ]);
+
+        if (!$settings->isGoogleEnabled() || empty($clientId)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Google login is not configured',
+            ], 503);
+        }
+
+        $response = Http::get('https://oauth2.googleapis.com/tokeninfo', [
+            'id_token' => $request->id_token,
+        ]);
+
+        if (!$response->successful()) {
+            Log::warning('Google tokeninfo failed', ['status' => $response->status(), 'body' => $response->body()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid or expired Google token',
+            ], 401);
+        }
+
+        $payload = $response->json();
+        $aud = $payload['aud'] ?? null;
+        if (!$aud || !in_array($aud, $allowedAudiences, true)) {
+            Log::warning('Google token audience mismatch', ['aud' => $aud, 'allowed' => $allowedAudiences]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid Google token audience',
+            ], 401);
+        }
+
+        $sub = $payload['sub'] ?? null;
+        $email = $payload['email'] ?? null;
+        $name = $payload['name'] ?? 'User';
+        $picture = $payload['picture'] ?? null;
+
+        if (!$sub || !$email) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Google account email is required',
+            ], 400);
+        }
+
+        $user = User::where('google_id', $sub)->first();
+        if ($user) {
+            $token = $user->createToken('auth_token')->plainTextToken;
+            return response()->json([
+                'success' => true,
+                'message' => 'Login successful',
+                'data' => [
+                    'user' => new UserResource($user),
+                    'token' => $token,
+                ],
+            ]);
+        }
+
+        $user = User::where('email', $email)->first();
+        if ($user) {
+            $user->update([
+                'google_id' => $sub,
+                'avatar' => $picture ?: $user->avatar,
+                'email_verified_at' => $user->email_verified_at ?? now(),
+            ]);
+            $token = $user->createToken('auth_token')->plainTextToken;
+            return response()->json([
+                'success' => true,
+                'message' => 'Login successful',
+                'data' => [
+                    'user' => new UserResource($user),
+                    'token' => $token,
+                ],
+            ]);
+        }
+
+        $user = User::create([
+            'name' => $name,
+            'email' => $email,
+            'password' => null,
+            'google_id' => $sub,
+            'avatar' => $picture,
+            'email_verified_at' => now(),
+        ]);
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+        return response()->json([
+            'success' => true,
+            'message' => 'Login successful',
+            'data' => [
+                'user' => new UserResource($user),
+                'token' => $token,
+            ],
+        ], 201);
+    }
+
+    /**
+     * Login with Twitter access token (for Flutter app). Fetches user from Twitter then find/create user, return Sanctum token.
+     */
+    public function loginWithTwitter(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'access_token' => ['required', 'string'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $settings = app(\App\Services\SocialLoginSettingsService::class);
+        if (!$settings->isTwitterEnabled()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Twitter login is not configured',
+            ], 503);
+        }
+
+        $response = Http::withToken($request->access_token)
+            ->get('https://api.twitter.com/2/users/me', [
+                'user.fields' => 'id,name,profile_image_url',
+            ]);
+
+        if (!$response->successful()) {
+            Log::warning('Twitter users/me failed', ['status' => $response->status(), 'body' => $response->body()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid or expired Twitter token',
+            ], 401);
+        }
+
+        $data = $response->json('data');
+        if (empty($data) || empty($data['id'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Could not get Twitter user',
+            ], 401);
+        }
+
+        $twitterId = $data['id'];
+        $name = $data['name'] ?? 'User';
+        $avatar = $data['profile_image_url'] ?? null;
+
+        $user = User::where('twitter_id', $twitterId)->first();
+        if ($user) {
+            $token = $user->createToken('auth_token')->plainTextToken;
+            return response()->json([
+                'success' => true,
+                'message' => 'Login successful',
+                'data' => [
+                    'user' => new UserResource($user),
+                    'token' => $token,
+                ],
+            ]);
+        }
+
+        $email = $request->input('email');
+        if ($email) {
+            $user = User::where('email', $email)->first();
+            if ($user) {
+                $user->update([
+                    'twitter_id' => $twitterId,
+                    'avatar' => $avatar ?: $user->avatar,
+                    'email_verified_at' => $user->email_verified_at ?? now(),
+                ]);
+                $token = $user->createToken('auth_token')->plainTextToken;
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Login successful',
+                    'data' => [
+                        'user' => new UserResource($user),
+                        'token' => $token,
+                    ],
+                ]);
+            }
+        }
+
+        if (empty($email)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Email is required for new accounts. Please grant email permission in X or sign up with email first.',
+            ], 400);
+        }
+
+        $user = User::create([
+            'name' => $name,
+            'email' => $email,
+            'password' => null,
+            'twitter_id' => $twitterId,
+            'avatar' => $avatar,
+            'email_verified_at' => now(),
+        ]);
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+        return response()->json([
+            'success' => true,
+            'message' => 'Login successful',
+            'data' => [
+                'user' => new UserResource($user),
+                'token' => $token,
+            ],
+        ], 201);
     }
 
     /**

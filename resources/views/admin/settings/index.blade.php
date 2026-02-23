@@ -63,6 +63,50 @@
                 </div>
             </div>
 
+            <!-- Social Login Providers -->
+            <div class="settings-card-wrapper">
+                <div class="card settings-card">
+                    <div class="card-body text-center p-4">
+                        <div class="settings-icon mb-4">
+                            <div class="icon-wrapper">
+                                <i class="fas fa-sign-in-alt fa-4x text-primary"></i>
+                            </div>
+                        </div>
+                        <h3 class="card-title mb-3">{{ custom_trans('Social Login Providers', 'admin') }}</h3>
+                        <p class="card-text text-muted mb-4">
+                            {{ custom_trans('Manage Google and Twitter (X) login: client IDs, redirect URIs, and enable/disable each provider.', 'admin') }}
+                        </p>
+                        <div class="features-list mb-4">
+                            <div class="row text-start">
+                                <div class="col-md-6">
+                                    <div class="feature-item">
+                                        <i class="fas fa-google text-info me-2"></i>
+                                        <span>{{ custom_trans('Google OAuth', 'admin') }}</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fab fa-twitter text-success me-2"></i>
+                                        <span>{{ custom_trans('Twitter (X) OAuth 2', 'admin') }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="feature-item">
+                                        <i class="fas fa-lock text-warning me-2"></i>
+                                        <span>{{ custom_trans('Secrets server-side only', 'admin') }}</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-toggle-on text-primary me-2"></i>
+                                        <span>{{ custom_trans('Enable per provider', 'admin') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="{{ route('admin.settings.social-login.index') }}" class="btn btn-primary settings-card-cta">
+                            <i class="fas fa-cog me-2"></i>{{ custom_trans('Manage Social Login', 'admin') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+
             <!-- Features Section Management Card -->
             <div class="settings-card-wrapper">
                 <div class="card settings-card">

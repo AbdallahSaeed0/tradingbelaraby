@@ -40,6 +40,10 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->name('login.attempt');
+    Route::get('/auth/google', [App\Http\Controllers\SocialAuthController::class, 'redirectToGoogle'])->name('auth.google');
+    Route::get('/auth/google/callback', [App\Http\Controllers\SocialAuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
+    Route::get('/auth/twitter', [App\Http\Controllers\SocialAuthController::class, 'redirectToTwitter'])->name('auth.twitter');
+    Route::get('/auth/twitter/callback', [App\Http\Controllers\SocialAuthController::class, 'handleTwitterCallback'])->name('auth.twitter.callback');
     Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
     Route::get('/register/check-email', [AuthController::class, 'checkEmail'])->name('register.check-email');
     Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:20,1')->name('register.attempt');
@@ -393,6 +397,9 @@ Route::resource('quizzes.questions', App\Http\Controllers\Admin\QuizQuestionMana
     Route::post('/coupons/{coupon}/update-status', [App\Http\Controllers\Admin\CouponsController::class, 'updateStatus'])->name('coupons.update_status')->middleware('admin.permission:manage_courses');
 
     // Settings routes
+    Route::get('/settings/social-login', [App\Http\Controllers\Admin\SocialLoginSettingsController::class, 'index'])->name('settings.social-login.index');
+    Route::put('/settings/social-login/google', [App\Http\Controllers\Admin\SocialLoginSettingsController::class, 'updateGoogle'])->name('settings.social-login.update-google');
+    Route::put('/settings/social-login/twitter', [App\Http\Controllers\Admin\SocialLoginSettingsController::class, 'updateTwitter'])->name('settings.social-login.update-twitter');
     Route::put('/settings/coming-soon', [App\Http\Controllers\Admin\SettingsController::class, 'updateComingSoon'])->name('settings.coming-soon.update');
     Route::resource('partner-logos', App\Http\Controllers\Admin\PartnerLogoController::class);
     Route::post('/partner-logos/{partnerLogo}/update-status', [App\Http\Controllers\Admin\PartnerLogoController::class, 'updateStatus'])->name('partner-logos.update_status');

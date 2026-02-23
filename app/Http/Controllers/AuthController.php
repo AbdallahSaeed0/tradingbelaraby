@@ -9,15 +9,19 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
+use App\Services\SocialLoginSettingsService;
 
 class AuthController extends Controller
 {
     /**
      * Show the login form.
      */
-    public function showLoginForm()
+    public function showLoginForm(SocialLoginSettingsService $socialSettings)
     {
-        return view('auth.login');
+        return view('auth.login', [
+            'googleLoginEnabled' => $socialSettings->isGoogleEnabled(),
+            'twitterLoginEnabled' => $socialSettings->isTwitterEnabled(),
+        ]);
     }
 
     /**
