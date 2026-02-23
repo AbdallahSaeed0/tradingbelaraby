@@ -139,4 +139,17 @@ class PageController extends Controller
 
         return view('pages.academy-policy', compact('academyPolicy'));
     }
+
+    /**
+     * Display the data deletion page (static, not linked in footer).
+     *
+     * @return \Illuminate\View\View
+     */
+    public function dataDeletion()
+    {
+        $locale = \Illuminate\Support\Facades\Session::get('frontend_locale', config('app.locale'));
+        app()->setLocale($locale);
+
+        return view('pages.data-deletion');
+    }
 }
