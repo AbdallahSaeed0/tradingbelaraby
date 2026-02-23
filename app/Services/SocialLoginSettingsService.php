@@ -28,10 +28,16 @@ class SocialLoginSettingsService
         return [
             'client_id' => $row->client_id ?? $fromEnv['client_id'],
             'client_secret' => $row->client_secret ?? $fromEnv['client_secret'],
-            'redirect' => $row->redirect_uri ?? $fromEnv['redirect'],
+            'redirect' => $this->normalizeRedirectUri($row->redirect_uri ?? $fromEnv['redirect']),
             'android_client_id' => $row->getExtraValue('android_client_id') ?? $fromEnv['android_client_id'],
             'ios_client_id' => $row->getExtraValue('ios_client_id') ?? $fromEnv['ios_client_id'],
         ];
+    }
+
+    private function normalizeRedirectUri(?string $uri): string
+    {
+        $uri = trim((string) $uri);
+        return $uri === '' ? rtrim(config('app.url'), '/') . '/auth/google/callback' : rtrim($uri, '/');
     }
 
     /**
@@ -53,8 +59,14 @@ class SocialLoginSettingsService
         return [
             'client_id' => $row->client_id ?? $fromEnv['client_id'],
             'client_secret' => $row->client_secret ?? $fromEnv['client_secret'],
-            'redirect' => $row->redirect_uri ?? $fromEnv['redirect'],
+            'redirect' => $this->normalizeRedirectUriTwitter($row->redirect_uri ?? $fromEnv['redirect']),
         ];
+    }
+
+    private function normalizeRedirectUriTwitter(?string $uri): string
+    {
+        $uri = trim((string) $uri);
+        return $uri === '' ? rtrim(config('app.url'), '/') . '/auth/twitter/callback' : rtrim($uri, '/');
     }
 
     /**

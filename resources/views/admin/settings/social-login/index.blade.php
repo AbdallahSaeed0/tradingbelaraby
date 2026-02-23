@@ -54,6 +54,9 @@
                         <div class="tab-content">
                             {{-- Google tab --}}
                             <div class="tab-pane fade show active" id="google-pane" role="tabpanel">
+                                @if($google->id)
+                                    <p class="text-muted small mb-2"><span class="badge bg-success">Saved</span> Record #{{ $google->id }}</p>
+                                @endif
                                 <form action="{{ route('admin.settings.social-login.update-google') }}" method="POST">
                                     @csrf
                                     @method('PUT')
@@ -91,6 +94,9 @@
 
                             {{-- Twitter tab --}}
                             <div class="tab-pane fade" id="twitter-pane" role="tabpanel">
+                                @if($twitter->id)
+                                    <p class="text-muted small mb-2"><span class="badge bg-success">Saved</span> Record #{{ $twitter->id }}</p>
+                                @endif
                                 <form action="{{ route('admin.settings.social-login.update-twitter') }}" method="POST">
                                     @csrf
                                     @method('PUT')

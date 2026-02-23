@@ -12,15 +12,21 @@ use Illuminate\Http\RedirectResponse;
 
 class SocialLoginSettingsController extends Controller
 {
-    public function index(SocialLoginSettingsService $settings): View
+    public function index(): View
     {
-        $google = SocialProviderSetting::getForProvider(SocialProviderSetting::PROVIDER_GOOGLE)
-            ?? new SocialProviderSetting(['provider' => SocialProviderSetting::PROVIDER_GOOGLE, 'enabled' => false]);
-        $twitter = SocialProviderSetting::getForProvider(SocialProviderSetting::PROVIDER_TWITTER)
-            ?? new SocialProviderSetting(['provider' => SocialProviderSetting::PROVIDER_TWITTER, 'enabled' => false]);
+        $google = SocialProviderSetting::where('provider', SocialProviderSetting::PROVIDER_GOOGLE)->first();
+        $twitter = SocialProviderSetting::where('provider', SocialProviderSetting::PROVIDER_TWITTER)->first();
 
-        $defaultRedirectGoogle = rtrim(config('app.url'), '/') . '/auth/google/callback';
-        $defaultRedirectTwitter = rtrim(config('app.url'), '/') . '/auth/twitter/callback';
+        if (!$google) {
+            $google = new SocialProviderSetting(['provider' => SocialProviderSetting::PROVIDER_GOOGLE, 'enabled' => false]);
+        }
+        if (!$twitter) {
+            $twitter = new SocialProviderSetting(['provider' => SocialProviderSetting::PROVIDER_TWITTER, 'enabled' => false]);
+        }
+
+        $appUrl = rtrim(config('app.url'), '/');
+        $defaultRedirectGoogle = $appUrl . '/auth/google/callback';
+        $defaultRedirectTwitter = $appUrl . '/auth/twitter/callback';
 
         return view('admin.settings.social-login.index', compact('google', 'twitter', 'defaultRedirectGoogle', 'defaultRedirectTwitter'));
     }

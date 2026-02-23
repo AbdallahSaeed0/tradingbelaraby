@@ -6,6 +6,19 @@
     <div class="container py-5 max-w-520">
         <h2 class="text-center mb-4">{{ custom_trans('Login', 'front') }}</h2>
 
+        @if (session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+        @if (session('info'))
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                {{ session('info') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
         <form method="POST" action="{{ route('login.attempt') }}" class="card p-4 shadow-sm">
             @csrf
 
