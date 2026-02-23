@@ -126,7 +126,7 @@ class SocialAuthController extends Controller
         );
 
         if (!$user) {
-            return redirect()->route('login')->with('error', __('We could not get your email from X. Please use email/password or connect an email to your X account.'));
+            return redirect()->route('login')->with('error', __('We could not sign you in with X. Please try again or use email/password.'));
         }
 
         Auth::login($user, true);
@@ -135,6 +135,7 @@ class SocialAuthController extends Controller
 
     /**
      * Find user by provider id or email; create or link. Mark email verified for social logins.
+     * For Twitter, if X does not return an email we create a user with a unique placeholder email.
      */
     private function findOrCreateSocialUser(string $provider, string $providerId, ?string $email, string $name, ?string $avatar): ?User
     {
@@ -146,7 +147,11 @@ class SocialAuthController extends Controller
         }
 
         if (empty($email)) {
-            return null;
+            if ($provider === 'twitter') {
+                $email = 'x+' . $providerId . '@users.noreply.local';
+            } else {
+                return null;
+            }
         }
 
         $user = User::where('email', $email)->first();

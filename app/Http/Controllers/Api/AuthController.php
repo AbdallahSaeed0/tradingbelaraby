@@ -318,10 +318,7 @@ class AuthController extends Controller
         }
 
         if (empty($email)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Email is required for new accounts. Please grant email permission in X or sign up with email first.',
-            ], 400);
+            $email = 'x+' . $twitterId . '@users.noreply.local';
         }
 
         $user = User::create([
