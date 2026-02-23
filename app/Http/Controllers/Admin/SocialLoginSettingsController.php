@@ -30,26 +30,25 @@ class SocialLoginSettingsController extends Controller
         $validated = $request->validate([
             'enabled' => ['nullable', 'boolean'],
             'client_id' => ['nullable', 'string', 'max:512'],
-            'client_secret' => ['nullable', 'string', 'max:1024'],
+            'new_client_secret' => ['nullable', 'string', 'max:2048'],
             'redirect_uri' => ['nullable', 'string', 'max:512'],
             'android_client_id' => ['nullable', 'string', 'max:512'],
             'ios_client_id' => ['nullable', 'string', 'max:512'],
         ]);
 
         $row = SocialProviderSetting::firstOrNew(['provider' => SocialProviderSetting::PROVIDER_GOOGLE]);
+        $extra = $row->extra ?? [];
+        $extra['android_client_id'] = $validated['android_client_id'] ?? $extra['android_client_id'] ?? null;
+        $extra['ios_client_id'] = $validated['ios_client_id'] ?? $extra['ios_client_id'] ?? null;
+
+        $clientSecret = $request->filled('new_client_secret')
+            ? trim((string) $request->input('new_client_secret'))
+            : ($row->exists ? $row->getOriginal('client_secret') : null);
+
         $row->enabled = $request->boolean('enabled');
         $row->client_id = $validated['client_id'] ?? $row->client_id;
-        if ($request->filled('client_secret')) {
-            $row->setAttribute('client_secret', trim((string) $request->input('client_secret')));
-        }
+        $row->client_secret = $clientSecret;
         $row->redirect_uri = $validated['redirect_uri'] ?? null;
-        $extra = $row->extra ?? [];
-        if (array_key_exists('android_client_id', $validated)) {
-            $extra['android_client_id'] = $validated['android_client_id'] ?: null;
-        }
-        if (array_key_exists('ios_client_id', $validated)) {
-            $extra['ios_client_id'] = $validated['ios_client_id'] ?: null;
-        }
         $row->extra = $extra;
         $row->save();
 
@@ -62,16 +61,18 @@ class SocialLoginSettingsController extends Controller
         $validated = $request->validate([
             'enabled' => ['nullable', 'boolean'],
             'client_id' => ['nullable', 'string', 'max:512'],
-            'client_secret' => ['nullable', 'string', 'max:1024'],
+            'new_client_secret' => ['nullable', 'string', 'max:2048'],
             'redirect_uri' => ['nullable', 'string', 'max:512'],
         ]);
 
         $row = SocialProviderSetting::firstOrNew(['provider' => SocialProviderSetting::PROVIDER_TWITTER]);
+        $clientSecret = $request->filled('new_client_secret')
+            ? trim((string) $request->input('new_client_secret'))
+            : ($row->exists ? $row->getOriginal('client_secret') : null);
+
         $row->enabled = $request->boolean('enabled');
         $row->client_id = $validated['client_id'] ?? $row->client_id;
-        if ($request->filled('client_secret')) {
-            $row->setAttribute('client_secret', trim((string) $request->input('client_secret')));
-        }
+        $row->client_secret = $clientSecret;
         $row->redirect_uri = $validated['redirect_uri'] ?? null;
         $row->save();
 

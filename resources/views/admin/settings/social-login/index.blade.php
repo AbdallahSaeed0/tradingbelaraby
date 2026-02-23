@@ -66,8 +66,8 @@
                                         <input type="text" class="form-control" id="google-client_id" name="client_id" value="{{ old('client_id', $google->client_id) }}" placeholder="xxx.apps.googleusercontent.com">
                                     </div>
                                     <div class="mb-3">
-                                        <label for="google-client_secret" class="form-label">{{ custom_trans('Client Secret', 'admin') }} <span class="text-muted small">({{ custom_trans('Update only to change; leave blank to keep current', 'admin') }})</span></label>
-                                        <input type="password" class="form-control" id="google-client_secret" name="client_secret" value="" placeholder="{{ $google->client_secret ? '••••••••••••' : '' }}" autocomplete="new-password">
+                                        <label for="google-new_client_secret" class="form-label">{{ custom_trans('Client Secret', 'admin') }} <span class="text-muted small">({{ custom_trans('Update only to change; leave blank to keep current', 'admin') }})</span></label>
+                                        <input type="text" class="form-control font-monospace" id="google-new_client_secret" name="new_client_secret" value="{{ old('new_client_secret') }}" placeholder="{{ $google->client_secret ? '••••••••••••' : 'Enter secret' }}" autocomplete="off">
                                         @if($google->client_secret)
                                             <div class="form-text">{{ custom_trans('Currently set. Enter a new value only to replace.', 'admin') }}</div>
                                         @endif
@@ -103,8 +103,8 @@
                                         <input type="text" class="form-control" id="twitter-client_id" name="client_id" value="{{ old('client_id', $twitter->client_id) }}" placeholder="OAuth 2.0 Client ID">
                                     </div>
                                     <div class="mb-3">
-                                        <label for="twitter-client_secret" class="form-label">{{ custom_trans('Client Secret', 'admin') }} <span class="text-muted small">({{ custom_trans('Update only to change; leave blank to keep current', 'admin') }})</span></label>
-                                        <input type="password" class="form-control" id="twitter-client_secret" name="client_secret" value="" placeholder="{{ $twitter->client_secret ? '••••••••••••' : '' }}" autocomplete="new-password">
+                                        <label for="twitter-new_client_secret" class="form-label">{{ custom_trans('Client Secret', 'admin') }} <span class="text-muted small">({{ custom_trans('Update only to change; leave blank to keep current', 'admin') }})</span></label>
+                                        <input type="text" class="form-control font-monospace" id="twitter-new_client_secret" name="new_client_secret" value="{{ old('new_client_secret') }}" placeholder="{{ $twitter->client_secret ? '••••••••••••' : 'Enter secret' }}" autocomplete="off">
                                         @if($twitter->client_secret)
                                             <div class="form-text">{{ custom_trans('Currently set. Enter a new value only to replace.', 'admin') }}</div>
                                         @endif
