@@ -67,6 +67,11 @@ class SocialAuthController extends Controller
         }
 
         Auth::login($user, true);
+
+        if ($this->needsCompleteProfile($user)) {
+            return redirect()->route('auth.x.complete-profile');
+        }
+
         return redirect()->intended(route('home'));
     }
 
@@ -131,7 +136,7 @@ class SocialAuthController extends Controller
 
         Auth::login($user, true);
 
-        if ($this->isPlaceholderEmail($user->email)) {
+        if ($this->needsCompleteProfile($user)) {
             return redirect()->route('auth.x.complete-profile');
         }
 
@@ -139,39 +144,71 @@ class SocialAuthController extends Controller
     }
 
     /**
-     * Show form to collect email after first X sign-in when X did not provide one.
+     * Show form to collect missing profile data (email for X placeholder, phone for Google/X).
      */
     public function showCompleteProfileForm(): \Illuminate\View\View|RedirectResponse
     {
         $user = Auth::user();
-        if (!$user || !$this->isPlaceholderEmail($user->email)) {
+        if (!$user || !$this->needsCompleteProfile($user)) {
             return redirect()->intended(route('home'));
         }
-        return view('auth.complete-email');
+        $needsEmail = $this->isPlaceholderEmail($user->email);
+        $needsPhone = empty(trim((string) $user->phone));
+        return view('auth.complete-profile', compact('needsEmail', 'needsPhone'));
     }
 
     /**
-     * Save email from complete-profile form (first-time X sign-in).
+     * Save profile data from complete-profile form (email and/or phone).
      */
     public function saveCompleteProfile(\Illuminate\Http\Request $request): RedirectResponse
     {
         $user = Auth::user();
-        if (!$user || !$this->isPlaceholderEmail($user->email)) {
+        if (!$user || !$this->needsCompleteProfile($user)) {
             return redirect()->intended(route('home'));
         }
 
-        $validated = $request->validate([
-            'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
-        ], [
+        $needsEmail = $this->isPlaceholderEmail($user->email);
+        $needsPhone = empty(trim((string) $user->phone));
+
+        $rules = [];
+        if ($needsEmail) {
+            $rules['email'] = ['required', 'email', 'max:255', 'unique:users,email,' . $user->id];
+        }
+        if ($needsPhone) {
+            $rules['phone'] = [
+                'required',
+                'string',
+                'max:20',
+                'regex:/^\+?[0-9]{9,15}$/',
+            ];
+        }
+
+        $validated = $request->validate($rules, [
             'email.unique' => custom_trans('This email is already registered. Use another or sign in with that account.', 'front'),
+            'phone.regex' => custom_trans('Please enter a valid phone number (at least 9 digits).', 'front'),
         ]);
 
-        $user->update([
-            'email' => $validated['email'],
-            'email_verified_at' => now(),
-        ]);
+        $updates = [];
+        if ($needsEmail && !empty($validated['email'] ?? null)) {
+            $updates['email'] = $validated['email'];
+            $updates['email_verified_at'] = now();
+        }
+        if ($needsPhone && isset($validated['phone'])) {
+            $updates['phone'] = trim($validated['phone']);
+        }
+        if (!empty($updates)) {
+            $user->update($updates);
+        }
 
-        return redirect()->intended(route('home'))->with('success', custom_trans('Your email has been saved.', 'front'));
+        return redirect()->intended(route('home'))->with('success', custom_trans('Your profile has been updated.', 'front'));
+    }
+
+    private function needsCompleteProfile(User $user): bool
+    {
+        if ($this->isPlaceholderEmail($user->email)) {
+            return true;
+        }
+        return empty(trim((string) $user->phone));
     }
 
     private function isPlaceholderEmail(string $email): bool

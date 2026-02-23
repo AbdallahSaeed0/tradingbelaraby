@@ -162,7 +162,7 @@ class AuthController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'country' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:20', 'regex:/^\+?[0-9]+$/'],
+            'phone' => ['required', 'string', 'max:20', 'regex:/^\+?[0-9]{9,15}$/'],
             'password' => ['required', 'confirmed', 'min:6'],
         ], [
             'name.required' => 'Please enter your name.',
@@ -172,7 +172,7 @@ class AuthController extends Controller
             'email.unique' => 'This email is already registered. Please sign in or use a different email.',
             'country.required' => 'Please select your country.',
             'phone.required' => 'Please enter your phone number.',
-            'phone.regex' => 'Phone number must contain only numbers (and an optional + at the start).',
+            'phone.regex' => 'Please enter a valid phone number (at least 9 digits).',
             'phone.max' => 'Phone number must not exceed 20 characters.',
             'password.required' => 'Please enter a password.',
             'password.confirmed' => 'Password and confirmation do not match.',

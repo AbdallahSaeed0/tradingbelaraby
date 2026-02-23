@@ -2333,5 +2333,21 @@ return [
         'en' => 'Your email has been saved.',
         'ar' => 'تم حفظ بريدك الإلكتروني.',
     ],
+    'Your profile has been updated.' => [
+        'en' => 'Your profile has been updated.',
+        'ar' => 'تم تحديث ملفك الشخصي.',
+    ],
+    'Please add your phone number to complete your profile.' => [
+        'en' => 'Please add your phone number to complete your profile.',
+        'ar' => 'يرجى إضافة رقم هاتفك لإكمال ملفك الشخصي.',
+    ],
+    'You signed in with a social account. Please enter your email and phone number to complete your profile.' => [
+        'en' => 'You signed in with a social account. Please enter your email and phone number to complete your profile.',
+        'ar' => 'سجّلت الدخول بحساب اجتماعي. يرجى إدخال بريدك الإلكتروني ورقم هاتفك لإكمال ملفك الشخصي.',
+    ],
+    'Please enter a valid phone number (at least 9 digits).' => [
+        'en' => 'Please enter a valid phone number (at least 9 digits).',
+        'ar' => 'يرجى إدخال رقم هاتف صحيح (9 أرقام على الأقل).',
+    ],
 ];
 

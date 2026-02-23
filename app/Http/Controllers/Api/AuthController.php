@@ -430,13 +430,16 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => ['sometimes', 'required', 'string', 'max:255'],
             'email' => ['sometimes', 'required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
-            'phone' => ['nullable', 'string', 'max:20'],
-            'phone_number' => ['nullable', 'string', 'max:20'],
+            'phone' => ['nullable', 'string', 'max:20', 'regex:/^\+?[0-9]{9,15}$/'],
+            'phone_number' => ['nullable', 'string', 'max:20', 'regex:/^\+?[0-9]{9,15}$/'],
             'gender' => ['nullable', 'in:male,female,other'],
             'date_of_birth' => ['nullable', 'date', 'before:today'],
             'country' => ['nullable', 'string', 'max:100'],
             'bio' => ['nullable', 'string', 'max:500'],
             'avatar_url' => ['nullable', 'string', 'url'],
+        ], [
+            'phone.regex' => 'Please enter a valid phone number (at least 9 digits).',
+            'phone_number.regex' => 'Please enter a valid phone number (at least 9 digits).',
         ]);
 
         if ($validator->fails()) {
