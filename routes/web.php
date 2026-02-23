@@ -44,6 +44,7 @@ Route::middleware('guest')->group(function () {
     Route::get('/auth/google/callback', [App\Http\Controllers\SocialAuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
     Route::get('/auth/twitter', [App\Http\Controllers\SocialAuthController::class, 'redirectToTwitter'])->name('auth.twitter');
     Route::get('/auth/twitter/callback', [App\Http\Controllers\SocialAuthController::class, 'handleTwitterCallback'])->name('auth.twitter.callback');
+    Route::get('/auth/x/callback', [App\Http\Controllers\SocialAuthController::class, 'handleTwitterCallback'])->name('auth.x.callback');
     Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
     Route::get('/register/check-email', [AuthController::class, 'checkEmail'])->name('register.check-email');
     Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:20,1')->name('register.attempt');
