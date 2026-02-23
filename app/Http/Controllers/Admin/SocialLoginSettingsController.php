@@ -40,7 +40,7 @@ class SocialLoginSettingsController extends Controller
         $row->enabled = $request->boolean('enabled');
         $row->client_id = $validated['client_id'] ?? $row->client_id;
         if ($request->filled('client_secret')) {
-            $row->client_secret = $validated['client_secret'];
+            $row->setAttribute('client_secret', trim((string) $request->input('client_secret')));
         }
         $row->redirect_uri = $validated['redirect_uri'] ?? null;
         $extra = $row->extra ?? [];
@@ -70,7 +70,7 @@ class SocialLoginSettingsController extends Controller
         $row->enabled = $request->boolean('enabled');
         $row->client_id = $validated['client_id'] ?? $row->client_id;
         if ($request->filled('client_secret')) {
-            $row->client_secret = $validated['client_secret'];
+            $row->setAttribute('client_secret', trim((string) $request->input('client_secret')));
         }
         $row->redirect_uri = $validated['redirect_uri'] ?? null;
         $row->save();
