@@ -104,21 +104,24 @@
                                         <input class="form-check-input" type="checkbox" name="enabled" id="twitter-enabled" value="1" {{ ($twitter->enabled ?? false) ? 'checked' : '' }}>
                                         <label class="form-check-label" for="twitter-enabled">{{ custom_trans('Enable Twitter (X) login', 'admin') }}</label>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="twitter-client_id" class="form-label">{{ custom_trans('Client ID (OAuth 2.0)', 'admin') }}</label>
-                                        <input type="text" class="form-control" id="twitter-client_id" name="client_id" value="{{ old('client_id', $twitter->client_id) }}" placeholder="OAuth 2.0 Client ID">
+                                    <div class="alert alert-info small py-2 mb-3">
+                                        <strong>Use Consumer Keys (OAuth 1.0a), not OAuth 2.0.</strong> In <a href="https://developer.twitter.com/en/portal/dashboard" target="_blank" rel="noopener">Twitter Developer Portal</a> → your App → <strong>Keys and tokens</strong>: use <strong>API Key</strong> and <strong>API Secret</strong> (Consumer Keys). Enable <strong>3-legged OAuth</strong> and set the Callback URL to the Redirect URI below.
                                     </div>
                                     <div class="mb-3">
-                                        <label for="twitter-new_client_secret" class="form-label">{{ custom_trans('Client Secret', 'admin') }} <span class="text-muted small">({{ custom_trans('Update only to change; leave blank to keep current', 'admin') }})</span></label>
+                                        <label for="twitter-client_id" class="form-label">API Key (Consumer Key)</label>
+                                        <input type="text" class="form-control" id="twitter-client_id" name="client_id" value="{{ old('client_id', $twitter->client_id) }}" placeholder="Twitter API Key">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="twitter-new_client_secret" class="form-label">API Secret (Consumer Secret) <span class="text-muted small">(Update only to change; leave blank to keep current)</span></label>
                                         <input type="text" class="form-control font-monospace" id="twitter-new_client_secret" name="new_client_secret" value="{{ old('new_client_secret') }}" placeholder="{{ $twitter->client_secret ? '••••••••••••' : 'Enter secret' }}" autocomplete="off">
                                         @if($twitter->client_secret)
-                                            <div class="form-text">{{ custom_trans('Currently set. Enter a new value only to replace.', 'admin') }}</div>
+                                            <div class="form-text">Currently set. Enter a new value only to replace.</div>
                                         @endif
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label">{{ custom_trans('Redirect URI', 'admin') }}</label>
+                                        <label class="form-label">Callback URL / Redirect URI</label>
                                         <input type="text" class="form-control bg-light" value="{{ old('redirect_uri', $twitter->redirect_uri ?? $defaultRedirectTwitter) }}" name="redirect_uri" id="twitter-redirect_uri" placeholder="{{ $defaultRedirectTwitter }}">
-                                        <div class="form-text">{{ custom_trans('Default (if empty):', 'admin') }} <code>{{ $defaultRedirectTwitter }}</code>. {{ custom_trans('Must match the URI in Twitter Developer Portal.', 'admin') }}</div>
+                                        <div class="form-text">Default (if empty): <code>{{ $defaultRedirectTwitter }}</code>. In Twitter Developer Portal → App → Settings → User authentication set up → set this as <strong>Callback URI</strong>.</div>
                                     </div>
                                     <button type="submit" class="btn btn-primary">{{ custom_trans('Save Twitter settings', 'admin') }}</button>
                                 </form>
