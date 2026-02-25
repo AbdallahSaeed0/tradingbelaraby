@@ -12,7 +12,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->job(new \App\Jobs\SendLiveClassTodayRemindersJob)->hourly();
+        $schedule->job(new \App\Jobs\SendLiveClassTMinus10RemindersJob)->everyMinute();
+        $schedule->job(new \App\Jobs\SendInactiveCourseNudgesJob)->daily();
     }
 
     /**

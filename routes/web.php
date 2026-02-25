@@ -289,7 +289,7 @@ Route::middleware('auth')->group(function () {
 
     // Notification routes
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
-    Route::post('/notifications/mark-read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-read');
+    Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllRead');
     Route::post('/notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-as-read');
     Route::delete('/notifications/{notification}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
 
@@ -604,6 +604,9 @@ Route::resource('quizzes.questions', App\Http\Controllers\Admin\QuizQuestionMana
     Route::put('/questions-answers/{questions_answer}/update-priority', [App\Http\Controllers\Admin\QuestionsAnswersManagementController::class, 'updatePriority'])->name('questions-answers.update_priority');
 
     // Settings routes
+    Route::get('/notification-campaigns', [App\Http\Controllers\Admin\NotificationCampaignController::class, 'index'])->name('notification-campaigns.index')->middleware('admin.permission:manage_notifications');
+    Route::get('/notification-campaigns/create', [App\Http\Controllers\Admin\NotificationCampaignController::class, 'create'])->name('notification-campaigns.create')->middleware('admin.permission:manage_notifications');
+    Route::post('/notification-campaigns', [App\Http\Controllers\Admin\NotificationCampaignController::class, 'store'])->name('notification-campaigns.store')->middleware('admin.permission:manage_notifications');
     Route::get('/settings', [App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('settings.index');
     Route::get('/settings/sliders', [App\Http\Controllers\Admin\SettingsController::class, 'slidersIndex'])->name('settings.sliders.index');
     Route::post('/settings/sliders/bulk-action', [App\Http\Controllers\Admin\SettingsController::class, 'slidersBulkAction'])->name('settings.sliders.bulk-action');

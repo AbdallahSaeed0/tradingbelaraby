@@ -49,11 +49,19 @@
                                                     class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
                                             </div>
                                             <p class="mb-2">
-                                                {{ $notification->data['message'] ?? 'Notification message' }}</p>
+                                                {{ \App\Support\NotificationPayload::bodyForLocale($notification->data, app()->getLocale() === 'ar' ? 'ar' : 'en') ?: ($notification->data['message'] ?? 'Notification message') }}</p>
 
-                                            @if (isset($notification->data['course_id']))
-                                                <a href="{{ route('courses.show', $notification->data['course_id']) }}"
-                                                    class="btn btn-sm btn-outline-primary">
+                                            @php
+                                                $action = $notification->data['action'] ?? null;
+                                                $actionValue = $action['value'] ?? null;
+                                                $courseId = $notification->data['course_id'] ?? $notification->data['meta']['course_id'] ?? null;
+                                            @endphp
+                                            @if ($actionValue && ($action['type'] ?? '') === 'deeplink')
+                                                <a href="{{ url($actionValue) }}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="fa fa-eye me-1"></i>{{ custom_trans('view_course', 'front') }}
+                                                </a>
+                                            @elseif ($courseId)
+                                                <a href="{{ route('courses.show', $courseId) }}" class="btn btn-sm btn-outline-primary">
                                                     <i class="fa fa-eye me-1"></i>{{ custom_trans('view_course', 'front') }}
                                                 </a>
                                             @endif

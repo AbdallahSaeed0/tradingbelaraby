@@ -193,6 +193,20 @@
                 </a>
             @endif
 
+            <!-- Notifications Section -->
+            @if (auth('admin')->user()->hasPermission('manage_notifications'))
+                <div class="list-group-item sidebar-section-header bg-light text-muted small fw-bold text-uppercase">
+                    <i class="fa fa-bell"></i>
+                    <span class="sidebar-nav-text">Notifications</span>
+                </div>
+                <a href="{{ route('admin.notification-campaigns.index') }}"
+                    class="list-group-item list-group-item-action {{ request()->routeIs('admin.notification-campaigns.*') ? 'active' : '' }}"
+                    title="Send Notification">
+                    <i class="fa fa-paper-plane"></i>
+                    <span class="sidebar-nav-text">Send Notification</span>
+                </a>
+            @endif
+
             <!-- Settings Section -->
             <div class="list-group-item sidebar-section-header bg-light text-muted small fw-bold text-uppercase">
                 <i class="fa fa-cog"></i>

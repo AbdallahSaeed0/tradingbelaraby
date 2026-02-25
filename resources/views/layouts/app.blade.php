@@ -319,7 +319,7 @@
                                                     </div>
                                                     <div class="notification-content flex-grow-1">
                                                         <div class="notification-message fw-semibold text-dark mb-1">
-                                                            {{ $notification->data['message'] ?? 'New notification' }}
+                                                            {{ \App\Support\NotificationPayload::titleForLocale($notification->data, app()->getLocale() === 'ar' ? 'ar' : 'en') }}
                                                         </div>
                                                         <div class="notification-time text-muted small">
                                                             <i class="far fa-clock me-1"></i>

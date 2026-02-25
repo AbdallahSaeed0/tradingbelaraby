@@ -39,6 +39,7 @@ class AdminTypeSeeder extends Seeder
                     'manage_own_live_classes',
                     'view_own_analytics',
                     'manage_own_questions_answers',
+                    'manage_notifications',
                 ],
                 'sort_order' => 1,
             ],

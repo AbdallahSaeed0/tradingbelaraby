@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\QuestionAnswered;
+use App\Events\QuestionVoteCast;
 use App\Models\Admin;
 use App\Models\QuestionsAnswer;
 use App\Models\Course;
+use App\Models\QuestionVote;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -214,6 +217,8 @@ class QuestionsAnswersController extends Controller
             'status' => 'answered' // Make answer visible immediately
         ]);
 
+        event(new QuestionAnswered($question));
+
         return response()->json([
             'success' => true,
             'message' => 'Answer submitted successfully!'
@@ -234,18 +239,37 @@ class QuestionsAnswersController extends Controller
             'type' => 'required|in:up,down'
         ]);
 
-        // Check if user already voted (you might want to create a votes table)
-        // For now, we'll just increment/decrement
+        $voteType = $request->type === 'up' ? 'helpful' : 'not_helpful';
+        $existing = QuestionVote::where('user_id', $user->id)->where('questions_answer_id', $question->id)->first();
+        QuestionVote::updateOrCreate(
+            [
+                'user_id' => $user->id,
+                'questions_answer_id' => $question->id,
+            ],
+            ['vote_type' => $voteType]
+        );
 
-        if ($request->type === 'up') {
-            $question->increment('votes');
+        if (!$existing) {
+            $question->increment('total_votes');
+            if ($voteType === 'helpful') {
+                $question->increment('helpful_votes');
+                event(new QuestionVoteCast($question, $user, 'helpful'));
+            }
         } else {
-            $question->decrement('votes');
+            if ($existing->vote_type !== $voteType) {
+                if ($voteType === 'helpful') {
+                    $question->increment('helpful_votes');
+                    event(new QuestionVoteCast($question, $user, 'helpful'));
+                } else {
+                    $question->decrement('helpful_votes');
+                }
+            }
         }
 
+        $question->refresh();
         return response()->json([
             'success' => true,
-            'new_votes' => $question->fresh()->votes
+            'new_votes' => $question->helpful_votes ?? $question->total_votes ?? 0
         ]);
     }
 

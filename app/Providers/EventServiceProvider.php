@@ -21,6 +21,12 @@ class EventServiceProvider extends ServiceProvider
         \SocialiteProviders\Manager\SocialiteWasCalled::class => [
             \SocialiteProviders\Twitter\TwitterExtendSocialite::class . '@handle',
         ],
+        \App\Events\QuestionAnswered::class => [
+            \App\Listeners\SendQaAnsweredNotification::class,
+        ],
+        \App\Events\QuestionVoteCast::class => [
+            \App\Listeners\SendQaLikedNotification::class,
+        ],
     ];
 
     /**
