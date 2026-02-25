@@ -40,6 +40,7 @@ Route::post('/auth/twitter', [AuthController::class, 'loginWithTwitter'])->name(
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout'])->name('api.auth.logout');
     Route::get('/auth/user', [AuthController::class, 'user'])->name('api.auth.user');
+    Route::post('/fcm-token', [App\Http\Controllers\Api\FcmTokenController::class, 'store'])->name('api.fcm-token.store');
     Route::put('/users/profile', [AuthController::class, 'updateProfile'])->name('api.users.profile.update');
     Route::post('/auth/verify-email', [AuthController::class, 'verifyEmail'])->name('api.auth.verify');
     Route::post('/auth/resend-verification', [AuthController::class, 'resendVerification'])->name('api.auth.resend');

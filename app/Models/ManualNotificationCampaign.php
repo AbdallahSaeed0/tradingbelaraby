@@ -11,6 +11,7 @@ class ManualNotificationCampaign extends Model
         'admin_id', 'audience_type', 'audience_filter',
         'title_ar', 'title_en', 'body_ar', 'body_en',
         'action_json', 'entity_json', 'priority',
+        'delivery_channel',
         'scheduled_at', 'sent_at', 'status',
     ];
 

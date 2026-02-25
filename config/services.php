@@ -45,4 +45,8 @@ return [
         'redirect' => env('TWITTER_REDIRECT_URI', env('APP_URL') . '/auth/twitter/callback'),
     ],
 
+    'fcm' => [
+        'server_key' => env('FCM_SERVER_KEY'),
+    ],
+
 ];

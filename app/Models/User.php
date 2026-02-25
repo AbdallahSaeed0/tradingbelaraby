@@ -65,6 +65,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(\App\Models\LectureCompletion::class);
     }
 
+    public function fcmTokens(): HasMany
+    {
+        return $this->hasMany(\App\Models\UserFcmToken::class);
+    }
+
     /**
      * Send the email verification notification.
      */

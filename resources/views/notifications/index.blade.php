@@ -56,9 +56,9 @@
                                                 $actionValue = $action['value'] ?? null;
                                                 $courseId = $notification->data['course_id'] ?? $notification->data['meta']['course_id'] ?? null;
                                             @endphp
-                                            @if ($actionValue && ($action['type'] ?? '') === 'deeplink')
-                                                <a href="{{ url($actionValue) }}" class="btn btn-sm btn-outline-primary">
-                                                    <i class="fa fa-eye me-1"></i>{{ custom_trans('view_course', 'front') }}
+                                            @if ($actionValue && in_array($action['type'] ?? '', ['deeplink', 'url']))
+                                                <a href="{{ str_starts_with($actionValue, 'http') ? $actionValue : url($actionValue) }}" class="btn btn-sm btn-outline-primary" target="_blank" rel="noopener">
+                                                    <i class="fa fa-external-link-alt me-1"></i>{{ custom_trans('view_course', 'front') }}
                                                 </a>
                                             @elseif ($courseId)
                                                 <a href="{{ route('courses.show', $courseId) }}" class="btn btn-sm btn-outline-primary">
@@ -92,7 +92,7 @@
                             <i class="fa fa-bell fa-4x text-muted mb-4"></i>
                             <h3 class="fw-bold mb-3">{{ custom_trans('no_notifications', 'front') }}</h3>
                             <p class="text-muted mb-4">{{ custom_trans('no_notifications_message', 'front') }}</p>
-                            <a href="{{ route('categories') }}" class="btn btn-primary">
+                            <a href="{{ route('categories.index') }}" class="btn btn-primary">
                                 <i class="fa fa-search me-2"></i>{{ custom_trans('browse_courses', 'front') }}
                             </a>
                         </div>

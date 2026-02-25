@@ -4,13 +4,18 @@ namespace App\Notifications;
 
 use App\Support\NotificationPayload;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ManualCampaignNotification extends Notification
+class ManualCampaignNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
     public const KEY = 'MANUAL_CAMPAIGN';
+
+    /** @var string notification|email|both */
+    public string $deliveryChannel = 'notification';
 
     public function __construct(
         public string $titleEn,
@@ -19,23 +24,49 @@ class ManualCampaignNotification extends Notification
         public string $bodyAr,
         public array $action = ['type' => 'none', 'value' => '', 'meta' => []],
         public ?array $entity = null,
-        public string $priority = NotificationPayload::PRIORITY_NORMAL
-    ) {}
+        public string $priority = NotificationPayload::PRIORITY_NORMAL,
+        string $deliveryChannel = 'notification'
+    ) {
+        $this->deliveryChannel = $deliveryChannel;
+    }
 
     public function via(object $notifiable): array
     {
-        return ['database'];
+        $channels = [];
+        if (in_array($this->deliveryChannel, ['notification', 'both'], true)) {
+            $channels[] = 'database';
+        }
+        if (in_array($this->deliveryChannel, ['email', 'both'], true)) {
+            $channels[] = 'mail';
+        }
+        return $channels ?: ['database'];
+    }
+
+    public function toMail(object $notifiable): MailMessage
+    {
+        $link = ($this->action['value'] ?? null) ?: url('/');
+        return (new MailMessage)
+            ->subject($this->titleEn)
+            ->greeting('Hello ' . $notifiable->name . ',')
+            ->line($this->bodyEn)
+            ->action('View', $link);
     }
 
     public function toArray(object $notifiable): array
     {
+        $action = $this->action;
+        if (($action['type'] ?? '') === 'none') {
+            $action = ['type' => 'none', 'value' => '', 'meta' => []];
+        } else {
+            $action['type'] = 'url';
+        }
         return NotificationPayload::build(
             self::KEY,
             $this->titleEn,
             $this->titleAr,
             $this->bodyEn,
             $this->bodyAr,
-            $this->action,
+            $action,
             $this->entity,
             $this->priority,
             NotificationPayload::CREATED_BY_ADMIN,
