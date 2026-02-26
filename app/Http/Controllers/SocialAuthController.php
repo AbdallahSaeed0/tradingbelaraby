@@ -226,6 +226,9 @@ class SocialAuthController extends Controller
 
         $user = User::where($idColumn, $providerId)->first();
         if ($user) {
+            if (!$user->email_verified_at) {
+                $user->markEmailAsVerified();
+            }
             return $user;
         }
 

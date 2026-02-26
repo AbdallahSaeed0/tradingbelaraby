@@ -204,12 +204,15 @@ class AuthController extends Controller
 
         $user = User::where('google_id', $sub)->first();
         if ($user) {
+            if (!$user->email_verified_at) {
+                $user->update(['email_verified_at' => now()]);
+            }
             $token = $user->createToken('auth_token')->plainTextToken;
             return response()->json([
                 'success' => true,
                 'message' => 'Login successful',
                 'data' => [
-                    'user' => new UserResource($user),
+                    'user' => new UserResource($user->fresh()),
                     'token' => $token,
                 ],
             ]);
@@ -306,12 +309,15 @@ class AuthController extends Controller
 
         $user = User::where('twitter_id', $twitterId)->first();
         if ($user) {
+            if (!$user->email_verified_at) {
+                $user->update(['email_verified_at' => now()]);
+            }
             $token = $user->createToken('auth_token')->plainTextToken;
             return response()->json([
                 'success' => true,
                 'message' => 'Login successful',
                 'data' => [
-                    'user' => new UserResource($user),
+                    'user' => new UserResource($user->fresh()),
                     'token' => $token,
                 ],
             ]);
