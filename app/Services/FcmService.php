@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Kreait\Firebase\Contract\Messaging;
+use Kreait\Firebase\Messaging\AndroidConfig;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification as FcmNotification;
 
@@ -27,10 +28,12 @@ class FcmService
             try {
                 $messaging = app(Messaging::class);
                 $dataStrings = self::dataToStrings($data);
+                $androidHigh = AndroidConfig::new()->withHighPriority();
                 foreach ($tokens as $token) {
                     $message = CloudMessage::withTarget('token', $token)
                         ->withNotification(FcmNotification::create($title, $body))
-                        ->withData($dataStrings);
+                        ->withData($dataStrings)
+                        ->withAndroidConfig($androidHigh);
                     $messaging->send($message);
                 }
             } catch (\Throwable $e) {
@@ -59,7 +62,8 @@ class FcmService
                 $messaging = app(Messaging::class);
                 $message = CloudMessage::withTarget('token', $token)
                     ->withNotification(FcmNotification::create($title, $body))
-                    ->withData(self::dataToStrings($data));
+                    ->withData(self::dataToStrings($data))
+                    ->withAndroidConfig(AndroidConfig::new()->withHighPriority());
                 $messaging->send($message);
                 return true;
             } catch (\Throwable $e) {
