@@ -28,12 +28,20 @@ class FcmService
             try {
                 $messaging = app(Messaging::class);
                 $dataStrings = self::dataToStrings($data);
-                $androidHigh = AndroidConfig::new()->withHighPriority();
+                // Use same channel as Flutter app so notification shows in system bar (background/terminated)
+                $androidConfig = AndroidConfig::fromArray([
+                    'priority' => 'high',
+                    'notification' => [
+                        'channel_id' => 'courses_app_notifications',
+                        'notification_priority' => 'PRIORITY_HIGH',
+                        'visibility' => 'PUBLIC',
+                    ],
+                ]);
                 foreach ($tokens as $token) {
                     $message = CloudMessage::withTarget('token', $token)
                         ->withNotification(FcmNotification::create($title, $body))
                         ->withData($dataStrings)
-                        ->withAndroidConfig($androidHigh);
+                        ->withAndroidConfig($androidConfig);
                     $messaging->send($message);
                 }
             } catch (\Throwable $e) {
@@ -60,10 +68,18 @@ class FcmService
         if (self::useFirebaseSdk()) {
             try {
                 $messaging = app(Messaging::class);
+                $androidConfig = AndroidConfig::fromArray([
+                    'priority' => 'high',
+                    'notification' => [
+                        'channel_id' => 'courses_app_notifications',
+                        'notification_priority' => 'PRIORITY_HIGH',
+                        'visibility' => 'PUBLIC',
+                    ],
+                ]);
                 $message = CloudMessage::withTarget('token', $token)
                     ->withNotification(FcmNotification::create($title, $body))
                     ->withData(self::dataToStrings($data))
-                    ->withAndroidConfig(AndroidConfig::new()->withHighPriority());
+                    ->withAndroidConfig($androidConfig);
                 $messaging->send($message);
                 return true;
             } catch (\Throwable $e) {

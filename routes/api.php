@@ -134,6 +134,7 @@ Route::middleware('auth:sanctum')->prefix('notifications')->group(function () {
     Route::get('/', [App\Http\Controllers\Api\NotificationController::class, 'index'])->name('api.notifications.index');
     Route::get('/unread-count', [App\Http\Controllers\Api\NotificationController::class, 'unreadCount'])->name('api.notifications.unread-count');
     Route::post('/read-all', [App\Http\Controllers\Api\NotificationController::class, 'readAll'])->name('api.notifications.read-all');
+    Route::delete('/', [App\Http\Controllers\Api\NotificationController::class, 'destroyAll'])->name('api.notifications.destroy-all');
     Route::post('/{id}/read', [App\Http\Controllers\Api\NotificationController::class, 'markAsRead'])->name('api.notifications.mark-read');
     Route::delete('/{id}', [App\Http\Controllers\Api\NotificationController::class, 'destroy'])->name('api.notifications.destroy');
 });

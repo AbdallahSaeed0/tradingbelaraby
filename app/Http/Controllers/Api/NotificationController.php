@@ -77,6 +77,15 @@ class NotificationController extends Controller
         return response()->json(['success' => true]);
     }
 
+    /**
+     * DELETE /api/notifications (delete all for the authenticated user)
+     */
+    public function destroyAll(Request $request)
+    {
+        $request->user()->notifications()->delete();
+        return response()->json(['success' => true]);
+    }
+
     private function formatNotification($notification, string $locale): array
     {
         $data = $notification->data;
