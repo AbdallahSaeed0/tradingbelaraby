@@ -136,6 +136,7 @@ class AuthController extends Controller
 
     /**
      * Login with Google ID token (for Flutter app). Verifies token then find/create user, return Sanctum token.
+     * Social logins are treated as verified; no verification email is sent.
      */
     public function loginWithGoogle(Request $request): JsonResponse
     {
@@ -254,6 +255,7 @@ class AuthController extends Controller
 
     /**
      * Login with Twitter access token (for Flutter app). Fetches user from Twitter then find/create user, return Sanctum token.
+     * Social logins are treated as verified; no verification email is sent.
      */
     public function loginWithTwitter(Request $request): JsonResponse
     {

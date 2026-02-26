@@ -11,7 +11,7 @@ class UsersController extends Controller
 {
     public function index(Request $request)
     {
-        $query = User::with(['enrollments']);
+        $query = User::with(['enrollments'])->withCount('enrollments');
 
         // Apply search filter
         if ($request->filled('search')) {

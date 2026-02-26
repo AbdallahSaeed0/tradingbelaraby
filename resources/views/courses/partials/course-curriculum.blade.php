@@ -34,8 +34,7 @@
                                         </div>
                                         <div class="text-end">
                                             <span class="fw-bold text-primary">{{ $section->lectures->count() }}
-                                                Classes</span><br>
-                                            <small class="text-muted">{{ $section->total_duration ?? '0 Min' }}</small>
+                                                Classes</span>
                                         </div>
                                     </div>
                                 </div>
@@ -98,8 +97,6 @@
                                                         </p>
                                                     </div>
                                                 </div>
-                                                <span
-                                                    class="text-muted small">{{ $lecture->duration ?? '0 min' }}</span>
                                             </div>
                                         </div>
                                     </div>
