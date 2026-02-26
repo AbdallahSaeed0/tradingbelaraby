@@ -20,14 +20,17 @@ use App\Services\SocialLoginSettingsService;
 class AuthController extends Controller
 {
     /**
-     * Public auth config for mobile (e.g. Twitter client ID from dashboard).
+     * Public auth config for mobile (Google/Twitter client IDs from dashboard).
      */
     public function config(SocialLoginSettingsService $social): JsonResponse
     {
+        $google = $social->getGoogleConfig();
         $twitter = $social->getTwitterConfig();
         return response()->json([
             'success' => true,
             'data' => [
+                'google_login_enabled' => $social->isGoogleEnabled(),
+                'google_web_client_id' => $google['client_id'] ?? '',
                 'twitter_login_enabled' => $social->isTwitterEnabled(),
                 'twitter_client_id' => $twitter['client_id'] ?? '',
             ],

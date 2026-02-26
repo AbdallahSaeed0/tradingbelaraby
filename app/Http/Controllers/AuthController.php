@@ -35,7 +35,7 @@ class AuthController extends Controller
         ]);
 
         // Attempt default user guard
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+        if (Auth::attempt($credentials)) {
             $user = Auth::user();
 
             // Check if email is verified
@@ -51,7 +51,7 @@ class AuthController extends Controller
         }
 
         // Attempt admin guard
-        if (Auth::guard('admin')->attempt($credentials, $request->boolean('remember'))) {
+        if (Auth::guard('admin')->attempt($credentials)) {
             $request->session()->regenerate();
             return redirect()->intended(route('admin.dashboard'));
         }
