@@ -28,6 +28,7 @@ use App\Http\Controllers\Api\ForgotPasswordController;
 Route::post('/tabby/webhook', [TabbyController::class, 'webhook'])->name('api.tabby.webhook');
 
 // Auth API Routes
+Route::get('/auth/config', [AuthController::class, 'config'])->name('api.auth.config');
 Route::post('/auth/register', [AuthController::class, 'register'])->name('api.auth.register');
 Route::post('/auth/login', [AuthController::class, 'login'])->name('api.auth.login');
 Route::post('/auth/forgot-password', [ForgotPasswordController::class, 'sendOtp'])->name('api.auth.forgot-password');

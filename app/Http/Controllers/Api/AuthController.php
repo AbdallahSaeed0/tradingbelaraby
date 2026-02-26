@@ -15,9 +15,25 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
+use App\Services\SocialLoginSettingsService;
 
 class AuthController extends Controller
 {
+    /**
+     * Public auth config for mobile (e.g. Twitter client ID from dashboard).
+     */
+    public function config(SocialLoginSettingsService $social): JsonResponse
+    {
+        $twitter = $social->getTwitterConfig();
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'twitter_login_enabled' => $social->isTwitterEnabled(),
+                'twitter_client_id' => $twitter['client_id'] ?? '',
+            ],
+        ]);
+    }
+
     /**
      * Register a new user
      */
