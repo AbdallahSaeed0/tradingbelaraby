@@ -44,12 +44,21 @@ class ManualCampaignNotification extends Notification implements ShouldQueue
 
     public function toMail(object $notifiable): MailMessage
     {
+        $locale = $notifiable->preferred_locale ?? config('app.locale', 'en');
+        $locale = str_starts_with((string) $locale, 'ar') ? 'ar' : 'en';
+        \Illuminate\Support\Facades\App::setLocale($locale);
+
+        $greeting = $locale === 'ar' ? 'مرحباً ' : 'Hello ';
+        $actionText = $locale === 'ar' ? 'عرض' : 'View';
+        $title = $locale === 'ar' ? $this->titleAr : $this->titleEn;
+        $body = $locale === 'ar' ? $this->bodyAr : $this->bodyEn;
+
         $link = ($this->action['value'] ?? null) ?: url('/');
         return (new MailMessage)
-            ->subject($this->titleEn)
-            ->greeting('Hello ' . $notifiable->name . ',')
-            ->line($this->bodyEn)
-            ->action('View', $link);
+            ->subject($title)
+            ->greeting($greeting . $notifiable->name . ',')
+            ->line($body)
+            ->action($actionText, $link);
     }
 
     public function toArray(object $notifiable): array

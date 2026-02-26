@@ -43,8 +43,11 @@ class DispatchManualCampaignJob implements ShouldQueue
             foreach ($users as $user) {
                 $user->notify($notification);
                 if ($sendPush) {
+                    $actionValue = $this->campaign->action_json['value'] ?? '';
                     FcmService::sendToUser($user, $this->campaign->title_en, $this->campaign->body_en, [
-                        'url' => $this->campaign->action_json['value'] ?? '',
+                        'url' => $actionValue,
+                        'action_type' => $this->campaign->action_json['type'] ?? 'none',
+                        'action_value' => $actionValue,
                     ]);
                 }
             }
