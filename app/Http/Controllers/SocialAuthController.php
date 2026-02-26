@@ -184,8 +184,11 @@ class SocialAuthController extends Controller
         }
 
         $validated = $request->validate($rules, [
+            'email.required' => custom_trans('Please enter your email address.', 'front'),
+            'email.email' => custom_trans('Please enter a valid email address.', 'front'),
             'email.unique' => custom_trans('This email is already registered. Use another or sign in with that account.', 'front'),
-            'phone.regex' => custom_trans('Please enter a valid phone number (at least 9 digits).', 'front'),
+            'phone.required' => custom_trans('Please enter your phone number.', 'front'),
+            'phone.regex' => custom_trans('Please enter a valid phone number (only numbers, 9–15 digits; optional + at the start).', 'front'),
         ]);
 
         $updates = [];

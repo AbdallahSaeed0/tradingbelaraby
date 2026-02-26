@@ -30,7 +30,8 @@
                     <label for="email" class="form-label">{{ custom_trans('Email address', 'front') }}</label>
                     <input type="email" name="email" id="email" value="{{ old('email') }}" {{ $needsEmail ? 'required' : '' }} autofocus
                         class="form-control @error('email') is-invalid @enderror"
-                        placeholder="{{ custom_trans('Email address', 'front') }}">
+                        placeholder="{{ custom_trans('e.g. name@example.com', 'front') }}"
+                        autocomplete="email">
                     @error('email')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -43,7 +44,11 @@
                     <input type="tel" name="phone" id="phone" value="{{ old('phone') }}" {{ $needsPhone ? 'required' : '' }} {{ $needsEmail ? '' : 'autofocus' }}
                         class="form-control @error('phone') is-invalid @enderror"
                         placeholder="e.g. +1234567890 or 0512345678"
-                        minlength="9" maxlength="20">
+                        inputmode="numeric"
+                        pattern="\+?[0-9]{9,15}"
+                        title="{{ custom_trans('Only numbers (9–15 digits); optional + at the start', 'front') }}"
+                        minlength="9" maxlength="16"
+                        autocomplete="tel">
                     @error('phone')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -53,4 +58,17 @@
             <button type="submit" class="btn btn-primary w-100">{{ custom_trans('Save and continue', 'front') }}</button>
         </form>
     </div>
+
+    @if($needsPhone)
+    <script>
+        document.getElementById('phone').addEventListener('input', function(e) {
+            var val = this.value;
+            var allowed = val.charAt(0) === '+' ? '+' : '';
+            var digits = val.replace(/\D/g, '');
+            if (val.charAt(0) === '+') digits = digits.substring(0, 15);
+            else digits = digits.substring(0, 15);
+            this.value = allowed + digits;
+        });
+    </script>
+    @endif
 @endsection
