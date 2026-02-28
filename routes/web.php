@@ -107,6 +107,7 @@ Route::get('/page/{slug}', [PageController::class, 'termsConditions'])->name('te
 Route::get('/about-us', [PageController::class, 'aboutUs'])->name('about-us');
 Route::get('/academy-policy', [PageController::class, 'academyPolicy'])->name('academy-policy');
 Route::get('/data-deletion', [PageController::class, 'dataDeletion'])->name('data-deletion');
+Route::get('/deleteaccount', [PageController::class, 'dataDeletion'])->name('deleteaccount');
 
 // Newsletter routes
 Route::post('/newsletter/subscribe', [App\Http\Controllers\NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
