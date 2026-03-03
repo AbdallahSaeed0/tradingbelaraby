@@ -1113,7 +1113,8 @@ footer {
 
 @media (max-width: 767.98px) {
     .hero-stage {
-        min-height: clamp(280px, 40vh, 380px);
+        min-height: clamp(280px, 38vh, 380px);
+        max-height: clamp(104px, 10vh, 340px);
     }
     .hero-stage .hero-swiper,
     .hero-stage .hero-slide,
@@ -1121,7 +1122,8 @@ footer {
         height: 100% !important;
     }
     .hero-stage .hero-slide-bg {
-        min-height: clamp(280px, 40vh, 380px);
+        min-height: clamp(280px, 38vh, 380px);
+        max-height: clamp(104px, 10vh, 340px);
     }
     /* Mobile: better default focal framing (keep subjects visible) */
     .hero-slide-bg {
@@ -1169,9 +1171,9 @@ footer {
         gap: 12px;
     }
     .hero-actions .btn {
-        padding: 8px 12px;
-        font-size: 13px;
-        border-radius: 8px;
+        padding: 6px 10px;
+        font-size: 12px;
+        border-radius: 6px;
     }
     .btn-login-colored,
     .btn-register-colored {
@@ -1189,10 +1191,12 @@ footer {
 
 @media (max-width: 576px) {
     .hero-stage {
-        min-height: clamp(260px, 38vh, 340px);
+        min-height: clamp(280px, 38vh, 380px);
+        max-height: clamp(104px, 10vh, 340px);
     }
     .hero-stage .hero-slide-bg {
-        min-height: clamp(260px, 38vh, 340px);
+        min-height: clamp(280px, 38vh, 380px);
+        max-height: clamp(104px, 10vh, 340px);
     }
     .hero-slider .hero-content-left h1,
     .hero-slider .hero-slide h1 {
