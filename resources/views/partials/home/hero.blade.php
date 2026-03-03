@@ -36,7 +36,7 @@
                 @php
                     $slideUrl = $slider->button_url ?? route('courses.index');
                 @endphp
-                <div class="swiper-slide hero-slide hero-slide-bg" data-bg-image="{{ $slider->background_image_url }}" data-slide-url="{{ $slideUrl }}" @if(!empty($slider->background_position)) data-bg-pos="{{ $slider->background_position }}" @endif>
+                <div class="swiper-slide hero-slide hero-slide-bg" data-bg-image="{{ $slider->background_image_url }}" data-slide-url="{{ $slideUrl }}" @if(!empty($slider->background_position)) data-bg-pos="{{ $slider->background_position }}" @endif @if(!empty($slider->background_position_mobile)) data-bg-pos-mobile="{{ $slider->background_position_mobile }}" @endif>
                     <div class="hero-slide-overlay"></div>
                     <div class="container-fluid h-100">
                         <div class="row {{ $alignClass }} min-vh-75 min-h-520 {{ $justifyClass }} h-100">
@@ -230,15 +230,26 @@
                 if (i === active || i === prevIdx || i === nextIdx) {
                     if (bgImage) {
                         slide.style.backgroundImage = "url('" + bgImage.replace(/'/g, "\\'") + "')";
-                        slide.style.backgroundSize = 'contain';
+                        slide.style.backgroundSize = 'cover';
                         slide.style.backgroundRepeat = 'no-repeat';
-                        slide.style.setProperty('--bg-pos', (slide.dataset.bgPos || 'center center'));
                     }
                 } else {
                     slide.style.backgroundImage = '';
-                    slide.style.removeProperty('--bg-pos');
                 }
             }
+        }
+
+        function applyHeroBgVars(swiper) {
+            if (!swiper || !swiper.slides) return;
+            swiper.slides.forEach(function(slide) {
+                var pos = slide.dataset.bgPos || 'center center';
+                slide.style.setProperty('--bg-pos', pos);
+                if (slide.dataset.bgPosMobile) {
+                    slide.style.setProperty('--bg-pos-mobile', slide.dataset.bgPosMobile);
+                } else {
+                    slide.style.removeProperty('--bg-pos-mobile');
+                }
+            });
         }
 
         var isRtl = document.documentElement.getAttribute('dir') === 'rtl';
@@ -264,6 +275,7 @@
             },
             on: {
                 init: function() {
+                    applyHeroBgVars(this);
                     applyBgForVisibleSlides(this);
                 },
                 slideChangeTransitionStart: function() {

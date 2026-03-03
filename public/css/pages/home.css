@@ -896,15 +896,13 @@ footer {
     background: transparent !important;
 }
 
-/* Hero stage: aspect-ratio canvas so full image (contain) has room; no crop */
+/* Hero stage: responsive height to reduce crop */
 .hero-stage {
     position: relative;
-    min-height: unset !important;
-    height: auto;
+    min-height: clamp(460px, 62vh, 680px);
     width: 100%;
     overflow: hidden;
     background: #0b2b36;
-    aspect-ratio: 16 / 6;
 }
 
 .hero-stage .hero-swiper,
@@ -929,21 +927,20 @@ footer {
     width: 100%;
 }
 
-/* Full image visible (no crop); letterboxing with fallback color */
+/* Cover with per-slide focal point */
 .hero-slide-bg {
     position: relative;
-    background-size: contain !important;
+    background-size: cover !important;
     background-repeat: no-repeat !important;
     background-position: var(--bg-pos, center center) !important;
-    background-color: #0b2b36;
     width: 100%;
 }
 
-/* Overlay: does not affect sizing */
+/* Overlay: readability without gray wash */
 .hero-slide-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.2));
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.15));
     z-index: 1;
 }
 
@@ -956,11 +953,13 @@ footer {
     z-index: 2;
 }
 
-/* Hero content: above overlay */
+/* Hero content: safe area above overlay */
 .hero-content {
     position: relative;
     z-index: 2;
-    max-width: 560px;
+    max-width: 620px;
+    margin-left: auto;
+    padding-right: 24px;
 }
 
 .hero-welcome {
@@ -1109,15 +1108,18 @@ footer {
 
 @media (max-width: 767.98px) {
     .hero-stage {
-        min-height: unset !important;
-        aspect-ratio: 4 / 5;
+        min-height: clamp(420px, 56vh, 540px);
     }
     .hero-stage .hero-swiper,
     .hero-stage .hero-slide,
     .hero-stage .hero-slide-bg {
         height: 100% !important;
     }
-    /* Hide arrows on mobile to prevent overlap with CTAs; use pagination + swipe */
+    /* Mobile: better default focal framing (keep subjects visible) */
+    .hero-slide-bg {
+        background-position: var(--bg-pos-mobile, 50% 35%) !important;
+    }
+    /* Hide arrows on mobile; use pagination + swipe */
     .hero-stage .swiper-button-next,
     .hero-stage .swiper-button-prev,
     .hero-stage .hero-swiper-button-next,
@@ -1127,6 +1129,10 @@ footer {
     .hero-swiper-pagination {
         bottom: 14px !important;
     }
+    .hero-content {
+        max-width: 100%;
+        padding-inline: 14px;
+    }
     .hero-slider .hero-slide .container-fluid {
         padding-left: 1rem;
         padding-right: 1rem;
@@ -1135,10 +1141,6 @@ footer {
         min-height: 0;
         padding-top: 1.5rem;
         padding-bottom: 2rem;
-    }
-    .hero-content {
-        max-width: 100%;
-        padding-inline: 12px;
     }
     .hero-slider .hero-content-left h1,
     .hero-slider .hero-slide h1 {
@@ -1175,7 +1177,7 @@ footer {
 
 @media (max-width: 576px) {
     .hero-stage {
-        aspect-ratio: 4 / 5;
+        min-height: clamp(420px, 56vh, 540px);
     }
     .hero-slider .hero-content-left h1,
     .hero-slider .hero-slide h1 {
@@ -1270,10 +1272,13 @@ footer {
     margin-bottom: -40px;
 }
 
-/* --- Hero Features: overlap stage, no gray gap; premium cards --- */
+/* --- Hero Features: below hero, no overlap --- */
 .hero-features-wrap {
-    margin-top: -60px;
+    margin-top: 0 !important;
+    padding-top: 24px;
     padding-bottom: 24px;
+    position: relative;
+    z-index: 1;
 }
 
 .hero-features {
