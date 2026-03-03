@@ -899,7 +899,7 @@ footer {
 /* Hero stage: responsive height to reduce crop */
 .hero-stage {
     position: relative;
-    min-height: clamp(460px, 62vh, 680px);
+    min-height: clamp(460px, 115vh, 766px);
     width: 100%;
     overflow: hidden;
     background: #0b2b36;
@@ -913,6 +913,10 @@ footer {
 .hero-stage .hero-slide-bg {
     height: 100% !important;
     min-height: 0;
+}
+
+.hero-stage .hero-slide-bg {
+    min-height: clamp(460px, 82vh, 766px);
 }
 
 .hero-swiper {
@@ -930,6 +934,7 @@ footer {
 /* Cover with per-slide focal point */
 .hero-slide-bg {
     position: relative;
+    min-height: clamp(460px, 82vh, 766px);
     background-size: cover !important;
     background-repeat: no-repeat !important;
     background-position: var(--bg-pos, center center) !important;
