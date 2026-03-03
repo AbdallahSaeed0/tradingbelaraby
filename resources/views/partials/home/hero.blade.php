@@ -33,25 +33,33 @@
                     };
                 @endphp
                 <!-- Slide {{ $loop->iteration }} -->
-                <div class="swiper-slide hero-slide hero-slide-bg" data-bg-image="{{ $slider->background_image_url }}">
+                @php
+                    $slideUrl = $slider->button_url ?? route('courses.index');
+                @endphp
+                <div class="swiper-slide hero-slide hero-slide-bg" data-bg-image="{{ $slider->background_image_url }}" data-slide-url="{{ $slideUrl }}">
                     <div class="hero-slide-overlay"></div>
                     <div class="container-fluid h-100">
                         <div class="row {{ $alignClass }} min-vh-75 min-h-520 {{ $justifyClass }} h-100">
                             <div class="col-lg-6 col-md-8 col-sm-10 {{ $textAlign }}">
-                                <span
-                                    class="hero-welcome d-block mb-2">{{ get_current_language_code() === 'ar' && $slider->welcome_text_ar ? $slider->welcome_text_ar : $slider->welcome_text }}
-                                    <span class="hero-underline"></span></span>
-                                <h1 class="fw-bold mb-3">
-                                    {{ get_current_language_code() === 'ar' && $slider->title_ar ? $slider->title_ar : $slider->title }}
-                                </h1>
-                                <p class="hero-sub mb-4">
-                                    {{ get_current_language_code() === 'ar' && $slider->subtitle_ar ? $slider->subtitle_ar : $slider->subtitle }}
-                                </p>
-                                @if ($slider->button_text && $slider->button_url)
-                                    <a href="{{ $slider->button_url }}" class="btn btn-register-colored btn-lg">
-                                        {{ get_current_language_code() === 'ar' && $slider->button_text_ar ? $slider->button_text_ar : $slider->button_text }}
-                                    </a>
-                                @endif
+                                <div class="hero-content">
+                                    <span class="hero-welcome d-block mb-2">{{ get_current_language_code() === 'ar' && $slider->welcome_text_ar ? $slider->welcome_text_ar : $slider->welcome_text }}
+                                        <span class="hero-underline"></span>
+                                    </span>
+                                    <h1 class="fw-bold mb-3">
+                                        {{ get_current_language_code() === 'ar' && $slider->title_ar ? $slider->title_ar : $slider->title }}
+                                    </h1>
+                                    <p class="hero-sub mb-4">
+                                        {{ get_current_language_code() === 'ar' && $slider->subtitle_ar ? $slider->subtitle_ar : $slider->subtitle }}
+                                    </p>
+                                    <div class="hero-actions">
+                                        @if ($slider->button_text && $slider->button_url)
+                                            <a href="{{ $slider->button_url }}" class="btn btn-register-colored btn-lg">
+                                                {{ get_current_language_code() === 'ar' && $slider->button_text_ar ? $slider->button_text_ar : $slider->button_text }}
+                                            </a>
+                                        @endif
+                                        <a href="{{ $slideUrl }}" class="btn btn-hero-secondary btn-lg">{{ custom_trans('view_details', 'front') ?? 'اعرف التفاصيل' }}</a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -59,27 +67,32 @@
             @empty
                 <!-- Default Slide (if no sliders in database) -->
                 <div class="swiper-slide hero-slide hero-slide-bg"
-                    data-bg-image="https://eclass.mediacity.co.in/demo2/public/images/slider/slider_img02.png">
+                    data-bg-image="https://eclass.mediacity.co.in/demo2/public/images/slider/slider_img02.png"
+                    data-slide-url="{{ route('courses.index') }}">
                     <div class="hero-slide-overlay"></div>
-                    <div class="row align-items-center min-vh-75 min-h-520">
+                    <div class="row align-items-center min-vh-75 min-h-520 h-100">
                         <div class="col-lg-12 container col-md-10 mx-auto text-center text-lg-start">
-                            <span class="hero-welcome d-block mb-2">WELCOME TO E-CLASS <span
-                                    class="hero-underline"></span></span>
-                            <h1 class="fw-bold mb-3">Education is the best key success in life</h1>
-                            <p class="hero-sub mb-4">Online Courses</p>
-                            <a href="{{ route('courses.index') }}" class="btn btn-register-colored btn-lg">{{ custom_trans('browse_courses', 'front') ?? 'Browse Courses' }}</a>
+                            <div class="hero-content">
+                                <span class="hero-welcome d-block mb-2">WELCOME TO E-CLASS <span class="hero-underline"></span></span>
+                                <h1 class="fw-bold mb-3">Education is the best key success in life</h1>
+                                <p class="hero-sub mb-4">Online Courses</p>
+                                <div class="hero-actions">
+                                    <a href="{{ route('courses.index') }}" class="btn btn-register-colored btn-lg">{{ custom_trans('browse_courses', 'front') ?? 'Browse Courses' }}</a>
+                                    <a href="{{ route('courses.index') }}" class="btn btn-hero-secondary btn-lg">{{ custom_trans('view_details', 'front') ?? 'اعرف التفاصيل' }}</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             @endforelse
         </div>
 
-        <!-- Slider Navigation Buttons -->
-        <div class="swiper-button-next hero-swiper-button-next"></div>
-        <div class="swiper-button-prev hero-swiper-button-prev"></div>
+        <!-- Slider Navigation Buttons (focusable for keyboard) -->
+        <div class="swiper-button-next hero-swiper-button-next" role="button" tabindex="0" aria-label="{{ custom_trans('next_slide', 'front') ?? 'Next slide' }}"></div>
+        <div class="swiper-button-prev hero-swiper-button-prev" role="button" tabindex="0" aria-label="{{ custom_trans('previous_slide', 'front') ?? 'Previous slide' }}"></div>
 
         <!-- Slider Pagination -->
-        <div class="swiper-pagination hero-swiper-pagination"></div>
+        <div class="swiper-pagination hero-swiper-pagination" role="tablist" aria-label="{{ custom_trans('slider_pagination', 'front') ?? 'Slider pagination' }}"></div>
     </div>
 
     <!-- Desktop Hero Features (hidden on mobile) -->
@@ -195,20 +208,36 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Set background images from data-bg-image attribute
-        const bgElements = document.querySelectorAll('[data-bg-image]');
-        bgElements.forEach(function(element) {
-            const bgImage = element.getAttribute('data-bg-image');
-            if (bgImage) {
-                element.style.backgroundImage = `url('${bgImage}')`;
-                element.style.backgroundSize = 'cover';
-                element.style.backgroundPosition = 'center center';
-                element.style.backgroundRepeat = 'no-repeat';
+        /**
+         * Apply background-image only to active, prev, and next slides (lazy-load backgrounds).
+         * Removes background from other slides to save memory and improve performance.
+         * Uses activeIndex so it works correctly with Swiper loop (duplicated slides).
+         */
+        function applyBgForVisibleSlides(swiper) {
+            if (!swiper || !swiper.slides) return;
+            var slides = swiper.slides;
+            var active = swiper.activeIndex;
+            var total = slides.length;
+            var prevIdx = (active - 1 + total) % total;
+            var nextIdx = (active + 1) % total;
+            for (var i = 0; i < total; i++) {
+                var slide = slides[i];
+                var bgImage = slide.getAttribute && slide.getAttribute('data-bg-image');
+                if (i === active || i === prevIdx || i === nextIdx) {
+                    if (bgImage) {
+                        slide.style.backgroundImage = "url('" + bgImage.replace(/'/g, "\\'") + "')";
+                        slide.style.backgroundSize = 'cover';
+                        slide.style.backgroundPosition = 'center center';
+                        slide.style.backgroundRepeat = 'no-repeat';
+                    }
+                } else {
+                    slide.style.backgroundImage = '';
+                }
             }
-        });
+        }
 
-        const isRtl = document.documentElement.getAttribute('dir') === 'rtl';
-        const heroSwiper = new Swiper('.hero-swiper', {
+        var isRtl = document.documentElement.getAttribute('dir') === 'rtl';
+        var heroSwiper = new Swiper('.hero-swiper', {
             loop: true,
             rtl: isRtl,
             autoplay: {
@@ -227,6 +256,14 @@
             pagination: {
                 el: '.hero-swiper-pagination',
                 clickable: true,
+            },
+            on: {
+                init: function() {
+                    applyBgForVisibleSlides(this);
+                },
+                slideChangeTransitionStart: function() {
+                    applyBgForVisibleSlides(this);
+                },
             },
         });
     });
