@@ -1,7 +1,7 @@
-<!-- Hero Section - .hero-slider scopes mobile fixes -->
+<!-- Hero Section - .hero-stage controls height; features in normal flow (no internal scroll) -->
 <section class="hero hero-colored hero-slider">
-    <!-- Hero Slider -->
-    <div class="swiper hero-swiper">
+    <div class="hero-stage">
+        <div class="swiper hero-swiper">
         <div class="swiper-wrapper">
             @forelse($sliders as $slider)
                 @php
@@ -93,10 +93,12 @@
 
         <!-- Slider Pagination -->
         <div class="swiper-pagination hero-swiper-pagination" role="tablist" aria-label="{{ custom_trans('slider_pagination', 'front') ?? 'Slider pagination' }}"></div>
+        </div>
     </div>
 
-    <!-- Desktop Hero Features (hidden on mobile) -->
-    <div class="row hero-features text-center mt-5 d-none d-md-flex">
+    <!-- Desktop Hero Features (normal flow below stage, no overlay/scroll) -->
+    <div class="hero-features-wrap d-none d-md-block">
+        <div class="row hero-features text-center">
         @php
             $heroFeatures = \App\Models\HeroFeature::active()->ordered()->get();
         @endphp
@@ -144,60 +146,60 @@
                 </div>
             </div>
         @endforelse
+        </div>
     </div>
-</section>
 
-<!-- Mobile Hero Features (visible only on mobile, outside hero section) -->
-<section class="mobile-hero-features d-block d-md-none py-4">
-    <div class="container">
-        <div class="row">
-            @php
-                $heroFeatures = \App\Models\HeroFeature::active()->ordered()->get();
-            @endphp
-            @forelse($heroFeatures as $heroFeature)
-                <div class="col-12 {{ $loop->last ? '' : 'mb-3' }}">
-                    <div class="hero-feature-box mobile-feature-box d-flex align-items-center">
-                        <i class="{{ $heroFeature->icon }} fa-3x me-4"></i>
-                        <div class="text-start">
-                            <div class="hero-feature-title fw-bold mb-1">
-                                {{ get_current_language_code() === 'ar' && $heroFeature->title_ar ? $heroFeature->title_ar : $heroFeature->title }}
+    <!-- Mobile Hero Features (inside hero section, normal flow) -->
+    <div class="hero-features-mobile d-block d-md-none">
+        <div class="container py-4">
+            <div class="row">
+                @php
+                    $heroFeaturesMobile = \App\Models\HeroFeature::active()->ordered()->get();
+                @endphp
+                @forelse($heroFeaturesMobile as $heroFeature)
+                    <div class="col-12 {{ $loop->last ? '' : 'mb-3' }}">
+                        <div class="hero-feature-box mobile-feature-box d-flex align-items-center">
+                            <i class="{{ $heroFeature->icon }} fa-3x me-4"></i>
+                            <div class="text-start">
+                                <div class="hero-feature-title fw-bold mb-1">
+                                    {{ get_current_language_code() === 'ar' && $heroFeature->title_ar ? $heroFeature->title_ar : $heroFeature->title }}
+                                </div>
+                                <div class="hero-feature-subtitle">
+                                    {{ get_current_language_code() === 'ar' && $heroFeature->subtitle_ar ? $heroFeature->subtitle_ar : $heroFeature->subtitle }}
+                                </div>
                             </div>
-                            <div class="hero-feature-subtitle">
-                                {{ get_current_language_code() === 'ar' && $heroFeature->subtitle_ar ? $heroFeature->subtitle_ar : $heroFeature->subtitle }}
+                        </div>
+                    </div>
+                @empty
+                    <div class="col-12 mb-3">
+                        <div class="hero-feature-box mobile-feature-box d-flex align-items-center">
+                            <i class="fas fa-anchor fa-3x me-4"></i>
+                            <div class="text-start">
+                                <div class="hero-feature-title fw-bold mb-1">Learn Anytime, Anywhere</div>
+                                <div class="hero-feature-subtitle">Online Courses for Creative</div>
                             </div>
                         </div>
                     </div>
-                </div>
-            @empty
-                <!-- Fallback to original hardcoded content -->
-                <div class="col-12 mb-3">
-                    <div class="hero-feature-box mobile-feature-box d-flex align-items-center">
-                        <i class="fas fa-anchor fa-3x me-4"></i>
-                        <div class="text-start">
-                            <div class="hero-feature-title fw-bold mb-1">Learn Anytime, Anywhere</div>
-                            <div class="hero-feature-subtitle">Online Courses for Creative</div>
+                    <div class="col-12 mb-3">
+                        <div class="hero-feature-box mobile-feature-box d-flex align-items-center">
+                            <i class="fas fa-bars fa-3x me-4"></i>
+                            <div class="text-start">
+                                <div class="hero-feature-title fw-bold mb-1">Become a researcher</div>
+                                <div class="hero-feature-subtitle">Improve Your Skills Online</div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-12 mb-3">
-                    <div class="hero-feature-box mobile-feature-box d-flex align-items-center">
-                        <i class="fas fa-bars fa-3x me-4"></i>
-                        <div class="text-start">
-                            <div class="hero-feature-title fw-bold mb-1">Become a researcher</div>
-                            <div class="hero-feature-subtitle">Improve Your Skills Online</div>
+                    <div class="col-12">
+                        <div class="hero-feature-box mobile-feature-box d-flex align-items-center">
+                            <i class="fas fa-basketball-ball fa-3x me-4"></i>
+                            <div class="text-start">
+                                <div class="hero-feature-title fw-bold mb-1">Most Popular Courses</div>
+                                <div class="hero-feature-subtitle">Learn on your schedule</div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-12">
-                    <div class="hero-feature-box mobile-feature-box d-flex align-items-center">
-                        <i class="fas fa-basketball-ball fa-3x me-4"></i>
-                        <div class="text-start">
-                            <div class="hero-feature-title fw-bold mb-1">Most Popular Courses</div>
-                            <div class="hero-feature-subtitle">Learn on your schedule</div>
-                        </div>
-                    </div>
-                </div>
-            @endforelse
+                @endforelse
+            </div>
         </div>
     </div>
 </section>

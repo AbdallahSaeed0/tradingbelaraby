@@ -886,28 +886,40 @@ footer {
     background: #d94e1f;
 }
 
-/* --- Hero Section --- */
+/* --- Hero Section (no internal scroll: overflow visible, height only on .hero-stage) --- */
 .hero,
 .hero-colored {
     background-size: cover;
     color: #fff;
     padding: 0;
     position: relative;
-    display: flex;
-    min-height: max(480px, 70vh);
-    align-items: center;
+    overflow: visible !important;
 }
 
-/* Hero Slider Styles */
+/* Hero stage: only this has height; contains swiper only; clips overlays, no scroll */
+.hero-stage {
+    position: relative;
+    min-height: clamp(460px, 70vh, 720px);
+    overflow: hidden;
+    width: 100%;
+}
+
+.hero-stage .hero-swiper,
+.hero-stage .swiper,
+.hero-stage .swiper-wrapper,
+.hero-stage .swiper-slide,
+.hero-stage .hero-slide,
+.hero-stage .hero-slide-bg {
+    height: 100% !important;
+    min-height: 0;
+}
+
 .hero-swiper {
     width: 100%;
-    height: 100%;
-    min-height: max(480px, 70vh);
 }
 
 .hero-slide {
     position: relative;
-    min-height: max(480px, 70vh);
     display: flex;
     align-items: center;
     width: 100%;
@@ -919,7 +931,6 @@ footer {
     background-position: center center !important;
     background-repeat: no-repeat !important;
     width: 100%;
-    min-height: max(480px, 70vh);
 }
 
 /* Layered overlay: gradient + subtle blur for readability and WCAG contrast */
@@ -1089,20 +1100,19 @@ footer {
     background: #f15a29;
 }
 
-/* Responsive Hero Slider Styles - scoped to .hero-slider, RTL-aware arrows */
+/* Responsive Hero Slider - no overflow scroll; heights only on .hero-stage */
 .hero-slider {
-    overflow-x: hidden;
+    overflow: visible;
 }
 
 @media (max-width: 768px) {
-    .hero-slider.hero-colored {
-        min-height: max(480px, 55vh);
+    .hero-stage {
+        min-height: clamp(360px, 55vh, 560px);
     }
-    .hero-slider .hero-swiper,
-    .hero-slider .hero-slide,
-    .hero-slider .hero-slide-bg {
-        min-height: max(480px, 55vh);
-        height: max(480px, 55vh);
+    .hero-slider .hero-stage .hero-swiper,
+    .hero-slider .hero-stage .hero-slide,
+    .hero-slider .hero-stage .hero-slide-bg {
+        height: 100% !important;
     }
     .hero-slider .hero-slide-bg {
         background-position: center top !important;
@@ -1169,14 +1179,13 @@ footer {
 }
 
 @media (max-width: 576px) {
-    .hero-slider.hero-colored {
-        min-height: max(480px, 55vh);
+    .hero-stage {
+        min-height: clamp(360px, 55vh, 560px);
     }
-    .hero-slider .hero-swiper,
-    .hero-slider .hero-slide,
-    .hero-slider .hero-slide-bg {
-        min-height: max(480px, 55vh);
-        height: max(480px, 55vh);
+    .hero-slider .hero-stage .hero-swiper,
+    .hero-slider .hero-stage .hero-slide,
+    .hero-slider .hero-stage .hero-slide-bg {
+        height: 100% !important;
     }
     .hero-slider .hero-welcome {
         font-size: 11px;
@@ -1298,18 +1307,23 @@ footer {
     margin-bottom: -40px;
 }
 
-/* --- Hero Features (desktop) - RTL: icon on the right --- */
+/* --- Hero Features: normal flow below stage (no position: absolute, no internal scroll) --- */
+.hero-features-wrap {
+    margin-top: -40px;
+    padding-bottom: 24px;
+}
+
 .hero-features {
     display: flex;
     justify-content: center;
     align-items: stretch;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: -127px;
+    position: relative;
     z-index: 2;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-    margin-top: 40px;
+}
+
+.hero-features-mobile {
+    background: #f8fbff;
 }
 
 .hero-feature-box {
@@ -2698,6 +2712,7 @@ footer {
     padding-bottom: 1.5rem;
 }
 
+.hero-features-mobile .hero-feature-box.mobile-feature-box,
 .mobile-hero-features .hero-feature-box.mobile-feature-box {
     background: rgba(18, 88, 117, 0.95) !important;
     color: #fff !important;
@@ -2710,6 +2725,7 @@ footer {
     flex-direction: row-reverse;
 }
 
+.hero-features-mobile .hero-feature-box.mobile-feature-box:hover,
 .mobile-hero-features .hero-feature-box.mobile-feature-box:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
