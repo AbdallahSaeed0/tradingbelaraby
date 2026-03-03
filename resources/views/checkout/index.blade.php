@@ -57,8 +57,7 @@
                 <!-- Display Validation Errors -->
                 @if ($errors->any())
                     <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
-                        <h5 class="alert-heading"><i class="fas fa-exclamation-triangle me-2"></i>Please correct the
-                            following errors:</h5>
+                        <h5 class="alert-heading"><i class="fas fa-exclamation-triangle me-2"></i>{{ custom_trans('Please correct the following errors:', 'front') }}</h5>
                         <ul class="mb-0">
                             @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
@@ -201,7 +200,7 @@
                                         </div>
                                         <h5 class="fw-bold mb-2">PayPal</h5>
                                         <p class="text-muted mb-0 small">
-                                            Pay securely with your PayPal account</p>
+                                            {{ custom_trans('Pay securely with your PayPal account', 'front') }}</p>
                                         <div class="selected-badge position-absolute top-0 start-0 m-2">
                                             <i class="fas fa-check-circle text-success"></i>
                                         </div>
@@ -232,7 +231,7 @@
                                                             style="width: 60px; height: 60px; object-fit: cover;">
                                                     @else
                                                         <img src="{{ $item->course->image_url }}"
-                                                            alt="{{ $item->course->name }}" class="rounded"
+                                                            alt="{{ $item->course->localized_name }}" class="rounded"
                                                             style="width: 60px; height: 60px; object-fit: cover;">
                                                     @endif
                                                 </div>
@@ -249,7 +248,7 @@
                                                         </small>
                                                     @else
                                                         <h6 class="fw-bold mb-1 small">
-                                                            {{ Str::limit($item->course->name, 40) }}</h6>
+                                                            {{ Str::limit($item->course->localized_name, 40) }}</h6>
                                                         <small class="text-muted d-block mb-2">
                                                             <i class="fas fa-user me-1"></i>
                                                             {{ $item->course->instructor->name ?? custom_trans('Unknown Instructor', 'front') }}

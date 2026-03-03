@@ -896,13 +896,15 @@ footer {
     background: transparent !important;
 }
 
-/* Hero stage: only part with height; optional fallback so no gray strip */
+/* Hero stage: aspect-ratio canvas so full image (contain) has room; no crop */
 .hero-stage {
     position: relative;
-    min-height: clamp(460px, 70vh, 720px);
-    overflow: hidden;
+    min-height: unset !important;
+    height: auto;
     width: 100%;
+    overflow: hidden;
     background: #0b2b36;
+    aspect-ratio: 16 / 6;
 }
 
 .hero-stage .hero-swiper,
@@ -919,22 +921,25 @@ footer {
     width: 100%;
 }
 
-.hero-slide {
+.hero-slide,
+.swiper-slide.hero-slide {
     position: relative;
     display: flex;
     align-items: center;
     width: 100%;
 }
 
+/* Full image visible (no crop); letterboxing with fallback color */
 .hero-slide-bg {
     position: relative;
-    background-size: cover !important;
-    background-position: center center !important;
+    background-size: contain !important;
     background-repeat: no-repeat !important;
+    background-position: var(--bg-pos, center center) !important;
+    background-color: #0b2b36;
     width: 100%;
 }
 
-/* Overlay: gradient for contrast (not flat gray) */
+/* Overlay: does not affect sizing */
 .hero-slide-overlay {
     position: absolute;
     inset: 0;
@@ -951,8 +956,10 @@ footer {
     z-index: 2;
 }
 
-/* Hero content: sensible width; alignment by parent text-start/text-end */
+/* Hero content: above overlay */
 .hero-content {
+    position: relative;
+    z-index: 2;
     max-width: 560px;
 }
 
@@ -1102,7 +1109,8 @@ footer {
 
 @media (max-width: 767.98px) {
     .hero-stage {
-        min-height: clamp(360px, 55vh, 560px);
+        min-height: unset !important;
+        aspect-ratio: 4 / 5;
     }
     .hero-stage .hero-swiper,
     .hero-stage .hero-slide,
@@ -1118,9 +1126,6 @@ footer {
     }
     .hero-swiper-pagination {
         bottom: 14px !important;
-    }
-    .hero-slider .hero-slide-bg {
-        background-position: center top !important;
     }
     .hero-slider .hero-slide .container-fluid {
         padding-left: 1rem;
@@ -1170,7 +1175,7 @@ footer {
 
 @media (max-width: 576px) {
     .hero-stage {
-        min-height: clamp(360px, 55vh, 560px);
+        aspect-ratio: 4 / 5;
     }
     .hero-slider .hero-content-left h1,
     .hero-slider .hero-slide h1 {

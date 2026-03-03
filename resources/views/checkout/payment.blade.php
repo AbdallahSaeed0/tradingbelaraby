@@ -93,9 +93,9 @@
                                 <div class="course-item">
                                     <div class="d-flex justify-content-between align-items-start">
                                         <div class="flex-grow-1">
-                                            <h6 class="fw-bold mb-1">{{ $item->course->name }}</h6>
+                                            <h6 class="fw-bold mb-1">{{ $item->course->localized_name }}</h6>
                                             <small
-                                                class="text-muted">{{ $item->course->instructor->name ?? 'Unknown Instructor' }}</small>
+                                                class="text-muted">{{ $item->course->instructor->name ?? custom_trans('Unknown Instructor', 'front') }}</small>
                                         </div>
                                         <div class="text-end">
                                             <span class="price-display">₹{{ number_format($item->price, 2) }}</span>

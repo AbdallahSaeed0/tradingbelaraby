@@ -18,10 +18,10 @@ class InstructorController extends Controller
         $perPage = $request->input('per_page', 15);
         $perPage = min($perPage, 50); // Max 50 per page
 
-        // Get admins who are instructors (have courses)
-        $instructors = Admin::whereHas('courses')
-            ->withCount('courses')
-            ->with('courses:id,instructor_id,enrolled_students,average_rating')
+        // Get admins who are instructors (have at least one non-draft course)
+        $instructors = Admin::whereHas('courses', fn($q) => $q->where('status', '!=', 'draft'))
+            ->withCount(['courses' => fn($q) => $q->where('status', '!=', 'draft')])
+            ->with('courses:id,instructor_id,enrolled_students,average_rating,status')
             ->orderByDesc('courses_count')
             ->paginate($perPage);
 
@@ -41,9 +41,9 @@ class InstructorController extends Controller
      */
     public function show(string $id): JsonResponse
     {
-        $instructor = Admin::whereHas('courses')
-            ->withCount('courses')
-            ->with('courses:id,instructor_id,enrolled_students,average_rating')
+        $instructor = Admin::whereHas('courses', fn($q) => $q->where('status', '!=', 'draft'))
+            ->withCount(['courses' => fn($q) => $q->where('status', '!=', 'draft')])
+            ->with('courses:id,instructor_id,enrolled_students,average_rating,status')
             ->findOrFail($id);
 
         return response()->json([
@@ -59,9 +59,9 @@ class InstructorController extends Controller
         $limit = $request->input('limit', 10);
         $limit = min($limit, 20); // Max 20
 
-        $instructors = Admin::whereHas('courses')
-            ->withCount('courses')
-            ->with('courses:id,instructor_id,enrolled_students,average_rating')
+        $instructors = Admin::whereHas('courses', fn($q) => $q->where('status', '!=', 'draft'))
+            ->withCount(['courses' => fn($q) => $q->where('status', '!=', 'draft')])
+            ->with('courses:id,instructor_id,enrolled_students,average_rating,status')
             ->orderByDesc('courses_count')
             ->limit($limit)
             ->get();

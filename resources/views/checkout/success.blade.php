@@ -55,13 +55,13 @@
                             <div class="course-item">
                                 <div class="row align-items-center">
                                     <div class="col-md-2">
-                                        <img src="{{ $item->course->image_url }}" alt="{{ $item->course->name }}"
+                                        <img src="{{ $item->course->image_url }}" alt="{{ $item->course->localized_name }}"
                                             class="img-fluid rounded img-h-60">
                                     </div>
                                     <div class="col-md-7">
-                                        <h6 class="fw-bold mb-1">{{ $item->course->name }}</h6>
+                                        <h6 class="fw-bold mb-1">{{ $item->course->localized_name }}</h6>
                                         <p class="text-muted mb-0">
-                                            {{ $item->course->instructor->name ?? 'Unknown Instructor' }}</p>
+                                            {{ $item->course->instructor->name ?? custom_trans('Unknown Instructor', 'front') }}</p>
                                     </div>
                                     <div class="col-md-3 text-end">
                                         @if ($item->price > 0)

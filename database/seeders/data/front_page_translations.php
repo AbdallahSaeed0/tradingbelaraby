@@ -2043,7 +2043,16 @@ return [
         'ar' => 'تابع تقدمك في التعلم واستمر في دوراتك',
     ],
     'Unknown Instructor' => [
+        'en' => 'Unknown Instructor',
         'ar' => 'مدرب غير معروف',
+    ],
+    'Please correct the following errors:' => [
+        'en' => 'Please correct the following errors:',
+        'ar' => 'يرجى تصحيح الأخطاء التالية:',
+    ],
+    'Pay securely with your PayPal account' => [
+        'en' => 'Pay securely with your PayPal account',
+        'ar' => 'ادفع بأمان عبر حسابك في باي بال',
     ],
     'Uncategorized' => [
         'ar' => 'غير مصنف',
