@@ -899,7 +899,7 @@ footer {
 /* Hero stage: responsive height to reduce crop */
 .hero-stage {
     position: relative;
-    min-height: clamp(400px, 70vh, 580px);
+    min-height: clamp(460px, 115vh, 766px);
     width: 100%;
     overflow: hidden;
     background: #0b2b36;
@@ -916,7 +916,7 @@ footer {
 }
 
 .hero-stage .hero-slide-bg {
-    min-height: clamp(400px, 60vh, 580px);
+    min-height: clamp(460px, 82vh, 766px);
 }
 
 .hero-swiper {
@@ -934,7 +934,7 @@ footer {
 /* Cover with per-slide focal point */
 .hero-slide-bg {
     position: relative;
-    min-height: clamp(400px, 60vh, 580px);
+    min-height: clamp(460px, 82vh, 766px);
     background-size: cover !important;
     background-repeat: no-repeat !important;
     background-position: var(--bg-pos, center center) !important;
@@ -988,18 +988,12 @@ footer {
     width: 56px;
 }
 
-/* RTL: primary CTA first on the right (reduced button size) */
+/* RTL: primary CTA first on the right */
 .hero-actions {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     justify-content: flex-start;
     flex-wrap: wrap;
-}
-
-.hero-actions .btn {
-    padding: 8px 20px;
-    font-size: 14px;
-    border-radius: 8px;
 }
 
 .btn-hero-secondary {
@@ -1174,9 +1168,14 @@ footer {
         gap: 12px;
     }
     .hero-actions .btn {
-        padding: 10px 14px;
-        font-size: 14px;
-        border-radius: 10px;
+        padding: 8px 12px;
+        font-size: 13px;
+        border-radius: 8px;
+    }
+    .btn-login-colored,
+    .btn-register-colored {
+        margin-right: 0;
+        margin-left: 0;
     }
     .hero-slider .hero-swiper-pagination .swiper-pagination-bullet {
         width: 8px;
