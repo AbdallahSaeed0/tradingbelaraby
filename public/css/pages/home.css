@@ -886,22 +886,23 @@ footer {
     background: #d94e1f;
 }
 
-/* --- Hero Section (no internal scroll: overflow visible, height only on .hero-stage) --- */
+/* --- Hero Section: no internal scroll; no gray dead zone --- */
 .hero,
 .hero-colored {
-    background-size: cover;
     color: #fff;
     padding: 0;
     position: relative;
     overflow: visible !important;
+    background: transparent !important;
 }
 
-/* Hero stage: only this has height; contains swiper only; clips overlays, no scroll */
+/* Hero stage: only part with height; optional fallback so no gray strip */
 .hero-stage {
     position: relative;
     min-height: clamp(460px, 70vh, 720px);
     overflow: hidden;
     width: 100%;
+    background: #0b2b36;
 }
 
 .hero-stage .hero-swiper,
@@ -933,16 +934,11 @@ footer {
     width: 100%;
 }
 
-/* Layered overlay: gradient + subtle blur for readability and WCAG contrast */
+/* Overlay: gradient for contrast (not flat gray) */
 .hero-slide-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.35) 50%, rgba(0, 0, 0, 0.5) 100%);
-    backdrop-filter: blur(1px);
-    -webkit-backdrop-filter: blur(1px);
+    inset: 0;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.2));
     z-index: 1;
 }
 
@@ -955,7 +951,7 @@ footer {
     z-index: 2;
 }
 
-/* Hero content wrapper: max-width and spacing for hierarchy */
+/* Hero content: sensible width; alignment by parent text-start/text-end */
 .hero-content {
     max-width: 560px;
 }
@@ -981,12 +977,12 @@ footer {
     width: 56px;
 }
 
-/* CTAs: primary + secondary, RTL-friendly row; stack on mobile */
+/* CTAs: primary + secondary */
 .hero-actions {
     display: flex;
+    gap: 12px;
+    justify-content: flex-end;
     flex-wrap: wrap;
-    gap: 0.75rem;
-    align-items: center;
 }
 
 .btn-hero-secondary {
@@ -1099,19 +1095,29 @@ footer {
     background: #f15a29;
 }
 
-/* Responsive Hero Slider - no overflow scroll; heights only on .hero-stage */
+/* Responsive Hero - no overflow scroll */
 .hero-slider {
     overflow: visible;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767.98px) {
     .hero-stage {
         min-height: clamp(360px, 55vh, 560px);
     }
-    .hero-slider .hero-stage .hero-swiper,
-    .hero-slider .hero-stage .hero-slide,
-    .hero-slider .hero-stage .hero-slide-bg {
+    .hero-stage .hero-swiper,
+    .hero-stage .hero-slide,
+    .hero-stage .hero-slide-bg {
         height: 100% !important;
+    }
+    /* Hide arrows on mobile to prevent overlap with CTAs; use pagination + swipe */
+    .hero-stage .swiper-button-next,
+    .hero-stage .swiper-button-prev,
+    .hero-stage .hero-swiper-button-next,
+    .hero-stage .hero-swiper-button-prev {
+        display: none !important;
+    }
+    .hero-swiper-pagination {
+        bottom: 14px !important;
     }
     .hero-slider .hero-slide-bg {
         background-position: center top !important;
@@ -1123,14 +1129,11 @@ footer {
     .hero-slider .hero-slide .row.min-vh-75 {
         min-height: 0;
         padding-top: 1.5rem;
-        padding-bottom: 2.5rem;
+        padding-bottom: 2rem;
     }
-    .hero-slider .hero-content {
+    .hero-content {
         max-width: 100%;
-    }
-    .hero-slider .hero-welcome {
-        font-size: 12px;
-        margin-bottom: 6px;
+        padding-inline: 12px;
     }
     .hero-slider .hero-content-left h1,
     .hero-slider .hero-slide h1 {
@@ -1141,46 +1144,27 @@ footer {
     }
     .hero-slider .hero-sub {
         font-size: 14px;
-        margin-bottom: 16px;
+        margin-bottom: 1rem;
         line-height: 1.4;
         max-width: 100%;
     }
-    .hero-slider .hero-actions {
+    .hero-actions {
         flex-direction: column;
         align-items: stretch;
-        gap: 0.5rem;
+        gap: 12px;
     }
-    .hero-slider .hero-actions .btn {
-        width: 100%;
-        text-align: center;
-    }
-    .hero-slider .hero-swiper-button-next,
-    .hero-slider .hero-swiper-button-prev {
-        width: 44px !important;
-        height: 44px !important;
-        min-width: 44px;
-        min-height: 44px;
-        right: 10px !important;
-        left: auto !important;
-    }
-    .hero-slider .hero-swiper-button-prev {
-        left: 10px !important;
-        right: auto !important;
-    }
-    .hero-slider .hero-swiper-button-next::after,
-    .hero-slider .hero-swiper-button-prev::after {
-        font-size: 14px;
-    }
-    .hero-slider .hero-swiper-pagination {
-        bottom: 16px;
+    .hero-actions .btn {
+        padding: 12px 14px;
+        font-size: 16px;
+        border-radius: 12px;
     }
     .hero-slider .hero-swiper-pagination .swiper-pagination-bullet {
         width: 8px;
         height: 8px;
     }
     .hero-slider .hero-slide .container-fluid {
-        padding-left: 2.25rem;
-        padding-right: 2.25rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
     }
 }
 
@@ -1188,46 +1172,16 @@ footer {
     .hero-stage {
         min-height: clamp(360px, 55vh, 560px);
     }
-    .hero-slider .hero-stage .hero-swiper,
-    .hero-slider .hero-stage .hero-slide,
-    .hero-slider .hero-stage .hero-slide-bg {
-        height: 100% !important;
-    }
-    .hero-slider .hero-welcome {
-        font-size: 11px;
-    }
     .hero-slider .hero-content-left h1,
     .hero-slider .hero-slide h1 {
         font-size: 22px;
         line-height: 1.3;
     }
+    .hero-slider .hero-welcome {
+        font-size: 11px;
+    }
     .hero-slider .hero-sub {
         font-size: 13px;
-        margin-bottom: 12px;
-    }
-    .hero-slider .hero-swiper-button-next,
-    .hero-slider .hero-swiper-button-prev {
-        width: 44px !important;
-        height: 44px !important;
-        min-width: 44px;
-        min-height: 44px;
-        right: 6px !important;
-        left: auto !important;
-    }
-    .hero-slider .hero-swiper-button-prev {
-        left: 6px !important;
-        right: auto !important;
-    }
-    .hero-slider .hero-swiper-button-next::after,
-    .hero-slider .hero-swiper-button-prev::after {
-        font-size: 12px;
-    }
-    .hero-slider .hero-slide .container-fluid {
-        padding-left: 2.5rem;
-        padding-right: 2.5rem;
-    }
-    .hero-slider .hero-swiper-pagination {
-        bottom: 12px;
     }
 }
 .hero-flex {
@@ -1311,9 +1265,9 @@ footer {
     margin-bottom: -40px;
 }
 
-/* --- Hero Features: normal flow below stage (no position: absolute, no internal scroll) --- */
+/* --- Hero Features: overlap stage, no gray gap; premium cards --- */
 .hero-features-wrap {
-    margin-top: -40px;
+    margin-top: -60px;
     padding-bottom: 24px;
 }
 
@@ -1323,7 +1277,6 @@ footer {
     align-items: stretch;
     position: relative;
     z-index: 2;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
 }
 
 .hero-features-mobile {
@@ -1331,23 +1284,23 @@ footer {
 }
 
 .hero-feature-box {
-    background: rgba(18, 88, 117, 0.95);
+    background: #0f5c72;
     color: #fff;
-    border-radius: 0;
-    padding: 28px 32px;
-    box-shadow: none;
+    border-radius: 18px;
+    padding: 22px 18px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
     align-items: center;
     height: 100%;
-    min-height: 120px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    min-height: 100px;
     transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
 .hero-feature-box:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-    border-color: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.22);
+    border-color: rgba(255, 255, 255, 0.2);
 }
 
 .hero-feature-title {
@@ -2687,16 +2640,21 @@ footer {
     padding-bottom: 1.5rem;
 }
 
+/* Mobile features: 3 stacked compact cards */
 .hero-features-mobile .hero-feature-box.mobile-feature-box,
 .mobile-hero-features .hero-feature-box.mobile-feature-box {
-    background: rgba(18, 88, 117, 0.95) !important;
+    background: #0f5c72 !important;
     color: #fff !important;
-    border-radius: 12px !important;
-    padding: 1rem 1.25rem !important;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
-    margin-bottom: 0 !important;
+    border-radius: 18px !important;
+    padding: 16px 18px !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12) !important;
+    margin-bottom: 12px !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.hero-features-mobile .hero-feature-box.mobile-feature-box:last-child,
+.hero-features-mobile .row .col-12:last-child .hero-feature-box.mobile-feature-box {
+    margin-bottom: 0 !important;
 }
 
 .hero-features-mobile .hero-feature-box.mobile-feature-box:hover,

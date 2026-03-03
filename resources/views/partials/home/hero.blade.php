@@ -96,9 +96,10 @@
         </div>
     </div>
 
-    <!-- Desktop Hero Features (normal flow below stage, no overlay/scroll) -->
+    <!-- Desktop Hero Features (overlap stage slightly, no gray gap) -->
     <div class="hero-features-wrap d-none d-md-block">
-        <div class="row hero-features text-center">
+        <div class="container">
+            <div class="row hero-features text-center">
         @php
             $heroFeatures = \App\Models\HeroFeature::active()->ordered()->get();
         @endphp
@@ -146,10 +147,11 @@
                 </div>
             </div>
         @endforelse
+            </div>
         </div>
     </div>
 
-    <!-- Mobile Hero Features (inside hero section, normal flow) -->
+    <!-- Mobile Hero Features (stacked cards) -->
     <div class="hero-features-mobile d-block d-md-none">
         <div class="container py-4">
             <div class="row">
