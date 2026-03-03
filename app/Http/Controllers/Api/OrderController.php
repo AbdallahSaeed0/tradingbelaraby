@@ -86,7 +86,8 @@ class OrderController extends Controller
             // Generate order number
             $orderNumber = 'ORD-' . strtoupper(Str::random(8)) . '-' . now()->format('Ymd');
 
-            // Create order
+            // Create order (billing from user profile for API/mobile checkout)
+            $parts = explode(' ', $user->name, 2);
             $order = Order::create([
                 'user_id' => $user->id,
                 'order_number' => $orderNumber,
@@ -98,8 +99,14 @@ class OrderController extends Controller
                 'payment_gateway_id' => null,
                 'status' => $request->payment_method === 'cash_on_delivery' ? 'pending' : ($total == 0 ? 'completed' : 'pending'),
                 'billing_email' => $user->email,
-                'billing_first_name' => explode(' ', $user->name)[0] ?? '',
-                'billing_last_name' => implode(' ', array_slice(explode(' ', $user->name), 1)) ?? '',
+                'billing_first_name' => $parts[0] ?? '',
+                'billing_last_name' => $parts[1] ?? '',
+                'billing_phone' => $user->phone ?? '',
+                'billing_address' => $user->address ?? '',
+                'billing_city' => $user->city ?? '',
+                'billing_state' => $user->state ?? '',
+                'billing_postal_code' => $user->postal_code ?? '',
+                'billing_country' => $user->country ?? '',
             ]);
 
             // Create order items
