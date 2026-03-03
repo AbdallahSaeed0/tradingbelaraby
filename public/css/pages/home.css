@@ -1113,12 +1113,15 @@ footer {
 
 @media (max-width: 767.98px) {
     .hero-stage {
-        min-height: clamp(420px, 56vh, 540px);
+        min-height: clamp(320px, 45vh, 440px);
     }
     .hero-stage .hero-swiper,
     .hero-stage .hero-slide,
     .hero-stage .hero-slide-bg {
         height: 100% !important;
+    }
+    .hero-stage .hero-slide-bg {
+        min-height: clamp(320px, 45vh, 440px);
     }
     /* Mobile: better default focal framing (keep subjects visible) */
     .hero-slide-bg {
@@ -1182,7 +1185,10 @@ footer {
 
 @media (max-width: 576px) {
     .hero-stage {
-        min-height: clamp(420px, 56vh, 540px);
+        min-height: clamp(300px, 42vh, 400px);
+    }
+    .hero-stage .hero-slide-bg {
+        min-height: clamp(300px, 42vh, 400px);
     }
     .hero-slider .hero-content-left h1,
     .hero-slider .hero-slide h1 {

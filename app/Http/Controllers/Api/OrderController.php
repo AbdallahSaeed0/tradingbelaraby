@@ -9,10 +9,12 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\CourseEnrollment;
 use App\Models\Coupon;
+use App\Services\Payment\PayPalService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class OrderController extends Controller
@@ -20,7 +22,7 @@ class OrderController extends Controller
     /**
      * Create a new order
      */
-    public function store(Request $request): JsonResponse
+    public function store(Request $request, PayPalService $paypalService): JsonResponse
     {
         $user = Auth::user();
         
@@ -34,7 +36,7 @@ class OrderController extends Controller
         $request->validate([
             'course_ids' => 'required|array|min:1',
             'course_ids.*' => 'exists:courses,id',
-            'payment_method' => 'required|in:visa,free,cash_on_delivery',
+            'payment_method' => 'required|in:visa,free,cash_on_delivery,paypal',
             'coupon_code' => 'nullable|string|max:50',
         ]);
 
@@ -73,6 +75,14 @@ class OrderController extends Controller
                 $subtotal = 0;
             }
 
+            // PayPal not valid for free-only orders
+            if ($request->payment_method === 'paypal' && $total <= 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'PayPal is only for paid orders.',
+                ], 400);
+            }
+
             // Generate order number
             $orderNumber = 'ORD-' . strtoupper(Str::random(8)) . '-' . now()->format('Ymd');
 
@@ -101,10 +111,44 @@ class OrderController extends Controller
                 ]);
             }
 
-            // If cash-on-delivery or free, create enrollments with pending status
-            if ($request->payment_method === 'cash_on_delivery' || $total == 0) {
+            $approvalUrl = null;
+
+            // PayPal: create PayPal order and return approval URL for mobile to open
+            if ($request->payment_method === 'paypal' && $total > 0) {
+                $items = $courses->map(fn($course) => [
+                    'id' => $course->id,
+                    'title' => $course->name,
+                    'description' => 'Course: ' . $course->name,
+                    'quantity' => 1,
+                    'unit_price' => $course->price,
+                ])->toArray();
+                $customer = [
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'phone' => $user->phone ?? '',
+                ];
+                try {
+                    $paypalOrder = $paypalService->createOrder($order, $items, $customer);
+                    $order->update(['payment_gateway_id' => $paypalOrder['id'] ?? null]);
+                    foreach ($paypalOrder['links'] ?? [] as $link) {
+                        if (($link['rel'] ?? '') === 'approve') {
+                            $approvalUrl = $link['href'];
+                            break;
+                        }
+                    }
+                } catch (\Exception $e) {
+                    DB::rollBack();
+                    Log::error('PayPal API order create failed: ' . $e->getMessage());
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Unable to start PayPal payment: ' . $e->getMessage(),
+                    ], 502);
+                }
+            }
+
+            // If cash-on-delivery or free (not PayPal), create enrollments
+            if (in_array($request->payment_method, ['cash_on_delivery']) || $total == 0) {
                 foreach ($courses as $course) {
-                    // Check if already enrolled
                     $existingEnrollment = CourseEnrollment::where('user_id', $user->id)
                         ->where('course_id', $course->id)
                         ->first();
@@ -114,8 +158,8 @@ class OrderController extends Controller
                             'user_id' => $user->id,
                             'course_id' => $course->id,
                             'transaction_id' => $order->order_number,
-                            'status' => $total == 0 ? 'active' : 'pending', // Free courses active immediately
-                            'enrolled_at' => $total == 0 ? now() : null, // Free courses enrolled immediately
+                            'status' => $total == 0 ? 'active' : 'pending',
+                            'enrolled_at' => $total == 0 ? now() : null,
                             'progress_percentage' => 0,
                             'payment_method' => $request->payment_method,
                             'amount_paid' => $course->price,
@@ -124,22 +168,28 @@ class OrderController extends Controller
                 }
             }
 
-            // If free courses, mark order as completed
             if ($total == 0) {
                 $order->update(['status' => 'completed']);
             }
 
             DB::commit();
 
-            return response()->json([
+            $response = [
                 'success' => true,
-                'message' => $total == 0 
+                'message' => $total == 0
                     ? 'Order created and enrollment completed successfully'
-                    : ($request->payment_method === 'cash_on_delivery' 
-                        ? 'Order created. Enrollment will be activated after payment confirmation.'
-                        : 'Order created successfully'),
+                    : ($request->payment_method === 'paypal'
+                        ? 'Complete your payment in the browser.'
+                        : ($request->payment_method === 'cash_on_delivery'
+                            ? 'Order created. Enrollment will be activated after payment confirmation.'
+                            : 'Order created successfully')),
                 'data' => new OrderResource($order->load('items')),
-            ], 201);
+            ];
+            if ($approvalUrl !== null) {
+                $response['approval_url'] = $approvalUrl;
+            }
+
+            return response()->json($response, 201);
 
         } catch (\Exception $e) {
             DB::rollBack();
