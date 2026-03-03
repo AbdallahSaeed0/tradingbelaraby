@@ -899,7 +899,7 @@ footer {
 /* Hero stage: responsive height to reduce crop */
 .hero-stage {
     position: relative;
-    min-height: clamp(460px, 115vh, 766px);
+    min-height: clamp(400px, 70vh, 580px);
     width: 100%;
     overflow: hidden;
     background: #0b2b36;
@@ -916,7 +916,7 @@ footer {
 }
 
 .hero-stage .hero-slide-bg {
-    min-height: clamp(460px, 82vh, 766px);
+    min-height: clamp(400px, 60vh, 580px);
 }
 
 .hero-swiper {
@@ -934,7 +934,7 @@ footer {
 /* Cover with per-slide focal point */
 .hero-slide-bg {
     position: relative;
-    min-height: clamp(460px, 82vh, 766px);
+    min-height: clamp(400px, 60vh, 580px);
     background-size: cover !important;
     background-repeat: no-repeat !important;
     background-position: var(--bg-pos, center center) !important;
@@ -988,12 +988,18 @@ footer {
     width: 56px;
 }
 
-/* RTL: primary CTA first on the right */
+/* RTL: primary CTA first on the right (reduced button size) */
 .hero-actions {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     justify-content: flex-start;
     flex-wrap: wrap;
+}
+
+.hero-actions .btn {
+    padding: 8px 20px;
+    font-size: 14px;
+    border-radius: 8px;
 }
 
 .btn-hero-secondary {
@@ -1114,7 +1120,7 @@ footer {
 
 @media (max-width: 767.98px) {
     .hero-stage {
-        min-height: clamp(320px, 45vh, 440px);
+        min-height: clamp(280px, 40vh, 380px);
     }
     .hero-stage .hero-swiper,
     .hero-stage .hero-slide,
@@ -1122,7 +1128,7 @@ footer {
         height: 100% !important;
     }
     .hero-stage .hero-slide-bg {
-        min-height: clamp(320px, 45vh, 440px);
+        min-height: clamp(280px, 40vh, 380px);
     }
     .hero-slide-bg {
         background-position: var(--bg-pos-mobile, 50% 35%) !important;
@@ -1168,9 +1174,9 @@ footer {
         gap: 12px;
     }
     .hero-actions .btn {
-        padding: 12px 14px;
-        font-size: 16px;
-        border-radius: 12px;
+        padding: 10px 14px;
+        font-size: 14px;
+        border-radius: 10px;
     }
     .hero-slider .hero-swiper-pagination .swiper-pagination-bullet {
         width: 8px;
@@ -1180,10 +1186,10 @@ footer {
 
 @media (max-width: 576px) {
     .hero-stage {
-        min-height: clamp(300px, 42vh, 400px);
+        min-height: clamp(260px, 38vh, 340px);
     }
     .hero-stage .hero-slide-bg {
-        min-height: clamp(300px, 42vh, 400px);
+        min-height: clamp(260px, 38vh, 340px);
     }
     .hero-slider .hero-content-left h1,
     .hero-slider .hero-slide h1 {
