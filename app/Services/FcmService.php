@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\User;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Kreait\Firebase\Contract\Messaging;
 use Kreait\Firebase\Messaging\AndroidConfig;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification as FcmNotification;
@@ -21,14 +20,17 @@ class FcmService
     {
         $tokens = $user->fcmTokens()->pluck('token')->toArray();
         if (empty($tokens)) {
+            Log::info('FCM: No device tokens for user. Push will not show in system bar. User must open the app while logged in to register device.', [
+                'user_id' => $user->id,
+                'email' => $user->email,
+            ]);
             return;
         }
 
         if (self::useFirebaseSdk()) {
             try {
-                $messaging = app(Messaging::class);
+                $messaging = app('firebase.messaging');
                 $dataStrings = self::dataToStrings($data);
-                // Use same channel as Flutter app so notification shows in system bar (background/terminated)
                 $androidConfig = AndroidConfig::fromArray([
                     'priority' => 'high',
                     'notification' => [
@@ -44,6 +46,7 @@ class FcmService
                         ->withAndroidConfig($androidConfig);
                     $messaging->send($message);
                 }
+                Log::info('FCM: Push sent to user', ['user_id' => $user->id, 'tokens_count' => count($tokens)]);
             } catch (\Throwable $e) {
                 Log::warning('FCM (Firebase SDK) send failed', ['user_id' => $user->id, 'error' => $e->getMessage()]);
             }
@@ -55,8 +58,14 @@ class FcmService
             Log::debug('FCM: No credentials or server key configured. Skip push.');
             return;
         }
+        $sent = 0;
         foreach ($tokens as $token) {
-            self::sendToTokenLegacy($token, $title, $body, $data, $key);
+            if (self::sendToTokenLegacy($token, $title, $body, $data, $key)) {
+                $sent++;
+            }
+        }
+        if ($sent > 0) {
+            Log::info('FCM: Push sent to user (legacy)', ['user_id' => $user->id, 'tokens_sent' => $sent]);
         }
     }
 
@@ -67,7 +76,7 @@ class FcmService
     {
         if (self::useFirebaseSdk()) {
             try {
-                $messaging = app(Messaging::class);
+                $messaging = app('firebase.messaging');
                 $androidConfig = AndroidConfig::fromArray([
                     'priority' => 'high',
                     'notification' => [
