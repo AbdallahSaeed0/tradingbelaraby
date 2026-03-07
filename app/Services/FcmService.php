@@ -5,10 +5,10 @@ namespace App\Services;
 use App\Models\User;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Kreait\Firebase\Factory as FirebaseFactory;
 use Kreait\Firebase\Messaging\AndroidConfig;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification as FcmNotification;
-use Kreait\Laravel\Firebase\FirebaseProjectManager;
 
 class FcmService
 {
@@ -30,7 +30,7 @@ class FcmService
 
         if (self::useFirebaseSdk()) {
             try {
-                $messaging = app(FirebaseProjectManager::class)->project()->messaging();
+                $messaging = self::createMessaging();
                 $dataStrings = self::dataToStrings($data);
                 $androidConfig = AndroidConfig::fromArray([
                     'priority' => 'high',
@@ -77,7 +77,7 @@ class FcmService
     {
         if (self::useFirebaseSdk()) {
             try {
-                $messaging = app(FirebaseProjectManager::class)->project()->messaging();
+                $messaging = self::createMessaging();
                 $androidConfig = AndroidConfig::fromArray([
                     'priority' => 'high',
                     'notification' => [
@@ -106,6 +106,25 @@ class FcmService
     {
         $credentials = config('firebase.projects.app.credentials') ?? env('FIREBASE_CREDENTIALS');
         return !empty($credentials);
+    }
+
+    /**
+     * Create Messaging instance directly with Kreait\Firebase\Factory.
+     * Does not rely on Laravel container so it works in queue workers.
+     */
+    private static function createMessaging(): \Kreait\Firebase\Contract\Messaging
+    {
+        $credentials = config('firebase.projects.app.credentials') ?? env('FIREBASE_CREDENTIALS');
+        if (empty($credentials)) {
+            throw new \InvalidArgumentException('FIREBASE_CREDENTIALS is not set.');
+        }
+        $isJson = str_starts_with(trim($credentials), '{');
+        $isAbsolutePath = str_starts_with($credentials, '/') || (strlen($credentials) >= 2 && $credentials[1] === ':');
+        if (!$isJson && !$isAbsolutePath) {
+            $credentials = base_path($credentials);
+        }
+        $factory = (new FirebaseFactory)->withServiceAccount($credentials);
+        return $factory->createMessaging();
     }
 
     /** FCM data payload accepts only string values. */
