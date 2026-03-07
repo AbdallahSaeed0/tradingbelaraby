@@ -5,17 +5,13 @@ namespace App\Services;
 use App\Models\User;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Kreait\Firebase\Factory as FirebaseFactory;
-use Kreait\Firebase\Messaging\AndroidConfig;
-use Kreait\Firebase\Messaging\CloudMessage;
-use Kreait\Firebase\Messaging\Notification as FcmNotification;
 
 class FcmService
 {
     /**
      * Send push notification to user's devices.
-     * Uses kreait/laravel-firebase (FCM v1) when FIREBASE_CREDENTIALS is set,
-     * otherwise falls back to legacy FCM HTTP when FCM_SERVER_KEY is set.
+     * Uses Firebase SDK (Kreait) when available and FIREBASE_CREDENTIALS is set,
+     * otherwise uses legacy FCM HTTP when FCM_SERVER_KEY is set.
      */
     public static function sendToUser(User $user, string $title, string $body, array $data = []): void
     {
@@ -30,44 +26,16 @@ class FcmService
 
         if (self::useFirebaseSdk()) {
             try {
-                $messaging = self::createMessaging();
-                $dataStrings = self::dataToStrings($data);
-                $androidConfig = AndroidConfig::fromArray([
-                    'priority' => 'high',
-                    'notification' => [
-                        'channel_id' => 'courses_app_notifications',
-                        'notification_priority' => 'PRIORITY_HIGH',
-                        'visibility' => 'PUBLIC',
-                    ],
-                ]);
-                foreach ($tokens as $token) {
-                    $message = CloudMessage::withTarget('token', $token)
-                        ->withNotification(FcmNotification::create($title, $body))
-                        ->withData($dataStrings)
-                        ->withAndroidConfig($androidConfig);
-                    $messaging->send($message);
-                }
+                self::sendViaFirebaseSdk($tokens, $title, $body, $data);
                 Log::info('FCM: Push sent to user', ['user_id' => $user->id, 'tokens_count' => count($tokens)]);
             } catch (\Throwable $e) {
                 Log::warning('FCM (Firebase SDK) send failed', ['user_id' => $user->id, 'error' => $e->getMessage()]);
+                self::sendViaLegacy($tokens, $title, $body, $data, $user->id);
             }
             return;
         }
 
-        $key = config('services.fcm.server_key');
-        if (empty($key)) {
-            Log::debug('FCM: No credentials or server key configured. Skip push.');
-            return;
-        }
-        $sent = 0;
-        foreach ($tokens as $token) {
-            if (self::sendToTokenLegacy($token, $title, $body, $data, $key)) {
-                $sent++;
-            }
-        }
-        if ($sent > 0) {
-            Log::info('FCM: Push sent to user (legacy)', ['user_id' => $user->id, 'tokens_sent' => $sent]);
-        }
+        self::sendViaLegacy($tokens, $title, $body, $data, $user->id);
     }
 
     /**
@@ -77,27 +45,12 @@ class FcmService
     {
         if (self::useFirebaseSdk()) {
             try {
-                $messaging = self::createMessaging();
-                $androidConfig = AndroidConfig::fromArray([
-                    'priority' => 'high',
-                    'notification' => [
-                        'channel_id' => 'courses_app_notifications',
-                        'notification_priority' => 'PRIORITY_HIGH',
-                        'visibility' => 'PUBLIC',
-                    ],
-                ]);
-                $message = CloudMessage::withTarget('token', $token)
-                    ->withNotification(FcmNotification::create($title, $body))
-                    ->withData(self::dataToStrings($data))
-                    ->withAndroidConfig($androidConfig);
-                $messaging->send($message);
+                self::sendViaFirebaseSdk([$token], $title, $body, $data);
                 return true;
             } catch (\Throwable $e) {
                 Log::warning('FCM (Firebase SDK) send failed', ['error' => $e->getMessage()]);
-                return false;
             }
         }
-
         $key = config('services.fcm.server_key');
         return $key ? self::sendToTokenLegacy($token, $title, $body, $data, $key) : false;
     }
@@ -105,12 +58,62 @@ class FcmService
     private static function useFirebaseSdk(): bool
     {
         $credentials = config('firebase.projects.app.credentials') ?? env('FIREBASE_CREDENTIALS');
-        return !empty($credentials);
+        if (empty($credentials)) {
+            return false;
+        }
+        return class_exists('Kreait\Firebase\Factory');
     }
 
     /**
-     * Create Messaging instance directly with Kreait\Firebase\Factory.
-     * Does not rely on Laravel container so it works in queue workers.
+     * Send via Kreait Firebase SDK. Only call when useFirebaseSdk() is true.
+     */
+    private static function sendViaFirebaseSdk(array $tokens, string $title, string $body, array $data): void
+    {
+        $messaging = self::createMessaging();
+        $dataStrings = self::dataToStrings($data);
+        $androidConfig = \Kreait\Firebase\Messaging\AndroidConfig::fromArray([
+            'priority' => 'high',
+            'notification' => [
+                'channel_id' => 'courses_app_notifications',
+                'notification_priority' => 'PRIORITY_HIGH',
+                'visibility' => 'PUBLIC',
+            ],
+        ]);
+        $notification = \Kreait\Firebase\Messaging\Notification::create($title, $body);
+        foreach ($tokens as $token) {
+            $message = \Kreait\Firebase\Messaging\CloudMessage::withTarget('token', $token)
+                ->withNotification($notification)
+                ->withData($dataStrings)
+                ->withAndroidConfig($androidConfig);
+            $messaging->send($message);
+        }
+    }
+
+    /**
+     * Fallback: send via legacy FCM HTTP API (no Kreait dependency).
+     */
+    private static function sendViaLegacy(array $tokens, string $title, string $body, array $data, ?int $userId = null): void
+    {
+        $key = config('services.fcm.server_key');
+        if (empty($key)) {
+            if ($userId !== null) {
+                Log::info('FCM: Legacy fallback skipped. Set FCM_SERVER_KEY in .env for push when Firebase SDK is unavailable.', ['user_id' => $userId]);
+            }
+            return;
+        }
+        $sent = 0;
+        foreach ($tokens as $token) {
+            if (self::sendToTokenLegacy($token, $title, $body, $data, $key)) {
+                $sent++;
+            }
+        }
+        if ($sent > 0 && $userId !== null) {
+            Log::info('FCM: Push sent to user (legacy)', ['user_id' => $userId, 'tokens_sent' => $sent]);
+        }
+    }
+
+    /**
+     * Create Messaging instance via Kreait\Firebase\Factory (only when class exists).
      */
     private static function createMessaging(): \Kreait\Firebase\Contract\Messaging
     {
@@ -123,7 +126,8 @@ class FcmService
         if (!$isJson && !$isAbsolutePath) {
             $credentials = base_path($credentials);
         }
-        $factory = (new FirebaseFactory)->withServiceAccount($credentials);
+        $factory = new \Kreait\Firebase\Factory();
+        $factory = $factory->withServiceAccount($credentials);
         return $factory->createMessaging();
     }
 
