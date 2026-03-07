@@ -122,13 +122,36 @@ class FcmService
             throw new \InvalidArgumentException('FIREBASE_CREDENTIALS is not set.');
         }
         $isJson = str_starts_with(trim($credentials), '{');
-        $isAbsolutePath = str_starts_with($credentials, '/') || (strlen($credentials) >= 2 && $credentials[1] === ':');
-        if (!$isJson && !$isAbsolutePath) {
-            $credentials = base_path($credentials);
+        if ($isJson) {
+            $pathOrJson = $credentials;
+        } else {
+            $isAbsolutePath = str_starts_with($credentials, '/') || (strlen($credentials) >= 2 && $credentials[1] === ':');
+            $pathOrJson = $isAbsolutePath ? $credentials : self::resolveCredentialsPath($credentials);
         }
         $factory = new \Kreait\Firebase\Factory();
-        $factory = $factory->withServiceAccount($credentials);
+        $factory = $factory->withServiceAccount($pathOrJson);
         return $factory->createMessaging();
+    }
+
+    /**
+     * Resolve relative credentials path to an absolute path that exists.
+     */
+    private static function resolveCredentialsPath(string $relativePath): string
+    {
+        $candidates = [
+            base_path($relativePath),
+            base_path('storage/app/' . basename($relativePath)),
+            storage_path('app/' . basename($relativePath)),
+        ];
+        foreach ($candidates as $path) {
+            if (is_file($path) && is_readable($path)) {
+                return $path;
+            }
+        }
+        throw new \InvalidArgumentException(sprintf(
+            'FCM credentials file not found or not readable. Tried: %s',
+            implode(', ', $candidates)
+        ));
     }
 
     /** FCM data payload accepts only string values. */
