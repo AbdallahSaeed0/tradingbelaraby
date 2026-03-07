@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 use Kreait\Firebase\Messaging\AndroidConfig;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification as FcmNotification;
+use Kreait\Laravel\Firebase\FirebaseProjectManager;
 
 class FcmService
 {
@@ -29,7 +30,7 @@ class FcmService
 
         if (self::useFirebaseSdk()) {
             try {
-                $messaging = app('firebase.messaging');
+                $messaging = app(FirebaseProjectManager::class)->project()->messaging();
                 $dataStrings = self::dataToStrings($data);
                 $androidConfig = AndroidConfig::fromArray([
                     'priority' => 'high',
@@ -76,7 +77,7 @@ class FcmService
     {
         if (self::useFirebaseSdk()) {
             try {
-                $messaging = app('firebase.messaging');
+                $messaging = app(FirebaseProjectManager::class)->project()->messaging();
                 $androidConfig = AndroidConfig::fromArray([
                     'priority' => 'high',
                     'notification' => [
