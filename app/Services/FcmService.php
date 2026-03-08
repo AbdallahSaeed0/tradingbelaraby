@@ -35,6 +35,10 @@ class FcmService
             return;
         }
 
+        Log::debug('FCM: Using legacy API', [
+            'reason' => self::getWhyNoFirebaseSdk(),
+            'user_id' => $user->id,
+        ]);
         self::sendViaLegacy($tokens, $title, $body, $data, $user->id);
     }
 
@@ -62,6 +66,18 @@ class FcmService
             return false;
         }
         return class_exists('Kreait\Firebase\Factory');
+    }
+
+    private static function getWhyNoFirebaseSdk(): string
+    {
+        $credentials = config('firebase.projects.app.credentials') ?? env('FIREBASE_CREDENTIALS');
+        if (empty($credentials)) {
+            return 'FIREBASE_CREDENTIALS not set or empty in .env';
+        }
+        if (!class_exists('Kreait\Firebase\Factory')) {
+            return 'Kreait Firebase SDK not loaded (run composer install on server and restart queue)';
+        }
+        return 'unknown';
     }
 
     /**
@@ -97,7 +113,7 @@ class FcmService
         $key = config('services.fcm.server_key');
         if (empty($key)) {
             if ($userId !== null) {
-                Log::info('FCM: Legacy fallback skipped. Set FCM_SERVER_KEY in .env for push when Firebase SDK is unavailable.', ['user_id' => $userId]);
+                Log::warning('FCM: No push sent. Fix on server: '.self::getWhyNoFirebaseSdk().'. Set FIREBASE_CREDENTIALS in .env (path to service account JSON) and run composer install so Kreait Firebase SDK is available, then restart queue.', ['user_id' => $userId]);
             }
             return;
         }
