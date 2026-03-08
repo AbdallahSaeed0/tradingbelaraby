@@ -3,18 +3,21 @@
 @section('title', 'Send Notification')
 
 @section('content')
-    <div class="container-fluid">
-        <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="container-fluid py-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="mb-0">Notification Campaigns</h3>
             <a href="{{ route('admin.notification-campaigns.create') }}" class="btn btn-primary"><i class="fa fa-paper-plane me-1"></i>Send Notification</a>
         </div>
         @if (session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
         @endif
         <div class="card shadow-sm">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover table-striped">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -43,7 +46,20 @@
                         </tbody>
                     </table>
                 </div>
-                {{ $campaigns->links() }}
+
+                <!-- Pagination (same as other admin tables) -->
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <small class="text-muted">
+                            Showing {{ $campaigns->firstItem() ?? 0 }} to {{ $campaigns->lastItem() ?? 0 }} of {{ $campaigns->total() }} campaigns
+                        </small>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex justify-content-end">
+                            {{ $campaigns->links('pagination::bootstrap-5') }}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

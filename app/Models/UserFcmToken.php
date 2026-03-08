@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class UserFcmToken extends Model
 {
-    protected $fillable = ['user_id', 'token', 'device_type'];
+    protected $fillable = ['user_id', 'token', 'device_type', 'locale'];
 
     public function user(): BelongsTo
     {

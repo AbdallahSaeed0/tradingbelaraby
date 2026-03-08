@@ -17,6 +17,7 @@ class FcmTokenController extends Controller
         $validated = $request->validate([
             'token' => 'required|string|max:500',
             'device_type' => 'nullable|string|max:50',
+            'locale' => 'nullable|string|max:10',
         ]);
 
         $user = $request->user();
@@ -25,7 +26,10 @@ class FcmTokenController extends Controller
                 'user_id' => $user->id,
                 'token' => $validated['token'],
             ],
-            ['device_type' => $validated['device_type'] ?? null]
+            [
+                'device_type' => $validated['device_type'] ?? null,
+                'locale' => $validated['locale'] ?? null,
+            ]
         );
 
         return response()->json(['success' => true]);

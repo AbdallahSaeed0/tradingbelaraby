@@ -16,7 +16,7 @@ class FcmService
      */
     public static function sendToUser(User $user, string $title, string $body, array $data = []): void
     {
-        $tokens = $user->fcmTokens()->pluck('token')->toArray();
+        $tokens = array_values(array_unique($user->fcmTokens()->pluck('token')->toArray()));
         if (empty($tokens)) {
             Log::info('FCM: No device tokens for user. Push will not show in system bar. User must open the app while logged in to register device.', [
                 'user_id' => $user->id,
@@ -28,7 +28,6 @@ class FcmService
         if (self::useFirebaseSdk()) {
             try {
                 self::sendViaFirebaseSdk($tokens, $title, $body, $data);
-                Log::info('FCM: Push sent to user', ['user_id' => $user->id, 'tokens_count' => count($tokens)]);
             } catch (\Throwable $e) {
                 $msg = $e->getMessage();
                 Log::warning('FCM (Firebase SDK) send failed', ['user_id' => $user->id, 'error' => $msg]);
@@ -140,9 +139,6 @@ class FcmService
             if (self::sendToTokenLegacy($token, $title, $body, $data, $key)) {
                 $sent++;
             }
-        }
-        if ($sent > 0 && $userId !== null) {
-            Log::info('FCM: Push sent to user (legacy)', ['user_id' => $userId, 'tokens_sent' => $sent]);
         }
     }
 

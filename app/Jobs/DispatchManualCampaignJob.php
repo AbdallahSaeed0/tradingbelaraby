@@ -44,7 +44,11 @@ class DispatchManualCampaignJob implements ShouldQueue
                 $user->notify($notification);
                 if ($sendPush) {
                     $actionValue = $this->campaign->action_json['value'] ?? '';
-                    FcmService::sendToUser($user, $this->campaign->title_en, $this->campaign->body_en, [
+                    $locale = $user->fcmTokens()->value('locale') ?? 'ar';
+                    $useArabic = in_array(strtolower($locale), ['ar', 'ar_eg', 'ar_sa'], true);
+                    $title = $useArabic ? $this->campaign->title_ar : $this->campaign->title_en;
+                    $body = $useArabic ? $this->campaign->body_ar : $this->campaign->body_en;
+                    FcmService::sendToUser($user, $title, $body, [
                         'url' => $actionValue,
                         'action_type' => $this->campaign->action_json['type'] ?? 'none',
                         'action_value' => $actionValue,
