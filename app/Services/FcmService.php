@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use App\Models\UserFcmToken;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -29,7 +30,12 @@ class FcmService
                 self::sendViaFirebaseSdk($tokens, $title, $body, $data);
                 Log::info('FCM: Push sent to user', ['user_id' => $user->id, 'tokens_count' => count($tokens)]);
             } catch (\Throwable $e) {
-                Log::warning('FCM (Firebase SDK) send failed', ['user_id' => $user->id, 'error' => $e->getMessage()]);
+                $msg = $e->getMessage();
+                Log::warning('FCM (Firebase SDK) send failed', ['user_id' => $user->id, 'error' => $msg]);
+                if (self::isTokenNotFoundError($msg)) {
+                    self::removeUserFcmTokens($user);
+                    Log::info('FCM: Removed invalid/old tokens for user. User must open the app (same Firebase project as server) to re-register.', ['user_id' => $user->id]);
+                }
                 self::sendViaLegacy($tokens, $title, $body, $data, $user->id);
             }
             return;
@@ -80,6 +86,18 @@ class FcmService
         return 'unknown';
     }
 
+    private static function isTokenNotFoundError(string $message): bool
+    {
+        return stripos($message, 'Requested entity was not found') !== false
+            || stripos($message, 'NOT_FOUND') !== false
+            || stripos($message, 'invalid registration') !== false;
+    }
+
+    private static function removeUserFcmTokens(User $user): void
+    {
+        UserFcmToken::where('user_id', $user->id)->delete();
+    }
+
     /**
      * Send via Kreait Firebase SDK. Only call when useFirebaseSdk() is true.
      */
@@ -113,7 +131,7 @@ class FcmService
         $key = config('services.fcm.server_key');
         if (empty($key)) {
             if ($userId !== null) {
-                Log::warning('FCM: No push sent. Fix on server: '.self::getWhyNoFirebaseSdk().'. Set FIREBASE_CREDENTIALS in .env (path to service account JSON) and run composer install so Kreait Firebase SDK is available, then restart queue.', ['user_id' => $userId]);
+                Log::warning('FCM: No push sent (legacy fallback has no FCM_SERVER_KEY). Set FCM_SERVER_KEY in .env for fallback, or fix Firebase SDK error above.', ['user_id' => $userId]);
             }
             return;
         }
