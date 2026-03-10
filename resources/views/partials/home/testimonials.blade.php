@@ -1,9 +1,9 @@
 <!-- Testimonial Slider Section -->
 <section class="testimonial-section position-relative py-5">
-    <img src="https://eclass.mediacity.co.in/demo2/public/frontcss/img/bg/an-img-01.png" alt="Left"
-        class="testimonial-img-left d-none d-md-block">
-    <img src="https://eclass.mediacity.co.in/demo2/public/frontcss/img/bg/an-img-02.png" alt="Right"
-        class="testimonial-img-right d-none d-md-block">
+    <img src="{{ asset('images/deco-left.png') }}" alt="Left"
+        class="testimonial-img-left d-none d-md-block" width="120" height="120">
+    <img src="{{ asset('images/deco-right.png') }}" alt="Right"
+        class="testimonial-img-right d-none d-md-block" width="120" height="120">
     <div class="container">
         <div class="text-center mb-4">
             <span class="text-warning fw-bold d-block mb-2 fs-11">
@@ -95,7 +95,7 @@
 
                         <div class="testimonial-avatar-wrapper d-flex justify-content-center mb-2">
                             <img src="{{ $testimonial->avatar_url }}" class="testimonial-avatar"
-                                alt="{{ $testimonial->getDisplayName() }}">
+                                alt="{{ $testimonial->getDisplayName() }}" width="80" height="80">
                         </div>
                         <h5 class="mb-0">{{ $testimonial->getDisplayName() }}</h5>
                         @if ($testimonial->getDisplayPosition() || $testimonial->getDisplayCompany())
@@ -148,7 +148,7 @@
                             </button>
                         </div>
                         <div class="testimonial-avatar-wrapper d-flex justify-content-center mb-2">
-                            <img src="{{ $t['img'] }}" class="testimonial-avatar" alt="{{ $t['name'] }}">
+                            <img src="{{ $t['img'] }}" class="testimonial-avatar" alt="{{ $t['name'] }}" width="80" height="80">
                         </div>
                         <h5 class="mb-0">{{ $t['name'] }}</h5>
                         <small class="text-muted">{{ $t['role'] }}</small>

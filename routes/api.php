@@ -48,11 +48,24 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/users/account', [AuthController::class, 'deleteAccount'])->name('api.users.account.delete');
 });
 
-// Course API Routes
-Route::get('/courses', [CourseController::class, 'index'])->name('api.courses.index');
-Route::get('/courses/featured', [CourseController::class, 'featured'])->name('api.courses.featured');
-Route::get('/courses/search', [CourseController::class, 'search'])->name('api.courses.search');
-Route::get('/courses/{id}', [CourseController::class, 'show'])->name('api.courses.show');
+// Public course/instructor routes (no auth, safe for catalog — instructors omit email)
+Route::prefix('public')->group(function () {
+    Route::get('/courses', [CourseController::class, 'index'])->name('api.public.courses.index');
+    Route::get('/courses/featured', [CourseController::class, 'featured'])->name('api.public.courses.featured');
+    Route::get('/courses/search', [CourseController::class, 'search'])->name('api.public.courses.search');
+    Route::get('/courses/{id}', [CourseController::class, 'show'])->name('api.public.courses.show');
+    Route::get('/instructors', [App\Http\Controllers\Api\InstructorController::class, 'indexPublic'])->name('api.public.instructors.index');
+    Route::get('/instructors/top', [App\Http\Controllers\Api\InstructorController::class, 'topPublic'])->name('api.public.instructors.top');
+    Route::get('/instructors/{id}', [App\Http\Controllers\Api\InstructorController::class, 'showPublic'])->name('api.public.instructors.show');
+});
+
+// Course API Routes (protected — full data; use api/public/courses for unauthenticated catalog)
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/courses', [CourseController::class, 'index'])->name('api.courses.index');
+    Route::get('/courses/featured', [CourseController::class, 'featured'])->name('api.courses.featured');
+    Route::get('/courses/search', [CourseController::class, 'search'])->name('api.courses.search');
+    Route::get('/courses/{id}', [CourseController::class, 'show'])->name('api.courses.show');
+});
 Route::get('/courses/{id}/reviews', [CourseController::class, 'getReviews'])->name('api.courses.reviews.index');
 Route::get('/courses/{id}/questions', [App\Http\Controllers\Api\CourseQuestionController::class, 'index'])->name('api.courses.questions.index');
 
@@ -66,10 +79,12 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::get('/categories', [CategoryController::class, 'index'])->name('api.categories.index');
 Route::get('/categories/{id}', [CategoryController::class, 'show'])->name('api.categories.show');
 
-// Instructor API Routes
-Route::get('/instructors', [App\Http\Controllers\Api\InstructorController::class, 'index'])->name('api.instructors.index');
-Route::get('/instructors/top', [App\Http\Controllers\Api\InstructorController::class, 'top'])->name('api.instructors.top');
-Route::get('/instructors/{id}', [App\Http\Controllers\Api\InstructorController::class, 'show'])->name('api.instructors.show');
+// Instructor API Routes (protected — full data including email; use api/public/instructors for unauthenticated)
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/instructors', [App\Http\Controllers\Api\InstructorController::class, 'index'])->name('api.instructors.index');
+    Route::get('/instructors/top', [App\Http\Controllers\Api\InstructorController::class, 'top'])->name('api.instructors.top');
+    Route::get('/instructors/{id}', [App\Http\Controllers\Api\InstructorController::class, 'show'])->name('api.instructors.show');
+});
 
 // Enrollment API Routes (Protected)
 Route::middleware('auth:sanctum')->group(function () {

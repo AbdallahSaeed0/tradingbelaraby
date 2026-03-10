@@ -6,8 +6,8 @@
 @section('content')
     <!-- Banner Section -->
     <section class="course-banner position-relative d-flex align-items-center justify-content-center">
-        <img src="https://eclass.mediacity.co.in/demo2/public/images/breadcum/16953680301690548224bdrc-bg.png" alt="Banner"
-            class="course-banner-bg position-absolute w-100 h-100 top-0 start-0">
+        <img src="{{ asset('images/breadcrumb-bg.png') }}" alt="Banner"
+            class="course-banner-bg position-absolute w-100 h-100 top-0 start-0" width="1920" height="400">
         <div class="course-banner-overlay position-absolute w-100 h-100 top-0 start-0"></div>
         <div class="container position-relative py-5 z-3 text-center">
             <h1 class="display-4 fw-bold text-white mb-3">{{ custom_trans('Bundle Details', 'front') }}</h1>
@@ -33,7 +33,7 @@
                 <div class="col-lg-8 mb-4 mb-lg-0">
                     <h2 class="fw-bold mb-4">{{ $bundle->localized_name }}</h2>
                     <img src="{{ $bundle->image_url }}" class="img-fluid rounded-4 mb-4"
-                        alt="{{ $bundle->localized_name }}">
+                        alt="{{ $bundle->localized_name }}" width="800" height="450">
                     
                     <!-- Description -->
                     <div class="mb-5">
@@ -53,7 +53,7 @@
                                     <div class="row align-items-center">
                                         <div class="col-md-3">
                                             <img src="{{ $course->image_url }}" alt="{{ $course->localized_name }}" 
-                                                class="img-fluid rounded">
+                                                class="img-fluid rounded" width="280" height="170">
                                         </div>
                                         <div class="col-md-6">
                                             <h5 class="mb-2">{{ $course->localized_name }}</h5>
@@ -137,7 +137,7 @@
                             <div class="card h-100 shadow-sm">
                                 <div class="position-relative">
                                     <img src="{{ $relatedBundle->image_url }}" class="card-img-top" alt="{{ $relatedBundle->localized_name }}" 
-                                        style="height: 200px; object-fit: cover;">
+                                        style="height: 200px; object-fit: cover;" width="360" height="200">
                                     @if($relatedBundle->discount_percentage)
                                         <span class="position-absolute top-0 end-0 m-2 badge bg-danger">
                                             -{{ $relatedBundle->discount_percentage }}%

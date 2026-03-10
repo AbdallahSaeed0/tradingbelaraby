@@ -45,9 +45,15 @@
                                     <span class="hero-welcome d-block mb-2">{{ get_current_language_code() === 'ar' && $slider->welcome_text_ar ? $slider->welcome_text_ar : $slider->welcome_text }}
                                         <span class="hero-underline"></span>
                                     </span>
+                                    @if($loop->first)
                                     <h1 class="fw-bold mb-3">
                                         {{ get_current_language_code() === 'ar' && $slider->title_ar ? $slider->title_ar : $slider->title }}
                                     </h1>
+                                    @else
+                                    <h2 class="fw-bold mb-3 hero-slide-heading">
+                                        {{ get_current_language_code() === 'ar' && $slider->title_ar ? $slider->title_ar : $slider->title }}
+                                    </h2>
+                                    @endif
                                     <p class="hero-sub mb-4">
                                         {{ get_current_language_code() === 'ar' && $slider->subtitle_ar ? $slider->subtitle_ar : $slider->subtitle }}
                                     </p>
@@ -67,7 +73,7 @@
             @empty
                 <!-- Default Slide (if no sliders in database) -->
                 <div class="swiper-slide hero-slide hero-slide-bg"
-                    data-bg-image="https://eclass.mediacity.co.in/demo2/public/images/slider/slider_img02.png"
+                    data-bg-image="{{ asset('images/slider-default.png') }}"
                     data-slide-url="{{ route('courses.index') }}">
                     <div class="hero-slide-overlay"></div>
                     <div class="row align-items-center min-vh-75 min-h-520 h-100">
@@ -75,6 +81,7 @@
                             <div class="hero-content">
                                 <span class="hero-welcome d-block mb-2">WELCOME TO E-CLASS <span class="hero-underline"></span></span>
                                 <h1 class="fw-bold mb-3">Education is the best key success in life</h1>
+                                {{-- Default slide when no sliders: single H1 for page --}}
                                 <p class="hero-sub mb-4">Online Courses</p>
                                 <div class="hero-actions">
                                     <a href="{{ route('courses.index') }}" class="btn btn-register-colored btn-lg">{{ custom_trans('browse_courses', 'front') ?? 'Browse Courses' }}</a>
@@ -206,10 +213,7 @@
     </div>
 </section>
 
-<!-- Swiper CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" /><!-- Swiper JS -->
-<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
-
+<!-- Swiper loaded once in layouts/app.blade.php (swiper@11) -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         /**

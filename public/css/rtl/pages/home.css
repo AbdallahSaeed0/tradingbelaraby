@@ -2204,7 +2204,7 @@ footer {
 .scholarship-banner-section {
     width: 100%;
     min-height: 160px;
-    background: url("https://eclass.mediacity.co.in/demo2/public/images/joininstructor/1675255252woman-looking-into-tablet-student-boy.jpg")
+    background: url("/images/join-instructor-bg.jpg")
         center center/cover no-repeat;
     position: relative;
     display: flex;

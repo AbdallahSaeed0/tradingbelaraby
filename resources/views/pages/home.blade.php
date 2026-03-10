@@ -1,5 +1,8 @@
 @extends('layouts.app')
 
+@section('title', 'أكاديمية تداول بالعربي')
+@section('meta_description', 'أكاديمية تداول بالعربي - تعلم الأسواق المالية والتداول الاحترافي')
+
 @section('content')
     <!-- Hero Section -->
     @include('partials.home.hero')
@@ -60,7 +63,7 @@
             <div class="features-split-container">
                 <!-- Left: Features and background image -->
                 @if ($featuresSplit->background_image)
-                    <img src="{{ $featuresSplit->background_image_url }}" alt="Decorative" class="features-bg-img">
+                    <img src="{{ $featuresSplit->background_image_url }}" alt="Decorative" class="features-bg-img" width="600" height="400">
                 @endif
                 <div class="features-split-left">
                     <div class="features-content">
@@ -88,7 +91,7 @@
                 <!-- Right: Main image -->
                 <div class="features-split-right">
                     @if ($featuresSplit->main_image)
-                        <img src="{{ $featuresSplit->main_image_url }}" alt="Feature" class="features-main-img">
+                        <img src="{{ $featuresSplit->main_image_url }}" alt="Feature" class="features-main-img" width="500" height="400">
                     @endif
                 </div>
             </div>

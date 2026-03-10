@@ -177,7 +177,7 @@
 }
 
 .blog-single-banner-bg {
-    background-image: url('https://eclass.mediacity.co.in/demo2/public/images/breadcum/16953680301690548224bdrc-bg.png');
+    background-image: url('/images/breadcrumb-bg.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

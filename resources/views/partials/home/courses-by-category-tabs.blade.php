@@ -55,7 +55,7 @@
                                             <span class="home-courses-slider__label">
                                                 <i class="fas fa-th-large" aria-hidden="true"></i> {{ $category->localized_name }}
                                             </span>
-                                            <h2 class="home-courses-slider__title">{{ $category->localized_name }} {{ custom_trans('Courses', 'front') }}</h2>
+                                            <h3 class="home-courses-slider__title">{{ $category->localized_name }} {{ custom_trans('Courses', 'front') }}</h3>
                                         </div>
                                     </header>
                                     <div class="home-courses-slider__slider-wrap">

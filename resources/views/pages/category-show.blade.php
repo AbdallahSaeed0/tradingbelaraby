@@ -9,10 +9,10 @@
         @if ($category->image)
             <img src="{{ asset('storage/' . $category->image) }}"
                 alt="{{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}"
-                class="category-banner-bg position-absolute w-100 h-100 top-0 start-0">
+                class="category-banner-bg position-absolute w-100 h-100 top-0 start-0" width="1920" height="400">
         @else
-            <img src="https://eclass.mediacity.co.in/demo2/public/images/breadcum/16953680301690548224bdrc-bg.png"
-                alt="Banner" class="category-banner-bg position-absolute w-100 h-100 top-0 start-0">
+            <img src="{{ asset('images/breadcrumb-bg.png') }}"
+                alt="Banner" class="category-banner-bg position-absolute w-100 h-100 top-0 start-0" width="1920" height="400">
         @endif
         <div class="category-banner-overlay position-absolute w-100 h-100 top-0 start-0"></div>
         <div class="container position-relative z-3 text-center">
@@ -125,7 +125,7 @@
                                     <div class="position-relative" style="height: 180px; overflow: hidden;">
                                         <a href="{{ route('courses.show', $course->id) }}" class="d-block h-100 text-decoration-none">
                                             <img src="{{ $course->image_url }}" class="card-img-top"
-                                                alt="{{ $course->localized_name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                                alt="{{ $course->localized_name }}" style="width: 100%; height: 100%; object-fit: cover;" width="360" height="180">
                                         </a>
                                         @if ($course->is_featured)
                                             <span class="badge bg-success position-absolute top-0 start-0 m-2" style="z-index: 2; font-size: 0.75rem; padding: 6px 12px; font-weight: 600; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);">

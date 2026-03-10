@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
         $schedule->job(new \App\Jobs\SendLiveClassTodayRemindersJob)->hourly();
         $schedule->job(new \App\Jobs\SendLiveClassTMinus10RemindersJob)->everyMinute();
         $schedule->job(new \App\Jobs\SendInactiveCourseNudgesJob)->daily();
+        $schedule->command('sitemap:generate')->daily();
     }
 
     /**

@@ -28,8 +28,8 @@
 @if ($allBundles->count() > 0)
     <section class="courses-section position-relative py-5 bg-white">
         <!-- Background image on the left behind the cards -->
-        <img src="https://eclass.mediacity.co.in/demo2/public/frontcss/img/bg/an-img-03.png" alt="an-img-01"
-            class="courses-bg-img d-none d-md-block">
+        <img src="{{ asset('images/deco-bundle.png') }}" alt=""
+            class="courses-bg-img d-none d-md-block" width="400" height="400">
         <div class="container position-relative z-2">
             <!-- Slider controls -->
             <div class="d-flex justify-content-between mb-3">
@@ -54,7 +54,7 @@
                             <div class="course-card-custom">
                                 <div class="course-img-wrap">
                                     <img src="{{ $item->image_url }}" class="course-img"
-                                        alt="{{ $item->name }}">
+                                        alt="{{ $item->name }}" width="280" height="170">
 
                                     @if ($item->is_featured)
                                         <span class="badge badge-green">{{ custom_trans('Featured', 'front') }}</span>
@@ -112,8 +112,8 @@
                                     <a href="{{ route('bundles.show', $item->slug) }}"
                                         class="read-more">{{ custom_trans('Read More', 'front') }}
                                         &rarr;</a>
-                                    <img src="https://eclass.mediacity.co.in/demo2/public/frontcss/img/icon/cou-icon.png"
-                                        class="book-icon" alt="book">
+                                    <img src="{{ asset('images/icon-coupon.png') }}"
+                                        class="book-icon" alt="book" width="32" height="32">
                                 </div>
                             </div>
                         </div>

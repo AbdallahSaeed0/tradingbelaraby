@@ -12,7 +12,7 @@
                 <div class="col-lg-6 mb-4 mb-lg-0 d-flex justify-content-center">
                     <img src="{{ $aboutUniversity->image_url }}"
                         alt="{{ get_current_language_code() === 'ar' && $aboutUniversity->title_ar ? $aboutUniversity->title_ar : $aboutUniversity->title }}"
-                        class="img-fluid">
+                        class="img-fluid" width="600" height="400">
                 </div>
                 <!-- Text and Features -->
                 <div class="col-lg-6">
@@ -121,7 +121,7 @@
         <!-- Absolute background image on the right bottom -->
         @if ($aboutUniversity->background_image)
             <img src="{{ $aboutUniversity->background_image_url }}" alt="contact-bg-an-01"
-                class="about-bg-img d-none d-md-block">
+                class="about-bg-img d-none d-md-block" width="400" height="300">
         @endif
     </section>
 

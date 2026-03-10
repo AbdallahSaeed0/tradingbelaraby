@@ -9,8 +9,8 @@
 
     <!-- Contact Banner -->
     <section class="contact-banner position-relative d-flex align-items-center justify-content-center">
-        <img src="https://eclass.mediacity.co.in/demo2/public/images/breadcum/16953680301690548224bdrc-bg.png" alt="Banner"
-            class="contact-banner-bg position-absolute w-100 h-100 top-0 start-0">
+        <img src="{{ asset('images/breadcrumb-bg.png') }}" alt="Banner"
+            class="contact-banner-bg position-absolute w-100 h-100 top-0 start-0" width="1920" height="400">
         <div class="contact-banner-overlay position-absolute w-100 h-100 top-0 start-0"></div>
         <div class="container position-relative z-3 text-center">
             <h1 class="display-4 fw-bold text-white mb-3">{{ custom_trans('contact_us', 'front') }}</h1>
@@ -52,7 +52,7 @@
                         <div class="contact-icon-box mb-3 mx-auto bg-white text-orange"><i
                                 class="fa fa-map-marker-alt fa-2x"></i></div>
                         <div class="fw-bold mb-1">
-                            {{ $contactSettings->address ?? 'Company 12345 South Main Street Anywhere' }}</div>
+                            {{ $contactSettings->address ?? 'القاهرة، مصر / Cairo, Egypt' }}</div>
                         <div class="text-muted small">{{ custom_trans('Office Address', 'front') }}</div>
                     </div>
                 </div>
@@ -68,8 +68,8 @@
                     referrerpolicy="no-referrer-when-downgrade"></iframe>
             @else
                 <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.835434509374!2d144.9537363159047!3d-37.8162797420217!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad65d43f1f6e0b1%3A0x5045675218ce6e0!2sMelbourne%20VIC%2C%20Australia!5e0!3m2!1sen!2sus!4v1611816611234!5m2!1sen!2sus"
-                    allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d110532.949279796!2d31.2000924!3d30.0444196!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14583fa60b21beeb%3A0x79dfb296e8643dd2!2sCairo%2C%20Egypt!5e0!3m2!1sen!2s!4v1611816611234!5m2!1sen!2s"
+                    allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="{{ custom_trans('Office Location', 'front') }}"></iframe>
             @endif
         </div>
     </section>

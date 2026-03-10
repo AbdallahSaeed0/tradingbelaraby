@@ -6,8 +6,8 @@
 @section('content')
     <!-- Banner Section -->
     <section class="course-banner position-relative d-flex align-items-center justify-content-center">
-        <img src="https://eclass.mediacity.co.in/demo2/public/images/breadcum/16953680301690548224bdrc-bg.png" alt="Banner"
-            class="course-banner-bg position-absolute w-100 h-100 top-0 start-0">
+        <img src="{{ asset('images/breadcrumb-bg.png') }}" alt="Banner"
+            class="course-banner-bg position-absolute w-100 h-100 top-0 start-0" width="1920" height="400">
         <div class="course-banner-overlay position-absolute w-100 h-100 top-0 start-0"></div>
         <div class="container position-relative py-5 z-3 text-center">
             <h1 class="display-4 fw-bold text-white mb-3">{{ custom_trans('Course Bundles', 'front') }}</h1>
@@ -48,7 +48,7 @@
                             <div class="card h-100 shadow-sm">
                                 <div class="position-relative">
                                     <img src="{{ $bundle->image_url }}" class="card-img-top" alt="{{ $bundle->localized_name }}" 
-                                        style="height: 200px; object-fit: cover;">
+                                        style="height: 200px; object-fit: cover;" width="360" height="200">
                                     @if($bundle->is_featured)
                                         <span class="position-absolute top-0 start-0 m-2 badge bg-warning text-dark">
                                             {{ custom_trans('Featured', 'front') }}

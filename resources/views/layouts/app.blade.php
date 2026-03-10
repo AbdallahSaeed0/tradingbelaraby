@@ -17,7 +17,14 @@
                 ? $mainContentSettings->favicon_url
                 : asset('favicon.ico');
     @endphp
-    <title>@yield('title', $siteName)</title>
+    <title>@yield('title', 'أكاديمية تداول بالعربي') | تداول بالعربي</title>
+    <meta name="description" content="@yield('meta_description', 'أكاديمية تداول بالعربي - تعلم الأسواق المالية والتداول الاحترافي')">
+    <meta property="og:title" content="@yield('title', 'أكاديمية تداول بالعربي')">
+    <meta property="og:description" content="@yield('meta_description', 'أكاديمية تداول بالعربي - تعلم الأسواق المالية والتداول الاحترافي')">
+    <meta property="og:image" content="@yield('og_image', asset('images/og-default.jpg'))">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="canonical" href="{{ url()->current() }}">
     <link rel="icon" type="image/x-icon" href="{{ $faviconUrl }}" />
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -87,6 +94,16 @@
     @endif
 
     @stack('styles')
+    @if(config('app.ga_id'))
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ config('app.ga_id') }}"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '{{ config('app.ga_id') }}');
+    </script>
+    @endif
 </head>
 
 <body>
@@ -145,8 +162,8 @@
                         <div class="col-md-8 top-bar-right">
                             @if ($contactSettings && $contactSettings->phone)
                                 <div class="contact-block">
-                                    <img src="https://eclass.mediacity.co.in/demo2/public/frontcss/img/icon/phone-call.png"
-                                        alt="Phone" class="contact-icon">
+                                    <img src="{{ asset('images/icon-phone.png') }}"
+                                        alt="Phone" class="contact-icon" width="24" height="24">
                                     <div class="contact-info">
                                         <span class="contact-label">{{ custom_trans('Call Now!', 'front') }}</span>
                                         <span class="contact-value"><b><a href="tel:{{ $contactSettings->phone }}"
@@ -156,8 +173,8 @@
                             @endif
                             @if ($contactSettings && $contactSettings->email)
                                 <div class="contact-block">
-                                    <img src="https://eclass.mediacity.co.in/demo2/public/frontcss/img/icon/mailing.png"
-                                        alt="Email" class="contact-icon">
+                                    <img src="{{ asset('images/icon-mailing.png') }}"
+                                        alt="Email" class="contact-icon" width="24" height="24">
                                     <div class="contact-info">
                                         <span class="contact-label">{{ custom_trans('Email Now', 'front') }}</span>
                                         <span class="contact-value"><b><a href="mailto:{{ $contactSettings->email }}"
@@ -186,7 +203,7 @@
                     <a href="{{ route('home') }}" class="logo-link">
                         <img src="{{ $mainContentSettings ? $mainContentSettings->logo_url : asset('images/default-logo.svg') }}"
                             alt="{{ $mainContentSettings ? $mainContentSettings->logo_alt_text : 'Site Logo' }}"
-                            class="logo-img">
+                            class="logo-img" width="180" height="50">
                     </a>
                 </div>
                 <div class="mobile-header-actions d-lg-none">
@@ -472,7 +489,7 @@
                     <a href="{{ route('home') }}" class="mobile-offcanvas-logo me-3">
                         <img src="{{ $mainContentSettings ? $mainContentSettings->logo_url : asset('images/default-logo.svg') }}"
                             alt="{{ $mainContentSettings ? $mainContentSettings->logo_alt_text : 'Site Logo' }}"
-                            class="mobile-offcanvas-logo-img">
+                            class="mobile-offcanvas-logo-img" width="180" height="50">
                     </a>
                 </div>
                 <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
@@ -695,7 +712,7 @@
                     <div class="mt-3">
                         <p class="text-white-50 small mb-2">{{ custom_trans('We Accept', 'front') }}:</p>
                         <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg" 
-                             alt="PayPal" 
+                             alt="PayPal" width="111" height="69"
                              style="max-width: 120px; height: auto; background: white; padding: 5px; border-radius: 4px;">
                     </div>
                 </div>
@@ -743,7 +760,7 @@
                     @forelse($latestBlogs as $blog)
                         <div class="footer-post d-flex align-items-center {{ !$loop->last ? 'mb-3' : '' }}">
                             <img src="{{ $blog->getLocalizedImageUrl() ?? asset('images/placeholder-image.png') }}"
-                                class="footer-post-img me-3" alt="{{ $blog->getLocalizedTitle() }}">
+                                class="footer-post-img me-3" alt="{{ $blog->getLocalizedTitle() }}" width="80" height="80">
                             <div>
                                 <div class="footer-post-title">
                                     <a href="{{ route('blog.show', $blog->slug) }}"
@@ -757,7 +774,7 @@
                     @empty
                         <div class="footer-post d-flex align-items-center mb-3">
                             <img src="{{ asset('images/placeholder-image.png') }}" class="footer-post-img me-3"
-                                alt="No posts">
+                                alt="No posts" width="80" height="80">
                             <div>
                                 <div class="footer-post-title text-muted">
                                     {{ custom_trans('no_blog_posts', 'front') }}</div>
@@ -822,7 +839,7 @@
                 <a href="{{ route('home') }}" class="footer-logo-link">
                     <img src="{{ $mainContentSettings ? $mainContentSettings->logo_url : asset('images/default-logo.svg') }}"
                         alt="{{ $mainContentSettings ? $mainContentSettings->logo_alt_text : 'Site Logo' }}"
-                        class="footer-logo-img">
+                        class="footer-logo-img" width="180" height="50">
                 </a>
             </div>
             <div class="footer-copyright text-center flex-grow-1">Copyright © {{ date('Y') }} Tadawul Bel Araby.

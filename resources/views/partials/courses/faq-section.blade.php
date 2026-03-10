@@ -18,13 +18,13 @@
                     <div class="accordion" id="faqAccordion">
                         @foreach ($faqs as $index => $faqItem)
                             <div class="accordion-item border-0 shadow-sm mb-3 rounded">
-                                <h2 class="accordion-header" id="heading{{ $index }}">
+                                <h3 class="accordion-header h6 mb-0" id="heading{{ $index }}">
                                     <button class="accordion-button collapsed fw-bold" type="button"
                                         data-bs-toggle="collapse" data-bs-target="#collapse{{ $index }}"
                                         aria-expanded="false" aria-controls="collapse{{ $index }}">
                                         {{ $faqItem->getDisplayQuestion() }}
                                     </button>
-                                </h2>
+                                </h3>
                                 <div id="collapse{{ $index }}" class="accordion-collapse collapse"
                                     aria-labelledby="heading{{ $index }}" data-bs-parent="#faqAccordion">
                                     <div class="accordion-body">

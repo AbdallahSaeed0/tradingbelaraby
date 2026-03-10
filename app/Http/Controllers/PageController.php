@@ -141,6 +141,24 @@ class PageController extends Controller
     }
 
     /**
+     * Display the privacy policy page (CMS or stub).
+     *
+     * @return \Illuminate\View\View
+     */
+    public function privacyPolicy()
+    {
+        $termsConditions = \App\Models\TermsConditions::where('slug', 'privacy-policy')
+            ->where('is_active', true)
+            ->first();
+
+        if ($termsConditions) {
+            return view('pages.terms-conditions', compact('termsConditions'));
+        }
+
+        return view('pages.privacy-policy');
+    }
+
+    /**
      * Display the data deletion page (static, not linked in footer).
      *
      * @return \Illuminate\View\View

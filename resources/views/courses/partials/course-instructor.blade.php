@@ -2,7 +2,7 @@
     @if ($course->instructors && $course->instructors->count() > 0)
         @foreach ($course->instructors as $instructor)
             <div class="d-flex align-items-start mb-3 {{ !$loop->last ? 'pb-3 border-bottom' : '' }}">
-                <img src="{{ $instructor->avatar ? asset('storage/' . $instructor->avatar) : 'https://eclass.mediacity.co.in/demo2/public/images/user_img/159116543729.jpg' }}"
+                <img src="{{ $instructor->avatar ? asset('storage/' . $instructor->avatar) : asset('images/default-avatar.png') }}"
                     alt="{{ $instructor->name }}" class="instructor-avatar rounded-circle me-3" width="64"
                     height="64">
                 <div>
@@ -23,7 +23,7 @@
     @elseif($course->instructor)
         <!-- Fallback to legacy single instructor -->
         <div class="d-flex align-items-start mb-3">
-            <img src="{{ $course->instructor->avatar ? asset('storage/' . $course->instructor->avatar) : 'https://eclass.mediacity.co.in/demo2/public/images/user_img/159116543729.jpg' }}"
+            <img src="{{ $course->instructor->avatar ? asset('storage/' . $course->instructor->avatar) : asset('images/default-avatar.png') }}"
                 alt="{{ $course->instructor->name }}" class="instructor-avatar rounded-circle me-3" width="64"
                 height="64">
             <div>

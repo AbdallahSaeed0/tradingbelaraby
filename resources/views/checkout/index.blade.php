@@ -228,11 +228,11 @@
                                                     @if ($item->isBundle())
                                                         <img src="{{ $item->bundle->image_url }}"
                                                             alt="{{ $item->bundle->name }}" class="rounded"
-                                                            style="width: 60px; height: 60px; object-fit: cover;">
+                                                            style="width: 60px; height: 60px; object-fit: cover;" width="60" height="60">
                                                     @else
                                                         <img src="{{ $item->course->image_url }}"
                                                             alt="{{ $item->course->localized_name }}" class="rounded"
-                                                            style="width: 60px; height: 60px; object-fit: cover;">
+                                                            style="width: 60px; height: 60px; object-fit: cover;" width="60" height="60">
                                                     @endif
                                                 </div>
                                                 <div class="flex-grow-1">

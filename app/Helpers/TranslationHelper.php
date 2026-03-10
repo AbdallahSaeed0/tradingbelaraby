@@ -183,6 +183,7 @@ class TranslationHelper
 
         if ($language && $language->is_active) {
             Session::put('frontend_locale', $languageCode);
+            app()->setLocale($languageCode);
             return true;
         }
 
@@ -198,6 +199,7 @@ class TranslationHelper
 
         if ($language && $language->is_active) {
             Session::put('admin_locale', $languageCode);
+            app()->setLocale($languageCode);
             return true;
         }
 

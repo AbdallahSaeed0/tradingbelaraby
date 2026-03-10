@@ -33,7 +33,7 @@
                         <article class="home-courses-slider__card">
                             <div class="home-courses-slider__card-image-wrap">
                                 <a href="#" class="home-courses-slider__card-image-link">
-                                    <img src="https://eclass.mediacity.co.in/demo2/public/images/course/man-filming-with-professional-camera.jpg" alt="{{ custom_trans('Sample Course', 'front') }}" class="home-courses-slider__card-image" width="280" height="170" loading="lazy">
+                                    <img src="{{ asset('images/course-placeholder.jpg') }}" alt="{{ custom_trans('Sample Course', 'front') }}" class="home-courses-slider__card-image" width="280" height="170" loading="lazy">
                                 </a>
                                 <span class="home-courses-slider__badge home-courses-slider__badge--featured">{{ custom_trans('Featured', 'front') }}</span>
                             </div>

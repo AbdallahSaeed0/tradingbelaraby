@@ -32,6 +32,9 @@ Route::post('/coming-soon/subscribe', [ComingSoonController::class, 'subscribe']
 // PayPal Webhook (public endpoint - must be excluded from CSRF)
 Route::post('/webhook/paypal', [App\Http\Controllers\PayPalWebhookController::class, 'handleWebhook'])->name('webhook.paypal');
 
+// Sitemap (SEO)
+Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
+
 // Public routes test
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/home', [HomeController::class, 'index'])->name('home');
@@ -39,7 +42,7 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 // Authentication routes
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [AuthController::class, 'login'])->name('login.attempt');
+    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login')->name('login.attempt');
     Route::get('/auth/google', [App\Http\Controllers\SocialAuthController::class, 'redirectToGoogle'])->name('auth.google');
     Route::get('/auth/google/callback', [App\Http\Controllers\SocialAuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
     Route::get('/auth/twitter', [App\Http\Controllers\SocialAuthController::class, 'redirectToTwitter'])->name('auth.twitter');
@@ -103,6 +106,9 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
 Route::post('/contact', [App\Http\Controllers\ContactController::class, 'store'])->name('contact.store');
+Route::get('/trainers', fn () => redirect()->route('instructor.index', [], 301))->name('trainers');
+Route::get('/live-sessions', fn () => redirect()->route('live-classes.index', [], 301))->name('live-sessions');
+Route::get('/page/privacy-policy', [PageController::class, 'privacyPolicy'])->name('privacy-policy');
 Route::get('/page/{slug}', [PageController::class, 'termsConditions'])->name('terms-conditions');
 Route::get('/about-us', [PageController::class, 'aboutUs'])->name('about-us');
 Route::get('/academy-policy', [PageController::class, 'academyPolicy'])->name('academy-policy');
@@ -331,10 +337,10 @@ Route::post('/courses/{course}/live-classes/{liveClass}/download-materials', [Li
     Route::post('/courses/{course}/submit-homework-assignment', [HomeworkController::class, 'submitAssignment'])->name('courses.submit-homework-assignment');
 });
 
-// Admin authentication routes
+// Admin authentication routes (obscured path — do not expose as /admin/login)
 Route::middleware('guest:admin')->group(function () {
-    Route::get('/admin/login', [App\Http\Controllers\Admin\AdminAuthController::class, 'showLoginForm'])->name('admin.login');
-    Route::post('/admin/login', [App\Http\Controllers\Admin\AdminAuthController::class, 'login'])->name('admin.login.attempt');
+    Route::get('/manage-portal/auth', [App\Http\Controllers\Admin\AdminAuthController::class, 'showLoginForm'])->name('admin.login');
+    Route::post('/manage-portal/auth', [App\Http\Controllers\Admin\AdminAuthController::class, 'login'])->middleware('throttle:login')->name('admin.login.attempt');
 });
 
 Route::post('/admin/logout', [App\Http\Controllers\Admin\AdminAuthController::class, 'logout'])->name('admin.logout')->middleware('auth:admin');

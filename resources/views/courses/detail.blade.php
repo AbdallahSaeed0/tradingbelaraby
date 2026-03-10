@@ -16,8 +16,8 @@
 @section('content')
     <!-- Banner Section -->
     <section class="course-banner position-relative d-flex align-items-center justify-content-center">
-        <img src="https://eclass.mediacity.co.in/demo2/public/images/breadcum/16953680301690548224bdrc-bg.png" alt="Banner"
-            class="course-banner-bg position-absolute w-100 h-100 top-0 start-0">
+        <img src="{{ asset('images/breadcrumb-bg.png') }}" alt="Banner"
+            class="course-banner-bg position-absolute w-100 h-100 top-0 start-0" width="1920" height="400">
         <div class="course-banner-overlay position-absolute w-100 h-100 top-0 start-0"></div>
         <div class="container position-relative py-5 z-3 text-center">
             <h1 class="display-4 fw-bold text-white mb-3">{{ custom_trans('Course detail', 'front') }}</h1>
@@ -41,7 +41,7 @@
                     <h2 class="fw-bold mb-4">
                         {{ $course->localized_name }}</h2>
                     <img src="{{ $course->image_url }}" class="img-fluid rounded-4 mb-4"
-                        alt="{{ $course->localized_name }}">
+                        alt="{{ $course->localized_name }}" width="800" height="450">
 
                     <!-- Course Features Box - after image (mobile only: quick access without long scroll) -->
                     <div class="course-features-box course-features-box-after-image rounded-4 shadow-sm bg-white mb-4 d-lg-none">
@@ -242,7 +242,7 @@
                                         <div class="col-auto">
                                             @if ($instructor->avatar)
                                                 <img src="{{ asset('storage/' . $instructor->avatar) }}"
-                                                    alt="{{ $instructor->name }}" class="rounded-circle instructor-img">
+                                                    alt="{{ $instructor->name }}" class="rounded-circle instructor-img" width="64" height="64">
                                             @else
                                                 <div
                                                     class="rounded-circle instructor-img bg-primary text-white d-flex align-items-center justify-content-center">
@@ -272,7 +272,7 @@
                                         @if ($course->instructor->avatar)
                                             <img src="{{ asset('storage/' . $course->instructor->avatar) }}"
                                                 alt="{{ $course->instructor->name }}"
-                                                class="rounded-circle instructor-img">
+                                                class="rounded-circle instructor-img" width="64" height="64">
                                         @else
                                             <div
                                                 class="rounded-circle instructor-img bg-primary text-white d-flex align-items-center justify-content-center">

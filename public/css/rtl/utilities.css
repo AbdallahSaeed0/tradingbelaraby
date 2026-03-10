@@ -75,7 +75,7 @@
 
 /* background images */
 .bg-cta-video {
-    background: url("https://eclass.mediacity.co.in/demo2/public/images/videosetting/1695117191cta_bg.png")
+    background: url("/images/cta-bg.png")
         center center/cover no-repeat !important;
 }
 

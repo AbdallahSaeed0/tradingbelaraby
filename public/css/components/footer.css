@@ -1,6 +1,6 @@
 /* Footer Main Styles */
 .footer-main {
-  background: url("https://eclass.mediacity.co.in/demo2/public/images/footer-bg.png")
+  background: url("/images/footer-bg.png")
     center center/cover no-repeat;
   color: #fff;
   position: relative;

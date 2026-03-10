@@ -5,8 +5,8 @@
 @section('content')
     <!-- Banner Section -->
     <section class="quiz-banner position-relative d-flex align-items-center justify-content-center">
-        <img src="https://eclass.mediacity.co.in/demo2/public/images/breadcum/16953680301690548224bdrc-bg.png" alt="Banner"
-            class="quiz-banner-bg position-absolute w-100 h-100 top-0 start-0">
+        <img src="{{ asset('images/breadcrumb-bg.png') }}" alt="Banner"
+            class="quiz-banner-bg position-absolute w-100 h-100 top-0 start-0" width="1920" height="400">
         <div class="quiz-banner-overlay position-absolute w-100 h-100 top-0 start-0"></div>
         <div class="container position-relative z-3 text-center">
             <h1 class="display-4 fw-bold text-white mb-3">{{ $quiz->localized_name }}</h1>
