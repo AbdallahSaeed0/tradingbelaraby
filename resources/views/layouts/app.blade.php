@@ -661,7 +661,7 @@
     @endif
 
     <!-- Footer -->
-    <footer class="footer-main footer-bg position-relative pt-5">
+    <footer class="footer-main position-relative pt-5">
         <div class="container">
             <div class="row text-white pb-4">
                 <!-- About Us + Social -->
@@ -709,7 +709,7 @@
                     <!-- PayPal Payment Method -->
                     <div class="mt-3">
                         <p class="text-white-50 small mb-2">{{ custom_trans('We Accept', 'front') }}:</p>
-                        <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg" 
+                        <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg"
                              alt="PayPal" width="111" height="69"
                              style="max-width: 120px; height: auto; background: white; padding: 5px; border-radius: 4px;">
                     </div>
