@@ -2,7 +2,11 @@
 <article class="home-courses-slider__card">
     <div class="home-courses-slider__card-image-wrap">
         <a href="{{ route('courses.show', $course) }}" class="home-courses-slider__card-image-link">
-            <img src="{{ $course->image_url }}" alt="{{ $course->localized_name }}" class="home-courses-slider__card-image" width="280" height="170" loading="lazy">
+            @if ($course->image)
+                <img src="{{ optimized_image_url($course->image, 280, 170) }}" alt="{{ $course->localized_name }}" class="home-courses-slider__card-image" width="280" height="170" loading="lazy" srcset="{{ optimized_image_url($course->image, 280, 170) }} 280w, {{ optimized_image_url($course->image, 560, 340) }} 560w" sizes="(max-width: 600px) 280px, 560px">
+            @else
+                <img src="{{ $course->image_url }}" alt="{{ $course->localized_name }}" class="home-courses-slider__card-image" width="280" height="170" loading="lazy">
+            @endif
         </a>
         @if ($course->is_featured)
             <span class="home-courses-slider__badge home-courses-slider__badge--featured">{{ custom_trans('Featured', 'front') }}</span>

@@ -118,9 +118,15 @@
                                     <div class="blog-card bg-white rounded-4 shadow-sm w-100 d-flex flex-column">
                                         <div class="blog-img-wrap position-relative overflow-hidden rounded-top-4">
                                             @if ($blog->getLocalizedImageUrl())
+                                                @php $blogImgPath = get_current_language_code() === 'ar' && $blog->image_ar ? $blog->image_ar : $blog->image; @endphp
                                                 <a href="{{ route('blog.show', $blog->slug) }}" class="d-block text-decoration-none">
-                                                    <img src="{{ $blog->getLocalizedImageUrl() }}" class="blog-img w-100"
-                                                        alt="{{ $blog->getLocalizedTitle() }}" width="400" height="250">
+                                                    @if ($blogImgPath)
+                                                        <img src="{{ optimized_image_url($blogImgPath, 400, 250) }}" class="blog-img w-100"
+                                                            alt="{{ $blog->getLocalizedTitle() }}" width="400" height="250" loading="lazy" srcset="{{ optimized_image_url($blogImgPath, 400, 250) }} 400w, {{ optimized_image_url($blogImgPath, 800, 500) }} 800w" sizes="(max-width: 768px) 100vw, 400px">
+                                                    @else
+                                                        <img src="{{ $blog->getLocalizedImageUrl() }}" class="blog-img w-100"
+                                                            alt="{{ $blog->getLocalizedTitle() }}" width="400" height="250" loading="lazy">
+                                                    @endif
                                                 </a>
                                             @else
                                                 <div

@@ -124,8 +124,13 @@
                                 <div class="card h-100 shadow-sm border-0" style="border-radius: 16px; overflow: hidden; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
                                     <div class="position-relative" style="height: 180px; overflow: hidden;">
                                         <a href="{{ route('courses.show', $course->id) }}" class="d-block h-100 text-decoration-none">
-                                            <img src="{{ $course->image_url }}" class="card-img-top"
-                                                alt="{{ $course->localized_name }}" style="width: 100%; height: 100%; object-fit: cover;" width="360" height="180">
+                                            @if ($course->image)
+                                                <img src="{{ optimized_image_url($course->image, 360, 180) }}" class="card-img-top"
+                                                    alt="{{ $course->localized_name }}" style="width: 100%; height: 100%; object-fit: cover;" width="360" height="180" loading="lazy" srcset="{{ optimized_image_url($course->image, 360, 180) }} 360w, {{ optimized_image_url($course->image, 720, 360) }} 720w" sizes="(max-width: 768px) 100vw, 360px">
+                                            @else
+                                                <img src="{{ $course->image_url }}" class="card-img-top"
+                                                    alt="{{ $course->localized_name }}" style="width: 100%; height: 100%; object-fit: cover;" width="360" height="180" loading="lazy">
+                                            @endif
                                         </a>
                                         @if ($course->is_featured)
                                             <span class="badge bg-success position-absolute top-0 start-0 m-2" style="z-index: 2; font-size: 0.75rem; padding: 6px 12px; font-weight: 600; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);">

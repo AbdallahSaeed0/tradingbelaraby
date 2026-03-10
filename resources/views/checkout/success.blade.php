@@ -55,8 +55,13 @@
                             <div class="course-item">
                                 <div class="row align-items-center">
                                     <div class="col-md-2">
+                                        @if ($item->course->image ?? null)
+                                        <img src="{{ optimized_image_url($item->course->image, 120, 80) }}" alt="{{ $item->course->localized_name }}"
+                                            class="img-fluid rounded img-h-60" width="120" height="80">
+                                    @else
                                         <img src="{{ $item->course->image_url }}" alt="{{ $item->course->localized_name }}"
                                             class="img-fluid rounded img-h-60" width="120" height="80">
+                                    @endif
                                     </div>
                                     <div class="col-md-7">
                                         <h6 class="fw-bold mb-1">{{ $item->course->localized_name }}</h6>

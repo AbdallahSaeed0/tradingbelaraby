@@ -89,3 +89,26 @@ if (!function_exists('get_current_language_code')) {
         return \App\Helpers\TranslationHelper::getCurrentLanguage()->code;
     }
 }
+
+if (!function_exists('optimized_image_url')) {
+    /**
+     * URL for optimized image (resized + WebP when accepted). Use for storage images to improve LCP and save bandwidth.
+     * Pass storage-relative path (e.g. courses/xyz.jpg). Returns fallback if path is empty.
+     *
+     * @param string|null $storagePath Path relative to storage/app/public (e.g. from $course->image)
+     * @param int $width Desired width in pixels
+     * @param int|null $height Optional height (preserves aspect if omitted)
+     * @return string URL to /img/opt or original asset URL if no path
+     */
+    function optimized_image_url(?string $storagePath, int $width, ?int $height = null): string
+    {
+        if ($storagePath === null || $storagePath === '') {
+            return '';
+        }
+        $params = ['path' => $storagePath, 'w' => $width];
+        if ($height !== null) {
+            $params['h'] = $height;
+        }
+        return url('/img/opt?' . http_build_query($params));
+    }
+}

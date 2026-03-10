@@ -47,8 +47,13 @@
                         <div class="col-lg-4 col-md-6">
                             <div class="card h-100 shadow-sm">
                                 <div class="position-relative">
+                                    @if ($bundle->image)
+                                    <img src="{{ optimized_image_url($bundle->image, 360, 200) }}" class="card-img-top" alt="{{ $bundle->localized_name }}" 
+                                        style="height: 200px; object-fit: cover;" width="360" height="200" loading="lazy" srcset="{{ optimized_image_url($bundle->image, 360, 200) }} 360w, {{ optimized_image_url($bundle->image, 720, 400) }} 720w" sizes="(max-width: 768px) 100vw, 360px">
+                                @else
                                     <img src="{{ $bundle->image_url }}" class="card-img-top" alt="{{ $bundle->localized_name }}" 
-                                        style="height: 200px; object-fit: cover;" width="360" height="200">
+                                        style="height: 200px; object-fit: cover;" width="360" height="200" loading="lazy">
+                                @endif
                                     @if($bundle->is_featured)
                                         <span class="position-absolute top-0 start-0 m-2 badge bg-warning text-dark">
                                             {{ custom_trans('Featured', 'front') }}

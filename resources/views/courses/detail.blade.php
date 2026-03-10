@@ -40,8 +40,13 @@
                 <div class="col-lg-8 mb-4 mb-lg-0">
                     <h2 class="fw-bold mb-4">
                         {{ $course->localized_name }}</h2>
-                    <img src="{{ $course->image_url }}" class="img-fluid rounded-4 mb-4"
-                        alt="{{ $course->localized_name }}" width="800" height="450">
+                    @if ($course->image)
+                        <img src="{{ optimized_image_url($course->image, 800, 450) }}" class="img-fluid rounded-4 mb-4"
+                            alt="{{ $course->localized_name }}" width="800" height="450" srcset="{{ optimized_image_url($course->image, 400, 225) }} 400w, {{ optimized_image_url($course->image, 800, 450) }} 800w" sizes="(max-width: 768px) 100vw, 800px" fetchpriority="high">
+                    @else
+                        <img src="{{ $course->image_url }}" class="img-fluid rounded-4 mb-4"
+                            alt="{{ $course->localized_name }}" width="800" height="450">
+                    @endif
 
                     <!-- Course Features Box - after image (mobile only: quick access without long scroll) -->
                     <div class="course-features-box course-features-box-after-image rounded-4 shadow-sm bg-white mb-4 d-lg-none">

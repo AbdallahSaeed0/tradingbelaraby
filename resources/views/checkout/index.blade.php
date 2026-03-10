@@ -226,13 +226,25 @@
                                             <div class="d-flex gap-3">
                                                 <div class="course-thumb">
                                                     @if ($item->isBundle())
-                                                        <img src="{{ $item->bundle->image_url }}"
-                                                            alt="{{ $item->bundle->name }}" class="rounded"
-                                                            style="width: 60px; height: 60px; object-fit: cover;" width="60" height="60">
+                                                        @if ($item->bundle->image ?? null)
+                                                            <img src="{{ optimized_image_url($item->bundle->image, 60, 60) }}"
+                                                                alt="{{ $item->bundle->name }}" class="rounded"
+                                                                style="width: 60px; height: 60px; object-fit: cover;" width="60" height="60">
+                                                        @else
+                                                            <img src="{{ $item->bundle->image_url }}"
+                                                                alt="{{ $item->bundle->name }}" class="rounded"
+                                                                style="width: 60px; height: 60px; object-fit: cover;" width="60" height="60">
+                                                        @endif
                                                     @else
-                                                        <img src="{{ $item->course->image_url }}"
-                                                            alt="{{ $item->course->localized_name }}" class="rounded"
-                                                            style="width: 60px; height: 60px; object-fit: cover;" width="60" height="60">
+                                                        @if ($item->course->image ?? null)
+                                                            <img src="{{ optimized_image_url($item->course->image, 60, 60) }}"
+                                                                alt="{{ $item->course->localized_name }}" class="rounded"
+                                                                style="width: 60px; height: 60px; object-fit: cover;" width="60" height="60">
+                                                        @else
+                                                            <img src="{{ $item->course->image_url }}"
+                                                                alt="{{ $item->course->localized_name }}" class="rounded"
+                                                                style="width: 60px; height: 60px; object-fit: cover;" width="60" height="60">
+                                                        @endif
                                                     @endif
                                                 </div>
                                                 <div class="flex-grow-1">

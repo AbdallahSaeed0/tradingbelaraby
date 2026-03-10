@@ -13,6 +13,7 @@
                 'name' => $bundle->localized_name,
                 'description' => $bundle->localized_description,
                 'image_url' => $bundle->image_url,
+                'image' => $bundle->image ?? null,
                 'price' => $bundle->price,
                 'formatted_price' => $bundle->formatted_price,
                 'original_price' => $bundle->original_price,
@@ -53,8 +54,13 @@
                         <div class="swiper-slide">
                             <div class="course-card-custom">
                                 <div class="course-img-wrap">
+                                    @if ($item->image ?? null)
+                                    <img src="{{ optimized_image_url($item->image, 280, 170) }}" class="course-img"
+                                        alt="{{ $item->name }}" width="280" height="170" loading="lazy" srcset="{{ optimized_image_url($item->image, 280, 170) }} 280w, {{ optimized_image_url($item->image, 560, 340) }} 560w" sizes="(max-width: 600px) 280px, 560px">
+                                @else
                                     <img src="{{ $item->image_url }}" class="course-img"
-                                        alt="{{ $item->name }}" width="280" height="170">
+                                        alt="{{ $item->name }}" width="280" height="170" loading="lazy">
+                                @endif
 
                                     @if ($item->is_featured)
                                         <span class="badge badge-green">{{ custom_trans('Featured', 'front') }}</span>

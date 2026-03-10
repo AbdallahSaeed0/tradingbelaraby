@@ -162,8 +162,7 @@
                         <div class="col-md-8 top-bar-right">
                             @if ($contactSettings && $contactSettings->phone)
                                 <div class="contact-block">
-                                    <img src="{{ asset('images/icon-phone.png') }}"
-                                        alt="Phone" class="contact-icon" width="24" height="24">
+                                    <i class="fas fa-phone contact-icon" aria-hidden="true"></i>
                                     <div class="contact-info">
                                         <span class="contact-label">{{ custom_trans('Call Now!', 'front') }}</span>
                                         <span class="contact-value"><b><a href="tel:{{ $contactSettings->phone }}"
@@ -173,8 +172,7 @@
                             @endif
                             @if ($contactSettings && $contactSettings->email)
                                 <div class="contact-block">
-                                    <img src="{{ asset('images/icon-mailing.png') }}"
-                                        alt="Email" class="contact-icon" width="24" height="24">
+                                    <i class="fas fa-envelope contact-icon" aria-hidden="true"></i>
                                     <div class="contact-info">
                                         <span class="contact-label">{{ custom_trans('Email Now', 'front') }}</span>
                                         <span class="contact-value"><b><a href="mailto:{{ $contactSettings->email }}"
@@ -758,9 +756,15 @@
                             ->get();
                     @endphp
                     @forelse($latestBlogs as $blog)
+                        @php $blogThumbPath = get_current_language_code() === 'ar' && $blog->image_ar ? $blog->image_ar : $blog->image; @endphp
                         <div class="footer-post d-flex align-items-center {{ !$loop->last ? 'mb-3' : '' }}">
-                            <img src="{{ $blog->getLocalizedImageUrl() ?? asset('images/placeholder-image.png') }}"
-                                class="footer-post-img me-3" alt="{{ $blog->getLocalizedTitle() }}" width="80" height="80">
+                            @if ($blogThumbPath)
+                                <img src="{{ optimized_image_url($blogThumbPath, 80, 80) }}"
+                                    class="footer-post-img me-3" alt="{{ $blog->getLocalizedTitle() }}" width="80" height="80" loading="lazy">
+                            @else
+                                <img src="{{ $blog->getLocalizedImageUrl() ?? asset('images/placeholder-image.png') }}"
+                                    class="footer-post-img me-3" alt="{{ $blog->getLocalizedTitle() }}" width="80" height="80" loading="lazy">
+                            @endif
                             <div>
                                 <div class="footer-post-title">
                                     <a href="{{ route('blog.show', $blog->slug) }}"

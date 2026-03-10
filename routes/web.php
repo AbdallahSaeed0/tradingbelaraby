@@ -35,6 +35,9 @@ Route::post('/webhook/paypal', [App\Http\Controllers\PayPalWebhookController::cl
 // Sitemap (SEO)
 Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
 
+// Optimized image delivery (resize + WebP, cached)
+Route::get('/img/opt', [App\Http\Controllers\ImageOptimizerController::class, '__invoke'])->name('img.opt');
+
 // Public routes test
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/home', [HomeController::class, 'index'])->name('home');

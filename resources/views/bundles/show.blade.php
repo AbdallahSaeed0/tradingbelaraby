@@ -32,8 +32,13 @@
                 <!-- Left Side -->
                 <div class="col-lg-8 mb-4 mb-lg-0">
                     <h2 class="fw-bold mb-4">{{ $bundle->localized_name }}</h2>
+                    @if ($bundle->image)
+                    <img src="{{ optimized_image_url($bundle->image, 800, 450) }}" class="img-fluid rounded-4 mb-4"
+                        alt="{{ $bundle->localized_name }}" width="800" height="450" srcset="{{ optimized_image_url($bundle->image, 400, 225) }} 400w, {{ optimized_image_url($bundle->image, 800, 450) }} 800w" sizes="(max-width: 768px) 100vw, 800px" fetchpriority="high">
+                @else
                     <img src="{{ $bundle->image_url }}" class="img-fluid rounded-4 mb-4"
                         alt="{{ $bundle->localized_name }}" width="800" height="450">
+                @endif
                     
                     <!-- Description -->
                     <div class="mb-5">
@@ -52,8 +57,13 @@
                                 <div class="card-body">
                                     <div class="row align-items-center">
                                         <div class="col-md-3">
+                                            @if ($course->image)
+                                            <img src="{{ optimized_image_url($course->image, 280, 170) }}" alt="{{ $course->localized_name }}" 
+                                                class="img-fluid rounded" width="280" height="170" loading="lazy" srcset="{{ optimized_image_url($course->image, 280, 170) }} 280w, {{ optimized_image_url($course->image, 560, 340) }} 560w" sizes="280px">
+                                        @else
                                             <img src="{{ $course->image_url }}" alt="{{ $course->localized_name }}" 
-                                                class="img-fluid rounded" width="280" height="170">
+                                                class="img-fluid rounded" width="280" height="170" loading="lazy">
+                                        @endif
                                         </div>
                                         <div class="col-md-6">
                                             <h5 class="mb-2">{{ $course->localized_name }}</h5>
@@ -136,8 +146,13 @@
                         <div class="col-lg-4 col-md-6">
                             <div class="card h-100 shadow-sm">
                                 <div class="position-relative">
+                                    @if ($relatedBundle->image)
+                                    <img src="{{ optimized_image_url($relatedBundle->image, 360, 200) }}" class="card-img-top" alt="{{ $relatedBundle->localized_name }}" 
+                                        style="height: 200px; object-fit: cover;" width="360" height="200" loading="lazy" srcset="{{ optimized_image_url($relatedBundle->image, 360, 200) }} 360w, {{ optimized_image_url($relatedBundle->image, 720, 400) }} 720w" sizes="(max-width: 768px) 100vw, 360px">
+                                @else
                                     <img src="{{ $relatedBundle->image_url }}" class="card-img-top" alt="{{ $relatedBundle->localized_name }}" 
-                                        style="height: 200px; object-fit: cover;" width="360" height="200">
+                                        style="height: 200px; object-fit: cover;" width="360" height="200" loading="lazy">
+                                @endif
                                     @if($relatedBundle->discount_percentage)
                                         <span class="position-absolute top-0 end-0 m-2 badge bg-danger">
                                             -{{ $relatedBundle->discount_percentage }}%

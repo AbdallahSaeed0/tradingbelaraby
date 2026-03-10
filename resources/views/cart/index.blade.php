@@ -52,8 +52,13 @@
                                         <div class="col-md-3 mb-3 mb-md-0">
                                             <div class="cart-item-image position-relative">
                                                 @if($item->isBundle())
-                                                    <img src="{{ $item->bundle->image_url }}" alt="{{ $item->bundle->name }}"
-                                                        class="img-fluid rounded shadow-sm img-h-120 w-100" style="object-fit: cover;" width="280" height="170">
+                                                    @if ($item->bundle->image ?? null)
+                                                        <img src="{{ optimized_image_url($item->bundle->image, 280, 170) }}" alt="{{ $item->bundle->name }}"
+                                                            class="img-fluid rounded shadow-sm img-h-120 w-100" style="object-fit: cover;" width="280" height="170" loading="lazy">
+                                                    @else
+                                                        <img src="{{ $item->bundle->image_url }}" alt="{{ $item->bundle->name }}"
+                                                            class="img-fluid rounded shadow-sm img-h-120 w-100" style="object-fit: cover;" width="280" height="170" loading="lazy">
+                                                    @endif
                                                     @if ($item->bundle->original_price > $item->bundle->price && $item->bundle->price > 0)
                                                         <div class="position-absolute top-0 start-0 m-2">
                                                             <span class="badge bg-danger">
@@ -62,8 +67,13 @@
                                                         </div>
                                                     @endif
                                                 @else
-                                                <img src="{{ $item->course->image_url }}" alt="{{ $item->course->localized_name }}"
-                                                    class="img-fluid rounded shadow-sm img-h-120 w-100" style="object-fit: cover;" width="280" height="170">
+                                                @if ($item->course->image ?? null)
+                                                    <img src="{{ optimized_image_url($item->course->image, 280, 170) }}" alt="{{ $item->course->localized_name }}"
+                                                        class="img-fluid rounded shadow-sm img-h-120 w-100" style="object-fit: cover;" width="280" height="170" loading="lazy">
+                                                @else
+                                                    <img src="{{ $item->course->image_url }}" alt="{{ $item->course->localized_name }}"
+                                                        class="img-fluid rounded shadow-sm img-h-120 w-100" style="object-fit: cover;" width="280" height="170" loading="lazy">
+                                                @endif
                                                 @if ($item->course->original_price > $item->course->price && $item->course->price > 0)
                                                     <div class="position-absolute top-0 start-0 m-2">
                                                         <span class="badge bg-danger">
