@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
+use Laravel\Socialite\Facades\Socialite;
 use App\Services\SocialLoginSettingsService;
 
 class AuthController extends Controller
@@ -47,9 +48,7 @@ class AuthController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Password::defaults()],
             'country' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:20', 'regex:/^\+?[0-9]+$/'],
-        ], [
-            'phone.regex' => 'Phone number must contain only numbers (and an optional + at the start).',
+            'phone' => ['nullable', 'string', 'max:20'],
         ]);
 
         if ($validator->fails()) {
@@ -65,7 +64,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'country' => $request->country,
-            'phone' => $request->phone,
+            'phone' => $request->filled('phone') ? $request->phone : null,
         ]);
 
         // Fire the Registered event which will trigger the email verification notification
@@ -254,6 +253,112 @@ class AuthController extends Controller
                 'token' => $token,
             ],
         ], 201);
+    }
+
+    /**
+     * Sign in with Apple (Flutter native). Verifies identity JWT via Socialite, then find/create user — same response shape as Google.
+     */
+    public function appleLogin(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'token' => ['required', 'string'],
+            'name' => ['nullable', 'string', 'max:100'],
+            'email' => ['nullable', 'email'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        try {
+            /** @var \SocialiteProviders\Apple\Provider $driver */
+            $driver = Socialite::driver('apple');
+            $appleUser = $driver->userByIdentityToken($request->token);
+
+            $sub = $appleUser->getId();
+            $email = $appleUser->getEmail() ?: $request->input('email');
+            $name = $request->input('name') ?: $appleUser->getName() ?: 'User';
+
+            if (! $sub) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid Apple token',
+                ], 401);
+            }
+
+            $user = User::where('apple_id', $sub)->first();
+            if ($user) {
+                if (! $user->email_verified_at) {
+                    $user->markEmailAsVerified();
+                }
+                $token = $user->createToken('auth_token')->plainTextToken;
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Login successful',
+                    'data' => [
+                        'user' => new UserResource($user),
+                        'token' => $token,
+                    ],
+                ]);
+            }
+
+            if (! $email) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unable to retrieve email from Apple',
+                ], 422);
+            }
+
+            $user = User::where('email', $email)->first();
+            if ($user) {
+                $user->update([
+                    'apple_id' => $sub,
+                    'email_verified_at' => $user->email_verified_at ?? now(),
+                ]);
+                $token = $user->createToken('auth_token')->plainTextToken;
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Login successful',
+                    'data' => [
+                        'user' => new UserResource($user),
+                        'token' => $token,
+                    ],
+                ]);
+            }
+
+            $user = User::create([
+                'name' => $name,
+                'email' => $email,
+                'password' => null,
+                'apple_id' => $sub,
+                'email_verified_at' => now(),
+            ]);
+
+            $token = $user->createToken('auth_token')->plainTextToken;
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Login successful',
+                'data' => [
+                    'user' => new UserResource($user),
+                    'token' => $token,
+                ],
+            ], 201);
+        } catch (\Throwable $e) {
+            Log::warning('Apple API login failed', ['error' => $e->getMessage()]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Apple Sign In failed',
+                'error' => $e->getMessage(),
+            ], 401);
+        }
     }
 
     /**

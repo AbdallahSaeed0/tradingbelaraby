@@ -24,6 +24,7 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CourseRatingController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ComingSoonController;
+use App\Http\Controllers\UniversalLinkController;
 
 // Coming Soon routes
 Route::get('/coming-soon', [ComingSoonController::class, 'index'])->name('coming-soon');
@@ -31,6 +32,12 @@ Route::post('/coming-soon/subscribe', [ComingSoonController::class, 'subscribe']
 
 // PayPal Webhook (public endpoint - must be excluded from CSRF)
 Route::post('/webhook/paypal', [App\Http\Controllers\PayPalWebhookController::class, 'handleWebhook'])->name('webhook.paypal');
+
+// Apple Universal Links & app deep-link bridge (public, no auth)
+Route::get('/.well-known/apple-app-site-association', [UniversalLinkController::class, 'appleAppSiteAssociation'])
+    ->name('apple.app.site.association');
+Route::get('/app/enrollment-success', [UniversalLinkController::class, 'enrollmentSuccess'])
+    ->name('app.enrollment.success');
 
 // Sitemap (SEO)
 Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');

@@ -35,6 +35,7 @@ Route::post('/auth/forgot-password', [ForgotPasswordController::class, 'sendOtp'
 Route::post('/auth/verify-otp', [ForgotPasswordController::class, 'verifyOtp'])->name('api.auth.verify-otp');
 Route::post('/auth/verify-otp-reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('api.auth.verify-otp-reset-password');
 Route::post('/auth/google', [AuthController::class, 'loginWithGoogle'])->name('api.auth.google');
+Route::post('/auth/apple', [AuthController::class, 'appleLogin'])->name('api.auth.apple');
 Route::post('/auth/twitter', [AuthController::class, 'loginWithTwitter'])->name('api.auth.twitter');
 
 // Protected Auth Routes

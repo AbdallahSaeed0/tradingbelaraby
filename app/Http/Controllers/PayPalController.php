@@ -66,6 +66,9 @@ class PayPalController extends Controller
             // Check if already completed
             if ($order->status === 'completed') {
                 session()->forget('paypal_order_id');
+                if ($appRedirect = $this->redirectToAppEnrollmentSuccessIfNeeded($request, $order)) {
+                    return $appRedirect;
+                }
                 return redirect()->route('checkout.success', $order->id)
                     ->with('success', 'Payment already processed successfully!');
             }
@@ -143,6 +146,10 @@ class PayPalController extends Controller
 
                 // Clear session
                 session()->forget('paypal_order_id');
+
+                if ($appRedirect = $this->redirectToAppEnrollmentSuccessIfNeeded($request, $order)) {
+                    return $appRedirect;
+                }
 
                 return redirect()->route('checkout.success', $order->id)
                     ->with('success', 'Payment completed successfully!');
@@ -282,6 +289,30 @@ class PayPalController extends Controller
 
         return redirect()->route('checkout.index')
             ->with('error', 'Payment failed. Please try again or use a different payment method.');
+    }
+
+    /**
+     * If checkout was started from the mobile app, send user to the universal-link bridge page.
+     */
+    protected function redirectToAppEnrollmentSuccessIfNeeded(Request $request, Order $order): ?\Illuminate\Http\RedirectResponse
+    {
+        $returnToApp = $request->session()->get('return_to_app', false);
+        $courseId = null;
+
+        $order->loadMissing('items');
+        if ($order->items && $order->items->isNotEmpty()) {
+            $courseId = $order->items->first()->course_id ?? null;
+        }
+
+        if ($returnToApp && $courseId) {
+            $request->session()->forget('return_to_app');
+
+            return redirect()->away(
+                'https://tradingbelaraby.com/app/enrollment-success?course_id=' . urlencode((string) $courseId) . '&order_id=' . urlencode((string) $order->id)
+            );
+        }
+
+        return null;
     }
 }
 

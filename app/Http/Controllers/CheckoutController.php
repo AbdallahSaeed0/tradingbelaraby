@@ -417,6 +417,10 @@ class CheckoutController extends Controller
                     // Store PayPal order ID in database
                     $order->update(['payment_gateway_id' => $paypalOrder['id']]);
 
+                    if ($request->query('utm_source') === 'app' || $request->query('return_app') === '1') {
+                        $request->session()->put('return_to_app', true);
+                    }
+
                     return redirect()->away($approvalUrl);
 
                 } catch (\Exception $e) {

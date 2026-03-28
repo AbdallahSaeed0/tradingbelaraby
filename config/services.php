@@ -45,6 +45,20 @@ return [
         'redirect' => env('TWITTER_REDIRECT_URI', env('APP_URL') . '/auth/twitter/callback'),
     ],
 
+    /*
+    | Sign in with Apple (native app uses identity token; web uses redirect).
+    | Optional: key_id, team_id, private_key for JWT client_secret generation — see socialiteproviders/apple docs.
+    */
+    'apple' => [
+        'client_id' => env('APPLE_CLIENT_ID'),
+        'client_secret' => env('APPLE_CLIENT_SECRET'),
+        'redirect' => env('APPLE_REDIRECT_URI', env('APP_URL') . '/auth/apple/callback'),
+        'key_id' => env('APPLE_KEY_ID'),
+        'team_id' => env('APPLE_TEAM_ID'),
+        'private_key' => env('APPLE_PRIVATE_KEY'),
+        'passphrase' => env('APPLE_PASSPHRASE'),
+    ],
+
     'fcm' => [
         'server_key' => env('FCM_SERVER_KEY'),
     ],
