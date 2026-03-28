@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
+use SocialiteProviders\Manager\SocialiteWasCalled;
 use Illuminate\Validation\Rules\Password;
 use App\Models\CourseCategory;
 use App\Models\CourseSection;
@@ -32,6 +34,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Event::listen(SocialiteWasCalled::class, function (SocialiteWasCalled $event) {
+            if (class_exists(\SocialiteProviders\Apple\Provider::class)) {
+                $event->extendSocialite('apple', \SocialiteProviders\Apple\Provider::class);
+            }
+        });
+
         CourseSection::observe(CourseSectionObserver::class);
         CourseLecture::observe(CourseLectureObserver::class);
         Homework::observe(HomeworkObserver::class);

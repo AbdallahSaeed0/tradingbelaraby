@@ -20,7 +20,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         \SocialiteProviders\Manager\SocialiteWasCalled::class => [
             \SocialiteProviders\Twitter\TwitterExtendSocialite::class . '@handle',
-            \SocialiteProviders\Apple\AppleExtendSocialite::class . '@handle',
+            // Apple: registered in AppServiceProvider only if socialiteproviders/apple is installed (avoids boot failure on servers missing vendor).
         ],
         \App\Events\QuestionAnswered::class => [
             \App\Listeners\SendQaAnsweredNotification::class,
