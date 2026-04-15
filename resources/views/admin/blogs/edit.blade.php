@@ -369,6 +369,26 @@
                                     Post to Telegram when published
                                 </label>
                             </div>
+
+                            <div class="ps-4 mb-2">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input telegram-lang-option" type="checkbox" id="telegram_send_ar"
+                                        name="telegram_send_ar" value="1"
+                                        {{ old('telegram_send_ar', $blog->telegram_send_ar) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="telegram_send_ar">
+                                        Telegram Arabic message
+                                    </label>
+                                </div>
+                                <div class="form-check mb-0">
+                                    <input class="form-check-input telegram-lang-option" type="checkbox" id="telegram_send_en"
+                                        name="telegram_send_en" value="1"
+                                        {{ old('telegram_send_en', $blog->telegram_send_en) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="telegram_send_en">
+                                        Telegram English message
+                                    </label>
+                                </div>
+                                <div class="form-text mt-1">If both are checked, two Telegram messages are sent.</div>
+                            </div>
                         </div>
                     </div>
 
@@ -662,6 +682,20 @@
 
             document.getElementById('status').addEventListener('change', togglePublishAtRequirement);
             togglePublishAtRequirement();
+
+            function toggleTelegramLanguageOptions() {
+                const postToTelegram = document.getElementById('post_to_telegram');
+                const langOptions = document.querySelectorAll('.telegram-lang-option');
+                langOptions.forEach(option => {
+                    option.disabled = !postToTelegram.checked;
+                    if (!postToTelegram.checked) {
+                        option.checked = false;
+                    }
+                });
+            }
+
+            document.getElementById('post_to_telegram').addEventListener('change', toggleTelegramLanguageOptions);
+            toggleTelegramLanguageOptions();
 
             // Form validation before submission
             document.getElementById('blogForm').addEventListener('submit', function(e) {

@@ -40,10 +40,20 @@ class Blog extends Model
         'publish_at',
         'published_at',
         'post_to_telegram',
+        'telegram_send_ar',
+        'telegram_send_en',
         'telegram_posted_at',
         'telegram_message_id',
         'telegram_post_status',
         'telegram_error',
+        'telegram_posted_at_ar',
+        'telegram_message_id_ar',
+        'telegram_post_status_ar',
+        'telegram_error_ar',
+        'telegram_posted_at_en',
+        'telegram_message_id_en',
+        'telegram_post_status_en',
+        'telegram_error_en',
     ];
 
     protected $casts = [
@@ -56,7 +66,11 @@ class Blog extends Model
         'publish_at' => 'datetime',
         'published_at' => 'datetime',
         'post_to_telegram' => 'boolean',
+        'telegram_send_ar' => 'boolean',
+        'telegram_send_en' => 'boolean',
         'telegram_posted_at' => 'datetime',
+        'telegram_posted_at_ar' => 'datetime',
+        'telegram_posted_at_en' => 'datetime',
     ];
 
     protected $appends = [
@@ -189,6 +203,11 @@ class Blog extends Model
         }
 
         return $this->published_at === null || $this->published_at->lte(Carbon::now());
+    }
+
+    public function shouldSendToTelegram(): bool
+    {
+        return $this->post_to_telegram && ($this->telegram_send_ar || $this->telegram_send_en);
     }
 
     /**

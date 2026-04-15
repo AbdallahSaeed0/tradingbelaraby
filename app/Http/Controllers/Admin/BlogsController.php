@@ -104,6 +104,8 @@ class BlogsController extends Controller
             'publish_at' => 'nullable|date|required_if:status,scheduled',
             'is_featured' => 'boolean',
             'post_to_telegram' => 'boolean',
+            'telegram_send_ar' => 'boolean',
+            'telegram_send_en' => 'boolean',
             'custom_slug' => 'nullable|string|max:255|unique:blogs,custom_slug',
             'tags' => 'nullable|string',
 
@@ -123,7 +125,7 @@ class BlogsController extends Controller
         }
 
         $data['is_featured'] = $request->has('is_featured');
-        $data['post_to_telegram'] = $request->boolean('post_to_telegram');
+        $this->applyTelegramFlags($request, $data);
 
         if ($data['status'] === 'published') {
             $data['published_at'] = now();
@@ -156,7 +158,7 @@ class BlogsController extends Controller
         try {
             $blog = Blog::create($data);
 
-            if ($blog->status === 'published' && $blog->post_to_telegram) {
+            if ($blog->status === 'published' && $blog->shouldSendToTelegram()) {
                 SendBlogToTelegram::dispatch($blog->id);
             }
 
@@ -207,6 +209,8 @@ class BlogsController extends Controller
             'publish_at' => 'nullable|date|required_if:status,scheduled',
             'is_featured' => 'boolean',
             'post_to_telegram' => 'boolean',
+            'telegram_send_ar' => 'boolean',
+            'telegram_send_en' => 'boolean',
             'custom_slug' => 'nullable|string|max:255|unique:blogs,custom_slug,' . $blog->id,
             'tags' => 'nullable|string',
 
@@ -226,7 +230,7 @@ class BlogsController extends Controller
         }
 
         $data['is_featured'] = $request->has('is_featured');
-        $data['post_to_telegram'] = $request->boolean('post_to_telegram');
+        $this->applyTelegramFlags($request, $data);
 
         if ($data['status'] === 'published') {
             if ($blog->status !== 'published' || $blog->published_at === null) {
@@ -266,9 +270,11 @@ class BlogsController extends Controller
             $data['image_ar'] = $request->file('image_ar')->store('blogs', 'public');
         }
 
+        $wasPublished = $blog->status === 'published';
         $blog->update($data);
+        $blog->refresh();
 
-        if ($blog->status === 'published' && $blog->post_to_telegram) {
+        if ((!$wasPublished && $blog->status === 'published') && $blog->shouldSendToTelegram()) {
             SendBlogToTelegram::dispatch($blog->id);
         }
 
@@ -320,7 +326,10 @@ class BlogsController extends Controller
     public function toggleStatus(Blog $blog)
     {
         $newStatus = $blog->status === 'published' ? 'draft' : 'published';
-        $blog->update(['status' => $newStatus]);
+        $blog->update([
+            'status' => $newStatus,
+            'published_at' => $newStatus === 'published' ? now() : null,
+        ]);
 
         return back()->with('success', 'Blog status updated successfully');
     }
@@ -337,7 +346,13 @@ class BlogsController extends Controller
         } elseif ($request->status === 'scheduled') {
             $updateData['published_at'] = null;
         }
+        $wasPublished = $blog->status === 'published';
         $blog->update($updateData);
+        $blog->refresh();
+
+        if ((!$wasPublished && $blog->status === 'published') && $blog->shouldSendToTelegram()) {
+            SendBlogToTelegram::dispatch($blog->id);
+        }
 
         if ($request->ajax()) {
             return response()->json([
@@ -371,7 +386,16 @@ class BlogsController extends Controller
             $updateData['published_at'] = null;
         }
 
+        $selectedBlogs = Blog::whereIn('id', $request->blogs)->get();
         $count = Blog::whereIn('id', $request->blogs)->update($updateData);
+
+        if ($request->status === 'published') {
+            foreach ($selectedBlogs as $blog) {
+                if ($blog->status !== 'published' && $blog->shouldSendToTelegram()) {
+                    SendBlogToTelegram::dispatch($blog->id);
+                }
+            }
+        }
 
         return response()->json([
             'success' => true,
@@ -448,5 +472,15 @@ class BlogsController extends Controller
             'recentBlogs',
             'blogsByStatus'
         ));
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     */
+    private function applyTelegramFlags(Request $request, array &$data): void
+    {
+        $data['post_to_telegram'] = $request->boolean('post_to_telegram');
+        $data['telegram_send_ar'] = $data['post_to_telegram'] ? $request->boolean('telegram_send_ar') : false;
+        $data['telegram_send_en'] = $data['post_to_telegram'] ? $request->boolean('telegram_send_en') : false;
     }
 }

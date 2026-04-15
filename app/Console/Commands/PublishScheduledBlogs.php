@@ -44,7 +44,7 @@ class PublishScheduledBlogs extends Command
             Blog::whereIn('id', $dueBlogIds)->chunkById(100, function ($blogs) use (&$publishedCount, &$queuedCount): void {
                 foreach ($blogs as $blog) {
                     $publishedCount++;
-                    if ($blog->post_to_telegram) {
+                    if ($blog->shouldSendToTelegram()) {
                         SendBlogToTelegram::dispatch($blog->id);
                         $queuedCount++;
                     }
