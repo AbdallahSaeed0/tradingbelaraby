@@ -340,6 +340,7 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                                 <div class="form-text">Required when status is Scheduled.</div>
+                                <div class="form-text text-warning">Scheduled posts require the server scheduler/cron to be active.</div>
                             </div>
 
                             <div class="mb-3">
