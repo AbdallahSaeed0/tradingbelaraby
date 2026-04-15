@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendBlogToTelegram;
 use App\Models\Blog;
 use App\Models\BlogCategory;
 use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class BlogsController extends Controller
@@ -98,8 +100,10 @@ class BlogsController extends Controller
             // Other fields
             'category_id' => 'nullable|exists:blog_categories,id',
             'author_id' => 'nullable|exists:admins,id',
-            'status' => 'required|in:draft,published,archived',
+            'status' => 'required|in:draft,scheduled,published,archived',
+            'publish_at' => 'nullable|date|required_if:status,scheduled',
             'is_featured' => 'boolean',
+            'post_to_telegram' => 'boolean',
             'custom_slug' => 'nullable|string|max:255|unique:blogs,custom_slug',
             'tags' => 'nullable|string',
 
@@ -119,6 +123,13 @@ class BlogsController extends Controller
         }
 
         $data['is_featured'] = $request->has('is_featured');
+        $data['post_to_telegram'] = $request->boolean('post_to_telegram');
+
+        if ($data['status'] === 'published') {
+            $data['published_at'] = now();
+        } elseif ($data['status'] === 'scheduled') {
+            $data['published_at'] = null;
+        }
 
         // Process JSON fields - keep as JSON strings for database storage
         if ($request->filled('tags')) {
@@ -143,12 +154,17 @@ class BlogsController extends Controller
         }
 
         try {
-            Blog::create($data);
+            $blog = Blog::create($data);
+
+            if ($blog->status === 'published' && $blog->post_to_telegram) {
+                SendBlogToTelegram::dispatch($blog->id);
+            }
+
             return redirect()->route('admin.blogs.index')->with('success', 'Blog created successfully');
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            \Log::error('Blog creation failed: ' . $e->getMessage());
+            Log::error('Blog creation failed: ' . $e->getMessage());
             return redirect()->back()->withInput()->with('error', 'Failed to create blog: ' . $e->getMessage());
         }
     }
@@ -187,8 +203,10 @@ class BlogsController extends Controller
             // Other fields
             'category_id' => 'nullable|exists:blog_categories,id',
             'author_id' => 'nullable|exists:admins,id',
-            'status' => 'required|in:draft,published,archived',
+            'status' => 'required|in:draft,scheduled,published,archived',
+            'publish_at' => 'nullable|date|required_if:status,scheduled',
             'is_featured' => 'boolean',
+            'post_to_telegram' => 'boolean',
             'custom_slug' => 'nullable|string|max:255|unique:blogs,custom_slug,' . $blog->id,
             'tags' => 'nullable|string',
 
@@ -208,6 +226,15 @@ class BlogsController extends Controller
         }
 
         $data['is_featured'] = $request->has('is_featured');
+        $data['post_to_telegram'] = $request->boolean('post_to_telegram');
+
+        if ($data['status'] === 'published') {
+            if ($blog->status !== 'published' || $blog->published_at === null) {
+                $data['published_at'] = now();
+            }
+        } elseif ($data['status'] === 'scheduled') {
+            $data['published_at'] = null;
+        }
 
         // Process JSON fields
         if ($request->filled('tags')) {
@@ -240,6 +267,10 @@ class BlogsController extends Controller
         }
 
         $blog->update($data);
+
+        if ($blog->status === 'published' && $blog->post_to_telegram) {
+            SendBlogToTelegram::dispatch($blog->id);
+        }
 
         return redirect()->route('admin.blogs.index')->with('success', 'Blog updated successfully');
     }
@@ -297,10 +328,16 @@ class BlogsController extends Controller
     public function updateStatus(Request $request, Blog $blog)
     {
         $request->validate([
-            'status' => 'required|in:published,draft,archived'
+            'status' => 'required|in:published,draft,scheduled,archived'
         ]);
 
-        $blog->update(['status' => $request->status]);
+        $updateData = ['status' => $request->status];
+        if ($request->status === 'published') {
+            $updateData['published_at'] = now();
+        } elseif ($request->status === 'scheduled') {
+            $updateData['published_at'] = null;
+        }
+        $blog->update($updateData);
 
         if ($request->ajax()) {
             return response()->json([
@@ -324,11 +361,17 @@ class BlogsController extends Controller
         $request->validate([
             'blogs' => 'required|array',
             'blogs.*' => 'exists:blogs,id',
-            'status' => 'required|in:draft,published,archived'
+            'status' => 'required|in:draft,scheduled,published,archived'
         ]);
 
-        $count = Blog::whereIn('id', $request->blogs)
-            ->update(['status' => $request->status]);
+        $updateData = ['status' => $request->status];
+        if ($request->status === 'published') {
+            $updateData['published_at'] = now();
+        } elseif ($request->status === 'scheduled') {
+            $updateData['published_at'] = null;
+        }
+
+        $count = Blog::whereIn('id', $request->blogs)->update($updateData);
 
         return response()->json([
             'success' => true,
@@ -360,6 +403,7 @@ class BlogsController extends Controller
         $totalBlogs = Blog::count();
         $publishedBlogs = Blog::published()->count();
         $draftBlogs = Blog::where('status', 'draft')->count();
+        $scheduledBlogs = Blog::where('status', 'scheduled')->count();
         $featuredBlogs = Blog::featured()->count();
         $totalViews = Blog::sum('views_count');
 
@@ -388,6 +432,7 @@ class BlogsController extends Controller
         $blogsByStatus = [
             'published' => Blog::published()->count(),
             'draft' => Blog::where('status', 'draft')->count(),
+            'scheduled' => Blog::where('status', 'scheduled')->count(),
             'archived' => Blog::where('status', 'archived')->count(),
         ];
 
@@ -395,6 +440,7 @@ class BlogsController extends Controller
             'totalBlogs',
             'publishedBlogs',
             'draftBlogs',
+            'scheduledBlogs',
             'featuredBlogs',
             'totalViews',
             'topBlogs',

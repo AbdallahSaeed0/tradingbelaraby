@@ -56,7 +56,7 @@
                             @endif
 
                             <span
-                                class="badge bg-{{ $blog->status === 'published' ? 'success' : ($blog->status === 'draft' ? 'warning' : 'secondary') }}">
+                                class="badge bg-{{ $blog->status === 'published' ? 'success' : ($blog->status === 'draft' ? 'warning' : ($blog->status === 'scheduled' ? 'info' : 'secondary')) }}">
                                 {{ ucfirst($blog->status) }}
                             </span>
                         </div>
@@ -127,7 +127,7 @@
                                 <td><strong>Status:</strong></td>
                                 <td>
                                     <span
-                                        class="badge bg-{{ $blog->status === 'published' ? 'success' : ($blog->status === 'draft' ? 'warning' : 'secondary') }}">
+                                        class="badge bg-{{ $blog->status === 'published' ? 'success' : ($blog->status === 'draft' ? 'warning' : ($blog->status === 'scheduled' ? 'info' : 'secondary')) }}">
                                         {{ ucfirst($blog->status) }}
                                     </span>
                                 </td>

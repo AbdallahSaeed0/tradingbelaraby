@@ -10,7 +10,7 @@ class BlogController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Blog::published()
+        $query = Blog::visible()
             ->with(['category', 'author'])
             ->orderBy('created_at', 'desc');
 
@@ -42,11 +42,15 @@ class BlogController extends Controller
 
     public function show(Blog $blog)
     {
+        if (!$blog->isVisible()) {
+            abort(404);
+        }
+
         // Increment view count
         $blog->incrementViews();
 
         // Load related blogs
-        $relatedBlogs = Blog::published()
+        $relatedBlogs = Blog::visible()
             ->where('id', '!=', $blog->id)
             ->where('category_id', $blog->category_id)
             ->with(['category', 'author'])

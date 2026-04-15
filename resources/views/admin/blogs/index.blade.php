@@ -122,6 +122,7 @@
                                 <option value="">All Status</option>
                                 <option value="published" {{ request('status', $status ?? '') == 'published' ? 'selected' : '' }}>Published</option>
                                 <option value="draft" {{ request('status', $status ?? '') == 'draft' ? 'selected' : '' }}>Draft</option>
+                                <option value="scheduled" {{ request('status', $status ?? '') == 'scheduled' ? 'selected' : '' }}>Scheduled</option>
                                 <option value="archived" {{ request('status', $status ?? '') == 'archived' ? 'selected' : '' }}>Archived</option>
                             </select>
                         </div>
@@ -216,7 +217,7 @@
                                     </td>
                                     <td>
                                         <span
-                                            class="badge status-badge bg-{{ $blog->status === 'published' ? 'success' : ($blog->status === 'draft' ? 'warning' : 'secondary') }}"
+                                            class="badge status-badge bg-{{ $blog->status === 'published' ? 'success' : ($blog->status === 'draft' ? 'warning' : ($blog->status === 'scheduled' ? 'info' : 'secondary')) }}"
                                             style="cursor: pointer;"
                                             onclick="showBlogStatusModal({{ $blog->id }}, '{{ $blog->status }}')">
                                             {{ ucfirst($blog->status) }}
@@ -298,6 +299,8 @@
                                             <ul class="dropdown-menu">
                                                 <li><a class="dropdown-item" href="#"
                                                         onclick="bulkUpdateStatus('published')">Publish</a></li>
+                                                <li><a class="dropdown-item" href="#"
+                                                        onclick="bulkUpdateStatus('scheduled')">Schedule</a></li>
                                                 <li><a class="dropdown-item" href="#" onclick="bulkUpdateStatus('draft')">Mark
                                                         as Draft</a></li>
                                                 <li><a class="dropdown-item" href="#"
@@ -617,6 +620,7 @@
                 const availableStatuses = [
                     { value: 'published', label: 'Published' },
                     { value: 'draft', label: 'Draft' },
+                    { value: 'scheduled', label: 'Scheduled' },
                     { value: 'archived', label: 'Archived' }
                 ];
                 const updateUrl = `/admin/blogs/${blogId}/update-status`;

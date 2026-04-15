@@ -314,6 +314,9 @@
                                     <option value="">Select status</option>
                                     <option value="draft"
                                         {{ old('status', $blog->status) == 'draft' ? 'selected' : '' }}>Draft</option>
+                                    <option value="scheduled"
+                                        {{ old('status', $blog->status) == 'scheduled' ? 'selected' : '' }}>Scheduled
+                                    </option>
                                     <option value="published"
                                         {{ old('status', $blog->status) == 'published' ? 'selected' : '' }}>Published
                                     </option>
@@ -324,6 +327,19 @@
                                 @error('status')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="publish_at" class="form-label">Publish At</label>
+                                <input type="datetime-local"
+                                    class="form-control @error('publish_at') is-invalid @enderror"
+                                    id="publish_at"
+                                    name="publish_at"
+                                    value="{{ old('publish_at', optional($blog->publish_at)->format('Y-m-d\TH:i')) }}">
+                                @error('publish_at')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <div class="form-text">Required when status is Scheduled.</div>
                             </div>
 
                             <div class="mb-3">
@@ -343,6 +359,14 @@
                                     value="1" {{ old('is_featured', $blog->is_featured) ? 'checked' : '' }}>
                                 <label class="form-check-label" for="is_featured">
                                     Featured Blog
+                                </label>
+                            </div>
+
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="post_to_telegram" name="post_to_telegram"
+                                    value="1" {{ old('post_to_telegram', $blog->post_to_telegram) ? 'checked' : '' }}>
+                                <label class="form-check-label" for="post_to_telegram">
+                                    Post to Telegram when published
                                 </label>
                             </div>
                         </div>
@@ -628,6 +652,16 @@
                     // You can display this in a preview field if needed
                 }
             });
+
+            function togglePublishAtRequirement() {
+                const statusField = document.getElementById('status');
+                const publishAtField = document.getElementById('publish_at');
+                const isScheduled = statusField.value === 'scheduled';
+                publishAtField.required = isScheduled;
+            }
+
+            document.getElementById('status').addEventListener('change', togglePublishAtRequirement);
+            togglePublishAtRequirement();
 
             // Form validation before submission
             document.getElementById('blogForm').addEventListener('submit', function(e) {

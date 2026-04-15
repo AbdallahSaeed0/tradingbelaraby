@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 class Blog extends Model
@@ -35,7 +36,14 @@ class Blog extends Model
         'meta_keywords',
         'meta_keywords_ar',
         'tags',
-        'reading_time'
+        'reading_time',
+        'publish_at',
+        'published_at',
+        'post_to_telegram',
+        'telegram_posted_at',
+        'telegram_message_id',
+        'telegram_post_status',
+        'telegram_error',
     ];
 
     protected $casts = [
@@ -45,6 +53,10 @@ class Blog extends Model
         'meta_keywords' => 'array',
         'meta_keywords_ar' => 'array',
         'reading_time' => 'integer',
+        'publish_at' => 'datetime',
+        'published_at' => 'datetime',
+        'post_to_telegram' => 'boolean',
+        'telegram_posted_at' => 'datetime',
     ];
 
     protected $appends = [
@@ -76,6 +88,18 @@ class Blog extends Model
     public function scopePublished($query)
     {
         return $query->where('status', 'published');
+    }
+
+    /**
+     * Scope for publicly visible blogs.
+     */
+    public function scopeVisible($query)
+    {
+        return $query->where('status', 'published')
+            ->where(function ($q) {
+                $q->whereNull('published_at')
+                    ->orWhere('published_at', '<=', now());
+            });
     }
 
     /**
@@ -156,6 +180,15 @@ class Blog extends Model
     public function isPublished(): bool
     {
         return $this->status === 'published';
+    }
+
+    public function isVisible(): bool
+    {
+        if ($this->status !== 'published') {
+            return false;
+        }
+
+        return $this->published_at === null || $this->published_at->lte(Carbon::now());
     }
 
     /**

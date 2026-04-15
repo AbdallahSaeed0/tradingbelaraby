@@ -181,7 +181,7 @@
                             </div>
                             <div class="card-body">
                                 @php
-                                    $recentBlogs = \App\Models\Blog::published()
+                                    $recentBlogs = \App\Models\Blog::visible()
                                         ->with('category')
                                         ->latest()
                                         ->limit(5)
