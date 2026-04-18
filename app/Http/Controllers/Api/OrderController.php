@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\CourseEnrollment;
 use App\Models\Coupon;
+use App\Support\Platform;
 use App\Services\Payment\PayPalService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -50,6 +51,17 @@ class OrderController extends Controller
                     'success' => false,
                     'message' => 'No valid courses found',
                 ], 400);
+            }
+
+            if (Platform::isIOS($request)) {
+                $hasPaidCourse = $courses->contains(fn ($course) => !$course->is_free && (float) $course->price > 0);
+                if ($hasPaidCourse) {
+                    DB::rollBack();
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Paid courses are not available on this platform.',
+                    ], 403);
+                }
             }
 
             // Calculate subtotal

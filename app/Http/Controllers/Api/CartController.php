@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\CourseResource;
 use App\Models\CartItem;
 use App\Models\Course;
+use App\Support\Platform;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -17,7 +18,11 @@ class CartController extends Controller
     public function index(Request $request): JsonResponse
     {
         $user = $request->user();
-        $cartItems = $user->cartItems()->with('course.category', 'course.instructor')->get();
+        $cartItemsQuery = $user->cartItems()->with('course.category', 'course.instructor');
+        if (Platform::isIOS($request)) {
+            $cartItemsQuery->whereHas('course', fn ($query) => $query->published()->free());
+        }
+        $cartItems = $cartItemsQuery->get();
 
         // Extract courses from cart items
         $courses = $cartItems
@@ -53,6 +58,13 @@ class CartController extends Controller
         ]);
 
         $course = Course::findOrFail($request->course_id);
+
+        if (Platform::isIOS($request) && (!$course->is_free || (float) $course->price > 0)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Paid courses are not available on this platform.',
+            ], 403);
+        }
 
         // Check if already in cart
         if ($user->hasInCart($course)) {

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\CourseResource;
 use App\Models\Course;
 use App\Models\CourseRating;
+use App\Support\Platform;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,6 +20,10 @@ class CourseController extends Controller
         $query = Course::query()
             ->published()
             ->with(['category', 'instructor', 'instructors']);
+
+        if (Platform::isIOS($request)) {
+            $query->free();
+        }
 
         // Category filter
         if ($request->filled('category_id')) {
@@ -89,9 +94,9 @@ class CourseController extends Controller
     /**
      * Display the specified course with full details
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        $course = Course::published()
+        $courseQuery = Course::published()
             ->with([
                 'category',
                 'instructor',
@@ -104,8 +109,13 @@ class CourseController extends Controller
                         }]);
                 },
                 'approvedRatings.user'
-            ])
-            ->findOrFail($id);
+            ]);
+
+        if (Platform::isIOS($request)) {
+            $courseQuery->free();
+        }
+
+        $course = $courseQuery->findOrFail($id);
 
         return response()->json([
             'data' => new CourseResource($course),
@@ -120,12 +130,16 @@ class CourseController extends Controller
         $limit = $request->get('limit', 10);
         $limit = min($limit, 50); // Max 50 items
 
-        $courses = Course::published()
+        $query = Course::published()
             ->featured()
             ->with(['category', 'instructor', 'instructors'])
-            ->orderBy('enrolled_students', 'desc')
-            ->limit($limit)
-            ->get();
+            ->orderBy('enrolled_students', 'desc');
+
+        if (Platform::isIOS($request)) {
+            $query->free();
+        }
+
+        $courses = $query->limit($limit)->get();
 
         return response()->json([
             'data' => CourseResource::collection($courses),
@@ -141,6 +155,10 @@ class CourseController extends Controller
 
         $query = Course::published()
             ->with(['category', 'instructor', 'instructors']);
+
+        if (Platform::isIOS($request)) {
+            $query->free();
+        }
 
         if (!empty($searchQuery)) {
             $query->where(function ($q) use ($searchQuery) {
@@ -190,7 +208,11 @@ class CourseController extends Controller
      */
     public function getReviews(Request $request, $id)
     {
-        $course = Course::published()->findOrFail($id);
+        $courseQuery = Course::published();
+        if (Platform::isIOS($request)) {
+            $courseQuery->free();
+        }
+        $course = $courseQuery->findOrFail($id);
 
         $query = $course->approvedRatings()->with('user');
 
@@ -234,7 +256,11 @@ class CourseController extends Controller
             return response()->json(['success' => false, 'message' => 'Unauthenticated.'], 401);
         }
 
-        $course = Course::published()->findOrFail($id);
+        $courseQuery = Course::published();
+        if (Platform::isIOS($request)) {
+            $courseQuery->free();
+        }
+        $course = $courseQuery->findOrFail($id);
 
         if (!$course->isEnrolledBy($user)) {
             return response()->json([

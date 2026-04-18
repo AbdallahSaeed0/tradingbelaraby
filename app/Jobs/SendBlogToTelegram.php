@@ -133,15 +133,33 @@ class SendBlogToTelegram implements ShouldQueue
         $titleSafe = e((string) $title);
         $excerptSafe = trim((string) $excerpt) !== '' ? PHP_EOL . PHP_EOL . e((string) $excerpt) : '';
         $url = $this->buildPublicBlogUrl($blog);
+        $tagsBlock = $this->formatTagsBlockForTelegram($blog, $lang);
 
         $photoUrl = $isArabic
             ? ($blog->image_ar_url ?: $blog->image_url)
             : ($blog->image_url ?: $blog->image_ar_url);
 
         return [
-            'message' => "<b>{$titleSafe}</b>{$excerptSafe}" . PHP_EOL . PHP_EOL . $url,
+            'message' => "<b>{$titleSafe}</b>{$excerptSafe}" . PHP_EOL . PHP_EOL . $url . $tagsBlock,
             'photo_url' => $photoUrl,
         ];
+    }
+
+    /**
+     * Append blog tags when present (same tag list for both language sends).
+     */
+    private function formatTagsBlockForTelegram(Blog $blog, string $lang): string
+    {
+        $tags = array_values(array_filter(array_map('trim', $blog->getTagsArray())));
+        if ($tags === []) {
+            return '';
+        }
+
+        $escaped = array_map(static fn (string $t) => e($t), $tags);
+        $list = implode(' · ', $escaped);
+        $label = $lang === 'ar' ? 'الوسوم' : 'Tags';
+
+        return PHP_EOL . PHP_EOL . "<b>{$label}:</b> {$list}";
     }
 
     /**
