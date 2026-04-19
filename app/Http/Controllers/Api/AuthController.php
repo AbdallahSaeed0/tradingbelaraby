@@ -351,12 +351,16 @@ class AuthController extends Controller
                 ],
             ], 201);
         } catch (\Throwable $e) {
-            Log::warning('Apple API login failed', ['error' => $e->getMessage()]);
+            Log::warning('Apple API login failed', [
+                'exception' => $e::class,
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
 
             return response()->json([
                 'success' => false,
                 'message' => 'Apple Sign In failed',
-                'error' => $e->getMessage(),
             ], 401);
         }
     }

@@ -110,7 +110,7 @@ class EnrollmentController extends Controller
     /**
      * Get enrollment details
      */
-    public function show(string $id): JsonResponse
+    public function show(Request $request, string $id): JsonResponse
     {
         $user = Auth::user();
         
@@ -124,6 +124,16 @@ class EnrollmentController extends Controller
         $enrollment = $user->enrollments()
             ->with('course')
             ->findOrFail($id);
+
+        if (Platform::isIOS($request)) {
+            $course = $enrollment->course;
+            if (! $course || ! $course->is_free || (float) $course->price > 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Not found',
+                ], 404);
+            }
+        }
 
         return response()->json([
             'success' => true,

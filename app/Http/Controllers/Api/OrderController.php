@@ -233,6 +233,19 @@ class OrderController extends Controller
             ], 401);
         }
 
+        if (Platform::isIOS($request)) {
+            return response()->json([
+                'success' => true,
+                'data' => [],
+                'meta' => [
+                    'current_page' => 1,
+                    'last_page' => 1,
+                    'per_page' => 20,
+                    'total' => 0,
+                ],
+            ]);
+        }
+
         $orders = $user->orders()
             ->with('items.course')
             ->orderBy('created_at', 'desc')
@@ -253,7 +266,7 @@ class OrderController extends Controller
     /**
      * Get order details
      */
-    public function show(string $id): JsonResponse
+    public function show(Request $request, string $id): JsonResponse
     {
         $user = Auth::user();
         
@@ -262,6 +275,13 @@ class OrderController extends Controller
                 'success' => false,
                 'message' => 'Unauthorized',
             ], 401);
+        }
+
+        if (Platform::isIOS($request)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Orders are not available on this platform.',
+            ], 403);
         }
 
         $order = $user->orders()
@@ -277,7 +297,7 @@ class OrderController extends Controller
     /**
      * Cancel order
      */
-    public function cancel(string $id): JsonResponse
+    public function cancel(Request $request, string $id): JsonResponse
     {
         $user = Auth::user();
         
@@ -286,6 +306,13 @@ class OrderController extends Controller
                 'success' => false,
                 'message' => 'Unauthorized',
             ], 401);
+        }
+
+        if (Platform::isIOS($request)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Orders are not available on this platform.',
+            ], 403);
         }
 
         $order = $user->orders()->findOrFail($id);

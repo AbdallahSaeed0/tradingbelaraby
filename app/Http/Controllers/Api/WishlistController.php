@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\CourseResource;
 use App\Models\Course;
 use App\Models\WishlistItem;
+use App\Support\Platform;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -27,7 +28,13 @@ class WishlistController extends Controller
             ->filter(function ($course) {
                 return $course !== null;
             })
-            ->values(); // Reindex array
+            ->values();
+
+        if (Platform::isIOS($request)) {
+            $courses = $courses->filter(function ($course) {
+                return $course->is_free && (float) $course->price <= 0;
+            })->values();
+        }
 
         return response()->json([
             'success' => true,
@@ -48,6 +55,13 @@ class WishlistController extends Controller
                 'success' => false,
                 'message' => 'Course not found',
             ], 404);
+        }
+
+        if (Platform::isIOS($request) && (! $course->is_free || (float) $course->price > 0)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Paid courses are not available on this platform.',
+            ], 403);
         }
 
         // Check if already in wishlist
@@ -117,6 +131,15 @@ class WishlistController extends Controller
             ], 404);
         }
 
+        if (Platform::isIOS($request) && (! $course->is_free || (float) $course->price > 0)) {
+            if (! $user->hasInWishlist($course)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Paid courses are not available on this platform.',
+                ], 403);
+            }
+        }
+
         if ($user->hasInWishlist($course)) {
             // Remove from wishlist
             $user->wishlistItems()->where('course_id', $course->id)->delete();
@@ -158,6 +181,15 @@ class WishlistController extends Controller
                     'in_wishlist' => false,
                 ],
             ], 404);
+        }
+
+        if (Platform::isIOS($request) && (! $course->is_free || (float) $course->price > 0)) {
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'in_wishlist' => false,
+                ],
+            ]);
         }
 
         $inWishlist = $user->hasInWishlist($course);
