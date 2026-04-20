@@ -133,7 +133,7 @@ class SendBlogToTelegram implements ShouldQueue
         $titleSafe = e((string) $title);
         $excerptSafe = trim((string) $excerpt) !== '' ? PHP_EOL . PHP_EOL . e((string) $excerpt) : '';
         $url = $this->buildPublicBlogUrl($blog);
-        $tagsBlock = $this->formatTagsBlockForTelegram($blog, $lang);
+        $tagsBlock = $this->formatTagsBlockForTelegram($blog);
 
         $photoUrl = $isArabic
             ? ($blog->image_ar_url ?: $blog->image_url)
@@ -146,20 +146,30 @@ class SendBlogToTelegram implements ShouldQueue
     }
 
     /**
-     * Append blog tags when present (same tag list for both language sends).
+     * Append blog tags as Telegram-style hashtags (#tag with spaces collapsed to _).
      */
-    private function formatTagsBlockForTelegram(Blog $blog, string $lang): string
+    private function formatTagsBlockForTelegram(Blog $blog): string
     {
         $tags = array_values(array_filter(array_map('trim', $blog->getTagsArray())));
         if ($tags === []) {
             return '';
         }
 
-        $escaped = array_map(static fn (string $t) => e($t), $tags);
-        $list = implode(' · ', $escaped);
-        $label = $lang === 'ar' ? 'الوسوم' : 'Tags';
+        $hashtags = [];
+        foreach ($tags as $tag) {
+            $normalized = preg_replace('/\s+/u', '_', trim($tag));
+            $normalized = ltrim($normalized, '#');
+            if ($normalized === '') {
+                continue;
+            }
+            $hashtags[] = '#' . e($normalized);
+        }
 
-        return PHP_EOL . PHP_EOL . "<b>{$label}:</b> {$list}";
+        if ($hashtags === []) {
+            return '';
+        }
+
+        return PHP_EOL . PHP_EOL . implode(' ', $hashtags);
     }
 
     /**
