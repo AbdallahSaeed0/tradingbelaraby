@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Demo — Post-registration experience</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f4f6f9;
+      --surface: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --accent: #2563eb;
+      --accent-soft: #eff6ff;
+      --shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 4px 16px rgba(15, 23, 42, 0.06);
+      --radius: 12px;
+      --header-h: 64px;
+    }
+    [data-theme="dark"] {
+      --bg: #0b1120;
+      --surface: #111827;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --border: #1e293b;
+      --accent: #3b82f6;
+      --accent-soft: #172554;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 8px 24px rgba(0, 0, 0, 0.45);
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: "DM Sans", system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    .shell { min-height: 100%; display: flex; flex-direction: column; }
+    header {
+      height: var(--header-h);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1rem 0 1.25rem;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-weight: 700;
+      font-size: 1.05rem;
+      letter-spacing: -0.02em;
+    }
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), #7c3aed);
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 0.85rem;
+    }
+    .brand span { color: var(--muted); font-weight: 500; font-size: 0.8rem; margin-left: 0.35rem; }
+    .header-actions { display: flex; align-items: center; gap: 0.75rem; }
+    .theme-toggle {
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 0.45rem 0.65rem;
+      font-size: 0.8rem;
+      font-family: inherit;
+      cursor: pointer;
+    }
+    .theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+    .user-wrap { position: relative; }
+    .user-trigger {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.6rem 0.35rem 0.35rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      cursor: pointer;
+      font-family: inherit;
+      color: inherit;
+    }
+    .user-trigger:hover, .user-trigger[aria-expanded="true"] {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #0ea5e9, var(--accent));
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.85rem;
+      display: grid;
+      place-items: center;
+    }
+    .user-trigger .chev {
+      width: 0; height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 5px solid var(--muted);
+      margin-right: 0.15rem;
+      transition: transform 0.15s ease;
+    }
+    .user-trigger[aria-expanded="true"] .chev { transform: rotate(180deg); }
+    .dropdown {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 8px);
+      min-width: 260px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 0.5rem 0;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-6px);
+      transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+    }
+    .dropdown.open {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .dropdown-header {
+      padding: 0.75rem 1rem 0.65rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .dropdown-header .name { font-weight: 600; font-size: 0.95rem; }
+    .dropdown-header .email {
+      font-size: 0.8rem;
+      color: var(--muted);
+      word-break: break-all;
+      margin-top: 0.15rem;
+    }
+    .dropdown nav { padding: 0.35rem 0; }
+    .dropdown a, .dropdown button.item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 0.55rem 1rem;
+      font-size: 0.9rem;
+      color: var(--text);
+      text-decoration: none;
+      border: none;
+      background: none;
+      font-family: inherit;
+      cursor: pointer;
+      text-align: left;
+    }
+    .dropdown a:hover, .dropdown button.item:hover {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+    .dropdown .highlight {
+      font-weight: 600;
+      color: var(--accent);
+    }
+    .dropdown .sep { height: 1px; background: var(--border); margin: 0.35rem 0; }
+    .dropdown .logout { color: #dc2626; }
+    .dropdown .logout:hover { background: #fef2f2; color: #b91c1c; }
+    [data-theme="dark"] .dropdown .logout:hover { background: #450a0a; color: #fca5a5; }
+    main {
+      flex: 1;
+      padding: 1.25rem;
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .page { display: none; animation: fade 0.2s ease; }
+    .page.active { display: block; }
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .hero {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem 1.25rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1.25rem;
+    }
+    .hero h1 { margin: 0 0 0.35rem; font-size: 1.35rem; letter-spacing: -0.02em; }
+    .hero p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+    .badge {
+      display: inline-block;
+      margin-top: 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+    }
+    .grid {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem;
+      box-shadow: var(--shadow);
+    }
+    .card h3 { margin: 0 0 0.35rem; font-size: 0.95rem; }
+    .card p { margin: 0; font-size: 0.85rem; color: var(--muted); }
+    .charts-page #pageCharts.page {
+      max-width: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - var(--header-h));
+    }
+    #pageCharts .chart-toolbar {
+      flex-shrink: 0;
+      padding: 0.75rem 1rem;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    #pageCharts .chart-toolbar h1 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    #pageCharts .chart-toolbar .hint { font-size: 0.8rem; color: var(--muted); }
+    .chart-frame-wrap {
+      flex: 1;
+      min-height: 400px;
+      background: var(--surface);
+      position: relative;
+    }
+    .chart-frame-wrap iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.4rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.85rem;
+      font-family: inherit;
+      cursor: pointer;
+    }
+    .btn-back:hover { border-color: var(--accent); color: var(--accent); }
+    @media (max-width: 520px) {
+      .brand span { display: none; }
+      header { padding: 0 0.75rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell" id="app">
+    <header>
+      <div class="brand">
+        <div class="brand-mark">C</div>
+        Courses <span>Demo UI</span>
+      </div>
+      <div class="header-actions">
+        <button type="button" class="theme-toggle" id="themeBtn" aria-label="Toggle color theme">Theme</button>
+        <div class="user-wrap">
+          <button type="button" class="user-trigger" id="userTrigger" aria-expanded="false" aria-haspopup="true" aria-controls="userMenu">
+            <span class="avatar" aria-hidden="true">A</span>
+            <span class="chev" aria-hidden="true"></span>
+          </button>
+          <div class="dropdown" id="userMenu" role="menu" aria-labelledby="userTrigger">
+            <div class="dropdown-header">
+              <div class="name">ahmed</div>
+              <div class="email">abdallahsaeed177@gmail.com</div>
+            </div>
+            <nav>
+              <a href="#" role="menuitem" data-action="stub" data-label="Dashboard">Dashboard</a>
+              <a href="#" role="menuitem" data-action="stub" data-label="Wishlist">Wishlist</a>
+              <a href="#" role="menuitem" data-action="stub" data-label="Purchases">Purchases</a>
+              <a href="#" role="menuitem" data-action="stub" data-label="Profile">Profile</a>
+              <button type="button" class="item highlight" role="menuitem" data-action="charts">Charts</button>
+              <div class="sep" role="presentation"></div>
+              <button type="button" class="item logout" role="menuitem" data-action="logout">Logout</button>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main id="pageDashboard" class="page active">
+      <div class="hero">
+        <h1>Welcome, ahmed</h1>
+        <p>This is a static demo of the experience right after registration. Charts and tools are available immediately — no course enrollment required.</p>
+        <span class="badge">Post-registration demo</span>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <h3>Quick access</h3>
+          <p>Open the user menu (top right) and choose <strong>Charts</strong> for a TradingView-style workspace.</p>
+        </div>
+        <div class="card">
+          <h3>No gating</h3>
+          <p>Navigation here is front-end only; it illustrates direct access to charts after signup.</p>
+        </div>
+        <div class="card">
+          <h3>Responsive</h3>
+          <p>Resize the window — header, dropdown, and chart area adapt for small screens.</p>
+        </div>
+      </div>
+    </main>
+
+    <main id="pageCharts" class="page" hidden>
+      <div class="chart-toolbar">
+        <div>
+          <button type="button" class="btn-back" id="backFromCharts" aria-label="Back to dashboard">← Dashboard</button>
+          <h1 style="margin-top:0.5rem">Charts</h1>
+          <p class="hint">Embedded widget (demo). Not tied to any course.</p>
+        </div>
+      </div>
+      <div class="chart-frame-wrap" aria-label="Chart Area">
+        <!-- TradingView advanced chart embed -->
+        <iframe
+          title="TradingView chart"
+          src="https://www.tradingview.com/widgetembed/?frameElementId=tv-demo&symbol=BINANCE%3ABTCUSDT&interval=60&hidesidetoolbar=0&hidetoptoolbar=0&symboledit=1&saveimage=0&toolbarbg=f1f3f6&studies=%5B%5D&theme=light&style=1&timezone=exchange&withdateranges=1&hideideas=1&locale=en"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+        ></iframe>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var app = document.getElementById("app");
+      var trigger = document.getElementById("userTrigger");
+      var menu = document.getElementById("userMenu");
+      var themeBtn = document.getElementById("themeBtn");
+      var pageDash = document.getElementById("pageDashboard");
+      var pageCharts = document.getElementById("pageCharts");
+      var backBtn = document.getElementById("backFromCharts");
+
+      function getTheme() {
+        return root.getAttribute("data-theme") || "light";
+      }
+      function setTheme(next) {
+        if (next === "dark") root.setAttribute("data-theme", "dark");
+        else root.removeAttribute("data-theme");
+        syncChartIframeTheme();
+      }
+      function syncChartIframeTheme() {
+        var iframe = pageCharts.querySelector("iframe");
+        if (!iframe || !iframe.src) return;
+        var dark = getTheme() === "dark";
+        try {
+          var u = new URL(iframe.src);
+          u.searchParams.set("theme", dark ? "dark" : "light");
+          u.searchParams.set("toolbarbg", dark ? "1f2937" : "f1f3f6");
+          iframe.src = u.toString();
+        } catch (e) {}
+      }
+      themeBtn.addEventListener("click", function () {
+        setTheme(getTheme() === "dark" ? "light" : "dark");
+      });
+
+      function closeMenu() {
+        menu.classList.remove("open");
+        trigger.setAttribute("aria-expanded", "false");
+      }
+      function openMenu() {
+        menu.classList.add("open");
+        trigger.setAttribute("aria-expanded", "true");
+      }
+      function toggleMenu() {
+        if (menu.classList.contains("open")) closeMenu();
+        else openMenu();
+      }
+      trigger.addEventListener("click", function (e) {
+        e.stopPropagation();
+        toggleMenu();
+      });
+      document.addEventListener("click", function () {
+        closeMenu();
+      });
+      menu.addEventListener("click", function (e) {
+        e.stopPropagation();
+      });
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") closeMenu();
+      });
+
+      function showDashboard() {
+        app.classList.remove("charts-page");
+        pageDash.classList.add("active");
+        pageDash.removeAttribute("hidden");
+        pageCharts.classList.remove("active");
+        pageCharts.setAttribute("hidden", "");
+        if (location.hash === "#/charts") {
+          history.replaceState(null, "", window.location.pathname + window.location.search);
+        }
+      }
+      function showCharts() {
+        app.classList.add("charts-page");
+        pageDash.classList.remove("active");
+        pageDash.setAttribute("hidden", "");
+        pageCharts.classList.add("active");
+        pageCharts.removeAttribute("hidden");
+        if (location.hash !== "#/charts") {
+          location.hash = "#/charts";
+        }
+        closeMenu();
+        syncChartIframeTheme();
+      }
+
+      menu.addEventListener("click", function (e) {
+        var t = e.target.closest("[data-action]");
+        if (!t) return;
+        e.preventDefault();
+        var action = t.getAttribute("data-action");
+        if (action === "charts") {
+          showCharts();
+          return;
+        }
+        if (action === "logout") {
+          closeMenu();
+          window.alert("Demo: Logout would sign the user out.");
+          return;
+        }
+        if (action === "stub") {
+          closeMenu();
+          window.alert("Demo: " + (t.getAttribute("data-label") || "Menu") + " (no backend).");
+        }
+      });
+
+      backBtn.addEventListener("click", showDashboard);
+
+      function applyHash() {
+        if (location.hash === "#/charts") showCharts();
+        else showDashboard();
+      }
+      window.addEventListener("hashchange", applyHash);
+      applyHash();
+    })();
+  </script>
+</body>
+</html>
