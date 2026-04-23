@@ -126,8 +126,7 @@ Route::get('/academy-policy', [PageController::class, 'academyPolicy'])->name('a
 Route::get('/data-deletion', [PageController::class, 'dataDeletion'])->name('data-deletion');
 Route::get('/deleteaccount', [PageController::class, 'dataDeletion'])->name('deleteaccount');
 
-// Static UX demos (public, no enrollment / no charting backend)
-Route::get('/demo/post-registration', [DemoUxController::class, 'postRegistration'])->name('demo.post-registration');
+// Static UX demo (public, no enrollment / no charting backend)
 Route::get('/demo/charts', [DemoUxController::class, 'charts'])->name('demo.charts');
 
 // Newsletter routes

@@ -143,8 +143,6 @@
                     <span class="contact-label px-4 py-2 rounded-pill bg-white text-dark fw-semibold shadow">
                         <a href="{{ route('home') }}" class="text-dark text-decoration-none hover-primary">{{ custom_trans('home', 'front') }}</a>
                         &nbsp;|&nbsp;
-                        <a href="{{ route('demo.post-registration') }}" class="text-dark text-decoration-none hover-primary">Demo</a>
-                        &nbsp;|&nbsp;
                         <span class="text-muted">Charts</span>
                     </span>
                 </div>
@@ -158,8 +156,8 @@
                         <strong>Illustrative UI only</strong> — non-interactive mock for layout review (e.g. TradingView widget / API discussion).
                         Not affiliated with TradingView Inc. No live or delayed market data.
                     </p>
-                    <a href="{{ route('demo.post-registration') }}" class="btn btn-outline-primary btn-sm" style="pointer-events:auto">
-                        <i class="fas fa-arrow-left me-1"></i>Demo overview
+                    <a href="{{ route('home') }}" class="btn btn-outline-primary btn-sm" style="pointer-events:auto">
+                        <i class="fas fa-arrow-left me-1"></i>{{ custom_trans('home', 'front') }}
                     </a>
                 </div>
 
