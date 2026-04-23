@@ -448,6 +448,12 @@
                                         </a>
                                     </li>
                                     <li>
+                                        <a class="dropdown-item" href="{{ route('demo.charts') }}">
+                                            <i class="fas fa-chart-line me-2 text-warning"></i>
+                                            Charts <span class="badge bg-secondary ms-1 align-middle" style="font-size:0.65rem;">demo</span>
+                                        </a>
+                                    </li>
+                                    <li>
                                         <hr class="dropdown-divider">
                                     </li>
                                     <li>
@@ -584,6 +590,9 @@
                             </a>
                             <a href="{{ route('cart.index') }}" class="btn btn-outline-primary">
                                 <i class="fas fa-shopping-cart me-2"></i>{{ custom_trans('cart', 'front') }}
+                            </a>
+                            <a href="{{ route('demo.charts') }}" class="btn btn-outline-primary">
+                                <i class="fas fa-chart-line me-2"></i>Charts <span class="badge bg-secondary">demo</span>
                             </a>
                             <form action="{{ route('logout') }}" method="POST">
                                 @csrf

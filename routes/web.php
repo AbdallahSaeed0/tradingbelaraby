@@ -25,6 +25,7 @@ use App\Http\Controllers\CourseRatingController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ComingSoonController;
 use App\Http\Controllers\UniversalLinkController;
+use App\Http\Controllers\DemoUxController;
 
 // Coming Soon routes
 Route::get('/coming-soon', [ComingSoonController::class, 'index'])->name('coming-soon');
@@ -124,6 +125,10 @@ Route::get('/about-us', [PageController::class, 'aboutUs'])->name('about-us');
 Route::get('/academy-policy', [PageController::class, 'academyPolicy'])->name('academy-policy');
 Route::get('/data-deletion', [PageController::class, 'dataDeletion'])->name('data-deletion');
 Route::get('/deleteaccount', [PageController::class, 'dataDeletion'])->name('deleteaccount');
+
+// Static UX demos (public, no enrollment / no charting backend)
+Route::get('/demo/post-registration', [DemoUxController::class, 'postRegistration'])->name('demo.post-registration');
+Route::get('/demo/charts', [DemoUxController::class, 'charts'])->name('demo.charts');
 
 // Newsletter routes
 Route::post('/newsletter/subscribe', [App\Http\Controllers\NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
