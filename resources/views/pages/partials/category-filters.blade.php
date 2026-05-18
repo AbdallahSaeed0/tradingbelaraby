@@ -31,7 +31,6 @@
                         id="{{ $prefix }}-price-free" value="free">
                     <span class="filter-custom-check"></span>
                     <span class="filter-option-label">{{ custom_trans('free', 'front') }}</span>
-                    <span class="price-tag free-tag">{{ custom_trans('free', 'front') }}</span>
                 </label>
 
                 <label class="filter-option" for="{{ $prefix }}-price-paid">

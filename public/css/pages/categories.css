@@ -546,6 +546,12 @@
   flex-shrink: 0;
 }
 
+.course-card-img-wrap > a {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .course-card-img {
   width: 100%;
   height: 100%;
@@ -588,11 +594,11 @@
 .course-card:hover .overlay-view-btn { transform: translateY(0); }
 .overlay-view-btn:hover { background: var(--cat-accent); color: #fff; }
 
-/* Featured badge */
+/* Featured badge — inset-inline-start keeps it at the "start" edge in both LTR and RTL */
 .cc-badge {
   position: absolute;
   top: .6rem;
-  left: .6rem;
+  inset-inline-start: .6rem;
   z-index: 4;
   font-size: .7rem;
   font-weight: 700;
@@ -607,11 +613,11 @@
   box-shadow: 0 2px 8px rgba(247, 127, 0, .35);
 }
 
-/* Wishlist button (floating on image) */
+/* Wishlist button — inset-inline-end keeps it at the "end" edge in both LTR and RTL */
 .cc-wishlist-btn {
   position: absolute;
   top: .6rem;
-  right: .6rem;
+  inset-inline-end: .6rem;
   z-index: 4;
   width: 34px;
   height: 34px;
@@ -634,13 +640,8 @@
 }
 
 .cc-wishlist-btn i { font-size: .85rem; color: #b0b8c1; transition: color .2s; }
-.cc-wishlist-btn i.wishlisted,
+.cc-wishlist-btn i.text-danger,
 .cc-wishlist-btn:hover i { color: #dc3545; }
-
-/* Has featured badge → shift wishlist right of badge */
-.course-card-img-wrap:has(.cc-badge-featured) .cc-wishlist-btn {
-  right: .6rem;
-}
 
 /* Price badges */
 .cc-price-wrap {

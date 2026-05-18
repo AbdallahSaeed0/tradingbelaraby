@@ -231,7 +231,7 @@
                                                 data-course-id="{{ $course->id }}"
                                                 data-in-wishlist="{{ $inWishlist ? 'true' : 'false' }}"
                                                 aria-label="Wishlist">
-                                                <i class="fa{{ $inWishlist ? 's' : 'r' }} fa-heart {{ $inWishlist ? 'wishlisted' : '' }}"></i>
+                                                <i class="fas fa-heart {{ $inWishlist ? 'text-danger' : '' }}"></i>
                                             </button>
                                         @endauth
 
@@ -562,41 +562,6 @@ document.addEventListener('DOMContentLoaded', function () {
             chipsList.appendChild(chip);
         });
     }
-
-    // ─── Wishlist ────────────────────────────────────────────────────────────
-    document.querySelectorAll('.wishlist-btn').forEach(button => {
-        button.addEventListener('click', function () {
-            const courseId  = this.dataset.courseId;
-            const inWishlist = this.dataset.inWishlist === 'true';
-            const icon      = this.querySelector('i');
-            const csrf      = document.querySelector('meta[name="csrf-token"]');
-            if (!csrf) { toastr.error('CSRF token not found.'); return; }
-
-            fetch(`/wishlist/toggle/${courseId}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrf.getAttribute('content') }
-            })
-            .then(r => {
-                if (r.status === 401) { window.location.href = '/login'; return; }
-                if (!r.ok) throw new Error(`HTTP ${r.status}`);
-                return r.json();
-            })
-            .then(data => {
-                if (!data?.success) { toastr.error(data?.message || 'Error'); return; }
-                this.dataset.inWishlist = data.inWishlist;
-                if (data.inWishlist) {
-                    icon.classList.replace('far', 'fas');
-                    icon.classList.add('wishlisted');
-                    toastr.success(data.message || 'Added to wishlist');
-                } else {
-                    icon.classList.replace('fas', 'far');
-                    icon.classList.remove('wishlisted');
-                    toastr.info(data.message || 'Removed from wishlist');
-                }
-            })
-            .catch(() => toastr.error('An error occurred. Please try again.'));
-        });
-    });
 
     // ─── Enroll ──────────────────────────────────────────────────────────────
     document.querySelectorAll('.category-enroll-btn').forEach(button => {

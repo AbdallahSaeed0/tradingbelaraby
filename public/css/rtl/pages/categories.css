@@ -25,24 +25,8 @@
 
 .price-tag { margin-right: auto; margin-left: 0; }
 
-/* Badge: featured moves to right in RTL */
-.cc-badge-featured {
-  left: auto;
-  right: .6rem;
-}
-
-/* Wishlist button moves to left in RTL */
-.cc-wishlist-btn {
-  right: auto;
-  left: .6rem;
-}
-
-/* Price wrap moves to right in RTL */
-.cc-price-wrap {
-  left: auto;
-  right: .6rem;
-  flex-direction: row-reverse;
-}
+/* Badge and wishlist positions are handled by CSS logical properties in the base file.
+   No overrides needed here. */
 
 /* Card title right-align */
 .cc-title { text-align: right; }
