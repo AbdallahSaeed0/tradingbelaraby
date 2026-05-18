@@ -1004,7 +1004,7 @@
 
             function showYouTubeVideo(url) {
                 const videoId = extractYouTubeId(url);
-                const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+                const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
 
                 document.getElementById('youtubeIframe').src = embedUrl;
                 document.getElementById('youtubePlayer').style.display = 'block';
