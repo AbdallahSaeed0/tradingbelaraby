@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
+use Illuminate\Pagination\Paginator;
 use SocialiteProviders\Manager\SocialiteWasCalled;
 use Illuminate\Validation\Rules\Password;
 use App\Models\CourseCategory;
@@ -34,6 +35,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Paginator::useBootstrapFive();
+
         Event::listen(SocialiteWasCalled::class, function (SocialiteWasCalled $event) {
             if (class_exists(\SocialiteProviders\Apple\Provider::class)) {
                 $event->extendSocialite('apple', \SocialiteProviders\Apple\Provider::class);

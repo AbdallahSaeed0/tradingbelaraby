@@ -2370,5 +2370,105 @@ return [
         'en' => 'Please enter a valid phone number (at least 9 digits).',
         'ar' => 'يرجى إدخال رقم هاتف صحيح (9 أرقام على الأقل).',
     ],
+
+    // ── Bank Transfer Payment ─────────────────────────────────────────────────
+    'Bank Transfer' => [
+        'en' => 'Bank Transfer',
+        'ar' => 'التحويل البنكي',
+    ],
+    'Transfer directly to our bank account' => [
+        'en' => 'Transfer directly to our bank account',
+        'ar' => 'حوّل مباشرةً إلى حسابنا البنكي',
+    ],
+    'Bank Transfer Details' => [
+        'en' => 'Bank Transfer Details',
+        'ar' => 'تفاصيل التحويل البنكي',
+    ],
+    'Bank' => [
+        'en' => 'Bank',
+        'ar' => 'البنك',
+    ],
+    'Account Name' => [
+        'en' => 'Account Name',
+        'ar' => 'اسم صاحب الحساب',
+    ],
+    'Account Number' => [
+        'en' => 'Account Number',
+        'ar' => 'رقم الحساب',
+    ],
+    'Transaction Reference Number' => [
+        'en' => 'Transaction Reference Number',
+        'ar' => 'رقم مرجع التحويل',
+    ],
+    'Enter the reference/receipt number from your transfer' => [
+        'en' => 'Enter the reference/receipt number from your transfer',
+        'ar' => 'أدخل رقم المرجع/الإيصال من تحويلك',
+    ],
+    'Enter the transaction ID or receipt number from your bank transfer.' => [
+        'en' => 'Enter the transaction ID or receipt number from your bank transfer.',
+        'ar' => 'أدخل رقم المعاملة أو رقم الإيصال من تحويلك البنكي.',
+    ],
+    'Your enrollment will be pending until our team verifies your transfer.' => [
+        'en' => 'Your enrollment will be pending until our team verifies your transfer.',
+        'ar' => 'سيكون تسجيلك معلقاً حتى يتحقق فريقنا من تحويلك.',
+    ],
+
+    // ── Bank Transfer Pending Page ────────────────────────────────────────────
+    'Order Pending – Bank Transfer' => [
+        'en' => 'Order Pending – Bank Transfer',
+        'ar' => 'الطلب معلق – التحويل البنكي',
+    ],
+    'Order Received!' => [
+        'en' => 'Order Received!',
+        'ar' => 'تم استلام طلبك!',
+    ],
+    'Your bank transfer order is pending confirmation' => [
+        'en' => 'Your bank transfer order is pending confirmation',
+        'ar' => 'طلب التحويل البنكي الخاص بك في انتظار التأكيد',
+    ],
+    'What happens next?' => [
+        'en' => 'What happens next?',
+        'ar' => 'ماذا سيحدث بعد ذلك؟',
+    ],
+    'Transfer Received' => [
+        'en' => 'Transfer Received',
+        'ar' => 'تم استلام التحويل',
+    ],
+    'Your transaction reference number has been saved with your order.' => [
+        'en' => 'Your transaction reference number has been saved with your order.',
+        'ar' => 'تم حفظ رقم مرجع تحويلك مع طلبك.',
+    ],
+    'Admin Verification' => [
+        'en' => 'Admin Verification',
+        'ar' => 'مراجعة الإدارة',
+    ],
+    'Our team will verify your bank transfer within 1 business day.' => [
+        'en' => 'Our team will verify your bank transfer within 1 business day.',
+        'ar' => 'سيتحقق فريقنا من تحويلك البنكي خلال يوم عمل واحد.',
+    ],
+    'Course Access Activated' => [
+        'en' => 'Course Access Activated',
+        'ar' => 'تم تفعيل الوصول إلى الدورة',
+    ],
+    'Once confirmed, you will get full access to your courses.' => [
+        'en' => 'Once confirmed, you will get full access to your courses.',
+        'ar' => 'بمجرد التأكيد، ستحصل على وصول كامل إلى دوراتك.',
+    ],
+    'Order Details' => [
+        'en' => 'Order Details',
+        'ar' => 'تفاصيل الطلب',
+    ],
+    'Pending Confirmation' => [
+        'en' => 'Pending Confirmation',
+        'ar' => 'في انتظار التأكيد',
+    ],
+    'Browse More Courses' => [
+        'en' => 'Browse More Courses',
+        'ar' => 'تصفح المزيد من الدورات',
+    ],
+    'Order Number' => [
+        'en' => 'Order Number',
+        'ar' => 'رقم الطلب',
+    ],
 ];
 
