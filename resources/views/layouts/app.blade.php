@@ -291,85 +291,116 @@
                         @auth
                         @if (!$showGuestNav)
                             <!-- Notifications -->
+                            @php
+                                $unreadCount   = auth()->user()->unreadNotifications->count();
+                                $allNotifs     = auth()->user()->notifications;
+                                $notifLocale   = app()->getLocale() === 'ar' ? 'ar' : 'en';
+                            @endphp
                             <div class="dropdown">
                                 <button class="btn btn-outline-dark position-relative notification-btn" type="button"
                                     data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fas fa-bell"></i>
-                                    @if (auth()->user()->unreadNotifications->count() > 0)
-                                        <span
-                                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge">
-                                            {{ auth()->user()->unreadNotifications->count() }}
+                                    @if ($unreadCount > 0)
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge">
+                                            {{ $unreadCount > 99 ? '99+' : $unreadCount }}
                                         </span>
                                     @endif
                                 </button>
+
                                 <div class="dropdown-menu dropdown-menu-end notification-dropdown">
-                                    <div
-                                        class="dropdown-header d-flex justify-content-between align-items-center p-3 border-bottom">
-                                        <h6 class="mb-0 fw-bold text-dark">
-                                            <i class="fas fa-bell me-2 text-primary"></i>
-                                            {{ custom_trans('notifications', 'front') }}
-                                        </h6>
-                                        @if (auth()->check() && auth()->user()->notifications && auth()->user()->notifications->count() > 0)
-                                            <span
-                                                class="badge bg-warning text-dark rounded-pill">{{ auth()->user()->unreadNotifications->count() }}
-                                                {{ custom_trans('new', 'front') }}</span>
+
+                                    {{-- Header --}}
+                                    <div class="dropdown-header d-flex justify-content-between align-items-center">
+                                        <div class="notif-header-left">
+                                            <i class="fas fa-bell"></i>
+                                            <span class="notif-title">{{ custom_trans('notifications', 'front') }}</span>
+                                            @if ($unreadCount > 0)
+                                                <span class="notif-count-badge">{{ $unreadCount }} {{ custom_trans('new', 'front') }}</span>
+                                            @endif
+                                        </div>
+                                        @if ($unreadCount > 0)
+                                            <button type="button" class="notif-mark-all-btn" id="markAllReadBtn">
+                                                {{ custom_trans('mark_all_read', 'front') }}
+                                            </button>
                                         @endif
                                     </div>
 
+                                    {{-- Notification list --}}
                                     <div class="notification-list">
-                                        @forelse(auth()->user()->notifications->take(8) as $notification)
-                                            <div class="dropdown-item notification-item p-3 {{ $notification->read_at ? '' : 'unread' }}"
-                                                data-notification-id="{{ $notification->id }}">
-                                                <div class="d-flex align-items-start">
-                                                    <div class="notification-icon me-3">
-                                                        @if (str_contains($notification->type, 'Wishlist'))
-                                                            <i class="fas fa-heart text-danger"></i>
-                                                        @elseif (str_contains($notification->type, 'Course'))
-                                                            <i class="fas fa-graduation-cap text-primary"></i>
-                                                        @elseif (str_contains($notification->type, 'Quiz'))
-                                                            <i class="fas fa-question-circle text-warning"></i>
-                                                        @else
-                                                            <i class="fas fa-bell text-info"></i>
-                                                        @endif
+                                        @forelse($allNotifs->take(8) as $notification)
+                                            @php
+                                                $nTitle  = \App\Support\NotificationPayload::titleForLocale($notification->data, $notifLocale);
+                                                $nBody   = \App\Support\NotificationPayload::bodyForLocale($notification->data, $notifLocale);
+                                                $nType   = $notification->type;
+                                                $actionVal = $notification->data['action']['value'] ?? '';
+                                                $nUrl    = '';
+                                                if ($actionVal) {
+                                                    $nUrl = str_starts_with($actionVal, '/') || str_starts_with($actionVal, 'http')
+                                                        ? $actionVal : '';
+                                                }
+
+                                                if (str_contains($nType, 'Wishlist')) {
+                                                    $nIcon      = 'fas fa-heart';
+                                                    $nIconClass = 'notif-icon--danger';
+                                                } elseif (str_contains($nType, 'Payment') || str_contains($nType, 'Order')) {
+                                                    $nIcon      = 'fas fa-credit-card';
+                                                    $nIconClass = 'notif-icon--success';
+                                                } elseif (str_contains($nType, 'Quiz')) {
+                                                    $nIcon      = 'fas fa-question-circle';
+                                                    $nIconClass = 'notif-icon--warning';
+                                                } elseif (str_contains($nType, 'Live') || str_contains($nType, 'Broadcast')) {
+                                                    $nIcon      = 'fas fa-broadcast-tower';
+                                                    $nIconClass = 'notif-icon--info';
+                                                } elseif (str_contains($nType, 'Course') || str_contains($nType, 'Enrollment')) {
+                                                    $nIcon      = 'fas fa-graduation-cap';
+                                                    $nIconClass = 'notif-icon--primary';
+                                                } else {
+                                                    $nIcon      = 'fas fa-bell';
+                                                    $nIconClass = 'notif-icon--info';
+                                                }
+                                            @endphp
+
+                                            <div class="dropdown-item notification-item {{ $notification->read_at ? '' : 'unread' }}"
+                                                data-notification-id="{{ $notification->id }}"
+                                                @if($nUrl) data-action-url="{{ $nUrl }}" @endif>
+                                                <div class="d-flex align-items-start gap-3">
+                                                    <div class="notification-icon {{ $nIconClass }}">
+                                                        <i class="{{ $nIcon }}"></i>
                                                     </div>
-                                                    <div class="notification-content flex-grow-1">
-                                                        <div class="notification-message fw-semibold text-dark mb-1">
-                                                            {{ \App\Support\NotificationPayload::titleForLocale($notification->data, app()->getLocale() === 'ar' ? 'ar' : 'en') }}
-                                                        </div>
-                                                        <div class="notification-time text-muted small">
-                                                            <i class="far fa-clock me-1"></i>
+                                                    <div class="notification-content">
+                                                        <div class="notification-message">{{ $nTitle }}</div>
+                                                        @if($nBody && $nBody !== $nTitle)
+                                                            <div class="notification-body">{{ $nBody }}</div>
+                                                        @endif
+                                                        <div class="notification-time">
+                                                            <i class="far fa-clock"></i>
                                                             {{ $notification->created_at->diffForHumans() }}
                                                         </div>
                                                     </div>
                                                     @if (!$notification->read_at)
-                                                        <div class="notification-status ms-2">
-                                                            <span class="badge bg-danger rounded-circle w-8 h-8"></span>
-                                                        </div>
+                                                        <div class="notification-unread-dot"></div>
                                                     @endif
                                                 </div>
                                             </div>
                                         @empty
-                                            <div class="dropdown-item text-center py-4">
-                                                <div class="text-muted">
-                                                    <i class="far fa-bell-slash fa-2x mb-2"></i>
-                                                    <div>{{ custom_trans('no_notifications', 'front') }}</div>
-                                                    <small
-                                                        class="text-muted">{{ custom_trans('you_will_see_notifications_here', 'front') }}</small>
-                                                </div>
+                                            <div class="notification-empty">
+                                                <i class="far fa-bell-slash"></i>
+                                                <p>{{ custom_trans('no_notifications', 'front') }}</p>
+                                                <small>{{ custom_trans('you_will_see_notifications_here', 'front') }}</small>
                                             </div>
                                         @endforelse
                                     </div>
 
-                                    @if (auth()->check() && auth()->user()->notifications && auth()->user()->notifications->count() > 0)
-                                        <div class="dropdown-divider"></div>
-                                        <div class="dropdown-item text-center">
-                                            <a href="{{ route('notifications.index') }}"
-                                                class="btn btn-outline-primary btn-sm">
-                                                <i class="fas fa-eye me-1"></i>
+                                    {{-- Footer --}}
+                                    @if ($allNotifs->count() > 0)
+                                        <div class="notification-footer">
+                                            <a href="{{ route('notifications.index') }}">
                                                 {{ custom_trans('view_all_notifications', 'front') }}
+                                                <i class="fas fa-arrow-left"></i>
                                             </a>
                                         </div>
                                     @endif
+
                                 </div>
                             </div>
 
@@ -1154,60 +1185,76 @@
                 });
             });
 
-            // Notification functionality
-            const notificationItems = document.querySelectorAll('.notification-item');
+            // ── Notification functionality ─────────────────────────────────────────
+            const csrfMeta = document.querySelector('meta[name="csrf-token"]');
 
-            notificationItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    const notificationId = this.dataset.notificationId;
+            function notifFetch(url, method = 'POST') {
+                return fetch(url, {
+                    method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfMeta ? csrfMeta.getAttribute('content') : ''
+                    }
+                });
+            }
 
-                    // Mark as read if unread
+            function updateNotificationCount() {
+                const unreadCount = document.querySelectorAll('.notification-item.unread').length;
+                const bellBadge   = document.querySelector('.notification-badge');
+                const headerBadge = document.querySelector('.notif-count-badge');
+                const markAllBtn  = document.getElementById('markAllReadBtn');
+
+                if (unreadCount === 0) {
+                    if (bellBadge)   bellBadge.style.display   = 'none';
+                    if (headerBadge) headerBadge.style.display  = 'none';
+                    if (markAllBtn)  markAllBtn.style.display   = 'none';
+                } else {
+                    const label = `${unreadCount} {{ custom_trans('new', 'front') }}`;
+                    if (bellBadge)   { bellBadge.style.display = ''; bellBadge.textContent = unreadCount > 99 ? '99+' : unreadCount; }
+                    if (headerBadge) { headerBadge.style.display = ''; headerBadge.textContent = label; }
+                }
+            }
+
+            // Mark individual notification as read on click
+            document.querySelectorAll('.notification-item').forEach(item => {
+                item.addEventListener('click', function () {
+                    const id        = this.dataset.notificationId;
+                    const actionUrl = this.dataset.actionUrl;
+
                     if (this.classList.contains('unread')) {
                         this.classList.remove('unread');
-                        const statusBadge = this.querySelector('.notification-status .badge');
-                        if (statusBadge) {
-                            statusBadge.remove();
-                        }
-
-                        // Update notification count
+                        const dot = this.querySelector('.notification-unread-dot');
+                        if (dot) dot.remove();
                         updateNotificationCount();
 
-                        // Send AJAX to mark as read
-                        const csrfToken = document.querySelector('meta[name="csrf-token"]');
-                        if (csrfToken) {
-                            fetch(`/notifications/${notificationId}/mark-as-read`, {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': csrfToken.getAttribute('content')
-                                }
-                            }).catch(error => console.error(
-                                'Error marking notification as read:', error));
-                        }
+                        notifFetch(`/notifications/${id}/mark-as-read`)
+                            .catch(err => console.error('mark-as-read error:', err));
+                    }
+
+                    // Navigate to action URL if present
+                    if (actionUrl) {
+                        window.location.href = actionUrl;
                     }
                 });
             });
 
-            // Function to update notification count
-            function updateNotificationCount() {
-                const unreadCount = document.querySelectorAll('.notification-item.unread').length;
-                const badge = document.querySelector('.notification-badge');
-                const headerBadge = document.querySelector('.notification-dropdown .dropdown-header .badge');
+            // Mark all as read
+            const markAllBtn = document.getElementById('markAllReadBtn');
+            if (markAllBtn) {
+                markAllBtn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    document.querySelectorAll('.notification-item.unread').forEach(item => {
+                        item.classList.remove('unread');
+                        const dot = item.querySelector('.notification-unread-dot');
+                        if (dot) dot.remove();
+                    });
+                    updateNotificationCount();
 
-                if (unreadCount === 0) {
-                    if (badge) badge.style.display = 'none';
-                    if (headerBadge) headerBadge.style.display = 'none';
-                } else {
-                    if (badge) {
-                        badge.style.display = 'block';
-                        badge.textContent = unreadCount;
-                    }
-                    if (headerBadge) {
-                        headerBadge.style.display = 'inline-block';
-                        headerBadge.textContent = `${unreadCount} New`;
-                    }
-                }
+                    notifFetch('/notifications/mark-all-read')
+                        .catch(err => console.error('mark-all-read error:', err));
+                });
             }
+            // ── End notification functionality ─────────────────────────────────────
 
             // Like Button functionality
             const likeBtn = document.getElementById('likeBtn');
