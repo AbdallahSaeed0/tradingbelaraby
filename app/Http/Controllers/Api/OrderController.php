@@ -35,10 +35,11 @@ class OrderController extends Controller
         }
 
         $request->validate([
-            'course_ids' => 'required|array|min:1',
-            'course_ids.*' => 'exists:courses,id',
-            'payment_method' => 'required|in:visa,free,cash_on_delivery,paypal',
-            'coupon_code' => 'nullable|string|max:50',
+            'course_ids'            => 'required|array|min:1',
+            'course_ids.*'          => 'exists:courses,id',
+            'payment_method'        => 'required|in:visa,free,cash_on_delivery,paypal,bank_transfer',
+            'coupon_code'           => 'nullable|string|max:50',
+            'transaction_reference' => 'nullable|string|max:255',
         ]);
 
         DB::beginTransaction();
@@ -165,8 +166,8 @@ class OrderController extends Controller
                 }
             }
 
-            // If cash-on-delivery or free (not PayPal), create enrollments
-            if (in_array($request->payment_method, ['cash_on_delivery']) || $total == 0) {
+            // If cash-on-delivery, bank_transfer, or free (not PayPal), create enrollments
+            if (in_array($request->payment_method, ['cash_on_delivery', 'bank_transfer']) || $total == 0) {
                 foreach ($courses as $course) {
                     $existingEnrollment = CourseEnrollment::where('user_id', $user->id)
                         ->where('course_id', $course->id)
@@ -174,14 +175,19 @@ class OrderController extends Controller
 
                     if (!$existingEnrollment) {
                         CourseEnrollment::create([
-                            'user_id' => $user->id,
-                            'course_id' => $course->id,
-                            'transaction_id' => $order->order_number,
-                            'status' => $total == 0 ? 'active' : 'pending',
-                            'enrolled_at' => $total == 0 ? now() : null,
-                            'progress_percentage' => 0,
-                            'payment_method' => $request->payment_method,
-                            'amount_paid' => $course->price,
+                            'user_id'            => $user->id,
+                            'course_id'          => $course->id,
+                            'transaction_id'     => $request->payment_method === 'bank_transfer' && $request->transaction_reference
+                                ? $request->transaction_reference
+                                : $order->order_number,
+                            'status'             => $total == 0 ? 'active' : 'pending',
+                            'enrolled_at'        => $total == 0 ? now() : null,
+                            'progress_percentage'=> 0,
+                            'payment_method'     => $request->payment_method,
+                            'amount_paid'        => $course->price,
+                            'notes'              => $request->payment_method === 'bank_transfer'
+                                ? 'Bank transfer reference: ' . ($request->transaction_reference ?? 'Not provided')
+                                : null,
                         ]);
                     }
                 }
@@ -201,7 +207,9 @@ class OrderController extends Controller
                         ? 'Complete your payment in the browser.'
                         : ($request->payment_method === 'cash_on_delivery'
                             ? 'Order created. Enrollment will be activated after payment confirmation.'
-                            : 'Order created successfully')),
+                            : ($request->payment_method === 'bank_transfer'
+                                ? 'Your order has been received. Enrollment will be activated once your bank transfer is confirmed by the admin.'
+                                : 'Order created successfully'))),
                 'data' => new OrderResource($order->load('items')),
             ];
             if ($approvalUrl !== null) {

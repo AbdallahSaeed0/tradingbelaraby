@@ -44,8 +44,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/auth/user', [AuthController::class, 'user'])->name('api.auth.user');
     Route::post('/fcm-token', [App\Http\Controllers\Api\FcmTokenController::class, 'store'])->name('api.fcm-token.store');
     Route::put('/users/profile', [AuthController::class, 'updateProfile'])->name('api.users.profile.update');
-    Route::post('/auth/verify-email', [AuthController::class, 'verifyEmail'])->name('api.auth.verify');
-    Route::post('/auth/resend-verification', [AuthController::class, 'resendVerification'])->name('api.auth.resend');
+    Route::post('/auth/verify-whatsapp-otp', [AuthController::class, 'verifyWhatsappOtp'])->name('api.auth.verify-whatsapp');
+    Route::post('/auth/resend-whatsapp-otp', [AuthController::class, 'resendWhatsappOtp'])->name('api.auth.resend-whatsapp');
     Route::delete('/users/account', [AuthController::class, 'deleteAccount'])->name('api.users.account.delete');
 });
 
@@ -126,6 +126,9 @@ Route::post('/live-classes/{id}/register', [LiveClassController::class, 'registe
 
 // Sliders API (home page banner - same as website)
 Route::get('/sliders', [App\Http\Controllers\Api\SliderController::class, 'index'])->name('api.sliders.index');
+
+// Payment settings (public - bank transfer info shown to students before checkout)
+Route::get('/payment-settings', [App\Http\Controllers\Api\PaymentSettingsController::class, 'index'])->name('api.payment-settings.index');
 
 // Cart API Routes (Protected)
 Route::middleware('auth:sanctum')->group(function () {

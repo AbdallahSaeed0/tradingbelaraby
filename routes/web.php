@@ -72,17 +72,11 @@ Route::middleware('guest')->group(function () {
     Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('password.reset.attempt');
 });
 
-// Email Verification Routes
-// Verification notice page (requires auth)
+// WhatsApp Phone Verification Routes (replaces email verification)
 Route::middleware(['auth'])->group(function () {
-    Route::get('/email/verify', function () {
-        return view('auth.verify-email');
-    })->name('verification.notice');
-
-    Route::post('/email/verification-notification', function (Request $request) {
-        $request->user()->sendEmailVerificationNotification();
-        return back()->with('success', 'Verification link sent! Please check your email.');
-    })->middleware(['throttle:6,1'])->name('verification.send');
+    Route::get('/verify-whatsapp', [AuthController::class, 'showWhatsappVerify'])->name('whatsapp.verify');
+    Route::post('/verify-whatsapp', [AuthController::class, 'verifyWhatsappOtp'])->middleware('throttle:10,1')->name('whatsapp.verify.attempt');
+    Route::post('/verify-whatsapp/resend', [AuthController::class, 'resendWhatsappOtp'])->middleware('throttle:3,1')->name('whatsapp.verify.resend');
 
     // X (Twitter) sign-in: collect email when X did not provide one
     Route::get('/auth/x/complete-profile', [App\Http\Controllers\SocialAuthController::class, 'showCompleteProfileForm'])->name('auth.x.complete-profile');
@@ -423,6 +417,8 @@ Route::resource('quizzes.questions', App\Http\Controllers\Admin\QuizQuestionMana
     Route::post('/coupons/{coupon}/update-status', [App\Http\Controllers\Admin\CouponsController::class, 'updateStatus'])->name('coupons.update_status')->middleware('admin.permission:manage_courses');
 
     // Settings routes
+    Route::get('/settings/payment', [App\Http\Controllers\Admin\PaymentSettingsController::class, 'index'])->name('settings.payment.index');
+    Route::put('/settings/payment', [App\Http\Controllers\Admin\PaymentSettingsController::class, 'update'])->name('settings.payment.update');
     Route::get('/settings/social-login', [App\Http\Controllers\Admin\SocialLoginSettingsController::class, 'index'])->name('settings.social-login.index');
     Route::put('/settings/social-login/google', [App\Http\Controllers\Admin\SocialLoginSettingsController::class, 'updateGoogle'])->name('settings.social-login.update-google');
     Route::put('/settings/social-login/twitter', [App\Http\Controllers\Admin\SocialLoginSettingsController::class, 'updateTwitter'])->name('settings.social-login.update-twitter');

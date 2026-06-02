@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use App\Services\SocialLoginSettingsService;
+use App\Services\WhatsAppService;
 
 class AuthController extends Controller
 {
@@ -38,11 +39,11 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
 
-            // Check if email is verified
-            if (!$user->email_verified_at) {
+            // Check if phone is verified via WhatsApp OTP
+            if (!$user->phone_verified_at) {
                 Auth::logout();
                 return back()->withErrors([
-                    'email' => 'Please verify your email address before logging in. Check your inbox for the verification link.',
+                    'email' => 'Please verify your phone number before logging in. Check your WhatsApp for the verification code.',
                 ])->onlyInput('email');
             }
 
@@ -180,19 +181,86 @@ class AuthController extends Controller
         ]);
 
         $user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'country' => $data['country'],
-            'phone' => $data['phone'],
+            'name'     => $data['name'],
+            'email'    => $data['email'],
+            'country'  => $data['country'],
+            'phone'    => $data['phone'],
             'password' => Hash::make($data['password']),
         ]);
 
-        // Fire the Registered event which will trigger the email verification notification
-        event(new Registered($user));
-
-        // Log user in so they can see the verification notice page (which requires auth)
+        // Log user in so they can see the WhatsApp verification page
         Auth::login($user);
 
-        return redirect()->route('verification.notice')->with('success', custom_trans('Registration successful! Please check your email to verify your account before logging in.', 'front'));
+        // Send WhatsApp OTP
+        app(WhatsAppService::class)->sendOtp($data['phone']);
+
+        return redirect()->route('whatsapp.verify')->with('success', custom_trans('Registration successful! A verification code has been sent to your WhatsApp.', 'front'));
+    }
+
+    /**
+     * Show the WhatsApp OTP verification page.
+     */
+    public function showWhatsappVerify()
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return redirect()->route('login');
+        }
+        if ($user->hasVerifiedPhone()) {
+            return redirect()->route('home');
+        }
+        return view('auth.verify-whatsapp');
+    }
+
+    /**
+     * Handle WhatsApp OTP verification form submission.
+     */
+    public function verifyWhatsappOtp(Request $request)
+    {
+        $request->validate([
+            'otp' => ['required', 'string', 'size:6'],
+        ]);
+
+        $user = Auth::user();
+        if (!$user) {
+            return redirect()->route('login');
+        }
+
+        if ($user->hasVerifiedPhone()) {
+            return redirect()->route('home');
+        }
+
+        if (!$user->phone) {
+            return back()->withErrors(['otp' => 'No phone number is associated with your account.']);
+        }
+
+        $whatsapp = app(WhatsAppService::class);
+
+        if (!$whatsapp->verifyOtp($user->phone, $request->otp)) {
+            return back()->withErrors(['otp' => 'Invalid or expired verification code. Please request a new one.'])->withInput();
+        }
+
+        $user->markPhoneAsVerified();
+
+        return redirect()->route('home')->with('success', 'Phone number verified successfully! Welcome!');
+    }
+
+    /**
+     * Resend WhatsApp OTP for the currently authenticated user.
+     */
+    public function resendWhatsappOtp(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user || !$user->phone) {
+            return back()->withErrors(['otp' => 'Unable to resend. Please register again.']);
+        }
+
+        if ($user->hasVerifiedPhone()) {
+            return redirect()->route('home');
+        }
+
+        app(WhatsAppService::class)->sendOtp($user->phone);
+
+        return back()->with('success', 'A new verification code has been sent to your WhatsApp.');
     }
 }

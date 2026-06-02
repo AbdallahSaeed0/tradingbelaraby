@@ -766,9 +766,51 @@
                     </div>
                 </div>
             </div>
+            <!-- Payment Settings Card -->
+            <div class="settings-card-wrapper">
+                <div class="card settings-card">
+                    <div class="card-body text-center p-4">
+                        <div class="settings-icon mb-4">
+                            <div class="icon-wrapper">
+                                <i class="fas fa-university fa-4x text-warning"></i>
+                            </div>
+                        </div>
+                        <h3 class="card-title mb-3">{{ custom_trans('Payment Settings', 'admin') }}</h3>
+                        <p class="card-text text-muted mb-4">
+                            {{ custom_trans('Configure payment methods available to students, including bank transfer account details.', 'admin') }}
+                        </p>
+                        <div class="features-list mb-4">
+                            <div class="row text-start">
+                                <div class="col-md-6">
+                                    <div class="feature-item">
+                                        <i class="fas fa-university text-warning me-2"></i>
+                                        <span>{{ custom_trans('Bank Transfer', 'admin') }}</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-toggle-on text-success me-2"></i>
+                                        <span>{{ custom_trans('Enable / Disable', 'admin') }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="feature-item">
+                                        <i class="fas fa-hashtag text-info me-2"></i>
+                                        <span>{{ custom_trans('Account Details', 'admin') }}</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-clock text-danger me-2"></i>
+                                        <span>{{ custom_trans('Pending Confirmation', 'admin') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="{{ route('admin.settings.payment.index') }}" class="btn btn-primary settings-card-cta">
+                            <i class="fas fa-university me-2"></i>{{ custom_trans('Manage Payment Settings', 'admin') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 @endsection
-
 
 

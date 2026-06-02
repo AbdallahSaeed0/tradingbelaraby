@@ -204,10 +204,17 @@ class EnrollmentsController extends Controller
     public function updateStatus(Request $request, CourseEnrollment $enrollment)
     {
         $request->validate([
-            'status' => 'required|in:enrolled,completed,cancelled'
+            'status' => 'required|in:active,enrolled,completed,cancelled,pending'
         ]);
 
-        $enrollment->update(['status' => $request->status]);
+        $updateData = ['status' => $request->status];
+
+        // When admin confirms a bank transfer (activates a pending enrollment), set enrolled_at
+        if ($request->status === 'active' && !$enrollment->enrolled_at) {
+            $updateData['enrolled_at'] = now();
+        }
+
+        $enrollment->update($updateData);
 
         if (request()->expectsJson()) {
             return response()->json([

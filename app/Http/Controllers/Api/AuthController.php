@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
 use Laravel\Socialite\Facades\Socialite;
 use App\Services\SocialLoginSettingsService;
+use App\Services\WhatsAppService;
 
 class AuthController extends Controller
 {
@@ -39,45 +40,49 @@ class AuthController extends Controller
     }
 
     /**
-     * Register a new user
+     * Register a new user and send a WhatsApp OTP to verify their phone number.
      */
     public function register(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'name'     => ['required', 'string', 'max:255'],
+            'email'    => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Password::defaults()],
-            'country' => ['required', 'string', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:20'],
+            'country'  => ['required', 'string', 'max:255'],
+            'phone'    => ['required', 'string', 'min:9', 'max:20', 'regex:/^\+?[0-9]{9,20}$/'],
+        ], [
+            'phone.required' => 'Phone number is required to send your WhatsApp verification code.',
+            'phone.regex'    => 'Please enter a valid phone number (9–20 digits, optionally starting with +).',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Validation failed',
-                'errors' => $validator->errors(),
+                'errors'  => $validator->errors(),
             ], 422);
         }
 
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
+            'name'     => $request->name,
+            'email'    => $request->email,
             'password' => Hash::make($request->password),
-            'country' => $request->country,
-            'phone' => $request->filled('phone') ? $request->phone : null,
+            'country'  => $request->country,
+            'phone'    => $request->phone,
         ]);
 
-        // Fire the Registered event which will trigger the email verification notification
-        event(new Registered($user));
+        $token    = $user->createToken('auth_token')->plainTextToken;
+        $language = $request->header('Accept-Language', 'en');
+        $language = str_starts_with($language, 'ar') ? 'ar' : 'en';
 
-        // Create token using Sanctum
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $whatsapp = app(WhatsAppService::class);
+        $whatsapp->sendOtp($request->phone, $language);
 
         return response()->json([
             'success' => true,
-            'message' => 'User registered successfully. Please check your email to verify your account before logging in.',
-            'data' => [
-                'user' => new UserResource($user),
+            'message' => 'Registration successful. A verification code has been sent to your WhatsApp number.',
+            'data'    => [
+                'user'  => new UserResource($user),
                 'token' => $token,
             ],
         ], 201);
@@ -110,18 +115,29 @@ class AuthController extends Controller
 
         $user = Auth::user();
 
-        // Check if email is verified
-        if (!$user->email_verified_at) {
-            Auth::logout();
+        // Create token (needed even for unverified phones so user can call the verify endpoint)
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        // Check if phone is verified via WhatsApp OTP
+        if (!$user->phone_verified_at) {
+            if ($user->phone) {
+                $language = $request->header('Accept-Language', 'en');
+                $language = str_starts_with($language, 'ar') ? 'ar' : 'en';
+                $whatsapp = app(WhatsAppService::class);
+                if (!$whatsapp->hasActiveOtp($user->phone)) {
+                    $whatsapp->sendOtp($user->phone, $language);
+                }
+            }
             return response()->json([
-                'success' => false,
-                'message' => 'Email not verified. Please check your inbox and verify your email address before logging in.',
-                'email_verified' => false,
+                'success'        => false,
+                'message'        => 'Phone number not verified. A verification code has been sent to your WhatsApp.',
+                'phone_verified' => false,
+                'data'           => [
+                    'user'  => new UserResource($user),
+                    'token' => $token,
+                ],
             ], 403);
         }
-
-        // Create token using Sanctum
-        $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'success' => true,
@@ -206,6 +222,10 @@ class AuthController extends Controller
             if (!$user->email_verified_at) {
                 $user->markEmailAsVerified();
             }
+            // Social logins bypass phone verification
+            if (!$user->phone_verified_at) {
+                $user->forceFill(['phone_verified_at' => now()])->save();
+            }
             $token = $user->createToken('auth_token')->plainTextToken;
             return response()->json([
                 'success' => true,
@@ -220,9 +240,10 @@ class AuthController extends Controller
         $user = User::where('email', $email)->first();
         if ($user) {
             $user->update([
-                'google_id' => $sub,
-                'avatar' => $picture ?: $user->avatar,
-                'email_verified_at' => $user->email_verified_at ?? now(),
+                'google_id'          => $sub,
+                'avatar'             => $picture ?: $user->avatar,
+                'email_verified_at'  => $user->email_verified_at ?? now(),
+                'phone_verified_at'  => $user->phone_verified_at ?? now(),
             ]);
             $token = $user->createToken('auth_token')->plainTextToken;
             return response()->json([
@@ -236,12 +257,13 @@ class AuthController extends Controller
         }
 
         $user = User::create([
-            'name' => $name,
-            'email' => $email,
-            'password' => null,
-            'google_id' => $sub,
-            'avatar' => $picture,
-            'email_verified_at' => now(),
+            'name'               => $name,
+            'email'              => $email,
+            'password'           => null,
+            'google_id'          => $sub,
+            'avatar'             => $picture,
+            'email_verified_at'  => now(),
+            'phone_verified_at'  => now(),
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -295,6 +317,9 @@ class AuthController extends Controller
                 if (! $user->email_verified_at) {
                     $user->markEmailAsVerified();
                 }
+                if (! $user->phone_verified_at) {
+                    $user->forceFill(['phone_verified_at' => now()])->save();
+                }
                 $token = $user->createToken('auth_token')->plainTextToken;
 
                 return response()->json([
@@ -317,8 +342,9 @@ class AuthController extends Controller
             $user = User::where('email', $email)->first();
             if ($user) {
                 $user->update([
-                    'apple_id' => $sub,
+                    'apple_id'          => $sub,
                     'email_verified_at' => $user->email_verified_at ?? now(),
+                    'phone_verified_at' => $user->phone_verified_at ?? now(),
                 ]);
                 $token = $user->createToken('auth_token')->plainTextToken;
 
@@ -333,11 +359,12 @@ class AuthController extends Controller
             }
 
             $user = User::create([
-                'name' => $name,
-                'email' => $email,
-                'password' => null,
-                'apple_id' => $sub,
+                'name'              => $name,
+                'email'             => $email,
+                'password'          => null,
+                'apple_id'          => $sub,
                 'email_verified_at' => now(),
+                'phone_verified_at' => now(),
             ]);
 
             $token = $user->createToken('auth_token')->plainTextToken;
@@ -421,6 +448,9 @@ class AuthController extends Controller
             if (!$user->email_verified_at) {
                 $user->markEmailAsVerified();
             }
+            if (!$user->phone_verified_at) {
+                $user->forceFill(['phone_verified_at' => now()])->save();
+            }
             $token = $user->createToken('auth_token')->plainTextToken;
             return response()->json([
                 'success' => true,
@@ -437,9 +467,10 @@ class AuthController extends Controller
             $user = User::where('email', $email)->first();
             if ($user) {
                 $user->update([
-                    'twitter_id' => $twitterId,
-                    'avatar' => $avatar ?: $user->avatar,
+                    'twitter_id'        => $twitterId,
+                    'avatar'            => $avatar ?: $user->avatar,
                     'email_verified_at' => $user->email_verified_at ?? now(),
+                    'phone_verified_at' => $user->phone_verified_at ?? now(),
                 ]);
                 $token = $user->createToken('auth_token')->plainTextToken;
                 return response()->json([
@@ -458,12 +489,13 @@ class AuthController extends Controller
         }
 
         $user = User::create([
-            'name' => $name,
-            'email' => $email,
-            'password' => null,
-            'twitter_id' => $twitterId,
-            'avatar' => $avatar,
+            'name'              => $name,
+            'email'             => $email,
+            'password'          => null,
+            'twitter_id'        => $twitterId,
+            'avatar'            => $avatar,
             'email_verified_at' => now(),
+            'phone_verified_at' => now(),
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -503,56 +535,94 @@ class AuthController extends Controller
     }
 
     /**
-     * Verify email with code
+     * Verify phone number with WhatsApp OTP code.
      */
-    public function verifyEmail(Request $request): JsonResponse
+    public function verifyWhatsappOtp(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'code' => ['required', 'string'],
+            'otp' => ['required', 'string', 'size:6'],
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Validation failed',
-                'errors' => $validator->errors(),
+                'errors'  => $validator->errors(),
             ], 422);
         }
 
         $user = $request->user();
 
-        // In a real implementation, you would verify the code against a stored verification code
-        // For now, we'll just mark the email as verified
-        if (!$user->hasVerifiedEmail()) {
-            $user->markEmailAsVerified();
+        if ($user->hasVerifiedPhone()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Phone number already verified.',
+                'data'    => new UserResource($user),
+            ]);
         }
+
+        if (!$user->phone) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No phone number is associated with this account.',
+            ], 400);
+        }
+
+        $whatsapp = app(WhatsAppService::class);
+
+        if (!$whatsapp->verifyOtp($user->phone, $request->otp)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid or expired verification code. Please request a new one.',
+            ], 400);
+        }
+
+        $user->markPhoneAsVerified();
 
         return response()->json([
             'success' => true,
-            'message' => 'Email verified successfully',
-            'data' => new UserResource($user),
+            'message' => 'Phone number verified successfully.',
+            'data'    => new UserResource($user->fresh()),
         ]);
     }
 
     /**
-     * Resend email verification
+     * Resend WhatsApp OTP to the user's phone number.
      */
-    public function resendVerification(Request $request): JsonResponse
+    public function resendWhatsappOtp(Request $request): JsonResponse
     {
         $user = $request->user();
 
-        if ($user->hasVerifiedEmail()) {
+        if ($user->hasVerifiedPhone()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Email already verified',
+                'message' => 'Phone number is already verified.',
             ], 400);
         }
 
-        $user->sendEmailVerificationNotification();
+        if (!$user->phone) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No phone number is associated with this account.',
+            ], 400);
+        }
+
+        $language = $request->header('Accept-Language', 'en');
+        $language = str_starts_with($language, 'ar') ? 'ar' : 'en';
+
+        $whatsapp = app(WhatsAppService::class);
+        $sent     = $whatsapp->sendOtp($user->phone, $language);
+
+        if (!$sent) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to send verification code. Please try again.',
+            ], 500);
+        }
 
         return response()->json([
             'success' => true,
-            'message' => 'Verification email sent',
+            'message' => 'Verification code sent to your WhatsApp.',
         ]);
     }
 

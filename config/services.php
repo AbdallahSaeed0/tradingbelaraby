@@ -68,4 +68,11 @@ return [
         'chat_id' => env('TELEGRAM_CHAT_ID'),
     ],
 
+    'meta_whatsapp' => [
+        'token'           => env('META_WHATSAPP_TOKEN'),
+        'phone_number_id' => env('META_WHATSAPP_PHONE_NUMBER_ID'),
+        'otp_template'    => env('META_WHATSAPP_OTP_TEMPLATE', 'otp_verification'),
+        'api_version'     => env('META_WHATSAPP_API_VERSION', 'v21.0'),
+    ],
+
 ];

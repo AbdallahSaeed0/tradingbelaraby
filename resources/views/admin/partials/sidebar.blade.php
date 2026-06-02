@@ -213,10 +213,16 @@
                 <span class="sidebar-nav-text">Settings</span>
             </div>
             <a href="{{ route('admin.settings.index') }}"
-                class="list-group-item list-group-item-action {{ request()->routeIs('admin.settings*') ? 'active' : '' }}"
+                class="list-group-item list-group-item-action {{ request()->routeIs('admin.settings.index') ? 'active' : '' }}"
                 title="General Settings">
                 <i class="fa fa-sliders-h"></i>
                 <span class="sidebar-nav-text">General Settings</span>
+            </a>
+            <a href="{{ route('admin.settings.payment.index') }}"
+                class="list-group-item list-group-item-action {{ request()->routeIs('admin.settings.payment*') ? 'active' : '' }}"
+                title="Payment Settings">
+                <i class="fa fa-university"></i>
+                <span class="sidebar-nav-text">Payment Settings</span>
             </a>
         </div>
     </div>

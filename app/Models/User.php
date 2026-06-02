@@ -16,8 +16,8 @@ class User extends Authenticatable implements MustVerifyEmail
     use HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable = [
-        'name', 'email', 'password', 'phone', 'avatar', 'gender', 'date_of_birth', 'country', 'bio', 'is_active',
-        'google_id', 'twitter_id', 'apple_id', 'email_verified_at',
+        'name', 'email', 'password', 'phone', 'phone_verified_at', 'avatar', 'gender', 'date_of_birth',
+        'country', 'bio', 'is_active', 'google_id', 'twitter_id', 'apple_id', 'email_verified_at',
     ];
 
     protected $hidden = [
@@ -25,10 +25,21 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     protected $casts = [
-        'email_verified_at' => 'datetime',
-        'date_of_birth' => 'date',
-        'password' => 'hashed',
+        'email_verified_at'   => 'datetime',
+        'phone_verified_at'   => 'datetime',
+        'date_of_birth'       => 'date',
+        'password'            => 'hashed',
     ];
+
+    public function hasVerifiedPhone(): bool
+    {
+        return $this->phone_verified_at !== null;
+    }
+
+    public function markPhoneAsVerified(): bool
+    {
+        return $this->forceFill(['phone_verified_at' => $this->freshTimestamp()])->save();
+    }
 
     public function wishlistItems(): HasMany
     {
