@@ -286,6 +286,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
     Route::get('/checkout/payment', [CheckoutController::class, 'payment'])->name('checkout.payment');
     Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
+    Route::get('/checkout/bank-transfer-pending/{order}', [CheckoutController::class, 'bankTransferPending'])->name('checkout.bank-transfer-pending');
 
     // Tabby Payment Routes
     Route::get('/tabby/success', [App\Http\Controllers\TabbyController::class, 'success'])->name('tabby.success');

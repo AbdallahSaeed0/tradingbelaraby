@@ -1342,6 +1342,18 @@ return [
         'en' => 'Are you sure you want to delete this notification?',
         'ar' => 'هل أنت متأكد أنك تريد حذف هذا الإشعار؟',
     ],
+    'mark_as_read' => [
+        'en' => 'Mark as Read',
+        'ar' => 'تعليم كمقروء',
+    ],
+    'marked_as_read' => [
+        'en' => 'Marked as read',
+        'ar' => 'تم التعليم كمقروء',
+    ],
+    'notification_deleted' => [
+        'en' => 'Notification deleted',
+        'ar' => 'تم حذف الإشعار',
+    ],
     'discount' => [
         'en' => 'Discount',
         'ar' => 'الخصم',

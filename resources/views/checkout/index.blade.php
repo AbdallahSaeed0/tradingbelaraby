@@ -191,8 +191,9 @@
                                         </div>
                                     </div>
                                 @elseif($hasPaid)
-                                    <!-- PayPal only -->
-                                    <div class="payment-option-card selected p-4 border rounded-3 position-relative">
+                                    <!-- PayPal -->
+                                    <div class="payment-option-card selected p-4 border rounded-3 position-relative"
+                                        onclick="selectPayment(this, 'paypal')">
                                         <input type="radio" name="payment_method" value="paypal" id="paypal_payment"
                                             checked class="position-absolute top-0 end-0 m-3">
                                         <div class="payment-icon mb-3">
@@ -205,8 +206,94 @@
                                             <i class="fas fa-check-circle text-success"></i>
                                         </div>
                                     </div>
+
+                                    {{-- Bank Transfer (only when enabled in admin) --}}
+                                    @if ($paymentSettings->bank_transfer_enabled)
+                                        <div class="payment-option-card p-4 border rounded-3 position-relative"
+                                            onclick="selectPayment(this, 'bank_transfer')">
+                                            <input type="radio" name="payment_method" value="bank_transfer"
+                                                id="bank_transfer_payment" class="position-absolute top-0 end-0 m-3">
+                                            <div class="payment-icon mb-3">
+                                                <i class="fas fa-university fa-3x text-warning"></i>
+                                            </div>
+                                            <h5 class="fw-bold mb-2">{{ custom_trans('Bank Transfer', 'front') }}</h5>
+                                            <p class="text-muted mb-0 small">
+                                                {{ custom_trans('Transfer directly to our bank account', 'front') }}
+                                            </p>
+                                            <div class="selected-badge position-absolute top-0 start-0 m-2 d-none">
+                                                <i class="fas fa-check-circle text-success"></i>
+                                            </div>
+                                        </div>
+                                    @endif
                                 @endif
                             </div>
+
+                            {{-- Bank transfer details panel (shown when bank_transfer is selected) --}}
+                            @if ($paymentSettings->bank_transfer_enabled && $hasPaid)
+                                <div id="bankTransferDetails" class="mt-4 d-none">
+                                    <div class="card border-warning">
+                                        <div class="card-header bg-warning bg-opacity-10 border-warning">
+                                            <h6 class="mb-0 fw-bold text-warning-emphasis">
+                                                <i class="fas fa-university me-2"></i>
+                                                {{ custom_trans('Bank Transfer Details', 'front') }}
+                                            </h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <table class="table table-sm table-borderless mb-3">
+                                                @if ($paymentSettings->bank_transfer_bank_name)
+                                                    <tr>
+                                                        <td class="text-muted fw-semibold" style="width:160px">{{ custom_trans('Bank', 'front') }}</td>
+                                                        <td class="fw-bold">{{ $paymentSettings->bank_transfer_bank_name }}</td>
+                                                    </tr>
+                                                @endif
+                                                @if ($paymentSettings->bank_transfer_account_name)
+                                                    <tr>
+                                                        <td class="text-muted fw-semibold">{{ custom_trans('Account Name', 'front') }}</td>
+                                                        <td class="fw-bold">{{ $paymentSettings->bank_transfer_account_name }}</td>
+                                                    </tr>
+                                                @endif
+                                                @if ($paymentSettings->bank_transfer_account_number)
+                                                    <tr>
+                                                        <td class="text-muted fw-semibold">{{ custom_trans('Account Number', 'front') }}</td>
+                                                        <td class="fw-bold text-primary fs-5">{{ $paymentSettings->bank_transfer_account_number }}</td>
+                                                    </tr>
+                                                @endif
+                                                @if ($paymentSettings->bank_transfer_iban)
+                                                    <tr>
+                                                        <td class="text-muted fw-semibold">IBAN</td>
+                                                        <td class="fw-bold text-primary">{{ $paymentSettings->bank_transfer_iban }}</td>
+                                                    </tr>
+                                                @endif
+                                            </table>
+
+                                            @if ($paymentSettings->bank_transfer_instructions)
+                                                <div class="alert alert-info py-2 small mb-3">
+                                                    <i class="fas fa-info-circle me-1"></i>
+                                                    {{ $paymentSettings->bank_transfer_instructions }}
+                                                </div>
+                                            @endif
+
+                                            <div class="mb-2">
+                                                <label for="transaction_reference" class="form-label fw-semibold">
+                                                    {{ custom_trans('Transaction Reference Number', 'front') }}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input type="text" class="form-control" id="transaction_reference"
+                                                    name="transaction_reference"
+                                                    placeholder="{{ custom_trans('Enter the reference/receipt number from your transfer', 'front') }}">
+                                                <div class="form-text">
+                                                    {{ custom_trans('Enter the transaction ID or receipt number from your bank transfer.', 'front') }}
+                                                </div>
+                                            </div>
+
+                                            <div class="alert alert-warning py-2 small mb-0">
+                                                <i class="fas fa-clock me-1"></i>
+                                                {{ custom_trans('Your enrollment will be pending until our team verifies your transfer.', 'front') }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
                         </div>
                     </div>
 
@@ -612,27 +699,43 @@
 
 @push('scripts')
     <script>
+        function selectPayment(card, method) {
+            // Remove selected class from all cards
+            document.querySelectorAll('.payment-option-card').forEach(c => {
+                c.classList.remove('selected');
+                const badge = c.querySelector('.selected-badge');
+                if (badge) badge.classList.add('d-none');
+            });
+
+            // Select this card
+            card.classList.add('selected');
+            const badge = card.querySelector('.selected-badge');
+            if (badge) badge.classList.remove('d-none');
+
+            // Check radio
+            const radio = card.querySelector('input[type="radio"]');
+            if (radio) radio.checked = true;
+
+            // Show / hide bank transfer details
+            const bankDetails = document.getElementById('bankTransferDetails');
+            const txRef = document.getElementById('transaction_reference');
+            if (bankDetails) {
+                if (method === 'bank_transfer') {
+                    bankDetails.classList.remove('d-none');
+                    if (txRef) txRef.required = true;
+                } else {
+                    bankDetails.classList.add('d-none');
+                    if (txRef) { txRef.required = false; txRef.value = ''; }
+                }
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
-            // Payment option selection
-            const paymentOptionCards = document.querySelectorAll('.payment-option-card');
-
-            paymentOptionCards.forEach(card => {
+            // Payment option selection (fallback click handler)
+            document.querySelectorAll('.payment-option-card').forEach(card => {
                 card.addEventListener('click', function() {
-                    // Remove selected class from all cards
-                    paymentOptionCards.forEach(c => {
-                        c.classList.remove('selected');
-                        c.querySelector('.selected-badge')?.classList.add('d-none');
-                    });
-
-                    // Add selected class to clicked card
-                    this.classList.add('selected');
-                    this.querySelector('.selected-badge')?.classList.remove('d-none');
-
-                    // Check the radio button
                     const radio = this.querySelector('input[type="radio"]');
-                    if (radio) {
-                        radio.checked = true;
-                    }
+                    if (radio) selectPayment(this, radio.value);
                 });
             });
 
@@ -645,8 +748,20 @@
 
                 if (!paymentMethod) {
                     e.preventDefault();
-                    toastr.error('{{ custom_trans('please_select_payment_method', 'front') }}');
+                    toastr?.error?.('{{ custom_trans('please_select_payment_method', 'front') }}') ||
+                        alert('{{ custom_trans('please_select_payment_method', 'front') }}');
                     return;
+                }
+
+                // Validate bank transfer reference
+                if (paymentMethod.value === 'bank_transfer') {
+                    const txRef = document.getElementById('transaction_reference');
+                    if (!txRef || !txRef.value.trim()) {
+                        e.preventDefault();
+                        txRef.classList.add('is-invalid');
+                        txRef.focus();
+                        return;
+                    }
                 }
 
                 // Show loading state

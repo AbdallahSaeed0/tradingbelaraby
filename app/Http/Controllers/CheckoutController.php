@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Coupon;
 use App\Models\CouponUsage;
+use App\Models\PaymentSettings;
 use App\Notifications\CourseEnrollmentNotification;
 use App\Services\Payment\TabbyService;
 use App\Services\Payment\PayPalService;
@@ -59,8 +60,9 @@ class CheckoutController extends Controller
         }
 
         $total = $subtotal - $discount;
+        $paymentSettings = PaymentSettings::getSettings();
 
-        return view('checkout.index', compact('cartItems', 'subtotal', 'total', 'discount', 'coupon', 'user'));
+        return view('checkout.index', compact('cartItems', 'subtotal', 'total', 'discount', 'coupon', 'user', 'paymentSettings'));
     }
 
     /**
@@ -143,16 +145,17 @@ class CheckoutController extends Controller
     public function process(Request $request, TabbyService $tabbyService, PayPalService $paypalService)
     {
         $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'required|email',
-            'phone' => 'required|string|max:20',
-            'address' => 'required|string',
-            'city' => 'required|string|max:255',
-            'state' => 'required|string|max:255',
-            'postal_code' => 'required|string|max:20',
-            'country' => 'required|string|max:255',
-            'payment_method' => 'required|in:visa,free,paypal', // Removed 'tabby'
+            'first_name'            => 'required|string|max:255',
+            'last_name'             => 'required|string|max:255',
+            'email'                 => 'required|email',
+            'phone'                 => 'required|string|max:20',
+            'address'               => 'required|string',
+            'city'                  => 'required|string|max:255',
+            'state'                 => 'required|string|max:255',
+            'postal_code'           => 'required|string|max:20',
+            'country'               => 'required|string|max:255',
+            'payment_method'        => 'required|in:visa,free,paypal,bank_transfer',
+            'transaction_reference' => 'nullable|string|max:255',
         ]);
 
         $user = Auth::user();
@@ -207,6 +210,7 @@ class CheckoutController extends Controller
                 'discount_amount' => $discount,
                 'payment_method' => $request->payment_method,
                 'status' => $request->payment_method === 'free' ? 'completed' : 'pending',
+                'payment_gateway_id' => $request->payment_method === 'bank_transfer' ? $request->transaction_reference : null,
                 'billing_first_name' => $request->first_name,
                 'billing_last_name' => $request->last_name,
                 'billing_email' => $request->email,
@@ -229,8 +233,8 @@ class CheckoutController extends Controller
                     ]);
 
                     // Enroll user in all courses in the bundle
-                    $enrollmentStatus = ($request->payment_method === 'free') ? 'active' : 'active';
-                    if ($request->payment_method === 'paypal') {
+                    $enrollmentStatus = 'active';
+                    if (in_array($request->payment_method, ['paypal', 'bank_transfer'])) {
                         $enrollmentStatus = 'pending';
                     }
 
@@ -266,16 +270,24 @@ class CheckoutController extends Controller
                     'price' => $cartItem->course->price,
                 ]);
 
-                    $enrollmentStatus = ($request->payment_method === 'free') ? 'active' : 'active';
-                if ($request->payment_method === 'paypal') {
-                    $enrollmentStatus = 'pending';
-                }
+                    $enrollmentStatus = 'active';
+                    if (in_array($request->payment_method, ['paypal', 'bank_transfer'])) {
+                        $enrollmentStatus = 'pending';
+                    }
 
                 $enrollment = $user->enrollments()->create([
-                    'course_id' => $cartItem->course_id,
-                    'status' => $enrollmentStatus,
-                    'enrolled_at' => now(),
+                    'course_id'           => $cartItem->course_id,
+                    'status'              => $enrollmentStatus,
+                    'enrolled_at'         => $enrollmentStatus === 'active' ? now() : null,
                     'progress_percentage' => 0,
+                    'payment_method'      => $request->payment_method,
+                    'transaction_id'      => $request->payment_method === 'bank_transfer' && $request->transaction_reference
+                        ? $request->transaction_reference
+                        : $order->order_number,
+                    'notes'               => $request->payment_method === 'bank_transfer'
+                        ? 'Bank transfer reference: ' . ($request->transaction_reference ?? 'Not provided')
+                        : null,
+                    'amount_paid'         => $cartItem->course->price,
                 ]);
 
                 // Send enrollment notification email
@@ -319,6 +331,10 @@ class CheckoutController extends Controller
 
                 return redirect()->route('checkout.success', $order->id)
                     ->with('success', 'Courses enrolled successfully!');
+            } elseif ($request->payment_method === 'bank_transfer') {
+                $user->cartItems()->delete();
+
+                return redirect()->route('checkout.bank-transfer-pending', $order->id);
             }
             // Tabby payment commented out - not configured
             /* elseif ($request->payment_method === 'tabby') {
@@ -469,5 +485,17 @@ class CheckoutController extends Controller
         }
 
         return view('checkout.payment', compact('order'));
+    }
+
+    /**
+     * Display bank transfer pending confirmation page
+     */
+    public function bankTransferPending(Order $order)
+    {
+        if ($order->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        return view('checkout.bank-transfer-pending', compact('order'));
     }
 }
