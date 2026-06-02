@@ -19,3 +19,6 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+# Documentation and archives
+*.md
+*.zip
