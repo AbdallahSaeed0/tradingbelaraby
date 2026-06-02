@@ -108,46 +108,6 @@
                         </div>
                     </div>
 
-                    <!-- Related Blogs -->
-                    @if ($relatedBlogs->count() > 0)
-                        <div class="related-blogs">
-                            <h3 class="mb-4">{{ custom_trans('Related Articles', 'front') }}</h3>
-                            <div class="row g-4">
-                                @foreach ($relatedBlogs as $relatedBlog)
-                                    <div class="col-md-6">
-                                        <div class="card h-100 shadow-sm">
-                                            @if ($relatedBlog->image)
-                                                <img src="{{ $relatedBlog->image_url }}" class="card-img-top"
-                                                    alt="{{ $relatedBlog->getLocalizedTitle() }}">
-                                            @else
-                                                <div
-                                                    class="card-img-top bg-light d-flex align-items-center justify-content-center h-200">
-                                                    <i class="fas fa-newspaper fa-3x text-muted"></i>
-                                                </div>
-                                            @endif
-                                            <div class="card-body">
-                                                <h6 class="card-title">
-                                                    {{ Str::limit($relatedBlog->getLocalizedTitle(), 60) }}</h6>
-                                                <p class="card-text text-muted small">
-                                                    {{ Str::limit($relatedBlog->getLocalizedExcerpt() ?: strip_tags($relatedBlog->getLocalizedDescription()), 100) }}
-                                                </p>
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <small class="text-muted">
-                                                        <i class="fas fa-calendar me-1"></i>
-                                                        {{ $relatedBlog->created_at->translatedFormat('M d, Y') }}
-                                                    </small>
-                                                    <a href="{{ route('blog.show', $relatedBlog->slug) }}"
-                                                        class="btn btn-sm btn-outline-primary">
-                                                        {{ custom_trans('Read More', 'front') }}
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    @endif
                 </div>
 
                 <!-- Sidebar -->
@@ -223,6 +183,65 @@
             </div>
         </div>
     </section>
+
+    <!-- Related Blogs Slider Section -->
+    @if ($relatedBlogs->count() > 0)
+        @php $isRtl = \App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl'; @endphp
+        <section class="related-blogs-section py-5">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="related-blogs-title mb-0">{{ custom_trans('Related Articles', 'front') }}</h3>
+                    <div class="d-flex gap-2">
+                        <button class="related-blogs-prev related-blogs-nav-btn">
+                            <i class="fas fa-chevron-{{ $isRtl ? 'right' : 'left' }}"></i>
+                        </button>
+                        <button class="related-blogs-next related-blogs-nav-btn">
+                            <i class="fas fa-chevron-{{ $isRtl ? 'left' : 'right' }}"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="swiper related-blogs-swiper" @if($isRtl) dir="rtl" @endif>
+                    <div class="swiper-wrapper">
+                        @foreach ($relatedBlogs as $relatedBlog)
+                            <div class="swiper-slide">
+                                <div class="related-blog-card card shadow-sm h-100">
+                                    @if ($relatedBlog->image)
+                                        <div class="related-blog-card-img-wrap">
+                                            <img src="{{ $relatedBlog->image_url }}" class="card-img-top"
+                                                alt="{{ $relatedBlog->getLocalizedTitle() }}">
+                                        </div>
+                                    @else
+                                        <div class="related-blog-card-img-wrap bg-light d-flex align-items-center justify-content-center">
+                                            <i class="fas fa-newspaper fa-3x text-muted"></i>
+                                        </div>
+                                    @endif
+                                    <div class="card-body d-flex flex-column">
+                                        <h6 class="card-title">
+                                            {{ Str::limit($relatedBlog->getLocalizedTitle(), 60) }}
+                                        </h6>
+                                        <p class="card-text text-muted small flex-grow-1">
+                                            {{ Str::limit($relatedBlog->getLocalizedExcerpt() ?: strip_tags($relatedBlog->getLocalizedDescription()), 110) }}
+                                        </p>
+                                        <div class="d-flex justify-content-between align-items-center mt-2">
+                                            <small class="text-muted">
+                                                <i class="fas fa-calendar me-1"></i>
+                                                {{ $relatedBlog->created_at->translatedFormat('M d, Y') }}
+                                            </small>
+                                            <a href="{{ route('blog.show', $relatedBlog->slug) }}"
+                                                class="btn btn-sm btn-outline-primary">
+                                                {{ custom_trans('Read More', 'front') }}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                    <div class="swiper-pagination related-blogs-pagination"></div>
+                </div>
+            </div>
+        </section>
+    @endif
 @endsection
 
 @if (\App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl')
@@ -245,11 +264,37 @@
                     url: window.location.href
                 });
             } else {
-                // Fallback: copy URL to clipboard
                 navigator.clipboard.writeText(window.location.href).then(function() {
                     alert('Link copied to clipboard!');
                 });
             }
         }
+
+        @if ($relatedBlogs->count() > 0)
+        document.addEventListener('DOMContentLoaded', function () {
+            new Swiper('.related-blogs-swiper', {
+                slidesPerView: 1,
+                spaceBetween: 24,
+                loop: {{ $relatedBlogs->count() > 3 ? 'true' : 'false' }},
+                autoplay: {
+                    delay: 4500,
+                    disableOnInteraction: false,
+                    pauseOnMouseEnter: true,
+                },
+                pagination: {
+                    el: '.related-blogs-pagination',
+                    clickable: true,
+                },
+                navigation: {
+                    prevEl: '.related-blogs-prev',
+                    nextEl: '.related-blogs-next',
+                },
+                breakpoints: {
+                    576: { slidesPerView: 2, spaceBetween: 20 },
+                    992: { slidesPerView: 3, spaceBetween: 24 },
+                },
+            });
+        });
+        @endif
     </script>
 @endpush

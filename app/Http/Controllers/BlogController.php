@@ -54,7 +54,7 @@ class BlogController extends Controller
             ->where('id', '!=', $blog->id)
             ->where('category_id', $blog->category_id)
             ->with(['category', 'author'])
-            ->limit(3)
+            ->limit(6)
             ->get();
 
         // Load categories for sidebar

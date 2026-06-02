@@ -1,13 +1,17 @@
 /* Form Styles */
 
 /* ── RTL Input-Group Border-Radius Fix ───────────────────────────────────────
-   Bootstrap 5 applies border-radius based on DOM order (:first-child / :last-child).
-   In RTL the flex row is visually reversed, so rounded corners end up on the
-   wrong (inner) edges. These rules swap them back to the outer edges.
+   Bootstrap 5 applies border-radius based on DOM order (:first-child/:last-child).
+   In a normal RTL row the flex row is visually reversed (right→left), so rounded
+   corners end up on the wrong (inner) edges. These rules swap them back.
+
+   EXCEPTION: .flex-row-reverse already reverses the row back to LTR visual order,
+   so Bootstrap's default LTR radius logic is already correct for those groups —
+   they must be excluded from this fix.
    ───────────────────────────────────────────────────────────────────────── */
 
-/* Default size: first child in DOM = rightmost visually → round RIGHT corners */
-[dir="rtl"] .input-group:not(.has-validation)
+/* Default size — first child in DOM = rightmost visually → round RIGHT corners */
+[dir="rtl"] .input-group:not(.flex-row-reverse):not(.has-validation)
     > :not(:last-child):not(.dropdown-menu):not(.form-floating):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
     border-top-left-radius: 0 !important;
     border-bottom-left-radius: 0 !important;
@@ -15,8 +19,8 @@
     border-bottom-right-radius: var(--bs-border-radius) !important;
 }
 
-/* Default size: last child in DOM = leftmost visually → round LEFT corners, fix margin */
-[dir="rtl"] .input-group
+/* Default size — last child in DOM = leftmost visually → round LEFT corners, fix margin */
+[dir="rtl"] .input-group:not(.flex-row-reverse)
     > :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
     margin-left: 0 !important;
     margin-right: -1px !important;
@@ -27,7 +31,7 @@
 }
 
 /* Large variant */
-[dir="rtl"] .input-group-lg:not(.has-validation)
+[dir="rtl"] .input-group-lg:not(.flex-row-reverse):not(.has-validation)
     > :not(:last-child):not(.dropdown-menu):not(.form-floating):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
     border-top-left-radius: 0 !important;
     border-bottom-left-radius: 0 !important;
@@ -35,7 +39,7 @@
     border-bottom-right-radius: var(--bs-border-radius-lg) !important;
 }
 
-[dir="rtl"] .input-group-lg
+[dir="rtl"] .input-group-lg:not(.flex-row-reverse)
     > :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
     margin-left: 0 !important;
     margin-right: -1px !important;
@@ -46,7 +50,7 @@
 }
 
 /* Small variant */
-[dir="rtl"] .input-group-sm:not(.has-validation)
+[dir="rtl"] .input-group-sm:not(.flex-row-reverse):not(.has-validation)
     > :not(:last-child):not(.dropdown-menu):not(.form-floating):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
     border-top-left-radius: 0 !important;
     border-bottom-left-radius: 0 !important;
@@ -54,7 +58,7 @@
     border-bottom-right-radius: var(--bs-border-radius-sm) !important;
 }
 
-[dir="rtl"] .input-group-sm
+[dir="rtl"] .input-group-sm:not(.flex-row-reverse)
     > :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
     margin-left: 0 !important;
     margin-right: -1px !important;
@@ -64,12 +68,12 @@
     border-bottom-left-radius: var(--bs-border-radius-sm) !important;
 }
 
-/* input-group-text (icon prepend/append) — same swap */
-[dir="rtl"] .input-group > .input-group-text:first-child {
+/* input-group-text (icon prepend/append) — swap for normal RTL rows only */
+[dir="rtl"] .input-group:not(.flex-row-reverse) > .input-group-text:first-child {
     border-radius: 0 var(--bs-border-radius) var(--bs-border-radius) 0 !important;
 }
 
-[dir="rtl"] .input-group > .input-group-text:last-child {
+[dir="rtl"] .input-group:not(.flex-row-reverse) > .input-group-text:last-child {
     border-radius: var(--bs-border-radius) 0 0 var(--bs-border-radius) !important;
 }
 
