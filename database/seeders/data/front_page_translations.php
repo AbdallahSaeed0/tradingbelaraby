@@ -2371,6 +2371,40 @@ return [
         'ar' => 'يرجى إدخال رقم هاتف صحيح (9 أرقام على الأقل).',
     ],
 
+    // ── Checkout / Coupon ─────────────────────────────────────────────────────
+    'Have a coupon code?' => [
+        'en' => 'Have a coupon code?',
+        'ar' => 'هل لديك كوبون خصم؟',
+    ],
+    'Enter coupon code' => [
+        'en' => 'Enter coupon code',
+        'ar' => 'أدخل رمز القسيمة',
+    ],
+    'Apply' => [
+        'en' => 'Apply',
+        'ar' => 'تطبيق',
+    ],
+    'Pay securely with your PayPal account' => [
+        'en' => 'Pay securely with your PayPal account',
+        'ar' => 'ادفع بأمان عبر حساب PayPal الخاص بك',
+    ],
+    'Please correct the following errors:' => [
+        'en' => 'Please correct the following errors:',
+        'ar' => 'يرجى تصحيح الأخطاء التالية:',
+    ],
+    'select_payment_method' => [
+        'en' => 'Select your preferred payment method',
+        'ar' => 'اختر طريقة الدفع المفضلة لديك',
+    ],
+    'please_enter_coupon_code' => [
+        'en' => 'Please enter a coupon code',
+        'ar' => 'يرجى إدخال رمز القسيمة',
+    ],
+    'an_error_occurred' => [
+        'en' => 'An error occurred. Please try again.',
+        'ar' => 'حدث خطأ. يرجى المحاولة مرة أخرى.',
+    ],
+
     // ── Bank Transfer Payment ─────────────────────────────────────────────────
     'Bank Transfer' => [
         'en' => 'Bank Transfer',
@@ -2469,6 +2503,18 @@ return [
     'Order Number' => [
         'en' => 'Order Number',
         'ar' => 'رقم الطلب',
+    ],
+    'Total' => [
+        'en' => 'Total',
+        'ar' => 'الإجمالي',
+    ],
+    'Payment Method' => [
+        'en' => 'Payment Method',
+        'ar' => 'طريقة الدفع',
+    ],
+    'My Courses' => [
+        'en' => 'My Courses',
+        'ar' => 'دوراتي',
     ],
 ];
 

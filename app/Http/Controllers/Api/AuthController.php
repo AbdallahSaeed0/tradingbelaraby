@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
 use Laravel\Socialite\Facades\Socialite;
 use App\Services\SocialLoginSettingsService;
+use App\Services\VerificationSettingsService;
 use App\Services\WhatsAppService;
 
 class AuthController extends Controller
@@ -24,36 +25,46 @@ class AuthController extends Controller
     /**
      * Public auth config for mobile (Google/Twitter client IDs from dashboard).
      */
-    public function config(SocialLoginSettingsService $social): JsonResponse
+    public function config(SocialLoginSettingsService $social, VerificationSettingsService $verification): JsonResponse
     {
         $google = $social->getGoogleConfig();
         $twitter = $social->getTwitterConfig();
         return response()->json([
             'success' => true,
             'data' => [
-                'google_login_enabled' => $social->isGoogleEnabled(),
-                'google_web_client_id' => $google['client_id'] ?? '',
+                'google_login_enabled'  => $social->isGoogleEnabled(),
+                'google_web_client_id'  => $google['client_id'] ?? '',
                 'twitter_login_enabled' => $social->isTwitterEnabled(),
-                'twitter_client_id' => $twitter['client_id'] ?? '',
+                'twitter_client_id'     => $twitter['client_id'] ?? '',
+                'verification_method'   => $verification->getMethod(),
             ],
         ]);
     }
 
     /**
-     * Register a new user and send a WhatsApp OTP to verify their phone number.
+     * Register a new user and send verification based on the configured method.
      */
     public function register(Request $request): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
+        $verification = app(VerificationSettingsService::class);
+        $phoneRequired = $verification->isWhatsappEnabled(); // required for whatsapp & both
+
+        $rules = [
             'name'     => ['required', 'string', 'max:255'],
             'email'    => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Password::defaults()],
             'country'  => ['required', 'string', 'max:255'],
-            'phone'    => ['required', 'string', 'min:9', 'max:20', 'regex:/^\+?[0-9]{9,20}$/'],
-        ], [
-            'phone.required' => 'Phone number is required to send your WhatsApp verification code.',
+            'phone'    => $phoneRequired
+                ? ['required', 'string', 'min:9', 'max:20', 'regex:/^\+?[0-9]{9,20}$/']
+                : ['nullable', 'string', 'min:9', 'max:20', 'regex:/^\+?[0-9]{9,20}$/'],
+        ];
+
+        $messages = [
+            'phone.required' => 'Phone number is required to receive your WhatsApp verification code.',
             'phone.regex'    => 'Please enter a valid phone number (9–20 digits, optionally starting with +).',
-        ]);
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
             return response()->json([
@@ -68,22 +79,34 @@ class AuthController extends Controller
             'email'    => $request->email,
             'password' => Hash::make($request->password),
             'country'  => $request->country,
-            'phone'    => $request->phone,
+            'phone'    => $request->filled('phone') ? $request->phone : null,
         ]);
 
         $token    = $user->createToken('auth_token')->plainTextToken;
         $language = $request->header('Accept-Language', 'en');
         $language = str_starts_with($language, 'ar') ? 'ar' : 'en';
 
-        $whatsapp = app(WhatsAppService::class);
-        $whatsapp->sendOtp($request->phone, $language);
+        $message = 'Registration successful.';
+
+        // Send WhatsApp OTP if method includes whatsapp
+        if ($verification->isWhatsappEnabled() && $user->phone) {
+            app(WhatsAppService::class)->sendOtp($user->phone, $language);
+            $message .= ' A verification code has been sent to your WhatsApp.';
+        }
+
+        // Send email verification if method includes email
+        if ($verification->isEmailEnabled()) {
+            event(new Registered($user));
+            $message .= ' A verification link has been sent to your email.';
+        }
 
         return response()->json([
             'success' => true,
-            'message' => 'Registration successful. A verification code has been sent to your WhatsApp number.',
+            'message' => trim($message),
             'data'    => [
-                'user'  => new UserResource($user),
-                'token' => $token,
+                'user'                => new UserResource($user),
+                'token'               => $token,
+                'verification_method' => $verification->getMethod(),
             ],
         ], 201);
     }
@@ -113,26 +136,34 @@ class AuthController extends Controller
             ], 401);
         }
 
-        $user = Auth::user();
+        $user         = Auth::user();
+        $verification = app(VerificationSettingsService::class);
 
-        // Create token (needed even for unverified phones so user can call the verify endpoint)
+        // Create token (needed even for unverified accounts so the user can complete verification)
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        // Check if phone is verified via WhatsApp OTP
-        if (!$user->phone_verified_at) {
-            if ($user->phone) {
-                $language = $request->header('Accept-Language', 'en');
-                $language = str_starts_with($language, 'ar') ? 'ar' : 'en';
+        if (!$verification->isUserVerified($user)) {
+            $language = $request->header('Accept-Language', 'en');
+            $language = str_starts_with($language, 'ar') ? 'ar' : 'en';
+
+            // Auto-resend OTP / email as applicable
+            if ($verification->isWhatsappEnabled() && $user->phone && !$user->phone_verified_at) {
                 $whatsapp = app(WhatsAppService::class);
                 if (!$whatsapp->hasActiveOtp($user->phone)) {
                     $whatsapp->sendOtp($user->phone, $language);
                 }
             }
+            if ($verification->isEmailEnabled() && !$user->email_verified_at) {
+                event(new Registered($user));
+            }
+
             return response()->json([
-                'success'        => false,
-                'message'        => 'Phone number not verified. A verification code has been sent to your WhatsApp.',
-                'phone_verified' => false,
-                'data'           => [
+                'success'             => false,
+                'message'             => 'Account not verified. Please complete verification before logging in.',
+                'phone_verified'      => $user->phone_verified_at !== null,
+                'email_verified'      => $user->email_verified_at !== null,
+                'verification_method' => $verification->getMethod(),
+                'data'                => [
                     'user'  => new UserResource($user),
                     'token' => $token,
                 ],
@@ -583,6 +614,54 @@ class AuthController extends Controller
             'success' => true,
             'message' => 'Phone number verified successfully.',
             'data'    => new UserResource($user->fresh()),
+        ]);
+    }
+
+    /**
+     * Verify email with the signed link (redirects from email → marks verified).
+     * Also usable as a fallback API endpoint when the method includes email.
+     */
+    public function verifyEmail(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        if ($user->hasVerifiedEmail()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Email is already verified.',
+                'data'    => new UserResource($user),
+            ]);
+        }
+
+        $user->markEmailAsVerified();
+        event(new \Illuminate\Auth\Events\Verified($user));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Email verified successfully.',
+            'data'    => new UserResource($user->fresh()),
+        ]);
+    }
+
+    /**
+     * Resend the email verification link.
+     */
+    public function resendVerification(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        if ($user->hasVerifiedEmail()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Email is already verified.',
+            ], 400);
+        }
+
+        $user->sendEmailVerificationNotification();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Verification email sent.',
         ]);
     }
 

@@ -72,8 +72,18 @@ Route::middleware('guest')->group(function () {
     Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('password.reset.attempt');
 });
 
-// WhatsApp Phone Verification Routes (replaces email verification)
+// Verification Routes (email link + WhatsApp OTP — both coexist; active method controlled by admin settings)
 Route::middleware(['auth'])->group(function () {
+    // Email verification
+    Route::get('/email/verify', function () {
+        return view('auth.verify-email');
+    })->name('verification.notice');
+    Route::post('/email/verification-notification', function (\Illuminate\Http\Request $request) {
+        $request->user()->sendEmailVerificationNotification();
+        return back()->with('success', 'Verification link sent! Please check your email.');
+    })->middleware(['throttle:6,1'])->name('verification.send');
+
+    // WhatsApp OTP verification
     Route::get('/verify-whatsapp', [AuthController::class, 'showWhatsappVerify'])->name('whatsapp.verify');
     Route::post('/verify-whatsapp', [AuthController::class, 'verifyWhatsappOtp'])->middleware('throttle:10,1')->name('whatsapp.verify.attempt');
     Route::post('/verify-whatsapp/resend', [AuthController::class, 'resendWhatsappOtp'])->middleware('throttle:3,1')->name('whatsapp.verify.resend');
@@ -423,6 +433,8 @@ Route::resource('quizzes.questions', App\Http\Controllers\Admin\QuizQuestionMana
     Route::get('/settings/social-login', [App\Http\Controllers\Admin\SocialLoginSettingsController::class, 'index'])->name('settings.social-login.index');
     Route::put('/settings/social-login/google', [App\Http\Controllers\Admin\SocialLoginSettingsController::class, 'updateGoogle'])->name('settings.social-login.update-google');
     Route::put('/settings/social-login/twitter', [App\Http\Controllers\Admin\SocialLoginSettingsController::class, 'updateTwitter'])->name('settings.social-login.update-twitter');
+    Route::get('/settings/verification', [App\Http\Controllers\Admin\VerificationSettingsController::class, 'index'])->name('settings.verification.index');
+    Route::put('/settings/verification', [App\Http\Controllers\Admin\VerificationSettingsController::class, 'update'])->name('settings.verification.update');
     Route::put('/settings/coming-soon', [App\Http\Controllers\Admin\SettingsController::class, 'updateComingSoon'])->name('settings.coming-soon.update');
     Route::resource('partner-logos', App\Http\Controllers\Admin\PartnerLogoController::class);
     Route::post('/partner-logos/{partnerLogo}/update-status', [App\Http\Controllers\Admin\PartnerLogoController::class, 'updateStatus'])->name('partner-logos.update_status');

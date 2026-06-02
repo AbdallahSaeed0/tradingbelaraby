@@ -107,6 +107,50 @@
                 </div>
             </div>
 
+            <!-- Verification Settings Card -->
+            <div class="settings-card-wrapper">
+                <div class="card settings-card">
+                    <div class="card-body text-center p-4">
+                        <div class="settings-icon mb-4">
+                            <div class="icon-wrapper">
+                                <i class="fas fa-shield-alt fa-4x text-success"></i>
+                            </div>
+                        </div>
+                        <h3 class="card-title mb-3">{{ custom_trans('Verification Settings', 'admin') }}</h3>
+                        <p class="card-text text-muted mb-4">
+                            {{ custom_trans('Choose how new users verify their account: WhatsApp OTP, Email link, or both. Configure your Meta WhatsApp API credentials here.', 'admin') }}
+                        </p>
+                        <div class="features-list mb-4">
+                            <div class="row text-start">
+                                <div class="col-md-6">
+                                    <div class="feature-item">
+                                        <i class="fab fa-whatsapp text-success me-2"></i>
+                                        <span>{{ custom_trans('WhatsApp OTP', 'admin') }}</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-envelope text-primary me-2"></i>
+                                        <span>{{ custom_trans('Email Link', 'admin') }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="feature-item">
+                                        <i class="fas fa-layer-group text-warning me-2"></i>
+                                        <span>{{ custom_trans('Both methods', 'admin') }}</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-key text-info me-2"></i>
+                                        <span>{{ custom_trans('Meta API config', 'admin') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="{{ route('admin.settings.verification.index') }}" class="btn btn-primary settings-card-cta">
+                            <i class="fas fa-cog me-2"></i>{{ custom_trans('Manage Verification', 'admin') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+
             <!-- Features Section Management Card -->
             <div class="settings-card-wrapper">
                 <div class="card settings-card">

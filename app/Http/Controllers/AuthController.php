@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use App\Services\SocialLoginSettingsService;
+use App\Services\VerificationSettingsService;
 use App\Services\WhatsAppService;
 
 class AuthController extends Controller
@@ -39,12 +40,16 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
 
-            // Check if phone is verified via WhatsApp OTP
-            if (!$user->phone_verified_at) {
+            // Check verification status based on configured method
+            $verification = app(VerificationSettingsService::class);
+            if (!$verification->isUserVerified($user)) {
                 Auth::logout();
-                return back()->withErrors([
-                    'email' => 'Please verify your phone number before logging in. Check your WhatsApp for the verification code.',
-                ])->onlyInput('email');
+                $hint = match($verification->getMethod()) {
+                    'email'    => 'Please verify your email address before logging in.',
+                    'whatsapp' => 'Please verify your WhatsApp number before logging in.',
+                    default    => 'Please verify your account (email or WhatsApp) before logging in.',
+                };
+                return back()->withErrors(['email' => $hint])->onlyInput('email');
             }
 
             $request->session()->regenerate();
@@ -188,13 +193,22 @@ class AuthController extends Controller
             'password' => Hash::make($data['password']),
         ]);
 
-        // Log user in so they can see the WhatsApp verification page
         Auth::login($user);
 
-        // Send WhatsApp OTP
-        app(WhatsAppService::class)->sendOtp($data['phone']);
+        $verification = app(VerificationSettingsService::class);
 
-        return redirect()->route('whatsapp.verify')->with('success', custom_trans('Registration successful! A verification code has been sent to your WhatsApp.', 'front'));
+        if ($verification->isWhatsappEnabled() && $data['phone']) {
+            app(WhatsAppService::class)->sendOtp($data['phone']);
+        }
+        if ($verification->isEmailEnabled()) {
+            event(new Registered($user));
+        }
+
+        $redirect = $verification->isWhatsappEnabled()
+            ? route('whatsapp.verify')
+            : route('verification.notice');
+
+        return redirect($redirect)->with('success', custom_trans('Registration successful! Please complete verification.', 'front'));
     }
 
     /**

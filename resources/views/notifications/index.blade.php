@@ -305,31 +305,6 @@
     display: flex;
     justify-content: center;
 }
-
-.notif-pagination .pagination {
-    gap: 4px;
-}
-
-.notif-pagination .page-link {
-    border-radius: 8px;
-    border: 1.5px solid #e5e7eb;
-    color: #374151;
-    padding: 7px 13px;
-    font-size: 0.875rem;
-    transition: all 0.18s;
-}
-
-.notif-pagination .page-item.active .page-link {
-    background: #7c3aed;
-    border-color: #7c3aed;
-    color: white;
-}
-
-.notif-pagination .page-link:hover:not(.active) {
-    background: #ede9fe;
-    border-color: #7c3aed;
-    color: #7c3aed;
-}
 </style>
 @endpush
 

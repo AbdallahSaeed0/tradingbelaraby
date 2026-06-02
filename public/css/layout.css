@@ -49,6 +49,62 @@
     border: 2px solid #ff7043;
 }
 
+/* ── Global Pagination ───────────────────────────────────────────────────── */
+.pagination {
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.page-link {
+    min-width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px;
+    border-radius: 10px !important;
+    border: 1.5px solid #e2e8f0;
+    color: #374151;
+    font-size: 0.875rem;
+    font-weight: 500;
+    background: #fff;
+    transition: all 0.18s ease;
+    line-height: 1;
+}
+
+.page-link:hover {
+    background: #eaf4f7;
+    border-color: #156481;
+    color: #156481;
+    box-shadow: none;
+}
+
+.page-item.active .page-link {
+    background: #156481;
+    border-color: #156481;
+    color: #fff;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(21, 100, 129, 0.3);
+}
+
+.page-item.disabled .page-link {
+    background: #f9fafb;
+    border-color: #e2e8f0;
+    color: #c1c7d0;
+}
+
+.page-link:focus {
+    box-shadow: 0 0 0 3px rgba(21, 100, 129, 0.18);
+}
+
+/* pagination-lg variant */
+.pagination-lg .page-link {
+    min-width: 46px;
+    height: 46px;
+    font-size: 0.95rem;
+    border-radius: 12px !important;
+}
+
 /* Custom scrollbar - theme colors */
 * {
     scrollbar-width: thin;

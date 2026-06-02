@@ -46,6 +46,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/users/profile', [AuthController::class, 'updateProfile'])->name('api.users.profile.update');
     Route::post('/auth/verify-whatsapp-otp', [AuthController::class, 'verifyWhatsappOtp'])->name('api.auth.verify-whatsapp');
     Route::post('/auth/resend-whatsapp-otp', [AuthController::class, 'resendWhatsappOtp'])->name('api.auth.resend-whatsapp');
+    Route::post('/auth/verify-email', [AuthController::class, 'verifyEmail'])->name('api.auth.verify-email');
+    Route::post('/auth/resend-verification', [AuthController::class, 'resendVerification'])->name('api.auth.resend-verification');
     Route::delete('/users/account', [AuthController::class, 'deleteAccount'])->name('api.users.account.delete');
 });
 

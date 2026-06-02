@@ -694,6 +694,49 @@
         .checkout-content {
             background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%);
         }
+
+        /* Coupon placeholder – don't uppercase the hint text */
+        #coupon_code::placeholder {
+            text-transform: none;
+        }
+
+        /* ── RTL Overrides ───────────────────────────────────────────────── */
+        [dir="rtl"] .course-item-summary:hover {
+            transform: translateX(-5px);
+        }
+
+        /* Coupon label icon: flip spacing so it sits correctly before the text */
+        [dir="rtl"] .coupon-input-group .fa-ticket-alt {
+            margin-right: 0;
+            margin-left: 0.25rem;
+        }
+
+        /* Payment option card – align text to the right in RTL */
+        [dir="rtl"] .payment-option-card {
+            text-align: right;
+        }
+
+        /* Bank-transfer details table – label column stays on the start side */
+        [dir="rtl"] #bankTransferDetails .table td {
+            text-align: right;
+        }
+
+        /* Order summary totals row – keep label/value pair readable */
+        [dir="rtl"] .totals-section .d-flex {
+            flex-direction: row-reverse;
+        }
+
+        /* Section icons in hero area should float without LTR bias */
+        [dir="rtl"] .section-icon {
+            margin-right: 0;
+        }
+
+        /* Complete-purchase ripple effect originates from the correct side */
+        [dir="rtl"] .complete-purchase-btn:before {
+            left: auto;
+            right: 50%;
+            transform: translate(50%, -50%);
+        }
     </style>
 @endpush
 
@@ -796,7 +839,7 @@
 
                     if (!code) {
                         couponMessage.innerHTML =
-                            '<span class="text-danger">Please enter a coupon code</span>';
+                            '<span class="text-danger">{{ custom_trans('please_enter_coupon_code', 'front') }}</span>';
                         return;
                     }
 
@@ -833,7 +876,7 @@
                     } catch (error) {
                         console.error('Coupon error:', error);
                         couponMessage.innerHTML =
-                            '<span class="text-danger">An error occurred. Please try again.</span>';
+                            '<span class="text-danger">{{ custom_trans('an_error_occurred', 'front') }}</span>';
                         applyCouponBtn.disabled = false;
                         applyCouponBtn.innerHTML = '{{ custom_trans('Apply', 'front') }}';
                     }
@@ -869,7 +912,7 @@
                         }
                     } catch (error) {
                         console.error('Remove coupon error:', error);
-                        alert('An error occurred. Please try again.');
+                        alert('{{ custom_trans('an_error_occurred', 'front') }}');
                     }
                 });
             }

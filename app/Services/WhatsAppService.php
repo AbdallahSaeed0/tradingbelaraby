@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Services\VerificationSettingsService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -50,10 +51,11 @@ class WhatsAppService
 
     private function sendOtpMessage(string $phone, string $otp, string $language): bool
     {
-        $token          = config('services.meta_whatsapp.token');
-        $phoneNumberId  = config('services.meta_whatsapp.phone_number_id');
-        $templateName   = config('services.meta_whatsapp.otp_template', 'otp_verification');
-        $apiVersion     = config('services.meta_whatsapp.api_version', 'v21.0');
+        $config        = app(VerificationSettingsService::class)->getWhatsappConfig();
+        $token         = $config['token'];
+        $phoneNumberId = $config['phone_number_id'];
+        $templateName  = $config['otp_template'];
+        $apiVersion    = $config['api_version'];
 
         if (!$token || !$phoneNumberId) {
             Log::error('WhatsApp service is not configured (missing META_WHATSAPP_TOKEN or META_WHATSAPP_PHONE_NUMBER_ID)');
