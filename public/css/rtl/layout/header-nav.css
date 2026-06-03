@@ -1,83 +1,5 @@
-/* Header and Navigation Styles — RTL overrides */
-
-/* ============================================
-   LOGO
-   ============================================ */
-.logo-link {
-    text-decoration: none;
-    display: block;
-    transition: opacity 0.3s ease;
-}
-
-.logo-link:hover {
-    opacity: 0.8;
-}
-
-.footer-logo-link {
-    text-decoration: none;
-    display: block;
-    transition: opacity 0.3s ease;
-}
-
-.footer-logo-link:hover {
-    opacity: 0.8;
-}
-
-/* ============================================
-   USER ACTIONS
-   ============================================ */
-.user-actions {
-    display: flex;
-    gap: 0.9rem;
-    align-items: center;
-    flex-wrap: nowrap;
-    flex-shrink: 0;
-}
-
-.user-actions .btn {
-    width: 36px;
-    height: 36px;
-    padding: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    border: 1.5px solid #e2e8f0;
-    background: #f8fafc;
-    color: #374151;
-    font-size: 0.9rem;
-    transition: background-color 0.2s ease, border-color 0.2s ease,
-                color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
-    flex-shrink: 0;
-    position: relative;
-}
-
-.user-actions .btn:hover,
-.user-actions .btn:focus {
-    background: #17506b;
-    border-color: #17506b;
-    color: #fff;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(23, 80, 107, 0.22);
-    outline: none;
-}
-
-.user-actions .user-dropdown-btn {
-    width: auto;
-    border-radius: 20px;
-    padding: 0.25rem 0.65rem;
-    gap: 0.35rem;
-    max-width: 150px;
-}
-
-.user-actions .user-dropdown-btn .user-name {
-    max-width: 72px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: 0.85rem;
-    font-weight: 500;
-}
+/* Header and Navigation — RTL: load full LTR base (includes mobile offcanvas) */
+@import url('/css/layout/header-nav.css');
 
 /* ============================================
    SEARCH BAR — RTL pill (mirrored border-radius)
@@ -97,45 +19,21 @@
 }
 
 /* ============================================
-   GLOBAL TITLE STYLING
+   TITLE HOVER — flip direction
    ============================================ */
-.course-title a,
-.quiz-title a,
-.blog-title a,
-.category-title a,
-.instructor-section .course-title a,
-.course-instructor h4 a {
-    color: inherit;
-    text-decoration: none;
-    transition: color 0.3s ease, transform 0.2s ease;
-    display: inline-block;
-}
-
-.course-title a:hover,
-.quiz-title a:hover,
-.blog-title a:hover,
-.category-title a:hover,
-.instructor-section .course-title a:hover,
-.course-instructor h4 a:hover {
-    color: #f15a29 !important;
-    transform: translateX(2px);
-}
-
-.course-title,
-.quiz-title,
-.blog-title,
-.category-title {
-    cursor: pointer;
-}
-
-.course-instructor h4 {
-    cursor: pointer;
+[dir="rtl"] .course-title a:hover,
+[dir="rtl"] .quiz-title a:hover,
+[dir="rtl"] .blog-title a:hover,
+[dir="rtl"] .category-title a:hover,
+[dir="rtl"] .instructor-section .course-title a:hover,
+[dir="rtl"] .course-instructor h4 a:hover {
+    transform: translateX(-2px);
 }
 
 /* ============================================
    FOOTER LOGO
    ============================================ */
-.footer-logo-img {
-    height: 32px;
-    margin-right: 10px;
+[dir="rtl"] .footer-logo-img {
+    margin-right: 0;
+    margin-left: 10px;
 }

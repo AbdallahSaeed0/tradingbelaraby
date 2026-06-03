@@ -49,6 +49,14 @@
     box-shadow: -4px 0 32px rgba(15, 23, 42, 0.12);
 }
 
+[dir="rtl"] .mobile-offcanvas-body {
+    direction: rtl;
+}
+
+[dir="rtl"] .mobile-offcanvas-link-inner {
+    flex-direction: row-reverse;
+}
+
 [dir="rtl"] .mobile-offcanvas-link,
 [dir="rtl"] .mobile-lang-toggle,
 [dir="rtl"] .mobile-action-btn {

@@ -463,15 +463,22 @@
 button.mobile-offcanvas-link {
     appearance: none;
     -webkit-appearance: none;
-    outline: none;
+    outline: none !important;
     box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    font-family: inherit;
 }
 
 button.mobile-offcanvas-link:focus,
-button.mobile-offcanvas-link:focus-visible {
-    outline: none;
+button.mobile-offcanvas-link:focus-visible,
+button.mobile-offcanvas-link:active {
+    outline: none !important;
     border-color: #17506b;
     box-shadow: 0 0 0 3px rgba(23, 80, 107, 0.15);
+}
+
+a.mobile-offcanvas-link:focus,
+a.mobile-offcanvas-link:focus-visible {
+    outline: none;
 }
 
 .mobile-offcanvas-link-inner {
@@ -567,12 +574,27 @@ button.mobile-offcanvas-link:focus-visible {
     font-weight: 600;
     font-size: 0.95rem;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none !important;
+    font-family: inherit;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.mobile-lang-toggle.dropdown-toggle::after {
+    margin-inline-start: auto;
+    margin-inline-end: 0;
+    vertical-align: middle;
+    border-top-color: #64748b;
 }
 
 .mobile-lang-toggle:hover,
-.mobile-lang-toggle:focus {
+.mobile-lang-toggle:focus,
+.mobile-lang-toggle:focus-visible,
+.mobile-lang-toggle.show {
     border-color: #17506b;
     box-shadow: 0 0 0 3px rgba(23, 80, 107, 0.1);
+    outline: none !important;
 }
 
 .mobile-lang-dropdown .dropdown-menu {
@@ -612,6 +634,17 @@ button.mobile-offcanvas-link:focus-visible {
     transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
     position: relative;
     cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none !important;
+    font-family: inherit;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+button.mobile-action-btn:focus,
+button.mobile-action-btn:focus-visible,
+button.mobile-action-btn:active {
+    outline: none !important;
 }
 
 .mobile-action-btn i {
@@ -644,6 +677,12 @@ button.mobile-offcanvas-link:focus-visible {
     background: #fff;
     border-color: #fecaca;
     color: #dc2626;
+}
+
+.mobile-action-btn--danger:focus,
+.mobile-action-btn--danger:focus-visible {
+    border-color: #fca5a5;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
 }
 
 .mobile-action-btn--danger:hover {
