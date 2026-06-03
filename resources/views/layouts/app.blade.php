@@ -433,66 +433,68 @@
 
                             <!-- User Dropdown -->
                             <div class="dropdown user-dropdown">
-                                <button class="btn btn-outline-dark user-dropdown-btn d-flex align-items-center"
-                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fas fa-user-circle me-2"></i>
+                                <button class="btn user-dropdown-btn d-flex align-items-center" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false"
+                                    aria-label="{{ custom_trans('profile', 'front') }}">
+                                    <span class="user-dropdown-btn-avatar">
+                                        <i class="fas fa-user"></i>
+                                    </span>
                                     <span class="user-name">{{ auth()->user()->name }}</span>
-                                    <i class="fas fa-chevron-down ms-2"></i>
+                                    <i class="fas fa-chevron-down user-dropdown-btn-chevron"></i>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end user-dropdown-menu">
-                                    <li class="dropdown-header">
-                                        <div class="d-flex align-items-center">
-                                            <div class="user-avatar me-3">
-                                                <i class="fas fa-user-circle fa-2x text-primary"></i>
+                                    <li class="user-dropdown-profile">
+                                        <div class="user-dropdown-profile-inner">
+                                            <div class="user-dropdown-avatar" aria-hidden="true">
+                                                <i class="fas fa-user"></i>
                                             </div>
-                                            <div>
-                                                <div class="fw-bold">{{ auth()->user()->name }}</div>
-                                                <small class="text-muted">{{ auth()->user()->email }}</small>
+                                            <div class="user-dropdown-info">
+                                                <span class="user-dropdown-display-name">{{ auth()->user()->name }}</span>
+                                                <span class="user-dropdown-email" title="{{ auth()->user()->email }}">{{ auth()->user()->email }}</span>
                                             </div>
                                         </div>
                                     </li>
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="{{ route('student.my-courses') }}">
-                                            <i class="fas fa-graduation-cap me-2 text-primary"></i>
-                                            {{ custom_trans('my_courses', 'front') }}
+                                    <li class="user-dropdown-nav">
+                                        <a class="user-dropdown-link" href="{{ route('student.my-courses') }}">
+                                            <span class="user-dropdown-link-icon user-dropdown-link-icon--primary">
+                                                <i class="fas fa-graduation-cap"></i>
+                                            </span>
+                                            <span class="user-dropdown-link-label">{{ custom_trans('my_courses', 'front') }}</span>
+                                        </a>
+                                        <a class="user-dropdown-link" href="{{ route('wishlist.index') }}">
+                                            <span class="user-dropdown-link-icon user-dropdown-link-icon--danger">
+                                                <i class="fas fa-heart"></i>
+                                            </span>
+                                            <span class="user-dropdown-link-label">{{ custom_trans('wishlist', 'front') }}</span>
+                                        </a>
+                                        <a class="user-dropdown-link" href="{{ route('purchase.history') }}">
+                                            <span class="user-dropdown-link-icon user-dropdown-link-icon--info">
+                                                <i class="fas fa-receipt"></i>
+                                            </span>
+                                            <span class="user-dropdown-link-label">{{ custom_trans('purchase_history', 'front') }}</span>
+                                        </a>
+                                        <a class="user-dropdown-link" href="{{ route('profile.edit') }}">
+                                            <span class="user-dropdown-link-icon user-dropdown-link-icon--success">
+                                                <i class="fas fa-user-edit"></i>
+                                            </span>
+                                            <span class="user-dropdown-link-label">{{ custom_trans('profile', 'front') }}</span>
+                                        </a>
+                                        <a class="user-dropdown-link user-dropdown-link--extra" href="{{ route('demo.charts') }}">
+                                            <span class="user-dropdown-link-icon user-dropdown-link-icon--warning">
+                                                <i class="fas fa-chart-line"></i>
+                                            </span>
+                                            <span class="user-dropdown-link-label">Charts</span>
+                                            <span class="user-dropdown-link-badge">demo</span>
                                         </a>
                                     </li>
-                                    <li>
-                                        <a class="dropdown-item" href="{{ route('wishlist.index') }}">
-                                            <i class="fas fa-heart me-2 text-danger"></i>
-                                            {{ custom_trans('wishlist', 'front') }}
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="{{ route('purchase.history') }}">
-                                            <i class="fas fa-history me-2 text-info"></i>
-                                            {{ custom_trans('purchase_history', 'front') }}
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="{{ route('profile.edit') }}">
-                                            <i class="fas fa-user-edit me-2 text-success"></i>
-                                            {{ custom_trans('profile', 'front') }}
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="{{ route('demo.charts') }}">
-                                            <i class="fas fa-chart-line me-2 text-warning"></i>
-                                            Charts <span class="badge bg-secondary ms-1 align-middle" style="font-size:0.65rem;">demo</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
-                                    <li>
-                                        <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                                    <li class="user-dropdown-footer">
+                                        <form action="{{ route('logout') }}" method="POST">
                                             @csrf
-                                            <button type="submit" class="dropdown-item text-danger">
-                                                <i class="fas fa-sign-out-alt me-2"></i>
-                                                {{ custom_trans('logout', 'front') }}
+                                            <button type="submit" class="user-dropdown-logout">
+                                                <span class="user-dropdown-link-icon user-dropdown-link-icon--logout">
+                                                    <i class="fas fa-sign-out-alt"></i>
+                                                </span>
+                                                <span class="user-dropdown-link-label">{{ custom_trans('logout', 'front') }}</span>
                                             </button>
                                         </form>
                                     </li>

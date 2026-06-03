@@ -94,51 +94,6 @@
             @endif
         </div>
     </section>
-
-    <!-- Featured Categories Section -->
-    @if ($featuredCategories->count() > 0)
-        <section class="py-5 bg-light">
-            <div class="container">
-                <div class="row justify-content-center mb-4">
-                    <div class="col-lg-8 text-center">
-                        <h2 class="fw-bold mb-3">{{ custom_trans('featured_categories', 'front') }}</h2>
-                        <p class="text-muted">{{ custom_trans('featured_categories_description', 'front') }}</p>
-                    </div>
-                </div>
-
-                <div class="row g-4">
-                    @foreach ($featuredCategories as $category)
-                        <div class="col-12 col-md-6 col-lg-3">
-                            <div class="card text-center h-100 shadow-sm border-0">
-                                <div class="card-body d-flex flex-column">
-                                    <div class="mb-3">
-                                        <div
-                                            class="mx-auto d-flex align-items-center justify-content-center bg-primary rounded-circle w-80 h-80">
-                                            <i class="fas fa-graduation-cap fa-2x text-white"></i>
-                                        </div>
-                                    </div>
-                                    <h5 class="card-title category-title fw-bold mb-2">
-                                        <a href="{{ route('categories.show', $category->slug) }}"
-                                            class="text-decoration-none text-dark">
-                                            {{ $category->localized_name }}
-                                        </a>
-                                    </h5>
-                                    <p class="card-text text-muted small mb-3 flex-grow-1">
-                                        {{ Str::limit($category->localized_description ?? '', 80) }}</p>
-                                    <div class="d-flex justify-content-end">
-                                        <a href="{{ route('categories.show', $category->slug) }}"
-                                            class="btn btn-outline-primary btn-sm">
-                                            {{ custom_trans('explore', 'front') }}
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        </section>
-    @endif
 @endsection
 
 @if (\App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl')

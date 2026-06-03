@@ -190,12 +190,21 @@
 }
 
 /* RTL User Dropdown */
-[dir="rtl"] .user-dropdown-menu .dropdown-item:hover {
-    transform: translateX(-5px);
-}
-
 [dir="rtl"] .user-dropdown-btn {
     flex-direction: row-reverse;
+    padding: 0.3rem 0.35rem 0.3rem 0.65rem !important;
+}
+
+[dir="rtl"] .user-dropdown-link-label {
+    text-align: right;
+}
+
+[dir="rtl"] .user-dropdown-profile-inner {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .user-dropdown-info {
+    text-align: right;
 }
 
 [dir="rtl"] .user-name {

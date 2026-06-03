@@ -20,13 +20,7 @@ class CategoryController extends Controller
             ->orderBy('name')
             ->paginate(12);
 
-        $featuredCategories = CourseCategory::withCount('courses')
-            ->where('is_featured', true)
-            ->orderBy('courses_count', 'desc')
-            ->take(4)
-            ->get();
-
-        return view('pages.categories-index', compact('categories', 'featuredCategories'));
+        return view('pages.categories-index', compact('categories'));
     }
 
     /**

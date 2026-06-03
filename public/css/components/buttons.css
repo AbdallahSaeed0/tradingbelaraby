@@ -40,20 +40,7 @@
     transform: scale(1.05);
 }
 
-/* User Dropdown Button */
-.user-dropdown-btn {
-    transition: all 0.3s ease;
-    border-radius: 25px;
-    padding: 8px 16px;
-    min-width: 120px;
-    justify-content: space-between;
-}
-
-.user-dropdown-btn:hover {
-    background-color: #f8f9fa;
-    border-color: #6c757d;
-    transform: translateY(-1px);
-}
+/* User dropdown trigger — see components/dropdowns.css */
 
 /* Newsletter Button */
 .newsletter-btn {
