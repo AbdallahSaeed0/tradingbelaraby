@@ -1067,11 +1067,7 @@
                 if (copyButton) {
                     copyButton.addEventListener('click', async () => {
                         const notify = (type, message) => {
-                            if (window.toastr) {
-                                toastr[type](message);
-                            } else {
-                                alert(message);
-                            }
+                            toastr[type](message);
                         };
 
                         try {

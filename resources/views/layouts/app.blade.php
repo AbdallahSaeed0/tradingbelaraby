@@ -986,6 +986,21 @@
             document.body.style.textAlign = 'right';
         @endif
 
+        // Global confirm modal — replaces native browser confirm()
+        window.confirmAction = function(message, onConfirm) {
+            document.getElementById('globalConfirmMessage').textContent = message;
+            const modalEl = document.getElementById('globalConfirmModal');
+            const modal   = bootstrap.Modal.getOrCreateInstance(modalEl);
+            const okBtn   = document.getElementById('globalConfirmOkBtn');
+            const newOkBtn = okBtn.cloneNode(true);
+            okBtn.parentNode.replaceChild(newOkBtn, okBtn);
+            newOkBtn.addEventListener('click', function () {
+                modal.hide();
+                onConfirm();
+            });
+            modal.show();
+        };
+
         // Wishlist functionality
         document.addEventListener('DOMContentLoaded', function() {
             // Footer language selector
@@ -1113,17 +1128,17 @@
                             .then(data => {
                                 if (data && data.success) {
                                     toastr.success(data.message ||
-                                        'Course added to cart successfully.');
+                                        '{{ custom_trans('Course added to cart successfully.', 'front') }}');
                                 } else if (data) {
                                     // Already in cart / already enrolled messages
                                     toastr.info(data.message ||
-                                        'Unable to add course to cart.');
+                                        '{{ custom_trans('Unable to add course to cart.', 'front') }}');
                                 }
                                 resetButton();
                             })
                             .catch(error => {
                                 console.error('Cart add error:', error);
-                                toastr.error('An error occurred while adding course to cart.');
+                                toastr.error('{{ custom_trans('An error occurred while adding course to cart.', 'front') }}');
                                 resetButton();
                             });
 
@@ -1173,13 +1188,13 @@
                                     this.parentNode.replaceChild(goToCourseLink, this);
                                 }, 2000);
                             } else if (data) {
-                                toastr.error(data.message || 'An error occurred');
+                                toastr.error(data.message || '{{ custom_trans('An unexpected error occurred. Please try again later.', 'front') }}');
                                 resetButton();
                             }
                         })
                         .catch(error => {
                             console.error('Enroll error:', error);
-                            toastr.error('An error occurred. Please try again.');
+                            toastr.error('{{ custom_trans('An unexpected error occurred. Please try again later.', 'front') }}');
                             resetButton();
                         });
                 });
@@ -1368,6 +1383,32 @@
             <i class="fab fa-whatsapp"></i>
         </a>
     @endif
+
+    <!-- Global Confirm Modal (replaces native browser confirm()) -->
+    <div class="modal fade" id="globalConfirmModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width:380px">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-body text-center px-4 pt-4 pb-2">
+                    <div class="mb-3">
+                        <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-warning bg-opacity-15"
+                            style="width:56px;height:56px">
+                            <i class="fas fa-exclamation-triangle fa-lg text-warning"></i>
+                        </span>
+                    </div>
+                    <p class="fw-semibold mb-0 fs-6" id="globalConfirmMessage"></p>
+                </div>
+                <div class="modal-footer border-0 d-flex gap-2 justify-content-center pb-4 pt-2">
+                    <button type="button" class="btn btn-outline-secondary px-4 rounded-pill"
+                        data-bs-dismiss="modal" id="globalConfirmCancelBtn">
+                        {{ custom_trans('Cancel', 'front') }}
+                    </button>
+                    <button type="button" class="btn btn-danger px-4 rounded-pill" id="globalConfirmOkBtn">
+                        {{ custom_trans('OK', 'front') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </body>
 

@@ -72,9 +72,10 @@
                     e.preventDefault();
                     e.stopPropagation();
                     
-                    if (confirm('{{ custom_trans('remove_from_wishlist_confirm', 'front') }}')) {
-                        const courseId = this.dataset.courseId;
-                        const cardColumn = this.closest('.col-12, .col-md-6, .col-lg-4');
+                    const btn = this;
+                    confirmAction('{{ custom_trans('remove_from_wishlist_confirm', 'front') }}', function() {
+                        const courseId = btn.dataset.courseId;
+                        const cardColumn = btn.closest('.col-12, .col-md-6, .col-lg-4');
 
                         fetch(`/wishlist/remove/${courseId}`, {
                                 method: 'DELETE',
@@ -101,7 +102,7 @@
                                 console.error('Error:', error);
                                 toastr.error('{{ custom_trans('An error occurred. Please try again.', 'front') }}');
                             });
-                    }
+                    });
                 });
             });
         });

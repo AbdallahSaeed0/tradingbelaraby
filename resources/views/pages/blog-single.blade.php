@@ -265,7 +265,7 @@
                 });
             } else {
                 navigator.clipboard.writeText(window.location.href).then(function() {
-                    alert('Link copied to clipboard!');
+                    toastr.success('{{ custom_trans('Link copied to clipboard!', 'front') }}');
                 });
             }
         }

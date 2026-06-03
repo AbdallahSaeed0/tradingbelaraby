@@ -14,6 +14,7 @@ class CartController extends Controller
     {
         $this->middleware('auth');
     }
+
     /**
      * Display the user's cart
      */
@@ -22,7 +23,7 @@ class CartController extends Controller
         $user = Auth::user();
         $cartItems = $user->cartItems()->with('course.category', 'course.instructor', 'bundle.courses')->get();
 
-        $total = $cartItems->sum(function($item) {
+        $total = $cartItems->sum(function ($item) {
             return $item->getPrice();
         });
 
@@ -36,31 +37,28 @@ class CartController extends Controller
     {
         $user = Auth::user();
 
-        // Check if already in cart
         if ($user->hasInCart($course)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Course is already in your cart'
+                'message' => custom_trans('Course is already in your cart', 'front'),
             ]);
         }
 
-        // Check if already enrolled
         if ($user->enrollments()->where('course_id', $course->id)->exists()) {
             return response()->json([
                 'success' => false,
-                'message' => 'You are already enrolled in this course'
+                'message' => custom_trans('You are already enrolled in this course', 'front'),
             ]);
         }
 
-        // Add to cart
         CartItem::create([
-            'user_id' => $user->id,
+            'user_id'   => $user->id,
             'course_id' => $course->id,
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Course added to cart successfully'
+            'message' => custom_trans('Course added to cart successfully', 'front'),
         ]);
     }
 
@@ -70,13 +68,11 @@ class CartController extends Controller
     public function remove(Request $request, Course $course)
     {
         $user = Auth::user();
-
-        // Remove from cart
         $user->cartItems()->where('course_id', $course->id)->delete();
 
         return response()->json([
             'success' => true,
-            'message' => 'Course removed from cart successfully'
+            'message' => custom_trans('Course removed from cart successfully', 'front'),
         ]);
     }
 
@@ -87,24 +83,22 @@ class CartController extends Controller
     {
         $user = Auth::user();
 
-        // Check if already in cart
         $existingItem = $user->cartItems()->where('bundle_id', $bundle->id)->first();
         if ($existingItem) {
             return response()->json([
                 'success' => false,
-                'message' => 'Bundle is already in your cart'
+                'message' => custom_trans('Bundle is already in your cart', 'front'),
             ]);
         }
 
-        // Add to cart
         CartItem::create([
-            'user_id' => $user->id,
+            'user_id'   => $user->id,
             'bundle_id' => $bundle->id,
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Bundle added to cart successfully'
+            'message' => custom_trans('Bundle added to cart successfully', 'front'),
         ]);
     }
 
@@ -114,13 +108,11 @@ class CartController extends Controller
     public function removeBundle(Request $request, Bundle $bundle)
     {
         $user = Auth::user();
-
-        // Remove from cart
         $user->cartItems()->where('bundle_id', $bundle->id)->delete();
 
         return response()->json([
             'success' => true,
-            'message' => 'Bundle removed from cart successfully'
+            'message' => custom_trans('Bundle removed from cart successfully', 'front'),
         ]);
     }
 
@@ -134,7 +126,7 @@ class CartController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Cart cleared successfully'
+            'message' => custom_trans('Cart cleared successfully', 'front'),
         ]);
     }
 }

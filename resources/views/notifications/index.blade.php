@@ -553,18 +553,17 @@ document.addEventListener('DOMContentLoaded', function () {
             const id   = this.dataset.notificationId;
             const card = document.getElementById('notif-' + id);
 
-            // Use toastr confirmation pattern
-            if (!confirm('{{ custom_trans('delete_notification_confirm', 'front') }}')) return;
-
-            apiFetch(`/notifications/${id}`, 'DELETE')
-                .then(data => {
-                    if (data.success) {
-                        removeCard(card);
-                        setTimeout(checkEmpty, 400);
-                        if (typeof toastr !== 'undefined') toastr.info('{{ custom_trans('notification_deleted', 'front') }}');
-                    }
-                })
-                .catch(() => { if (typeof toastr !== 'undefined') toastr.error('{{ custom_trans('error', 'front') }}'); });
+            confirmAction('{{ custom_trans('delete_notification_confirm', 'front') }}', function () {
+                apiFetch(`/notifications/${id}`, 'DELETE')
+                    .then(data => {
+                        if (data.success) {
+                            removeCard(card);
+                            setTimeout(checkEmpty, 400);
+                            if (typeof toastr !== 'undefined') toastr.info('{{ custom_trans('notification_deleted', 'front') }}');
+                        }
+                    })
+                    .catch(() => { if (typeof toastr !== 'undefined') toastr.error('{{ custom_trans('error', 'front') }}'); });
+            });
         });
     });
 

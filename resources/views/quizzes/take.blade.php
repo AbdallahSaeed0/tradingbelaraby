@@ -449,12 +449,12 @@
                             window.location.href = data.redirect_url;
                         }, 3000);
                     } else {
-                        alert('Error submitting quiz: ' + (data.error || 'Unknown error'));
+                        toastr.error('Error submitting quiz: ' + (data.error || 'Unknown error'));
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Error submitting quiz. Please try again.');
+                    toastr.error('Error submitting quiz. Please try again.');
                 });
         }
 

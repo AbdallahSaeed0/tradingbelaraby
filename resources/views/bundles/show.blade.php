@@ -247,11 +247,11 @@
                             modal.show();
                         }
                     } else {
-                        alert(data.message || '{{ custom_trans('Unable to add bundle to cart.', 'front') }}');
+                        toastr.error(data.message || '{{ custom_trans('Unable to add bundle to cart.', 'front') }}');
                     }
                 } catch (error) {
                     console.error('Add to cart error:', error);
-                    alert('{{ custom_trans('An unexpected error occurred. Please try again later.', 'front') }}');
+                    toastr.error('{{ custom_trans('An unexpected error occurred. Please try again later.', 'front') }}');
                 }
             });
         }

@@ -791,8 +791,7 @@
 
                 if (!paymentMethod) {
                     e.preventDefault();
-                    toastr?.error?.('{{ custom_trans('please_select_payment_method', 'front') }}') ||
-                        alert('{{ custom_trans('please_select_payment_method', 'front') }}');
+                    toastr.error('{{ custom_trans('please_select_payment_method', 'front') }}');
                     return;
                 }
 
@@ -912,7 +911,7 @@
                         }
                     } catch (error) {
                         console.error('Remove coupon error:', error);
-                        alert('{{ custom_trans('an_error_occurred', 'front') }}');
+                        toastr.error('{{ custom_trans('an_error_occurred', 'front') }}');
                     }
                 });
             }

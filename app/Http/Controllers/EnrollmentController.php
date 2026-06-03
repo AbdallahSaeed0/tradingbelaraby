@@ -46,15 +46,15 @@ class EnrollmentController extends Controller
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'You are already enrolled in this course!'
+                    'message' => custom_trans('You are already enrolled in this course!', 'front'),
                 ]);
             }
-            return redirect()->route('courses.show', $course->id)->with('info', 'You are already enrolled in this course!');
+            return redirect()->route('courses.show', $course->id)->with('info', custom_trans('You are already enrolled in this course!', 'front'));
         }
 
         // Prevent direct enrollment for paid courses - they must go through checkout/cart
         if (!$course->is_free && $course->price > 0) {
-            $message = 'This is a paid course. Please add it to your cart and complete checkout.';
+            $message = custom_trans('This is a paid course. Please add it to your cart and complete checkout.', 'front');
 
             if ($request->expectsJson()) {
                 // Return 200 with success=false so frontend can handle gracefully without JS error
@@ -89,15 +89,12 @@ class EnrollmentController extends Controller
         }
 
         // Return JSON for AJAX requests, redirect for regular requests
-        $locale = Session::get('frontend_locale', config('app.locale'));
-        $locale = in_array($locale, ['ar', 'en']) ? $locale : 'en';
-        \App::setLocale($locale);
-        $successMessage = $locale === 'ar' ? 'تم التسجيل بنجاح' : 'Enrolled successfully';
+        $successMessage = custom_trans('Enrolled successfully', 'front');
 
         if ($request->expectsJson()) {
             return response()->json([
                 'success' => true,
-                'message' => $successMessage
+                'message' => $successMessage,
             ]);
         }
 

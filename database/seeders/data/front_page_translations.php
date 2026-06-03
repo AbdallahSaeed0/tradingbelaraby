@@ -2087,6 +2087,10 @@ return [
     'years old' => [
         'ar' => 'عاماً',
     ],
+    'add_to_cart' => [
+        'en' => 'Add to Cart',
+        'ar' => 'أضف إلى السلة',
+    ],
     'Course added to cart' => [
         'en' => 'Course added to cart',
         'ar' => 'تمت إضافة الدورة إلى السلة',
@@ -2094,6 +2098,50 @@ return [
     'Course added to cart successfully.' => [
         'en' => 'Course added to cart successfully.',
         'ar' => 'تمت إضافة الدورة إلى السلة بنجاح.',
+    ],
+    'Course added to cart successfully' => [
+        'en' => 'Course added to cart successfully',
+        'ar' => 'تمت إضافة الدورة إلى السلة بنجاح',
+    ],
+    'Course is already in your cart' => [
+        'en' => 'Course is already in your cart',
+        'ar' => 'هذه الدورة موجودة بالفعل في سلتك',
+    ],
+    'You are already enrolled in this course' => [
+        'en' => 'You are already enrolled in this course',
+        'ar' => 'أنت مسجل بالفعل في هذه الدورة',
+    ],
+    'You are already enrolled in this course!' => [
+        'en' => 'You are already enrolled in this course!',
+        'ar' => 'أنت مسجل بالفعل في هذه الدورة!',
+    ],
+    'This is a paid course. Please add it to your cart and complete checkout.' => [
+        'en' => 'This is a paid course. Please add it to your cart and complete checkout.',
+        'ar' => 'هذه دورة مدفوعة. يرجى إضافتها إلى سلتك وإتمام عملية الدفع.',
+    ],
+    'Course removed from cart successfully' => [
+        'en' => 'Course removed from cart successfully',
+        'ar' => 'تمت إزالة الدورة من السلة بنجاح',
+    ],
+    'Bundle is already in your cart' => [
+        'en' => 'Bundle is already in your cart',
+        'ar' => 'هذه الباقة موجودة بالفعل في سلتك',
+    ],
+    'Bundle added to cart successfully' => [
+        'en' => 'Bundle added to cart successfully',
+        'ar' => 'تمت إضافة الباقة إلى السلة بنجاح',
+    ],
+    'Bundle removed from cart successfully' => [
+        'en' => 'Bundle removed from cart successfully',
+        'ar' => 'تمت إزالة الباقة من السلة بنجاح',
+    ],
+    'Cart cleared successfully' => [
+        'en' => 'Cart cleared successfully',
+        'ar' => 'تم مسح السلة بنجاح',
+    ],
+    'An error occurred while adding course to cart.' => [
+        'en' => 'An error occurred while adding course to cart.',
+        'ar' => 'حدث خطأ أثناء إضافة الدورة إلى السلة.',
     ],
     'You can continue shopping or proceed to checkout to complete your purchase.' => [
         'en' => 'You can continue shopping or proceed to checkout to complete your purchase.',

@@ -459,11 +459,12 @@
 
             removeButtons.forEach(button => {
                 button.addEventListener('click', function() {
-                    if (confirm('{{ custom_trans('remove_from_cart_confirm', 'front') }}')) {
-                        const itemId = this.dataset.itemId;
-                        const itemType = this.dataset.itemType;
-                        const url = itemType === 'bundle' 
-                            ? `/cart/remove-bundle/${itemId}` 
+                    const btn = this;
+                    confirmAction('{{ custom_trans('remove_from_cart_confirm', 'front') }}', function() {
+                        const itemId = btn.dataset.itemId;
+                        const itemType = btn.dataset.itemType;
+                        const url = itemType === 'bundle'
+                            ? `/cart/remove-bundle/${itemId}`
                             : `/cart/remove/${itemId}`;
 
                         fetch(url, {
@@ -477,18 +478,8 @@
                             .then(response => response.json())
                             .then(data => {
                                 if (data.success) {
-                                    // Remove the cart item from the page
-                                    this.closest('.cart-item').remove();
-
-                                    // Check if no more items
-                                    if (document.querySelectorAll('.cart-item').length === 0) {
-                                        location.reload(); // Reload to show empty state
-                                    } else {
-                                        // Update totals
-                                        location.reload(); // Reload to update totals
-                                    }
-
-                                    // Update cart count in header
+                                    btn.closest('.cart-item').remove();
+                                    location.reload();
                                     updateCartCount();
                                 }
                             })
@@ -496,7 +487,7 @@
                                 console.error('Error:', error);
                                 toastr.error('An error occurred. Please try again.');
                             });
-                    }
+                    });
                 });
             });
 
