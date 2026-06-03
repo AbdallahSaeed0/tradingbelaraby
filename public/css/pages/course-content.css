@@ -42,7 +42,7 @@
     font-weight: 600;
 }
 .btn-orange {
-    background: #ff7043;
+    background: #f15a29;
     color: #fff;
     border: none;
     border-radius: 7px;
@@ -51,8 +51,9 @@
     transition: background 0.2s, color 0.2s;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
-.btn-orange:hover {
-    background: #125875;
+.btn-orange:hover,
+.btn-orange:focus {
+    background: #d94e1f;
     color: #fff;
 }
 .course-details-btn {

@@ -52,9 +52,25 @@
     max-width: 480px !important;
 }
 
-.btn-orange {
+.btn-orange,
+a.btn-orange,
+button.btn-orange {
     background: #f15a29 !important;
     border: none !important;
+    color: #fff !important;
+}
+
+.btn-orange:hover,
+.btn-orange:focus,
+.btn-orange:active,
+a.btn-orange:hover,
+a.btn-orange:focus,
+button.btn-orange:hover,
+button.btn-orange:focus {
+    background: #d94e1f !important;
+    border: none !important;
+    color: #fff !important;
+    box-shadow: 0 4px 12px rgba(241, 90, 41, 0.35);
 }
 
 /* width/height utilities */
