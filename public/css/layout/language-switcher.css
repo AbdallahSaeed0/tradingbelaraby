@@ -1,8 +1,22 @@
 /* Language Switcher Styling */
 
+.site-header {
+    position: relative;
+    z-index: 1030;
+    overflow: visible;
+}
+
+.site-header .main-nav,
+.site-header .main-nav .container,
+.site-header .nav-flex,
+.site-header .nav-desktop-actions {
+    overflow: visible;
+}
+
 .language-switcher {
     position: relative;
-    z-index: 1000;
+    z-index: 1040;
+    flex-shrink: 0;
 }
 
 .language-switcher .dropdown {
@@ -10,18 +24,19 @@
 }
 
 .language-switcher .dropdown-menu {
-    z-index: 1050 !important;
-    position: absolute !important;
+    position: absolute;
+    top: calc(100% + 0.35rem);
+    inset-inline-end: 0;
+    inset-inline-start: auto;
+    z-index: 1055;
     min-width: 200px;
-    /* Bootstrap default - hidden by default */
-    display: none;
+    margin: 0;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
 }
 
-/* Ensure dropdown is visible when Bootstrap adds the 'show' class */
 .language-switcher .dropdown-menu.show {
-    display: block !important;
-    opacity: 1 !important;
-    visibility: visible !important;
+    display: block;
 }
 
 .language-switcher .dropdown-item.active {
@@ -38,16 +53,6 @@
 }
 
 .language-switcher .btn {
-    pointer-events: auto !important;
-    cursor: pointer !important;
-}
-
-/* Ensure language switcher works on course learn page */
-.course-content-topbar ~ * .language-switcher,
-body:has(.course-content-topbar) .language-switcher {
-    z-index: 1100 !important;
-}
-
-body:has(.course-content-topbar) .language-switcher .dropdown-menu {
-    z-index: 1100 !important;
+    pointer-events: auto;
+    cursor: pointer;
 }

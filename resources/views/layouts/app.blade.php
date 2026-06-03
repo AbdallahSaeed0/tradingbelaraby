@@ -247,7 +247,8 @@
                     <div class="language-switcher me-3">
                         <div class="dropdown">
                             <button class="btn btn-outline-light dropdown-toggle text-black" type="button"
-                                id="frontendLangDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside"
+                                id="frontendLangDropdown" data-bs-toggle="dropdown" data-bs-display="static"
+                                data-bs-auto-close="outside"
                                 aria-expanded="false">
                                 <i class="fas fa-globe me-1"></i>
                                 {{ strtoupper($currentLanguage->code) }}
