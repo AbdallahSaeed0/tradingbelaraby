@@ -530,71 +530,87 @@
                 <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
                     aria-label="{{ __('Close') }}"></button>
             </div>
-            <div class="offcanvas-body d-flex flex-column gap-4">
+            <div class="offcanvas-body mobile-offcanvas-body">
                 <form action="{{ route('courses.search') }}" method="GET" class="mobile-offcanvas-search">
                     <div class="input-group">
-                        <span class="input-group-text bg-white border-end-0"><i class="fas fa-search"></i></span>
-                        <input type="text" name="q" class="form-control border-start-0"
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input type="text" name="q" class="form-control"
                             placeholder="{{ custom_trans('search_courses', 'front') }}"
                             value="{{ request('q') }}">
                     </div>
                 </form>
 
                 <nav class="mobile-offcanvas-nav">
-                    <ul class="list-unstyled m-0">
-                        <li class="mb-2">
-                            <a href="{{ route('home') }}" class="mobile-offcanvas-link">
-                                <i class="fas fa-home me-2"></i>{{ custom_trans('home', 'front') }}
+                    <ul class="list-unstyled m-0 mobile-offcanvas-nav-list">
+                        <li>
+                            <a href="{{ route('home') }}" class="mobile-offcanvas-link {{ request()->routeIs('home') ? 'is-active' : '' }}"
+                                data-bs-dismiss="offcanvas" data-bs-target="#mobileNavOffcanvas">
+                                <span class="mobile-offcanvas-link-inner">
+                                    <i class="fas fa-home"></i>
+                                    <span>{{ custom_trans('home', 'front') }}</span>
+                                </span>
                             </a>
                         </li>
-                        <li class="mb-2">
-                            <button
-                                class="mobile-offcanvas-link w-100 text-start d-flex align-items-center justify-content-between"
+                        <li class="mobile-offcanvas-nav-item--has-sub">
+                            <button class="mobile-offcanvas-link mobile-offcanvas-link--toggle {{ request()->routeIs('categories.*') ? 'is-active' : '' }}"
                                 type="button" data-bs-toggle="collapse" data-bs-target="#mobileCategoriesCollapse"
-                                aria-expanded="false">
-                                <span><i
-                                        class="fas fa-th-large me-2"></i>{{ custom_trans('categories', 'front') }}</span>
-                                <i class="fas fa-chevron-down"></i>
+                                aria-expanded="{{ request()->routeIs('categories.*') ? 'true' : 'false' }}">
+                                <span class="mobile-offcanvas-link-inner">
+                                    <i class="fas fa-th-large"></i>
+                                    <span>{{ custom_trans('categories', 'front') }}</span>
+                                </span>
+                                <i class="fas fa-chevron-down mobile-offcanvas-chevron"></i>
                             </button>
-                            <div class="collapse mt-2" id="mobileCategoriesCollapse">
-                                <ul class="list-unstyled ps-3">
+                            <div class="collapse {{ request()->routeIs('categories.*') ? 'show' : '' }}" id="mobileCategoriesCollapse">
+                                <ul class="list-unstyled mobile-offcanvas-sublist">
                                     @forelse($navigationCategories as $category)
-                                        <li class="mb-2">
+                                        <li>
                                             <a href="{{ route('categories.show', $category->slug) }}"
-                                                class="mobile-offcanvas-sublink">
+                                                class="mobile-offcanvas-sublink"
+                                                data-bs-dismiss="offcanvas" data-bs-target="#mobileNavOffcanvas">
                                                 {{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}
                                             </a>
                                         </li>
                                     @empty
-                                        <li class="text-muted small">
+                                        <li class="text-muted small px-2 py-1">
                                             {{ custom_trans('no_category_found', 'front') }}
                                         </li>
                                     @endforelse
                                 </ul>
                             </div>
                         </li>
-                        <li class="mb-2">
-                            <a href="{{ route('blog.index') }}" class="mobile-offcanvas-link">
-                                <i class="fas fa-newspaper me-2"></i>{{ custom_trans('blog', 'front') }}
+                        <li>
+                            <a href="{{ route('blog.index') }}" class="mobile-offcanvas-link {{ request()->routeIs('blog.*') ? 'is-active' : '' }}"
+                                data-bs-dismiss="offcanvas" data-bs-target="#mobileNavOffcanvas">
+                                <span class="mobile-offcanvas-link-inner">
+                                    <i class="fas fa-newspaper"></i>
+                                    <span>{{ custom_trans('blog', 'front') }}</span>
+                                </span>
                             </a>
                         </li>
-                        <li class="mb-2">
-                            <a href="{{ route('contact') }}" class="mobile-offcanvas-link">
-                                <i class="fas fa-envelope me-2"></i>{{ custom_trans('contact', 'front') }}
+                        <li>
+                            <a href="{{ route('contact') }}" class="mobile-offcanvas-link {{ request()->routeIs('contact') ? 'is-active' : '' }}"
+                                data-bs-dismiss="offcanvas" data-bs-target="#mobileNavOffcanvas">
+                                <span class="mobile-offcanvas-link-inner">
+                                    <i class="fas fa-envelope"></i>
+                                    <span>{{ custom_trans('contact', 'front') }}</span>
+                                </span>
                             </a>
                         </li>
                     </ul>
                 </nav>
 
                 <div class="mobile-offcanvas-languages">
-                    <h6 class="fw-semibold mb-2">{{ custom_trans('language', 'front') }}</h6>
-                    <div class="btn-group w-100">
-                        <button
-                            class="btn btn-outline-secondary dropdown-toggle d-flex justify-content-between align-items-center"
-                            type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <span><i class="fas fa-globe me-2"></i>{{ strtoupper($currentLanguage->code) }}</span>
+                    <p class="mobile-offcanvas-section-label">{{ custom_trans('language', 'front') }}</p>
+                    <div class="dropdown w-100 mobile-lang-dropdown">
+                        <button class="mobile-lang-toggle dropdown-toggle w-100" type="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="mobile-offcanvas-link-inner">
+                                <i class="fas fa-globe"></i>
+                                <span>{{ strtoupper($currentLanguage->code) }}</span>
+                            </span>
                         </button>
-                        <ul class="dropdown-menu w-100">
+                        <ul class="dropdown-menu w-100 shadow-sm">
                             @foreach ($availableLanguages as $language)
                                 <li>
                                     <a class="dropdown-item d-flex justify-content-between align-items-center {{ $currentLanguage->id == $language->id ? 'active' : '' }}"
@@ -610,35 +626,50 @@
                     </div>
                 </div>
 
-                <div class="mobile-offcanvas-actions mt-auto">
+                <hr class="mobile-offcanvas-divider">
+                <div class="mobile-offcanvas-actions">
                     @if (auth()->check() && !$showGuestNav)
-                        <div class="d-grid gap-2">
-                            <a href="{{ route('student.my-courses') }}" class="btn btn-outline-primary">
-                                <i class="fas fa-graduation-cap me-2"></i>{{ custom_trans('my_courses', 'front') }}
+                        <div class="mobile-offcanvas-actions-grid">
+                            <a href="{{ route('student.my-courses') }}" class="mobile-action-btn"
+                                data-bs-dismiss="offcanvas" data-bs-target="#mobileNavOffcanvas">
+                                <i class="fas fa-graduation-cap"></i>
+                                <span>{{ custom_trans('my_courses', 'front') }}</span>
                             </a>
-                            <a href="{{ route('wishlist.index') }}" class="btn btn-outline-primary">
-                                <i class="fas fa-heart me-2"></i>{{ custom_trans('wishlist', 'front') }}
+                            <a href="{{ route('wishlist.index') }}" class="mobile-action-btn"
+                                data-bs-dismiss="offcanvas" data-bs-target="#mobileNavOffcanvas">
+                                <i class="fas fa-heart"></i>
+                                <span>{{ custom_trans('wishlist', 'front') }}</span>
                             </a>
-                            <a href="{{ route('cart.index') }}" class="btn btn-outline-primary">
-                                <i class="fas fa-shopping-cart me-2"></i>{{ custom_trans('cart', 'front') }}
+                            <a href="{{ route('cart.index') }}" class="mobile-action-btn"
+                                data-bs-dismiss="offcanvas" data-bs-target="#mobileNavOffcanvas">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span>{{ custom_trans('cart', 'front') }}</span>
                             </a>
-                            <a href="{{ route('demo.charts') }}" class="btn btn-outline-primary">
-                                <i class="fas fa-chart-line me-2"></i>Charts <span class="badge bg-secondary">demo</span>
+                            <a href="{{ route('demo.charts') }}" class="mobile-action-btn"
+                                data-bs-dismiss="offcanvas" data-bs-target="#mobileNavOffcanvas">
+                                <i class="fas fa-chart-line"></i>
+                                <span>Charts</span>
+                                <span class="mobile-action-badge">demo</span>
                             </a>
-                            <form action="{{ route('logout') }}" method="POST">
-                                @csrf
-                                <button type="submit" class="btn btn-danger w-100">
-                                    <i class="fas fa-sign-out-alt me-2"></i>{{ custom_trans('logout', 'front') }}
-                                </button>
-                            </form>
                         </div>
+                        <form action="{{ route('logout') }}" method="POST" class="mt-2">
+                            @csrf
+                            <button type="submit" class="mobile-action-btn mobile-action-btn--danger w-100">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>{{ custom_trans('logout', 'front') }}</span>
+                            </button>
+                        </form>
                     @else
-                        <div class="d-grid gap-2">
-                            <a href="{{ route('login') }}" class="btn btn-primary">
-                                <i class="fas fa-sign-in-alt me-2"></i>{{ custom_trans('login', 'front') }}
+                        <div class="mobile-offcanvas-actions-grid mobile-offcanvas-actions-grid--auth">
+                            <a href="{{ route('login') }}" class="mobile-action-btn mobile-action-btn--primary"
+                                data-bs-dismiss="offcanvas" data-bs-target="#mobileNavOffcanvas">
+                                <i class="fas fa-sign-in-alt"></i>
+                                <span>{{ custom_trans('login', 'front') }}</span>
                             </a>
-                            <a href="{{ route('register') }}" class="btn btn-outline-primary">
-                                <i class="fas fa-user-plus me-2"></i>{{ custom_trans('register', 'front') }}
+                            <a href="{{ route('register') }}" class="mobile-action-btn"
+                                data-bs-dismiss="offcanvas" data-bs-target="#mobileNavOffcanvas">
+                                <i class="fas fa-user-plus"></i>
+                                <span>{{ custom_trans('register', 'front') }}</span>
                             </a>
                         </div>
                     @endif

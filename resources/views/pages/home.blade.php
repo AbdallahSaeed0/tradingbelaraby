@@ -185,13 +185,57 @@
                 var currentIdx  = n;   // start at first original card
                 var isAnimating = false;
                 var ANIM_MS     = 420; // must be ≥ CSS scroll-behavior duration
+                var AUTOPLAY_MS = parseInt(wrap.getAttribute('data-home-courses-autoplay'), 10) || 5000;
+                var autoplayTimer = null;
+                var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+                function canAutoplay() {
+                    return track.scrollWidth > track.clientWidth + 1;
+                }
+
+                function stopAutoplay() {
+                    if (autoplayTimer) {
+                        clearInterval(autoplayTimer);
+                        autoplayTimer = null;
+                    }
+                }
+
+                function startAutoplay() {
+                    stopAutoplay();
+                    if (prefersReducedMotion || !canAutoplay()) return;
+                    autoplayTimer = setInterval(function () {
+                        if (!isAnimating) slide('next');
+                    }, AUTOPLAY_MS);
+                }
+
+                function resetAutoplay() {
+                    stopAutoplay();
+                    startAutoplay();
+                }
 
                 // Initialise position after layout
-                setTimeout(function () { jumpTo(n); }, 30);
+                setTimeout(function () {
+                    jumpTo(n);
+                    startAutoplay();
+                }, 30);
 
                 // Re-anchor on resize (card width may change)
                 window.addEventListener('resize', function () {
                     jumpTo(currentIdx);
+                    resetAutoplay();
+                });
+
+                // Pause while hovering; resume when pointer leaves
+                wrap.addEventListener('mouseenter', stopAutoplay);
+                wrap.addEventListener('mouseleave', startAutoplay);
+                wrap.addEventListener('focusin', stopAutoplay);
+                wrap.addEventListener('focusout', function (e) {
+                    if (!wrap.contains(e.relatedTarget)) startAutoplay();
+                });
+
+                document.addEventListener('visibilitychange', function () {
+                    if (document.hidden) stopAutoplay();
+                    else startAutoplay();
                 });
 
                 // ── Scroll action ────────────────────────────────────────────
@@ -214,6 +258,7 @@
                             jumpTo(currentIdx);
                         }
                         isAnimating = false;
+                        resetAutoplay();
                     }, ANIM_MS);
                 }
 

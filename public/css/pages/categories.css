@@ -95,7 +95,9 @@
 
 /* Stats bar */
 .banner-stats-bar {
-  display: inline-flex;
+  display: flex;
+  width: fit-content;
+  margin: 1.5rem auto 0;
   align-items: center;
   gap: 1.5rem;
   background: rgba(255, 255, 255, .12);
