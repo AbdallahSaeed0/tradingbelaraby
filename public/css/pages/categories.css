@@ -29,6 +29,30 @@
   overflow: hidden;
 }
 
+/* Fallback when breadcrumb-bg.png (or category image) is missing */
+.category-banner--default {
+  background: linear-gradient(135deg, #17506b 0%, #0f3d52 50%, #1a6b8a 100%);
+}
+
+.category-banner--default::after,
+.category-banner--default-fill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 40%, rgba(255, 112, 67, 0.18) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 50% at 85% 70%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.category-banner--default-fill {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(135deg, #17506b 0%, #0f3d52 50%, #1a6b8a 100%);
+}
+
 .category-banner-bg {
   position: absolute;
   inset: 0;

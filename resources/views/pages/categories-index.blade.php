@@ -3,14 +3,22 @@
 @section('title', 'All Categories - ' . (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site Name'))
 
 @section('content')
-    <!-- Banner Section -->
-    <section class="category-banner position-relative d-flex align-items-center justify-content-center">
-        <img src="{{ asset('images/breadcrumb-bg.png') }}" alt="Banner"
-            class="category-banner-bg position-absolute w-100 h-100 top-0 start-0" width="1920" height="400">
-        <div class="category-banner-overlay position-absolute w-100 h-100 top-0 start-0"></div>
-        <div class="container position-relative z-3 text-center">
-            <h1 class="display-3 fw-bold text-white mb-3">{{ custom_trans('explore_categories', 'front') }}</h1>
-            <!-- Category counter removed as requested -->
+    <!-- Banner Section (CSS gradient — no missing breadcrumb-bg.png) -->
+    <section class="category-banner category-banner--default position-relative d-flex align-items-center justify-content-center">
+        <div class="banner-overlay-gradient" aria-hidden="true"></div>
+        <div class="container position-relative z-3 text-center py-4">
+            <div class="d-flex justify-content-center mb-3 banner-animate-in" style="--delay:.05s">
+                <span class="banner-glass-pill">
+                    <a href="{{ route('home') }}" class="text-white text-decoration-none opacity-75 hover-opacity-full">
+                        <i class="fas fa-home me-1"></i>{{ custom_trans('home', 'front') }}
+                    </a>
+                    <span class="mx-2 opacity-40">/</span>
+                    <span class="text-white opacity-90">{{ custom_trans('categories', 'front') }}</span>
+                </span>
+            </div>
+            <h1 class="banner-title banner-animate-in mb-0" style="--delay:.15s">
+                {{ custom_trans('explore_categories', 'front') }}
+            </h1>
         </div>
     </section>
 

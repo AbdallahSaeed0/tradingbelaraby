@@ -23,12 +23,10 @@
     @endif
 
     <!-- Category Banner -->
-    <section class="category-banner position-relative d-flex align-items-center justify-content-center">
-        <img src="{{ asset('images/breadcrumb-bg.png') }}"
-            alt="Banner" class="category-banner-bg position-absolute w-100 h-100 top-0 start-0" width="1920" height="400">
-        <div class="category-banner-overlay position-absolute w-100 h-100 top-0 start-0"></div>
-        <div class="container position-relative z-3 text-center">
-            <h1 class="display-3 fw-bold text-white mb-3">
+    <section class="category-banner category-banner--default position-relative d-flex align-items-center justify-content-center">
+        <div class="banner-overlay-gradient" aria-hidden="true"></div>
+        <div class="container position-relative z-3 text-center py-4">
+            <h1 class="banner-title mb-0">
                 @if ($selectedCategory)
                     {{ \App\Helpers\TranslationHelper::getLocalizedContent($selectedCategory->name, $selectedCategory->name_ar) }}
                 @else

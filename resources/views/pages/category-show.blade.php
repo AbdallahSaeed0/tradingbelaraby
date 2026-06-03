@@ -12,8 +12,7 @@
                 alt="{{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}"
                 class="category-banner-bg" width="1920" height="400">
         @else
-            <img src="{{ asset('images/breadcrumb-bg.png') }}"
-                alt="Banner" class="category-banner-bg" width="1920" height="400">
+            <div class="category-banner--default-fill" aria-hidden="true"></div>
         @endif
 
         <div class="banner-overlay-gradient"></div>
