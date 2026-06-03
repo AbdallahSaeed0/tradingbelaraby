@@ -1468,6 +1468,18 @@ return [
         'en' => 'Go to Course',
         'ar' => 'اذهب إلى الدورة',
     ],
+    'hour' => [
+        'en' => 'hour',
+        'ar' => 'ساعة',
+    ],
+    'hours' => [
+        'en' => 'hours',
+        'ar' => 'ساعات',
+    ],
+    'start_free' => [
+        'en' => 'Start Free',
+        'ar' => 'ابدأ مجاناً',
+    ],
     'go_to_dashboard' => [
         'en' => 'Go to Dashboard',
         'ar' => 'اذهب إلى لوحة التحكم',

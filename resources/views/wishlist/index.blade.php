@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'My Wishlist - ' . (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site Name'))
+@section('title', custom_trans('my_wishlist', 'front') . ' - ' . (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site Name'))
 
 @section('content')
     <!-- Hero Section -->

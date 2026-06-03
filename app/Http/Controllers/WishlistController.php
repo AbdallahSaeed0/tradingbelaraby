@@ -20,7 +20,18 @@ class WishlistController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $wishlistItems = $user->wishlistItems()->with('course.category', 'course.instructor')->paginate(12);
+        $wishlistItems = $user->wishlistItems()
+            ->with([
+                'course.category',
+                'course.instructor',
+                'course.instructors',
+                'course' => function ($query) {
+                    $query->withCount(['lectures as total_lessons_count' => function ($q) {
+                        $q->where('is_published', true);
+                    }]);
+                },
+            ])
+            ->paginate(12);
 
         return view('wishlist.index', compact('wishlistItems'));
     }
