@@ -1,3 +1,8 @@
+[dir="rtl"] .nav-mobile-toolbar {
+    margin-inline-start: auto;
+    margin-inline-end: 0;
+}
+
 [dir="rtl"] .mobile-header-actions {
     margin-right: auto;
     margin-left: 0;

@@ -190,13 +190,6 @@
                 @php
                     $mainContentSettings = \App\Models\MainContentSettings::getActive();
                 @endphp
-                <div class="nav-mobile-left d-lg-none">
-                    <button type="button" class="mobile-icon-btn mobile-menu-btn" data-bs-toggle="offcanvas"
-                        data-bs-target="#mobileNavOffcanvas" aria-controls="mobileNavOffcanvas"
-                        aria-label="{{ __('Toggle navigation') }}">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                </div>
                 <div class="logo">
                     <a href="{{ route('home') }}" class="logo-link">
                         <img src="{{ $mainContentSettings ? $mainContentSettings->logo_url : asset('images/default-logo.svg') }}"
@@ -204,7 +197,12 @@
                             class="logo-img" width="180" height="50">
                     </a>
                 </div>
-                <div class="mobile-header-actions d-lg-none">
+                <div class="nav-mobile-toolbar d-lg-none">
+                    <button type="button" class="mobile-icon-btn mobile-menu-btn" data-bs-toggle="offcanvas"
+                        data-bs-target="#mobileNavOffcanvas" aria-controls="mobileNavOffcanvas"
+                        aria-label="{{ __('Toggle navigation') }}">
+                        <i class="fas fa-bars"></i>
+                    </button>
                     @if (!$showGuestNav)
                         <a href="{{ route('cart.index') }}" class="mobile-icon-btn mobile-cart-btn position-relative"
                             aria-label="{{ custom_trans('cart', 'front') }}">
