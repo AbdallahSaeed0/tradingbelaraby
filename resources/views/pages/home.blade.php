@@ -115,34 +115,116 @@
 
 @push('scripts')
     <script>
-        // Home course sliders: vanilla scroll (RTL-aware), no Swiper
-        (function() {
+        // Home course sliders — infinite loop, RTL-aware, clone-based
+        (function () {
             var isRtl = document.documentElement.getAttribute('dir') === 'rtl';
-            document.querySelectorAll('[data-home-courses-slider]').forEach(function(wrap) {
-                var track = wrap.querySelector('[data-home-courses-track]');
+
+            document.querySelectorAll('[data-home-courses-slider]').forEach(function (wrap) {
+                var track   = wrap.querySelector('[data-home-courses-track]');
                 var prevBtn = wrap.querySelector('[data-home-courses-prev]');
                 var nextBtn = wrap.querySelector('[data-home-courses-next]');
                 if (!track || !prevBtn || !nextBtn) return;
-                var cardWidth = 0;
-                function getScrollAmount() {
-                    if (!cardWidth && track.firstElementChild && track.firstElementChild.firstElementChild) {
-                        var card = track.firstElementChild.firstElementChild;
-                        var style = window.getComputedStyle(track.firstElementChild);
-                        var gap = parseFloat(style.gap) || 0;
-                        cardWidth = card.offsetWidth + gap;
-                    }
-                    return cardWidth || 280;
+
+                var list = track.querySelector('.home-courses-slider__list');
+                if (!list) return;
+
+                var origCards = Array.from(list.children);
+                var n = origCards.length;
+
+                // Only 1 item (or 0): hide arrows, no loop needed
+                if (n <= 1) {
+                    prevBtn.style.display = 'none';
+                    nextBtn.style.display = 'none';
+                    return;
                 }
-                function scrollPrev() {
-                    track.scrollBy({ left: isRtl ? getScrollAmount() : -getScrollAmount(), behavior: 'smooth' });
+
+                // ── Clone setup ──────────────────────────────────────────────
+                // Result: [pre-clones: orig-1..orig-n] [originals] [post-clones: orig-1..orig-n]
+                // In RTL flex the visual order is right→left, but scrollLeft math stays the same
+                // because we're working with DOM index × step.
+                origCards.forEach(function (c) {
+                    list.appendChild(c.cloneNode(true));
+                });
+                origCards.slice().reverse().forEach(function (c) {
+                    list.insertBefore(c.cloneNode(true), list.firstChild);
+                });
+                // children[0..n-1]   = pre-clones  (orig-1 … orig-n in DOM order)
+                // children[n..2n-1]  = originals
+                // children[2n..3n-1] = post-clones  (orig-1 … orig-n)
+
+                // ── Helpers ──────────────────────────────────────────────────
+                function getStep() {
+                    var card = list.firstElementChild;
+                    if (!card) return 280;
+                    var gap = parseFloat(
+                        window.getComputedStyle(list).columnGap ||
+                        window.getComputedStyle(list).gap
+                    ) || 20;
+                    return card.offsetWidth + gap;
                 }
-                function scrollNext() {
-                    track.scrollBy({ left: isRtl ? -getScrollAmount() : getScrollAmount(), behavior: 'smooth' });
+
+                // scrollLeft sign: LTR positive, RTL negative (Chrome/FF modern spec)
+                function posForIdx(idx) {
+                    return isRtl ? -(idx * getStep()) : (idx * getStep());
                 }
-                prevBtn.addEventListener('click', scrollPrev);
-                nextBtn.addEventListener('click', scrollNext);
-                prevBtn.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); scrollPrev(); } });
-                nextBtn.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); scrollNext(); } });
+
+                function jumpTo(idx) {
+                    // Instant (no animation) scroll
+                    var pos = posForIdx(idx);
+                    track.style.scrollBehavior = 'auto';
+                    track.scrollLeft = pos;
+                    track.offsetHeight; // force reflow so the browser doesn't batch with next smooth scroll
+                    track.style.scrollBehavior = '';
+                }
+
+                function smoothTo(idx) {
+                    track.scrollTo({ left: posForIdx(idx), behavior: 'smooth' });
+                }
+
+                // ── State ────────────────────────────────────────────────────
+                var currentIdx  = n;   // start at first original card
+                var isAnimating = false;
+                var ANIM_MS     = 420; // must be ≥ CSS scroll-behavior duration
+
+                // Initialise position after layout
+                setTimeout(function () { jumpTo(n); }, 30);
+
+                // Re-anchor on resize (card width may change)
+                window.addEventListener('resize', function () {
+                    jumpTo(currentIdx);
+                });
+
+                // ── Scroll action ────────────────────────────────────────────
+                function slide(direction) {
+                    if (isAnimating) return;
+                    isAnimating = true;
+
+                    if (direction === 'next') { currentIdx++; }
+                    else                      { currentIdx--; }
+
+                    smoothTo(currentIdx);
+
+                    setTimeout(function () {
+                        // If we drifted into clone territory, silently snap back
+                        if (currentIdx >= n * 2) {
+                            currentIdx -= n;
+                            jumpTo(currentIdx);
+                        } else if (currentIdx < n) {
+                            currentIdx += n;
+                            jumpTo(currentIdx);
+                        }
+                        isAnimating = false;
+                    }, ANIM_MS);
+                }
+
+                prevBtn.addEventListener('click', function () { slide('prev'); });
+                nextBtn.addEventListener('click', function () { slide('next'); });
+                prevBtn.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); slide('prev'); }
+                });
+                nextBtn.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); slide('next'); }
+                });
             });
         })();
 

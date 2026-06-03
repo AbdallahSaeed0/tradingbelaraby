@@ -4,6 +4,9 @@ return [
 'About Our University' => [
         'ar' => 'عن جامعتنا',
     ],
+    'Our Features' => [
+        'ar' => 'مميزاتنا',
+    ],
     'About Instructor' => [
         'en' => 'About Instructor',
         'ar' => 'عن المدرب',

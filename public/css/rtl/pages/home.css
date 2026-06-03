@@ -310,6 +310,14 @@
     margin-bottom: 20px;
 }
 
+/* FA icon rendered inside the orange circle */
+.feature-fa-icon {
+    font-size: 2rem;
+    color: #fff !important;
+    margin-bottom: 0 !important;
+    line-height: 1;
+}
+
 .feature-card h3 {
     font-size: 36px;
     color: #2c3e50;
