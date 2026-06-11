@@ -354,7 +354,7 @@
                                                             {{ Str::limit($item->course->localized_name, 40) }}</h6>
                                                         <small class="text-muted d-block mb-2">
                                                             <i class="fas fa-user me-1"></i>
-                                                            {{ $item->course->instructor->name ?? custom_trans('Unknown Instructor', 'front') }}
+                                                            {{ $item->course->instructorNamesLabel() ?: custom_trans('Unknown Instructor', 'front') }}
                                                         </small>
                                                     @endif
                                                     <div class="d-flex justify-content-between align-items-center">

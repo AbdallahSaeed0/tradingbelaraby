@@ -172,22 +172,22 @@
         <div class="card" id="listViewContainer">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-hover table-striped">
+                    <table class="table table-hover table-striped courses-admin-table">
                         <thead>
                             <tr>
-                                <th width="50">
+                                <th class="col-select" width="50">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="selectAll">
                                     </div>
                                 </th>
-                                <th style="max-width: 200px;">Course</th>
-                                <th>Category</th>
-                                <th>Instructor</th>
-                                <th>Price</th>
-                                <th>Students</th>
-                                <th>Status</th>
-                                <th>Created</th>
-                                <th width="150">Actions</th>
+                                <th class="col-course">Course</th>
+                                <th class="col-category">Category</th>
+                                <th class="col-instructor">Instructor</th>
+                                <th class="col-price">Price</th>
+                                <th class="col-students">Students</th>
+                                <th class="col-status">Status</th>
+                                <th class="col-created">Created</th>
+                                <th class="col-actions" width="150">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -199,21 +199,21 @@
                                                 value="{{ $course->id }}">
                                         </div>
                                     </td>
-                                    <td style="max-width: 200px;">
-                                        <div class="d-flex align-items-center">
+                                    <td class="col-course">
+                                        <div class="d-flex align-items-start course-name-cell">
                                             @if ($course->image)
                                                 <img src="{{ $course->image_url }}" alt="Course"
-                                                    class="course-thumbnail me-3">
+                                                    class="course-thumbnail me-3 flex-shrink-0">
                                             @else
                                                 <div
-                                                    class="course-thumbnail me-3 bg-primary text-white d-flex align-items-center justify-content-center fs-12px">
+                                                    class="course-thumbnail me-3 bg-primary text-white d-flex align-items-center justify-content-center fs-12px flex-shrink-0">
                                                     {{ strtoupper(substr($course->name, 0, 2)) }}
                                                 </div>
                                             @endif
-                                            <div class="min-w-0">
-                                                <h6 class="mb-0 text-truncate" title="{{ $course->name }}">{{ $course->name }}</h6>
+                                            <div class="min-w-0 flex-grow-1 overflow-hidden">
+                                                <h6 class="mb-0 course-title-text" title="{{ $course->name }}">{{ $course->name }}</h6>
                                                 <small
-                                                    class="text-muted d-block text-truncate">{{ Str::limit($course->description, 40) }}</small>
+                                                    class="text-muted d-block course-desc-text" title="{{ $course->description }}">{{ Str::limit($course->description, 40) }}</small>
                                                 <div class="course-stats mt-1 small">
                                                     <span class="me-2">
                                                         <i class="fa fa-play-circle me-1"></i>{{ $course->total_lessons }}
@@ -233,22 +233,22 @@
                                             <span class="badge bg-secondary">Not Found</span>
                                         @endif
                                     </td>
-                                    <td>
+                                    <td class="col-instructor">
                                         @if ($course->instructors->count() > 0)
                                             @foreach ($course->instructors as $index => $instructor)
                                                 @if ($index < 2)
-                                                    <div class="d-flex align-items-center {{ $index > 0 ? 'mt-1' : '' }}">
+                                                    <div class="d-flex align-items-center min-w-0 {{ $index > 0 ? 'mt-1' : '' }}">
                                                         @if ($instructor->avatar)
                                                             <img src="{{ asset('storage/' . $instructor->avatar) }}"
-                                                                class="rounded-circle me-2" width="24"
+                                                                class="rounded-circle me-2 flex-shrink-0" width="24"
                                                                 height="24">
                                                         @else
                                                             <div
-                                                                class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center me-2 w-24 h-24 fs-10px">
+                                                                class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center me-2 w-24 h-24 fs-10px flex-shrink-0">
                                                                 {{ strtoupper(substr($instructor->name, 0, 2)) }}
                                                             </div>
                                                         @endif
-                                                        <span class="small">{{ $instructor->name }}</span>
+                                                        <span class="small instructor-name-text text-truncate" title="{{ $instructor->name }}">{{ $instructor->name }}</span>
                                                     </div>
                                                 @endif
                                             @endforeach
@@ -439,6 +439,69 @@
         </div>
     </div>
 @endsection
+@push('styles')
+    <style>
+        .courses-admin-table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        .courses-admin-table th,
+        .courses-admin-table td {
+            overflow: hidden;
+            vertical-align: middle;
+        }
+
+        .courses-admin-table .col-course {
+            width: 28%;
+        }
+
+        .courses-admin-table .col-category {
+            width: 11%;
+        }
+
+        .courses-admin-table .col-instructor {
+            width: 14%;
+        }
+
+        .courses-admin-table .col-price {
+            width: 9%;
+        }
+
+        .courses-admin-table .col-students {
+            width: 8%;
+        }
+
+        .courses-admin-table .col-status {
+            width: 9%;
+        }
+
+        .courses-admin-table .col-created {
+            width: 10%;
+        }
+
+        .course-name-cell .course-title-text {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            word-break: break-word;
+            line-height: 1.35;
+        }
+
+        .course-name-cell .course-desc-text {
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .courses-admin-table .instructor-name-text {
+            min-width: 0;
+        }
+    </style>
+@endpush
+
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {

@@ -72,14 +72,7 @@
             <div class="d-flex align-items-center">
                 <i class="fa fa-user text-muted me-1"></i>
                 <small class="text-muted">
-                    @if ($course->instructors && $course->instructors->count() > 0)
-                        {{ $course->instructors->pluck('name')->take(2)->join(', ') }}
-                        @if ($course->instructors->count() > 2)
-                            <span>+{{ $course->instructors->count() - 2 }}</span>
-                        @endif
-                    @else
-                        {{ $course->instructor->name ?? custom_trans('Not Found', 'front') }}
-                    @endif
+                    {{ $course->instructorNamesLabel(2) ?: custom_trans('Not Found', 'front') }}
                 </small>
             </div>
             <div class="d-flex align-items-center">

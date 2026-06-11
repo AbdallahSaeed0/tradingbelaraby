@@ -112,7 +112,7 @@
                                                     <div class="me-3">
                                                         <i class="fas fa-user text-primary me-1"></i>
                                                         <small class="text-muted">
-                                                            {{ $item->course->instructor->name ?? custom_trans('Unknown Instructor', 'front') }}
+                                                            {{ $item->course->instructorNamesLabel() ?: custom_trans('Unknown Instructor', 'front') }}
                                                         </small>
                                                     </div>
                                                     <div>

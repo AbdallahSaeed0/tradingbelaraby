@@ -159,7 +159,7 @@
                                             </h5>
                                             <p class="course-card--list__desc text-muted small mb-2 flex-grow-1">{{ Str::limit($course->localized_description, 120) }}</p>
                                             <div class="course-meta d-flex justify-content-between align-items-center mb-2 small text-muted">
-                                                <span><i class="fas fa-user me-1"></i>@if ($course->instructors && $course->instructors->count() > 0){{ $course->instructors->pluck('name')->take(2)->join(', ') }}@else{{ $course->instructor->name ?? '—' }}@endif</span>
+                                                <span><i class="fas fa-user me-1"></i>{{ $course->instructorNamesLabel(2) ?: '—' }}</span>
                                                 <span>@if ($course->average_rating > 0)<i class="fas fa-star text-warning"></i> {{ number_format($course->average_rating, 1) }} ({{ $course->ratings_count }})@else—@endif</span>
                                             </div>
                                             <div class="course-card--list__footer d-flex flex-wrap gap-2 align-items-center justify-content-between mt-auto pt-2 border-top">
@@ -246,14 +246,7 @@
                                             <div class="course-instructor">
                                                 <small class="text-muted">
                                                     <i class="fas fa-user me-1"></i>
-                                                    @if ($course->instructors && $course->instructors->count() > 0)
-                                                        {{ $course->instructors->pluck('name')->take(2)->join(', ') }}
-                                                        @if ($course->instructors->count() > 2)
-                                                            +{{ $course->instructors->count() - 2 }}
-                                                        @endif
-                                                    @else
-                                                        {{ $course->instructor->name ?? 'Unknown Instructor' }}
-                                                    @endif
+                                                    {{ $course->instructorNamesLabel(2) ?: 'Unknown Instructor' }}
                                                 </small>
                                             </div>
                                             <div class="course-rating">

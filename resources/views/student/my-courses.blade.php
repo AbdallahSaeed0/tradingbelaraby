@@ -210,7 +210,7 @@
                                                 +{{ $course->instructors->count() - 2 }}
                                             @endif
                                         @else
-                                            {{ $course->instructor->name ?? custom_trans('Unknown Instructor', 'front') }}
+                                            {{ $course->instructorNamesLabel() ?: custom_trans('Unknown Instructor', 'front') }}
                                         @endif
                                     </span>
                                 </div>

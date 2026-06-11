@@ -71,7 +71,7 @@
                             <li class="list-group-item d-flex align-items-center"><i
                                     class="fa fa-home me-2 text-orange"></i> <span
                                     class="fw-bold">{{ custom_trans('instructor', 'front') }}:</span>
-                                <span class="ms-auto">{{ $course->instructor->name ?? 'Not Found' }}</span>
+                                <span class="ms-auto text-end">{{ $course->instructorNamesLabel() ?: custom_trans('Not Found', 'front') }}</span>
                             </li>
                             <li class="list-group-item d-flex align-items-center"><i
                                     class="fa fa-book me-2 text-orange"></i> <span
@@ -447,7 +447,7 @@
                                 </span>
                             </li>
                             <li class="list-group-item d-flex align-items-center"><i class="fa fa-home me-2 text-orange"></i> <span class="fw-bold">{{ custom_trans('instructor', 'front') }}:</span>
-                                <span class="ms-auto">{{ $course->instructor->name ?? 'Not Found' }}</span>
+                                <span class="ms-auto text-end">{{ $course->instructorNamesLabel() ?: custom_trans('Not Found', 'front') }}</span>
                             </li>
                             <li class="list-group-item d-flex align-items-center"><i class="fa fa-book me-2 text-orange"></i> <span class="fw-bold">{{ custom_trans('lectures', 'front') }}:</span>
                                 <span class="ms-auto">{{ $course->sections->sum(function ($section) {return $section->lectures->count();}) }}</span>

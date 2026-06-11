@@ -33,7 +33,7 @@ class CheckoutController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $cartItems = $user->cartItems()->with('course.instructor', 'bundle.courses')->get();
+        $cartItems = $user->cartItems()->with('course.instructor', 'course.instructors', 'bundle.courses')->get();
 
         if ($cartItems->isEmpty()) {
             return redirect()->route('cart.index')->with('error', 'Your cart is empty');

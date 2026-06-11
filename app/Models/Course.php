@@ -170,6 +170,24 @@ class Course extends Model
     }
 
     /**
+     * Comma-separated instructor names (many-to-many first, legacy single fallback).
+     */
+    public function instructorNamesLabel(int $limit = 0): string
+    {
+        $names = $this->instructors->pluck('name')->filter();
+
+        if ($names->isEmpty() && $this->instructor) {
+            return (string) ($this->instructor->name ?? '');
+        }
+
+        if ($limit > 0 && $names->count() > $limit) {
+            return $names->take($limit)->join(', ') . ' +' . ($names->count() - $limit);
+        }
+
+        return $names->join(', ');
+    }
+
+    /**
      * Get the ratings for the course
      */
     public function ratings(): HasMany

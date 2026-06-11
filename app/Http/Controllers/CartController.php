@@ -23,7 +23,7 @@ class CartController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $cartItems = $user->cartItems()->with('course.category', 'course.instructor', 'bundle.courses')->get();
+        $cartItems = $user->cartItems()->with('course.category', 'course.instructor', 'course.instructors', 'bundle.courses')->get();
 
         $total = $cartItems->sum(function ($item) {
             return $item->getPrice();
