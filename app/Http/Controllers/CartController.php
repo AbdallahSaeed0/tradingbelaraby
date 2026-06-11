@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Coupon;
 use App\Models\Course;
 use App\Models\Bundle;
 use App\Models\CartItem;
+use App\Models\CouponUsage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,7 +29,24 @@ class CartController extends Controller
             return $item->getPrice();
         });
 
-        return view('cart.index', compact('cartItems', 'total'));
+        $appliedCoupon = null;
+        $discount = 0;
+
+        if (session()->has('applied_coupon') && $cartItems->isNotEmpty()) {
+            CouponUsage::pruneOrphanedUsages();
+            $appliedCoupon = Coupon::where('code', session('applied_coupon'))->first();
+
+            if ($appliedCoupon && $appliedCoupon->isValidForUser($user) && $appliedCoupon->appliesToCart($cartItems)) {
+                $discount = $appliedCoupon->calculateDiscountForCart($cartItems);
+            } else {
+                session()->forget('applied_coupon');
+                $appliedCoupon = null;
+            }
+        }
+
+        $grandTotal = max(0, $total - $discount);
+
+        return view('cart.index', compact('cartItems', 'total', 'discount', 'grandTotal', 'appliedCoupon'));
     }
 
     /**

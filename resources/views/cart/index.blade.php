@@ -197,11 +197,14 @@
                                 </div>
 
                                 <!-- Discount -->
-                                <div class="d-flex justify-content-between mb-3 discount-row d-none">
+                                <div class="d-flex justify-content-between mb-3 discount-row {{ ($discount ?? 0) > 0 ? '' : 'd-none' }}">
                                     <span class="text-success">
                                         <i class="fas fa-tag me-1"></i>{{ custom_trans('discount', 'front') }}
+                                        @if (!empty($appliedCoupon))
+                                            <small class="text-muted">({{ $appliedCoupon->code }})</small>
+                                        @endif
                                     </span>
-                                    <span class="fw-bold text-success discount-applied">-SAR 0.00</span>
+                                    <span class="fw-bold text-success discount-applied">-SAR {{ number_format($discount ?? 0, 2) }}</span>
                                 </div>
 
                                 <hr class="my-3">
@@ -209,7 +212,7 @@
                                 <!-- Total -->
                                 <div class="d-flex justify-content-between mb-4 p-3 bg-primary bg-opacity-10 rounded">
                                     <span class="fw-bold fs-5">{{ custom_trans('total', 'front') }}</span>
-                                    <span class="fw-bold fs-4 text-primary total-amount">SAR {{ number_format($total, 2) }}</span>
+                                    <span class="fw-bold fs-4 text-primary total-amount">SAR {{ number_format($grandTotal ?? $total, 2) }}</span>
                                 </div>
 
                                 <!-- Checkout Button -->
@@ -233,9 +236,22 @@
                                     <i class="fas fa-ticket-alt fa-2x text-warning me-3"></i>
                                     <h5 class="fw-bold mb-0">{{ custom_trans('apply_coupon', 'front') }}</h5>
                                 </div>
-                                <div class="input-group mb-3">
+                                @if (!empty($appliedCoupon))
+                                    <div class="alert alert-success d-flex justify-content-between align-items-center mb-3" id="couponAppliedAlert">
+                                        <span>
+                                            <i class="fas fa-check-circle me-1"></i>
+                                            <strong>{{ $appliedCoupon->code }}</strong>
+                                            {{ custom_trans('applied', 'front') }}
+                                        </span>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" id="removeCoupon">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                @endif
+                                <div class="input-group mb-3 {{ !empty($appliedCoupon) ? 'd-none' : '' }}" id="couponInputGroup">
                                     <input type="text" class="form-control form-control-lg" id="couponCode"
-                                        placeholder="{{ custom_trans('enter_coupon_code', 'front') }}">
+                                        placeholder="{{ custom_trans('enter_coupon_code', 'front') }}"
+                                        value="{{ !empty($appliedCoupon) ? $appliedCoupon->code : '' }}">
                                     <button class="btn btn-warning fw-semibold" type="button" id="applyCoupon">
                                         <i class="fas fa-check me-1"></i>{{ custom_trans('apply', 'front') }}
                                     </button>
@@ -505,11 +521,11 @@
                     this.disabled = true;
                     this.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Applying...';
 
-                    // Send AJAX request to apply coupon
-                    fetch('/cart/apply-coupon', {
+                    fetch('{{ route('checkout.apply-coupon') }}', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
+                                'Accept': 'application/json',
                                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
                                     .getAttribute('content')
                             },
@@ -520,10 +536,10 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
-                                toastr.success(data.message || 'Coupon applied successfully!');
-                                updateCartTotals(data.discount, data.total);
+                                toastr.success(data.message || '{{ custom_trans('Coupon applied successfully!', 'front') }}');
+                                setTimeout(() => window.location.reload(), 600);
                             } else {
-                                toastr.error(data.message || 'Invalid coupon code');
+                                toastr.error(data.message || '{{ custom_trans('Invalid coupon code', 'front') }}');
                             }
                         })
                         .catch(error => {
@@ -537,21 +553,24 @@
                 });
             }
 
-            // Function to update cart totals
-            function updateCartTotals(discount = 0, total = null) {
-                const subtotalElement = document.querySelector('.total-section .d-flex:first-child .fw-bold');
-                const discountElement = document.querySelector('.discount-applied');
-                const totalElement = document.querySelector('.total-amount');
-                const discountRow = document.querySelector('.discount-row');
-
-                if (discount > 0) {
-                    discountRow.style.display = 'flex !important';
-                    discountElement.textContent = `-₹${discount.toFixed(2)}`;
-                    totalElement.textContent = `₹${total.toFixed(2)}`;
-                } else {
-                    discountRow.style.display = 'none !important';
-                    totalElement.textContent = subtotalElement.textContent;
-                }
+            const removeCouponBtn = document.getElementById('removeCoupon');
+            if (removeCouponBtn) {
+                removeCouponBtn.addEventListener('click', function() {
+                    fetch('{{ route('checkout.remove-coupon') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.reload();
+                        }
+                    });
+                });
             }
 
             // Function to update cart count in header
