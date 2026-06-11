@@ -51,5 +51,32 @@ class CouponUsage extends Model
     {
         return $this->belongsTo(Order::class);
     }
+
+    /**
+     * Remove stale usage rows (deleted orders, cancelled orders), then sync coupon counts.
+     */
+    public static function pruneOrphanedUsages(): int
+    {
+        $affectedCouponIds = static::query()
+            ->where(function ($query) {
+                $query->whereDoesntHave('order')
+                    ->orWhereHas('order', fn ($orderQuery) => $orderQuery->where('status', 'cancelled'));
+            })
+            ->pluck('coupon_id')
+            ->unique();
+
+        $deleted = static::query()
+            ->where(function ($query) {
+                $query->whereDoesntHave('order')
+                    ->orWhereHas('order', fn ($orderQuery) => $orderQuery->where('status', 'cancelled'));
+            })
+            ->delete();
+
+        foreach ($affectedCouponIds as $couponId) {
+            Coupon::find($couponId)?->syncUsedCount();
+        }
+
+        return $deleted;
+    }
 }
 
