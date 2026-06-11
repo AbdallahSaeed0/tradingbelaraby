@@ -1,0 +1,212 @@
+/* Admin login — standalone page */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body.admin-login-page {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(145deg, #0f172a 0%, #1e3a5f 45%, #1d4ed8 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    color: #1e293b;
+}
+
+.admin-login-shell {
+    width: 100%;
+    max-width: 420px;
+}
+
+.admin-login-card {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.45);
+    overflow: hidden;
+}
+
+.admin-login-header {
+    padding: 2rem 2rem 1.25rem;
+    text-align: center;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.admin-login-logo {
+    display: block;
+    max-height: 52px;
+    max-width: 200px;
+    margin: 0 auto 1rem;
+    object-fit: contain;
+}
+
+.admin-login-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 1rem;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+}
+
+.admin-login-header h1 {
+    margin: 0 0 0.35rem;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.admin-login-header p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #64748b;
+}
+
+.admin-login-body {
+    padding: 1.5rem 2rem 2rem;
+}
+
+.admin-login-body .form-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 0.4rem;
+}
+
+.admin-login-body .input-group-text {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+    color: #64748b;
+    min-width: 44px;
+    justify-content: center;
+}
+
+.admin-login-body .form-control {
+    border-color: #e2e8f0;
+    padding: 0.65rem 0.85rem;
+    font-size: 0.95rem;
+}
+
+.admin-login-body .form-control:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.admin-login-body .input-group:focus-within .input-group-text {
+    border-color: #2563eb;
+    color: #2563eb;
+}
+
+.admin-login-options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.admin-login-options .form-check-label {
+    font-size: 0.875rem;
+    color: #475569;
+    cursor: pointer;
+}
+
+.admin-login-btn {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: #fff;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+}
+
+.admin-login-btn:hover {
+    background: linear-gradient(135deg, #1d4ed8, #1e40af);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
+}
+
+.admin-login-btn:active {
+    transform: translateY(0);
+}
+
+.admin-login-footer {
+    text-align: center;
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid #f1f5f9;
+}
+
+.admin-login-footer a {
+    font-size: 0.875rem;
+    color: #64748b;
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.admin-login-footer a:hover {
+    color: #2563eb;
+}
+
+.admin-login-badge {
+    display: inline-block;
+    margin-top: 1.25rem;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #94a3b8;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+}
+
+.admin-login-page .alert {
+    font-size: 0.875rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}
+
+.admin-login-page .alert ul {
+    padding-left: 1.1rem;
+}
+
+.password-toggle-btn {
+    border-color: #e2e8f0;
+    background: #f8fafc;
+    color: #64748b;
+}
+
+.password-toggle-btn:hover {
+    background: #f1f5f9;
+    color: #334155;
+}
+
+@media (max-width: 480px) {
+    body.admin-login-page {
+        padding: 1rem;
+        align-items: flex-start;
+        padding-top: 2rem;
+    }
+
+    .admin-login-header,
+    .admin-login-body {
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+    }
+}
