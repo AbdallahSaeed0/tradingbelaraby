@@ -165,14 +165,12 @@
                                             <a href="{{ route('admin.orders.show', $order) }}" class="btn btn-sm btn-outline-primary" title="View">
                                                 <i class="fa fa-eye"></i>
                                             </a>
-                                            <form action="{{ route('admin.orders.destroy', $order) }}" method="POST"
-                                                onsubmit="return confirm('Delete this order and remove linked enrollments? This cannot be undone.');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
-                                            </form>
+                                            <button type="button" class="btn btn-sm btn-outline-danger btn-order-delete" title="Delete"
+                                                data-action="{{ route('admin.orders.destroy', $order) }}"
+                                                data-order="{{ $order->order_number }}"
+                                                data-completed="{{ $order->status === 'completed' ? '1' : '0' }}">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -191,4 +189,28 @@
             </div>
         </div>
     </div>
+
+    @include('admin.partials.confirm-modal')
 @endsection
+
+@push('scripts')
+    <script>
+        document.querySelectorAll('.btn-order-delete').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                const orderNumber = this.dataset.order;
+                const isCompleted = this.dataset.completed === '1';
+
+                showActionConfirmModal({
+                    title: 'Delete Order',
+                    message: 'Delete order ' + orderNumber + ' and remove all linked enrollments? This action cannot be undone.',
+                    warning: isCompleted ? 'This order is completed — the student will lose course access.' : null,
+                    action: this.dataset.action,
+                    method: 'DELETE',
+                    headerClass: 'bg-danger text-white',
+                    btnClass: 'btn-danger',
+                    btnHtml: '<i class="fa fa-trash me-1"></i>Delete Order'
+                });
+            });
+        });
+    </script>
+@endpush

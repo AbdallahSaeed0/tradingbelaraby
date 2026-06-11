@@ -150,11 +150,11 @@ class CheckoutController extends Controller
             'last_name'             => 'required|string|max:255',
             'email'                 => 'required|email',
             'phone'                 => 'required|string|max:20',
-            'address'               => 'required|string',
-            'city'                  => 'required|string|max:255',
-            'state'                 => 'required|string|max:255',
-            'postal_code'           => 'required|string|max:20',
-            'country'               => 'required|string|max:255',
+            'address'               => 'nullable|string',
+            'city'                  => 'nullable|string|max:255',
+            'state'                 => 'nullable|string|max:255',
+            'postal_code'           => 'nullable|string|max:20',
+            'country'               => 'nullable|string|max:255',
             'payment_method'        => 'required|in:visa,free,paypal,bank_transfer',
             'transaction_reference' => 'nullable|string|max:255',
         ]);
@@ -216,11 +216,11 @@ class CheckoutController extends Controller
                 'billing_last_name' => $request->last_name,
                 'billing_email' => $request->email,
                 'billing_phone' => $request->phone,
-                'billing_address' => $request->address,
-                'billing_city' => $request->city,
-                'billing_state' => $request->state,
-                'billing_postal_code' => $request->postal_code,
-                'billing_country' => $request->country,
+                'billing_address' => $request->address ?? '',
+                'billing_city' => $request->city ?? '',
+                'billing_state' => $request->state ?? '',
+                'billing_postal_code' => $request->postal_code ?? '',
+                'billing_country' => $request->country ?? '',
             ]);
 
             $lineItems = $cartItems->map(function ($cartItem) {

@@ -42,7 +42,13 @@
                 @enderror
             </div>
 
-            <div class="mb-3 d-flex justify-content-end">
+            <div class="mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div class="form-check mb-0">
+                    <input type="checkbox" name="remember" id="remember" value="1"
+                        class="form-check-input @error('remember') is-invalid @enderror"
+                        {{ old('remember') ? 'checked' : '' }}>
+                    <label class="form-check-label" for="remember">{{ custom_trans('Keep me logged in', 'front') }}</label>
+                </div>
                 <a href="{{ route('password.forgot.form') }}">{{ custom_trans("I don't remember my password", 'front') }}</a>
             </div>
 
@@ -69,3 +75,21 @@
         <p class="text-center mt-3">{{ custom_trans("Don't have an account?", 'front') }} <a href="{{ route('register') }}">{{ custom_trans('Sign up', 'front') }}</a></p>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        (function () {
+            var key = 'user_keep_logged_in';
+            var checkbox = document.getElementById('remember');
+            if (!checkbox) return;
+
+            if (localStorage.getItem(key) === '1') {
+                checkbox.checked = true;
+            }
+
+            checkbox.addEventListener('change', function () {
+                localStorage.setItem(key, checkbox.checked ? '1' : '0');
+            });
+        })();
+    </script>
+@endpush

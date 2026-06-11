@@ -36,8 +36,10 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
+        $remember = $request->boolean('remember');
+
         // Attempt default user guard
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials, $remember)) {
             $user = Auth::user();
 
             // Check verification status based on configured method
@@ -54,12 +56,6 @@ class AuthController extends Controller
 
             $request->session()->regenerate();
             return redirect()->intended(route('home'));
-        }
-
-        // Attempt admin guard
-        if (Auth::guard('admin')->attempt($credentials)) {
-            $request->session()->regenerate();
-            return redirect()->intended(route('admin.dashboard'));
         }
 
         return back()->withErrors([

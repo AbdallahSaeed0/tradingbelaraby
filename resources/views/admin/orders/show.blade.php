@@ -159,20 +159,14 @@
                             <p class="small text-muted">
                                 Verify the bank transfer using the transaction reference above, then confirm to activate enrollments.
                             </p>
-                            <form action="{{ route('admin.orders.confirm', $order) }}" method="POST" class="mb-2"
-                                onsubmit="return confirm('Confirm this payment and activate enrollments?');">
-                                @csrf
-                                <button type="submit" class="btn btn-success w-100">
-                                    <i class="fa fa-check me-1"></i>Confirm & Activate Enrollments
-                                </button>
-                            </form>
-                            <form action="{{ route('admin.orders.reject', $order) }}" method="POST"
-                                onsubmit="return confirm('Reject this order and cancel pending enrollments?');">
-                                @csrf
-                                <button type="submit" class="btn btn-outline-danger w-100">
-                                    <i class="fa fa-times me-1"></i>Reject Order
-                                </button>
-                            </form>
+                            <button type="button" class="btn btn-success w-100 mb-2" id="btnConfirmOrder"
+                                data-action="{{ route('admin.orders.confirm', $order) }}">
+                                <i class="fa fa-check me-1"></i>Confirm & Activate Enrollments
+                            </button>
+                            <button type="button" class="btn btn-outline-danger w-100" id="btnRejectOrder"
+                                data-action="{{ route('admin.orders.reject', $order) }}">
+                                <i class="fa fa-times me-1"></i>Reject Order
+                            </button>
                         </div>
                     </div>
                 @endif
@@ -188,17 +182,68 @@
                                 <strong class="text-danger d-block mt-1">This order is completed — the student will lose course access.</strong>
                             @endif
                         </p>
-                        <form action="{{ route('admin.orders.destroy', $order) }}" method="POST"
-                            onsubmit="return confirm('Delete order {{ $order->order_number }} and all linked enrollments? This cannot be undone.');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger w-100">
-                                <i class="fa fa-trash me-1"></i>Delete Order & Enrollments
-                            </button>
-                        </form>
+                        <button type="button" class="btn btn-danger w-100" id="btnDeleteOrder"
+                            data-action="{{ route('admin.orders.destroy', $order) }}"
+                            data-order="{{ $order->order_number }}"
+                            data-completed="{{ $order->status === 'completed' ? '1' : '0' }}">
+                            <i class="fa fa-trash me-1"></i>Delete Order & Enrollments
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    @include('admin.partials.confirm-modal')
 @endsection
+
+@push('scripts')
+    <script>
+        const confirmOrderBtn = document.getElementById('btnConfirmOrder');
+        if (confirmOrderBtn) {
+            confirmOrderBtn.addEventListener('click', function() {
+                showActionConfirmModal({
+                    title: 'Confirm Payment',
+                    message: 'Confirm this payment and activate enrollments for this order?',
+                    action: this.dataset.action,
+                    method: 'POST',
+                    headerClass: 'bg-success text-white',
+                    btnClass: 'btn-success',
+                    btnHtml: '<i class="fa fa-check me-1"></i>Confirm & Activate'
+                });
+            });
+        }
+
+        const rejectOrderBtn = document.getElementById('btnRejectOrder');
+        if (rejectOrderBtn) {
+            rejectOrderBtn.addEventListener('click', function() {
+                showActionConfirmModal({
+                    title: 'Reject Order',
+                    message: 'Reject this order and cancel pending enrollments?',
+                    action: this.dataset.action,
+                    method: 'POST',
+                    headerClass: 'bg-warning',
+                    btnClass: 'btn-warning',
+                    btnHtml: '<i class="fa fa-times me-1"></i>Reject Order'
+                });
+            });
+        }
+
+        const deleteOrderBtn = document.getElementById('btnDeleteOrder');
+        if (deleteOrderBtn) {
+            deleteOrderBtn.addEventListener('click', function() {
+                const isCompleted = this.dataset.completed === '1';
+                showActionConfirmModal({
+                    title: 'Delete Order',
+                    message: 'Delete order ' + this.dataset.order + ' and all linked enrollments? This action cannot be undone.',
+                    warning: isCompleted ? 'This order is completed — the student will lose course access.' : null,
+                    action: this.dataset.action,
+                    method: 'DELETE',
+                    headerClass: 'bg-danger text-white',
+                    btnClass: 'btn-danger',
+                    btnHtml: '<i class="fa fa-trash me-1"></i>Delete Order'
+                });
+            });
+        }
+    </script>
+@endpush

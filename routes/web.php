@@ -356,10 +356,10 @@ Route::post('/courses/{course}/live-classes/{liveClass}/download-materials', [Li
     Route::post('/courses/{course}/submit-homework-assignment', [HomeworkController::class, 'submitAssignment'])->name('courses.submit-homework-assignment');
 });
 
-// Admin authentication routes (obscured path — do not expose as /admin/login)
+// Admin authentication routes (hidden URL — not linked from the public site)
 Route::middleware('guest:admin')->group(function () {
-    Route::get('/manage-portal/auth', [App\Http\Controllers\Admin\AdminAuthController::class, 'showLoginForm'])->name('admin.login');
-    Route::post('/manage-portal/auth', [App\Http\Controllers\Admin\AdminAuthController::class, 'login'])->middleware('throttle:login')->name('admin.login.attempt');
+    Route::get('/loginadmin', [App\Http\Controllers\Admin\AdminAuthController::class, 'showLoginForm'])->name('admin.login');
+    Route::post('/loginadmin', [App\Http\Controllers\Admin\AdminAuthController::class, 'login'])->middleware('throttle:login')->name('admin.login.attempt');
 });
 
 Route::post('/admin/logout', [App\Http\Controllers\Admin\AdminAuthController::class, 'logout'])->name('admin.logout')->middleware('auth:admin');

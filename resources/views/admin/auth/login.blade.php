@@ -49,7 +49,7 @@
                     @enderror
                 </div>
 
-                <div class="mb-4">
+                <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
                     <div class="input-group">
                         <span class="input-group-text">
@@ -61,6 +61,12 @@
                     @error('password')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
+                </div>
+
+                <div class="mb-4 form-check">
+                    <input type="checkbox" name="remember" id="remember" value="1" class="form-check-input"
+                        {{ old('remember') ? 'checked' : '' }}>
+                    <label class="form-check-label" for="remember">Keep me logged in</label>
                 </div>
 
                 <button type="submit" class="btn btn-primary btn-login w-100">
@@ -77,6 +83,21 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        (function () {
+            var key = 'admin_keep_logged_in';
+            var checkbox = document.getElementById('remember');
+            if (!checkbox) return;
+
+            if (localStorage.getItem(key) === '1') {
+                checkbox.checked = true;
+            }
+
+            checkbox.addEventListener('change', function () {
+                localStorage.setItem(key, checkbox.checked ? '1' : '0');
+            });
+        })();
+    </script>
 </body>
 
 </html>

@@ -123,33 +123,37 @@
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label for="address" class="form-label">{{ custom_trans('address', 'front') }} *</label>
-                                <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
+                                <label for="address" class="form-label">{{ custom_trans('address', 'front') }}</label>
+                                <textarea class="form-control" id="address" name="address" rows="3">{{ old('address') }}</textarea>
                             </div>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="city" class="form-label">{{ custom_trans('city', 'front') }}
-                                        *</label>
-                                    <input type="text" class="form-control" id="city" name="city" required>
+                                    <label for="country_code" class="form-label">{{ custom_trans('country', 'front') }}</label>
+                                    <select class="form-select" id="country_code" aria-describedby="countryHelp">
+                                        <option value="">{{ custom_trans('Select Country', 'front') }}</option>
+                                        @include('partials.countries', ['selected' => old('country_code')])
+                                    </select>
+                                    <input type="hidden" name="country" id="country" value="{{ old('country') }}">
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="state" class="form-label">{{ custom_trans('state', 'front') }}
-                                        *</label>
-                                    <input type="text" class="form-control" id="state" name="state" required>
+                                    <label for="state" class="form-label">{{ custom_trans('state', 'front') }}</label>
+                                    <select class="form-select" id="state" name="state" disabled>
+                                        <option value="">{{ custom_trans('Select State', 'front') }}</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="city" class="form-label">{{ custom_trans('city', 'front') }}</label>
+                                    <select class="form-select" id="city" name="city" disabled>
+                                        <option value="">{{ custom_trans('Select City', 'front') }}</option>
+                                    </select>
+                                </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="postal_code"
-                                        class="form-label">{{ custom_trans('postal_code', 'front') }}
-                                        *</label>
+                                        class="form-label">{{ custom_trans('postal_code', 'front') }}</label>
                                     <input type="text" class="form-control" id="postal_code" name="postal_code"
-                                        required>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="country" class="form-label">{{ custom_trans('country', 'front') }}
-                                        *</label>
-                                    <input type="text" class="form-control" id="country" name="country" required>
+                                        value="{{ old('postal_code') }}">
                                 </div>
                             </div>
                         </div>
@@ -741,6 +745,152 @@
 @endpush
 
 @push('scripts')
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', async () => {
+            const countrySelect = document.getElementById('country_code');
+            const countryHidden = document.getElementById('country');
+            const stateSelect = document.getElementById('state');
+            const citySelect = document.getElementById('city');
+
+            if (!countrySelect || !stateSelect || !citySelect) {
+                return;
+            }
+
+            const labels = {
+                selectState: @json(custom_trans('Select State', 'front')),
+                selectCity: @json(custom_trans('Select City', 'front')),
+            };
+
+            const oldState = @json(old('state', ''));
+            const oldCity = @json(old('city', ''));
+            const savedCountry = @json(old('country', $user->country ?? ''));
+
+            let StateApi;
+            let CityApi;
+
+            try {
+                const csc = await import('https://cdn.jsdelivr.net/npm/country-state-city@3.1.0/lib/esm/index.js');
+                StateApi = csc.State;
+                CityApi = csc.City;
+            } catch (error) {
+                console.error('Failed to load location data:', error);
+                return;
+            }
+
+            function resetSelect(select, placeholder) {
+                select.innerHTML = '';
+                const option = document.createElement('option');
+                option.value = '';
+                option.textContent = placeholder;
+                select.appendChild(option);
+            }
+
+            function populateCities(cities) {
+                resetSelect(citySelect, labels.selectCity);
+
+                cities.forEach((city) => {
+                    const option = document.createElement('option');
+                    option.value = city.name;
+                    option.textContent = city.name;
+                    if (city.name === oldCity) {
+                        option.selected = true;
+                    }
+                    citySelect.appendChild(option);
+                });
+
+                citySelect.disabled = cities.length === 0;
+            }
+
+            function loadCities(countryCode, stateCode) {
+                const cities = stateCode
+                    ? CityApi.getCitiesOfState(countryCode, stateCode)
+                    : CityApi.getCitiesOfCountry(countryCode);
+
+                populateCities(cities);
+            }
+
+            function loadStates(countryCode) {
+                resetSelect(stateSelect, labels.selectState);
+                resetSelect(citySelect, labels.selectCity);
+                stateSelect.disabled = true;
+                citySelect.disabled = true;
+
+                if (!countryCode) {
+                    return;
+                }
+
+                const states = StateApi.getStatesOfCountry(countryCode);
+
+                if (states.length === 0) {
+                    loadCities(countryCode, null);
+                    return;
+                }
+
+                states.forEach((state) => {
+                    const option = document.createElement('option');
+                    option.value = state.name;
+                    option.textContent = state.name;
+                    option.dataset.isoCode = state.isoCode;
+                    if (state.name === oldState) {
+                        option.selected = true;
+                    }
+                    stateSelect.appendChild(option);
+                });
+
+                stateSelect.disabled = false;
+
+                const selectedState = states.find((state) => state.name === oldState)
+                    || states.find((state) => state.name === stateSelect.value);
+
+                if (selectedState) {
+                    loadCities(countryCode, selectedState.isoCode);
+                } else if (stateSelect.selectedOptions[0]?.dataset?.isoCode) {
+                    loadCities(countryCode, stateSelect.selectedOptions[0].dataset.isoCode);
+                }
+            }
+
+            function syncCountryHidden() {
+                const selected = countrySelect.selectedOptions[0];
+                countryHidden.value = selected && selected.value ? selected.textContent.trim() : '';
+            }
+
+            function resolveCountrySelection() {
+                if (!savedCountry) {
+                    return;
+                }
+
+                for (const option of countrySelect.options) {
+                    if (option.value === savedCountry || option.textContent.trim() === savedCountry) {
+                        countrySelect.value = option.value;
+                        break;
+                    }
+                }
+            }
+
+            countrySelect.addEventListener('change', () => {
+                syncCountryHidden();
+                loadStates(countrySelect.value);
+            });
+
+            stateSelect.addEventListener('change', () => {
+                const stateCode = stateSelect.selectedOptions[0]?.dataset?.isoCode;
+
+                if (!countrySelect.value || !stateCode) {
+                    resetSelect(citySelect, labels.selectCity);
+                    citySelect.disabled = true;
+                    return;
+                }
+
+                loadCities(countrySelect.value, stateCode);
+            });
+
+            resolveCountrySelection();
+            syncCountryHidden();
+            if (countrySelect.value) {
+                loadStates(countrySelect.value);
+            }
+        });
+    </script>
     <script>
         function selectPayment(card, method) {
             // Remove selected class from all cards

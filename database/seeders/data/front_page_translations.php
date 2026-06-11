@@ -62,6 +62,10 @@ return [
         'en' => 'Remember me',
         'ar' => 'تذكرني',
     ],
+    'Keep me logged in' => [
+        'en' => 'Keep me logged in',
+        'ar' => 'إبقني مسجلاً للدخول',
+    ],
     'Create an Account' => [
         'en' => 'Create an Account',
         'ar' => 'إنشاء حساب',
@@ -2062,6 +2066,14 @@ return [
     ],
     'Select Country' => [
         'ar' => 'اختر الدولة',
+    ],
+    'Select State' => [
+        'en' => 'Select State / Region',
+        'ar' => 'اختر المنطقة / المحافظة',
+    ],
+    'Select City' => [
+        'en' => 'Select City',
+        'ar' => 'اختر المدينة',
     ],
     'Select Gender' => [
         'ar' => 'اختر الجنس',
