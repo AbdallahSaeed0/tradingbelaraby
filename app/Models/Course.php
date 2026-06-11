@@ -301,7 +301,18 @@ class Course extends Model
      */
     public function isEnrolledBy(User $user): bool
     {
-        return $this->enrollments()->where('user_id', $user->id)->exists();
+        return $this->enrollments()
+            ->where('user_id', $user->id)
+            ->accessible()
+            ->exists();
+    }
+
+    public function hasPendingEnrollmentBy(User $user): bool
+    {
+        return $this->enrollments()
+            ->where('user_id', $user->id)
+            ->pending()
+            ->exists();
     }
 
     /**
@@ -309,7 +320,8 @@ class Course extends Model
      */
     public function getUserEnrollment(User $user): ?CourseEnrollment
     {
-        return $this->enrollments()->where('user_id', $user->id)->first();
+        return $this->enrollments()->where('user_id', $user->id)->accessible()->first()
+            ?? $this->enrollments()->where('user_id', $user->id)->first();
     }
 
     /**

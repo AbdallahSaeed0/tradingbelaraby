@@ -445,7 +445,7 @@ class LiveClassController extends Controller
 
         // Check if user is enrolled in the course
         $enrollment = $user->enrollments()->where('course_id', $course->id)->first();
-        if (!$enrollment) {
+        if (!$enrollment || !$enrollment->grantsAccess()) {
             return redirect()->back()->with('error', 'You must be enrolled in this course to download materials');
         }
 

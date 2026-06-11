@@ -75,7 +75,7 @@ class CartController extends Controller
         }
 
         // Check if already enrolled
-        if ($user->enrollments()->where('course_id', $course->id)->exists()) {
+        if ($user->blocksCoursePurchase($course->id)) {
             return response()->json([
                 'success' => false,
                 'message' => 'You are already enrolled in this course',

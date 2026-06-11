@@ -71,6 +71,30 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(\App\Models\CourseEnrollment::class);
     }
 
+    public function hasCourseAccess(int $courseId): bool
+    {
+        return $this->enrollments()
+            ->where('course_id', $courseId)
+            ->accessible()
+            ->exists();
+    }
+
+    public function hasPendingEnrollment(int $courseId): bool
+    {
+        return $this->enrollments()
+            ->where('course_id', $courseId)
+            ->pending()
+            ->exists();
+    }
+
+    public function blocksCoursePurchase(int $courseId): bool
+    {
+        return $this->enrollments()
+            ->where('course_id', $courseId)
+            ->blockingPurchase()
+            ->exists();
+    }
+
     public function lectureCompletions(): HasMany
     {
         return $this->hasMany(\App\Models\LectureCompletion::class);

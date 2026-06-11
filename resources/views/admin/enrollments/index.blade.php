@@ -286,7 +286,9 @@
                                     <td>
                                         @php
                                             $statusClasses = [
+                                                'active' => 'bg-primary',
                                                 'enrolled' => 'bg-primary',
+                                                'pending' => 'bg-warning text-dark',
                                                 'completed' => 'bg-success',
                                                 'cancelled' => 'bg-danger',
                                             ];
@@ -296,7 +298,8 @@
                                             class="badge {{ $statusClass }} status-badge"
                                             style="cursor: pointer;"
                                             onclick="showStatusModal({{ $enrollment->id }}, '{{ $enrollment->status }}', [
-                                                { value: 'enrolled', label: 'Enrolled' },
+                                                { value: 'active', label: 'Active' },
+                                                { value: 'pending', label: 'Pending' },
                                                 { value: 'completed', label: 'Completed' },
                                                 { value: 'cancelled', label: 'Cancelled' }
                                             ], '{{ route('admin.enrollments.update_status', $enrollment->id) }}')">{{ ucfirst($enrollment->status) }}</span>

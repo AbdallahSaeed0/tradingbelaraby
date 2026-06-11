@@ -155,17 +155,18 @@ class EnrollmentController extends Controller
             ]);
         }
 
-        $enrolledQuery = $user->enrollments()->where('course_id', $courseId);
+        $enrolledQuery = $user->enrollments()->where('course_id', $courseId)->accessible();
 
         if (Platform::isIOS($request)) {
             $enrolledQuery->whereHas('course', fn ($query) => $query->published()->free());
         }
 
-        $enrolled = $enrolledQuery->exists();
+        $pending = $user->enrollments()->where('course_id', $courseId)->pending()->exists();
 
         return response()->json([
             'success' => true,
-            'enrolled' => $enrolled,
+            'enrolled' => $enrolledQuery->exists(),
+            'pending' => $pending,
         ]);
     }
 }

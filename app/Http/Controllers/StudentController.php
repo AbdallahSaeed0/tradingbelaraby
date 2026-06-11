@@ -119,6 +119,11 @@ class StudentController extends Controller
             ->where('course_id', $courseId)
             ->firstOrFail();
 
+        if (!$enrollment->grantsAccess()) {
+            return redirect()->route('student.my-courses')
+                ->with('error', 'Your enrollment is pending payment confirmation. You will get access once it is approved.');
+        }
+
         $course = $enrollment->course;
         
         // Refresh course to ensure enable_certificate is loaded

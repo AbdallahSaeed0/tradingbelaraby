@@ -173,7 +173,7 @@
                         <p class="small text-muted mt-3 mb-0">
                             The student must enter their <strong>transaction reference number</strong> before submitting.
                             The enrollment stays <span class="badge bg-warning text-dark">Pending</span> until you
-                            confirm it in <a href="{{ route('admin.enrollments.index') }}">Enrollments</a>.
+                            confirm it in <a href="{{ route('admin.orders.index') }}">Orders</a>.
                         </p>
                     </div>
                 </div>

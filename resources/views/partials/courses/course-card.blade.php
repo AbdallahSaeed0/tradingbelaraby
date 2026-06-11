@@ -124,7 +124,7 @@
                     <i class="fa fa-heart {{ auth()->user()->hasInWishlist($course) ? 'text-danger' : '' }}"></i>
                 </button>
 
-                @if (auth()->user()->enrollments()->where('course_id', $course->id)->exists())
+                @if (auth()->user()->hasCourseAccess($course->id))
                     <a href="{{ route('courses.learn', $course->id) }}" class="btn btn-success flex-fill">
                         <i class="fa fa-graduation-cap me-1"></i>{{ custom_trans('go_to_course', 'front') }}
                     </a>

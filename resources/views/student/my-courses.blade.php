@@ -136,19 +136,23 @@
                                         <i class="fas fa-graduation-cap fa-3x text-muted"></i>
                                     </div>
                                 @endif
-                                <div class="course-overlay">
-                                    <div class="course-actions">
-                                        <a href="{{ route('courses.learn', $enrollment->course->id) }}"
-                                            class="btn btn-primary btn-sm">
-                                            <i class="fas fa-play me-1"></i>{{ custom_trans('Continue Learning', 'front') }}
-                                        </a>
+                                @if ($enrollment->grantsAccess())
+                                    <div class="course-overlay">
+                                        <div class="course-actions">
+                                            <a href="{{ route('courses.learn', $enrollment->course->id) }}"
+                                                class="btn btn-primary btn-sm">
+                                                <i class="fas fa-play me-1"></i>{{ custom_trans('Continue Learning', 'front') }}
+                                            </a>
+                                        </div>
                                     </div>
-                                </div>
+                                @endif
                                 <div class="course-status-badge">
-                                    @if ($enrollment->status == 'completed')
+                                    @if ($enrollment->status == 'pending')
+                                        <span class="badge bg-warning text-dark">{{ custom_trans('Pending Confirmation', 'front') }}</span>
+                                    @elseif ($enrollment->status == 'completed')
                                         <span class="badge bg-success">{{ custom_trans('Completed', 'front') }}</span>
                                     @else
-                                        <span class="badge bg-warning">{{ custom_trans('In Progress', 'front') }}</span>
+                                        <span class="badge bg-primary">{{ custom_trans('In Progress', 'front') }}</span>
                                     @endif
                                 </div>
                             </div>
@@ -238,10 +242,16 @@
                                                 </a>
                                             @endif
                                         @endif
-                                        <a href="{{ route('courses.learn', $enrollment->course->id) }}"
-                                            class="btn btn-primary btn-sm">
-                                            <i class="fas fa-play me-1"></i>{{ custom_trans('Continue', 'front') }}
-                                        </a>
+                                        @if ($enrollment->grantsAccess())
+                                            <a href="{{ route('courses.learn', $enrollment->course->id) }}"
+                                                class="btn btn-primary btn-sm">
+                                                <i class="fas fa-play me-1"></i>{{ custom_trans('Continue', 'front') }}
+                                            </a>
+                                        @else
+                                            <button class="btn btn-secondary btn-sm" disabled>
+                                                <i class="fas fa-clock me-1"></i>{{ custom_trans('Pending Confirmation', 'front') }}
+                                            </button>
+                                        @endif
                                     </div>
                                 </div>
                             </div>

@@ -39,7 +39,7 @@
         <div class="home-courses-slider__card-ctas">
             <a href="{{ route('courses.show', $course) }}" class="home-courses-slider__btn home-courses-slider__btn--secondary">{{ custom_trans('Show details', 'front') }}</a>
             @auth
-                @if (auth()->user()->enrollments()->where('course_id', $course->id)->exists())
+                @if (auth()->user()->hasCourseAccess($course->id))
                     <a href="{{ route('courses.learn', $course->id) }}" class="home-courses-slider__btn home-courses-slider__btn--primary">{{ custom_trans('go_to_course', 'front') }}</a>
                 @else
                     <button type="button" class="home-courses-slider__btn home-courses-slider__btn--primary enroll-btn" data-course-id="{{ $course->id }}" data-enroll-type="{{ $course->price > 0 ? 'paid' : 'free' }}">{{ $course->price > 0 ? custom_trans('Add to cart', 'front') : custom_trans('enroll_now', 'front') }}</button>

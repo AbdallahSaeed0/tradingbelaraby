@@ -68,11 +68,43 @@ class CourseEnrollment extends Model
     }
 
     /**
+     * Enrollments that grant course content access.
+     */
+    public function scopeAccessible($query)
+    {
+        return $query->whereIn('status', ['active', 'completed']);
+    }
+
+    /**
+     * Enrollments that block re-purchase (including pending payment).
+     */
+    public function scopeBlockingPurchase($query)
+    {
+        return $query->whereIn('status', ['active', 'completed', 'pending']);
+    }
+
+    /**
      * Scope for active enrollments
      */
     public function scopeActive($query)
     {
         return $query->where('status', 'active');
+    }
+
+    /**
+     * Scope for pending enrollments
+     */
+    public function scopePending($query)
+    {
+        return $query->where('status', 'pending');
+    }
+
+    /**
+     * Whether this enrollment grants access to course content.
+     */
+    public function grantsAccess(): bool
+    {
+        return in_array($this->status, ['active', 'completed'], true) && !$this->isExpired();
     }
 
     /**

@@ -222,4 +222,31 @@ class UsersController extends Controller
             'message' => 'Verification email sent successfully'
         ]);
     }
+
+    /**
+     * Show enrollment and payment report for a user.
+     */
+    public function enrollmentsReport(User $user)
+    {
+        $enrollments = $user->enrollments()
+            ->with('course')
+            ->latest()
+            ->get();
+
+        $orders = $user->orders()
+            ->with(['orderItems.course', 'orderItems.bundle'])
+            ->latest()
+            ->get();
+
+        $stats = [
+            'total_enrollments' => $enrollments->count(),
+            'active_enrollments' => $enrollments->whereIn('status', ['active', 'completed'])->count(),
+            'pending_enrollments' => $enrollments->where('status', 'pending')->count(),
+            'total_paid' => $enrollments->sum('amount_paid'),
+            'orders_total' => $orders->where('status', 'completed')->sum('total'),
+            'orders_count' => $orders->count(),
+        ];
+
+        return view('admin.users.enrollments-report', compact('user', 'enrollments', 'orders', 'stats'));
+    }
 }

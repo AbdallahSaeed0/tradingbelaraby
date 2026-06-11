@@ -210,7 +210,7 @@
                                                 {{ custom_trans('view_details', 'front') }}
                                             </a>
                                             @auth
-                                                @if (auth()->user()->enrollments()->where('course_id', $course->id)->exists())
+                                                @if (auth()->user()->hasCourseAccess($course->id))
                                                     <a href="{{ route('courses.learn', $course->id) }}"
                                                         class="btn btn-success btn-sm" style="flex: 1; font-size: 0.75rem; padding: 0.4rem 0.6rem; border-radius: 6px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                                         <i class="fas fa-graduation-cap me-1" style="font-size: 0.7rem;"></i>

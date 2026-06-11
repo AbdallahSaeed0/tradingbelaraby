@@ -240,12 +240,20 @@ class CheckoutController extends Controller
 
                     foreach ($cartItem->bundle->courses as $course) {
                         // Check if not already enrolled
-                        if (!$user->enrollments()->where('course_id', $course->id)->exists()) {
+                        if (!$user->enrollments()->where('course_id', $course->id)->blockingPurchase()->exists()) {
                             $user->enrollments()->create([
                                 'course_id' => $course->id,
                                 'status' => $enrollmentStatus,
-                                'enrolled_at' => now(),
+                                'enrolled_at' => $enrollmentStatus === 'active' ? now() : null,
                                 'progress_percentage' => 0,
+                                'payment_method' => $request->payment_method,
+                                'transaction_id' => $request->payment_method === 'bank_transfer' && $request->transaction_reference
+                                    ? $request->transaction_reference
+                                    : $order->order_number,
+                                'notes' => $request->payment_method === 'bank_transfer'
+                                    ? 'Bank transfer reference: ' . ($request->transaction_reference ?? 'Not provided')
+                                    : null,
+                                'amount_paid' => $course->price,
                             ]);
 
                             // Send enrollment notification email

@@ -70,6 +70,16 @@
                 </a>
             @endif
             @if (auth('admin')->user()->hasPermission('manage_enrollments'))
+                <a href="{{ route('admin.orders.index') }}"
+                    class="list-group-item list-group-item-action {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}"
+                    title="Orders">
+                    <i class="fa fa-receipt"></i>
+                    <span class="sidebar-nav-text">Orders</span>
+                    @php $pendingOrdersCount = \App\Models\Order::where('status', 'pending')->count(); @endphp
+                    @if ($pendingOrdersCount > 0)
+                        <span class="badge bg-warning text-dark">{{ $pendingOrdersCount }}</span>
+                    @endif
+                </a>
                 <a href="{{ route('admin.enrollments.index') }}"
                     class="list-group-item list-group-item-action {{ request()->routeIs('admin.enrollments.*') ? 'active' : '' }}"
                     title="Enrollments">

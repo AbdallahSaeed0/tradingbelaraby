@@ -20,7 +20,7 @@ class QuizController extends Controller
     {
         $course = $quiz->course;
         $enrollment = Auth::user()->enrollments()->where('course_id', $course->id)->first();
-        if (!$enrollment) {
+        if (!$enrollment || !$enrollment->grantsAccess()) {
             return redirect()->route('courses.show', $course)->with('error', 'You must be enrolled in this course to take the quiz.');
         }
         $attempts = $quiz->attempts()->where('user_id', Auth::id())->orderBy('created_at', 'desc')->get();
@@ -33,7 +33,7 @@ class QuizController extends Controller
     {
         $course = $quiz->course;
         $enrollment = Auth::user()->enrollments()->where('course_id', $course->id)->first();
-        if (!$enrollment) {
+        if (!$enrollment || !$enrollment->grantsAccess()) {
             return redirect()->route('courses.show', $course)->with('error', 'You must be enrolled in this course to view quiz attempts.');
         }
         $attempts = $quiz->attempts()->where('user_id', Auth::id())->orderBy('created_at', 'desc')->paginate(10);
@@ -80,7 +80,7 @@ class QuizController extends Controller
     {
         $course = $quiz->course;
         $enrollment = Auth::user()->enrollments()->where('course_id', $course->id)->first();
-        if (!$enrollment) {
+        if (!$enrollment || !$enrollment->grantsAccess()) {
             return response()->json(['error' => 'You must be enrolled in this course to take the quiz.'], 403);
         }
         $canTakeResult = $this->canTakeQuiz($quiz, $enrollment);

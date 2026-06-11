@@ -183,7 +183,7 @@
                                 $avgRating    = $course->average_rating ?? 0;
                                 $lessonsCount = $course->total_lessons_count ?? 0;
                                 $isFree       = $course->price <= 0;
-                                $isEnrolled   = auth()->check() && auth()->user()->enrollments()->where('course_id', $course->id)->exists();
+                                $isEnrolled   = auth()->check() && auth()->user()->hasCourseAccess($course->id);
                                 $inWishlist   = auth()->check() && auth()->user()->hasInWishlist($course);
                                 $enrolledCnt  = $course->enrolled_students ?? 0;
                             @endphp

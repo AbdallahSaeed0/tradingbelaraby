@@ -167,7 +167,7 @@
                                                 <div class="course-card--list__actions d-flex gap-2">
                                                     <a href="{{ route('courses.show', $course) }}" class="btn btn-outline-primary btn-sm">{{ custom_trans('Show details', 'front') }}</a>
                                                     @auth
-                                                        @if (auth()->user()->enrollments()->where('course_id', $course->id)->exists())
+                                                        @if (auth()->user()->hasCourseAccess($course->id))
                                                             <a href="{{ route('courses.learn', $course->id) }}" class="btn btn-success btn-sm">{{ custom_trans('go_to_course', 'front') }}</a>
                                                         @else
                                                             <button type="button" class="btn btn-primary btn-sm enroll-btn" data-course-id="{{ $course->id }}" data-enroll-type="{{ $course->price > 0 ? 'paid' : 'free' }}"><i class="fa fa-graduation-cap me-1"></i>{{ custom_trans('enroll_now', 'front') }}</button>

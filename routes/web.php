@@ -387,6 +387,10 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
         ->middleware('admin.permission:manage_courses,manage_own_courses');
     Route::resource('enrollments', App\Http\Controllers\Admin\EnrollmentsController::class)->middleware('admin.permission:manage_enrollments');
     Route::post('/enrollments/{enrollment}/update-status', [App\Http\Controllers\Admin\EnrollmentsController::class, 'updateStatus'])->name('enrollments.update_status')->middleware('admin.permission:manage_enrollments');
+    Route::get('/orders', [App\Http\Controllers\Admin\OrdersController::class, 'index'])->name('orders.index')->middleware('admin.permission:manage_enrollments');
+    Route::get('/orders/{order}', [App\Http\Controllers\Admin\OrdersController::class, 'show'])->name('orders.show')->middleware('admin.permission:manage_enrollments');
+    Route::post('/orders/{order}/confirm', [App\Http\Controllers\Admin\OrdersController::class, 'confirm'])->name('orders.confirm')->middleware('admin.permission:manage_enrollments');
+    Route::post('/orders/{order}/reject', [App\Http\Controllers\Admin\OrdersController::class, 'reject'])->name('orders.reject')->middleware('admin.permission:manage_enrollments');
     Route::resource('homework', App\Http\Controllers\Admin\HomeworkManagementController::class)->middleware('admin.permission:manage_homework,manage_own_homework');
     Route::post('/homework/{homework}/update-status', [App\Http\Controllers\Admin\HomeworkManagementController::class, 'updateStatus'])->name('homework.update_status')->middleware('admin.permission:manage_homework,manage_own_homework');
     Route::resource('quizzes', App\Http\Controllers\Admin\QuizManagementController::class)->middleware('admin.permission:manage_quizzes,manage_own_quizzes');
@@ -493,6 +497,7 @@ Route::resource('quizzes.questions', App\Http\Controllers\Admin\QuizQuestionMana
     Route::post('/users/{user}/verify', [App\Http\Controllers\Admin\UsersController::class, 'verify'])->name('users.verify');
     Route::post('/users/{user}/unverify', [App\Http\Controllers\Admin\UsersController::class, 'unverify'])->name('users.unverify');
     Route::post('/users/{user}/resend-verification', [App\Http\Controllers\Admin\UsersController::class, 'resendVerification'])->name('users.resend-verification');
+    Route::get('/users/{user}/enrollments-report', [App\Http\Controllers\Admin\UsersController::class, 'enrollmentsReport'])->name('users.enrollments-report')->middleware('admin.permission:manage_users');
     Route::get('/blog-categories/analytics', [App\Http\Controllers\Admin\BlogCategoryController::class, 'analytics'])->name('blog-categories.analytics')->middleware('admin.permission:view_analytics');
     Route::post('/blog-categories/{category}/toggle-status', [App\Http\Controllers\Admin\BlogCategoryController::class, 'toggleStatus'])->name('blog-categories.toggle_status');
     Route::post('/blog-categories/{category}/update-status', [App\Http\Controllers\Admin\BlogCategoryController::class, 'updateStatus'])->name('blog-categories.update_status');

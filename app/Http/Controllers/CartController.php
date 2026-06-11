@@ -44,7 +44,7 @@ class CartController extends Controller
             ]);
         }
 
-        if ($user->enrollments()->where('course_id', $course->id)->exists()) {
+        if ($user->blocksCoursePurchase($course->id)) {
             return response()->json([
                 'success' => false,
                 'message' => custom_trans('You are already enrolled in this course', 'front'),

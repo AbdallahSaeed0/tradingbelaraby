@@ -77,4 +77,44 @@ class Order extends Model
     {
         return $this->belongsTo(Coupon::class);
     }
+
+    /**
+     * All course IDs included in this order (direct items + bundle courses).
+     */
+    public function getCourseIds(): array
+    {
+        $this->loadMissing(['orderItems.bundle.courses']);
+
+        $courseIds = [];
+        foreach ($this->orderItems as $item) {
+            if ($item->course_id) {
+                $courseIds[] = $item->course_id;
+            } elseif ($item->bundle_id && $item->bundle) {
+                $courseIds = array_merge($courseIds, $item->bundle->courses->pluck('id')->all());
+            }
+        }
+
+        return array_values(array_unique($courseIds));
+    }
+
+    public function getTransactionReferenceAttribute(): ?string
+    {
+        if ($this->payment_method === 'bank_transfer') {
+            return $this->payment_gateway_id;
+        }
+
+        return $this->payment_gateway_id ?: $this->order_number;
+    }
+
+    public function getPaymentMethodLabelAttribute(): string
+    {
+        return match ($this->payment_method) {
+            'bank_transfer' => 'Bank Transfer',
+            'paypal' => 'PayPal',
+            'free' => 'Free',
+            'tabby' => 'Tabby',
+            'cash_on_delivery' => 'Cash on Delivery',
+            default => ucfirst(str_replace('_', ' ', $this->payment_method ?? 'Unknown')),
+        };
+    }
 }

@@ -94,10 +94,11 @@ class CourseController extends Controller
         $totalStudents = $course->enrollments()->count();
         $averageRating = $course->ratings()->avg('rating');
         $totalRatings = $course->ratings()->count();
-        $isEnrolled = Auth::check() ? Auth::user()->enrollments()->where('course_id', $course->id)->exists() : false;
-        $userEnrollment = Auth::check() ? Auth::user()->enrollments()->where('course_id', $course->id)->first() : null;
+        $isEnrolled = Auth::check() ? Auth::user()->hasCourseAccess($course->id) : false;
+        $isPendingEnrollment = Auth::check() ? Auth::user()->hasPendingEnrollment($course->id) : false;
+        $userEnrollment = Auth::check() ? $course->getUserEnrollment(Auth::user()) : null;
         return view('courses.detail', compact(
-            'course', 'relatedCourses', 'totalStudents', 'averageRating', 'totalRatings', 'isEnrolled', 'userEnrollment'
+            'course', 'relatedCourses', 'totalStudents', 'averageRating', 'totalRatings', 'isEnrolled', 'isPendingEnrollment', 'userEnrollment'
         ));
     }
 

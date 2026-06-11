@@ -224,7 +224,7 @@ class ProgressController extends Controller
 
         // Check if user is enrolled in the course
         $enrollment = CourseEnrollment::where('user_id', $user->id)->where('course_id', $course->id)->first();
-        if (!$enrollment) {
+        if (!$enrollment || !$enrollment->grantsAccess()) {
             return response()->json(['error' => 'Not enrolled in this course'], 403);
         }
 
@@ -334,7 +334,7 @@ class ProgressController extends Controller
 
         // Check if user is enrolled in the course
         $enrollment = CourseEnrollment::where('user_id', $user->id)->where('course_id', $course->id)->first();
-        if (!$enrollment) {
+        if (!$enrollment || !$enrollment->grantsAccess()) {
             return response()->json(['error' => 'Not enrolled in this course'], 403);
         }
 

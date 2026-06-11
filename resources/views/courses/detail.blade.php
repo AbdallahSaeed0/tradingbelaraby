@@ -103,9 +103,16 @@
                         </ul>
                         <div class="p-3">
                             @auth
-                                @if (auth()->user()->enrollments()->where('course_id', $course->id)->exists())
+                                @if (auth()->user()->hasCourseAccess($course->id))
                                     <a href="{{ route('courses.learn', $course->id) }}"
                                         class="btn btn-orange w-100 fw-bold mb-3">{{ custom_trans('go_to_course', 'front') }}</a>
+                                @elseif (auth()->user()->hasPendingEnrollment($course->id))
+                                    <button class="btn btn-secondary w-100 fw-bold mb-3" disabled>
+                                        <i class="fas fa-clock me-2"></i>{{ custom_trans('Pending Confirmation', 'front') }}
+                                    </button>
+                                    <p class="small text-muted text-center mb-3">
+                                        {{ custom_trans('Your enrollment will be pending until our team verifies your transfer.', 'front') }}
+                                    </p>
                                 @else
                                     @if ($course->price > 0)
                                         <button class="btn btn-orange w-100 fw-bold mb-3 detail-enroll-btn"
@@ -463,7 +470,7 @@
                         </ul>
                         <div class="p-3">
                             @auth
-                                @if (auth()->user()->enrollments()->where('course_id', $course->id)->exists())
+                                @if (auth()->user()->hasCourseAccess($course->id))
                                     <a href="{{ route('courses.learn', $course->id) }}"
                                         class="btn btn-orange w-100 fw-bold mb-2">{{ custom_trans('go_to_course', 'front') }}</a>
                                 @else
@@ -585,7 +592,7 @@
                 </div>
                 <div class="course-detail-mobile-enroll-cta">
                     @auth
-                        @if (auth()->user()->enrollments()->where('course_id', $course->id)->exists())
+                        @if (auth()->user()->hasCourseAccess($course->id))
                             <a href="{{ route('courses.learn', $course->id) }}" class="btn btn-light btn-sm fw-bold">
                                 {{ custom_trans('go_to_course', 'front') }}
                             </a>

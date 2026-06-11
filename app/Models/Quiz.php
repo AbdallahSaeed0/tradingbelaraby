@@ -137,7 +137,7 @@ class Quiz extends Model
         }
 
         // Check if user is enrolled in the course
-        if (!$this->course->enrollments()->where('user_id', $user->id)->exists()) {
+        if (!$this->course->enrollments()->where('user_id', $user->id)->accessible()->exists()) {
             return false;
         }
 

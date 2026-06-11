@@ -42,7 +42,7 @@ class EnrollmentController extends Controller
             }
 
         // Check if user is already enrolled
-        if ($user->enrollments()->where('course_id', $course->id)->exists()) {
+        if ($user->blocksCoursePurchase($course->id)) {
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => true,
