@@ -77,8 +77,8 @@ class Coupon extends Model
             return false;
         }
 
-        // Check usage limit
-        if ($this->usage_limit && $this->used_count >= $this->usage_limit) {
+        // Check usage limit (count actual usage rows — stays accurate when orders are deleted)
+        if ($this->usage_limit && $this->usages()->count() >= $this->usage_limit) {
             return false;
         }
 
@@ -184,6 +184,14 @@ class Coupon extends Model
     public function incrementUsage(): void
     {
         $this->increment('used_count');
+    }
+
+    /**
+     * Sync cached used_count with actual coupon_usages rows.
+     */
+    public function syncUsedCount(): void
+    {
+        $this->update(['used_count' => $this->usages()->count()]);
     }
 
     /**

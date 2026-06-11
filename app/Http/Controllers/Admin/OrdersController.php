@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Coupon;
+use App\Models\CouponUsage;
 use App\Models\CourseEnrollment;
 use App\Models\Order;
 use Illuminate\Http\Request;
@@ -98,6 +100,8 @@ class OrdersController extends Controller
                 ->where('status', 'pending')
                 ->update(['status' => 'cancelled']);
 
+            $this->releaseCouponUsage($order);
+
             $order->update(['status' => 'cancelled']);
         });
 
@@ -107,8 +111,12 @@ class OrdersController extends Controller
     public function destroy(Order $order)
     {
         DB::transaction(function () use ($order) {
+            $couponIds = $this->couponIdsForOrder($order);
+
             $this->linkedEnrollments($order)->delete();
             $order->delete();
+
+            $this->syncCouponsUsedCount($couponIds);
         });
 
         return redirect()
@@ -122,5 +130,32 @@ class OrdersController extends Controller
 
         return CourseEnrollment::where('user_id', $order->user_id)
             ->whereIn('course_id', $courseIds);
+    }
+
+    private function couponIdsForOrder(Order $order): array
+    {
+        $ids = CouponUsage::where('order_id', $order->id)->pluck('coupon_id')->all();
+
+        if ($order->coupon_id) {
+            $ids[] = $order->coupon_id;
+        }
+
+        return array_values(array_unique($ids));
+    }
+
+    private function releaseCouponUsage(Order $order): void
+    {
+        $couponIds = $this->couponIdsForOrder($order);
+
+        CouponUsage::where('order_id', $order->id)->delete();
+
+        $this->syncCouponsUsedCount($couponIds);
+    }
+
+    private function syncCouponsUsedCount(array $couponIds): void
+    {
+        foreach (array_unique($couponIds) as $couponId) {
+            Coupon::find($couponId)?->syncUsedCount();
+        }
     }
 }

@@ -257,10 +257,13 @@ class CheckoutController extends Controller
                     }
 
                     foreach ($cartItem->bundle->courses as $course) {
-                        // Check if not already enrolled
-                        if (!$user->enrollments()->where('course_id', $course->id)->blockingPurchase()->exists()) {
-                            $user->enrollments()->create([
-                                'course_id' => $course->id,
+                        if ($user->enrollments()->where('course_id', $course->id)->blockingPurchase()->exists()) {
+                            continue;
+                        }
+
+                        $user->enrollments()->updateOrCreate(
+                            ['course_id' => $course->id],
+                            [
                                 'status' => $enrollmentStatus,
                                 'enrolled_at' => $enrollmentStatus === 'active' ? now() : null,
                                 'progress_percentage' => 0,
@@ -272,20 +275,19 @@ class CheckoutController extends Controller
                                     ? 'Bank transfer reference: ' . ($request->transaction_reference ?? 'Not provided')
                                     : null,
                                 'amount_paid' => $coursePaidAmounts[$course->id] ?? 0,
-                            ]);
+                            ]
+                        );
 
-                            // Send enrollment notification email
-                            try {
-                                $language = Session::get('frontend_locale', config('app.locale'));
-                                $language = in_array($language, ['ar', 'en']) ? $language : 'en';
-                                $user->notify(new CourseEnrollmentNotification($course, $order, $language));
-                            } catch (\Exception $e) {
-                                Log::error('Failed to send enrollment notification', [
-                                    'user_id' => $user->id,
-                                    'course_id' => $course->id,
-                                    'error' => $e->getMessage()
-                                ]);
-                            }
+                        try {
+                            $language = Session::get('frontend_locale', config('app.locale'));
+                            $language = in_array($language, ['ar', 'en']) ? $language : 'en';
+                            $user->notify(new CourseEnrollmentNotification($course, $order, $language));
+                        } catch (\Exception $e) {
+                            Log::error('Failed to send enrollment notification', [
+                                'user_id' => $user->id,
+                                'course_id' => $course->id,
+                                'error' => $e->getMessage()
+                            ]);
                         }
                     }
                 } else {
@@ -303,20 +305,22 @@ class CheckoutController extends Controller
                         $enrollmentStatus = 'pending';
                     }
 
-                $enrollment = $user->enrollments()->create([
-                    'course_id'           => $cartItem->course_id,
-                    'status'              => $enrollmentStatus,
-                    'enrolled_at'         => $enrollmentStatus === 'active' ? now() : null,
-                    'progress_percentage' => 0,
-                    'payment_method'      => $request->payment_method,
-                    'transaction_id'      => $request->payment_method === 'bank_transfer' && $request->transaction_reference
-                        ? $request->transaction_reference
-                        : $order->order_number,
-                    'notes'               => $request->payment_method === 'bank_transfer'
-                        ? 'Bank transfer reference: ' . ($request->transaction_reference ?? 'Not provided')
-                        : null,
-                    'amount_paid'         => $coursePaid,
-                ]);
+                $enrollment = $user->enrollments()->updateOrCreate(
+                    ['course_id' => $cartItem->course_id],
+                    [
+                        'status'              => $enrollmentStatus,
+                        'enrolled_at'         => $enrollmentStatus === 'active' ? now() : null,
+                        'progress_percentage' => 0,
+                        'payment_method'      => $request->payment_method,
+                        'transaction_id'      => $request->payment_method === 'bank_transfer' && $request->transaction_reference
+                            ? $request->transaction_reference
+                            : $order->order_number,
+                        'notes'               => $request->payment_method === 'bank_transfer'
+                            ? 'Bank transfer reference: ' . ($request->transaction_reference ?? 'Not provided')
+                            : null,
+                        'amount_paid'         => $coursePaid,
+                    ]
+                );
 
                 // Send enrollment notification email
                 try {
