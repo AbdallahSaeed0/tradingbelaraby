@@ -29,7 +29,7 @@ class ComingSoonMiddleware
         }
 
         // Allow authentication routes
-        if ($request->is('login') || $request->is('register') || $request->is('logout')) {
+        if ($request->is('login') || $request->is('loginadmin') || $request->is('register') || $request->is('logout')) {
             return $next($request);
         }
 

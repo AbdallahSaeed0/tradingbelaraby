@@ -357,7 +357,7 @@ Route::post('/courses/{course}/live-classes/{liveClass}/download-materials', [Li
 });
 
 // Admin authentication routes (hidden URL — not linked from the public site)
-Route::middleware('guest:admin')->group(function () {
+Route::middleware('guest.admin')->group(function () {
     Route::get('/loginadmin', [App\Http\Controllers\Admin\AdminAuthController::class, 'showLoginForm'])->name('admin.login');
     Route::post('/loginadmin', [App\Http\Controllers\Admin\AdminAuthController::class, 'login'])->middleware('throttle:login')->name('admin.login.attempt');
 });
