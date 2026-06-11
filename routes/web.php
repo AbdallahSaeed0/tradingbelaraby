@@ -391,6 +391,7 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
     Route::get('/orders/{order}', [App\Http\Controllers\Admin\OrdersController::class, 'show'])->name('orders.show')->middleware('admin.permission:manage_enrollments');
     Route::post('/orders/{order}/confirm', [App\Http\Controllers\Admin\OrdersController::class, 'confirm'])->name('orders.confirm')->middleware('admin.permission:manage_enrollments');
     Route::post('/orders/{order}/reject', [App\Http\Controllers\Admin\OrdersController::class, 'reject'])->name('orders.reject')->middleware('admin.permission:manage_enrollments');
+    Route::delete('/orders/{order}', [App\Http\Controllers\Admin\OrdersController::class, 'destroy'])->name('orders.destroy')->middleware('admin.permission:manage_enrollments');
     Route::resource('homework', App\Http\Controllers\Admin\HomeworkManagementController::class)->middleware('admin.permission:manage_homework,manage_own_homework');
     Route::post('/homework/{homework}/update-status', [App\Http\Controllers\Admin\HomeworkManagementController::class, 'updateStatus'])->name('homework.update_status')->middleware('admin.permission:manage_homework,manage_own_homework');
     Route::resource('quizzes', App\Http\Controllers\Admin\QuizManagementController::class)->middleware('admin.permission:manage_quizzes,manage_own_quizzes');

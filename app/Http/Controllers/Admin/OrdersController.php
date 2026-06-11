@@ -103,4 +103,24 @@ class OrdersController extends Controller
 
         return back()->with('success', 'Order rejected and pending enrollments cancelled.');
     }
+
+    public function destroy(Order $order)
+    {
+        DB::transaction(function () use ($order) {
+            $this->linkedEnrollments($order)->delete();
+            $order->delete();
+        });
+
+        return redirect()
+            ->route('admin.orders.index')
+            ->with('success', 'Order and linked enrollments deleted successfully.');
+    }
+
+    private function linkedEnrollments(Order $order)
+    {
+        $courseIds = $order->getCourseIds();
+
+        return CourseEnrollment::where('user_id', $order->user_id)
+            ->whereIn('course_id', $courseIds);
+    }
 }

@@ -42,17 +42,18 @@
             <div class="col-md-3">
                 <div class="card stat-card">
                     <div class="card-body text-center">
-                        <h6 class="text-muted mb-1">Total Paid (Enrollments)</h6>
+                        <h6 class="text-muted mb-1">Total Paid</h6>
                         <h3 class="fw-bold mb-0 text-primary">SAR {{ number_format($stats['total_paid'], 2) }}</h3>
+                        <small class="text-muted">After discounts</small>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card stat-card">
                     <div class="card-body text-center">
-                        <h6 class="text-muted mb-1">Orders Total (Completed)</h6>
-                        <h3 class="fw-bold mb-0 text-primary">SAR {{ number_format($stats['orders_total'], 2) }}</h3>
-                        <small class="text-muted">{{ $stats['orders_count'] }} orders</small>
+                        <h6 class="text-muted mb-1">Orders (Completed)</h6>
+                        <h3 class="fw-bold mb-0 text-success">SAR {{ number_format($stats['orders_total'], 2) }}</h3>
+                        <small class="text-muted">{{ $stats['orders_count'] }} orders · Pending: SAR {{ number_format($stats['orders_pending_total'], 2) }}</small>
                     </div>
                 </div>
             </div>
@@ -88,7 +89,7 @@
                                                 <br><small><code>{{ $enrollment->transaction_id }}</code></small>
                                             @endif
                                         </td>
-                                        <td>SAR {{ number_format($enrollment->amount_paid ?? 0, 2) }}</td>
+                                        <td>SAR {{ number_format($enrollment->effective_amount_paid, 2) }}</td>
                                         <td>{{ $enrollment->created_at->format('M d, Y') }}</td>
                                     </tr>
                                 @empty

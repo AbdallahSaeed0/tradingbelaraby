@@ -10,6 +10,7 @@ use App\Models\OrderItem;
 use App\Models\CourseEnrollment;
 use App\Models\Coupon;
 use App\Support\Platform;
+use App\Support\CheckoutPricing;
 use App\Services\Payment\PayPalService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -122,12 +123,19 @@ class OrderController extends Controller
                 'billing_country' => $user->country ?? '',
             ]);
 
+            $lineItems = $courses->map(fn ($course) => [
+                'key' => 'course_' . $course->id,
+                'price' => (float) $course->price,
+            ])->all();
+
+            $paidByCourse = CheckoutPricing::allocateLineTotals($lineItems, (float) $subtotal, (float) $discountAmount);
+
             // Create order items
             foreach ($courses as $course) {
                 OrderItem::create([
                     'order_id' => $order->id,
                     'course_id' => $course->id,
-                    'price' => $course->price,
+                    'price' => $paidByCourse['course_' . $course->id] ?? $course->price,
                 ]);
             }
 
@@ -184,7 +192,7 @@ class OrderController extends Controller
                             'enrolled_at'        => $total == 0 ? now() : null,
                             'progress_percentage'=> 0,
                             'payment_method'     => $request->payment_method,
-                            'amount_paid'        => $course->price,
+                            'amount_paid'        => $paidByCourse['course_' . $course->id] ?? $course->price,
                             'notes'              => $request->payment_method === 'bank_transfer'
                                 ? 'Bank transfer reference: ' . ($request->transaction_reference ?? 'Not provided')
                                 : null,

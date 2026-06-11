@@ -13,6 +13,7 @@ use App\Models\PaymentSettings;
 use App\Notifications\CourseEnrollmentNotification;
 use App\Services\Payment\TabbyService;
 use App\Services\Payment\PayPalService;
+use App\Support\CheckoutPricing;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -222,14 +223,31 @@ class CheckoutController extends Controller
                 'billing_country' => $request->country,
             ]);
 
+            $lineItems = $cartItems->map(function ($cartItem) {
+                return [
+                    'key' => $cartItem->isBundle()
+                        ? 'bundle_' . $cartItem->bundle_id
+                        : 'course_' . $cartItem->course_id,
+                    'price' => $cartItem->getPrice(),
+                ];
+            })->all();
+
+            $paidByLine = CheckoutPricing::allocateLineTotals($lineItems, $subtotal, $discount);
+
             // Create order items and enrollments
             foreach ($cartItems as $cartItem) {
                 if ($cartItem->isBundle()) {
+                    $bundlePaid = $paidByLine['bundle_' . $cartItem->bundle_id] ?? $cartItem->getPrice();
+                    $coursePaidAmounts = CheckoutPricing::splitBundleAmountAmongCourses(
+                        $cartItem->bundle->courses,
+                        $bundlePaid
+                    );
+
                     // Handle bundle
                     OrderItem::create([
                         'order_id' => $order->id,
                         'bundle_id' => $cartItem->bundle_id,
-                        'price' => $cartItem->bundle->price,
+                        'price' => $bundlePaid,
                     ]);
 
                     // Enroll user in all courses in the bundle
@@ -253,7 +271,7 @@ class CheckoutController extends Controller
                                 'notes' => $request->payment_method === 'bank_transfer'
                                     ? 'Bank transfer reference: ' . ($request->transaction_reference ?? 'Not provided')
                                     : null,
-                                'amount_paid' => $course->price,
+                                'amount_paid' => $coursePaidAmounts[$course->id] ?? 0,
                             ]);
 
                             // Send enrollment notification email
@@ -271,11 +289,13 @@ class CheckoutController extends Controller
                         }
                     }
                 } else {
+                    $coursePaid = $paidByLine['course_' . $cartItem->course_id] ?? $cartItem->getPrice();
+
                     // Handle individual course
                 OrderItem::create([
                     'order_id' => $order->id,
                     'course_id' => $cartItem->course_id,
-                    'price' => $cartItem->course->price,
+                    'price' => $coursePaid,
                 ]);
 
                     $enrollmentStatus = 'active';
@@ -295,7 +315,7 @@ class CheckoutController extends Controller
                     'notes'               => $request->payment_method === 'bank_transfer'
                         ? 'Bank transfer reference: ' . ($request->transaction_reference ?? 'Not provided')
                         : null,
-                    'amount_paid'         => $cartItem->course->price,
+                    'amount_paid'         => $coursePaid,
                 ]);
 
                 // Send enrollment notification email

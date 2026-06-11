@@ -242,8 +242,9 @@ class UsersController extends Controller
             'total_enrollments' => $enrollments->count(),
             'active_enrollments' => $enrollments->whereIn('status', ['active', 'completed'])->count(),
             'pending_enrollments' => $enrollments->where('status', 'pending')->count(),
-            'total_paid' => $enrollments->sum('amount_paid'),
+            'total_paid' => $enrollments->sum(fn ($enrollment) => $enrollment->effective_amount_paid),
             'orders_total' => $orders->where('status', 'completed')->sum('total'),
+            'orders_pending_total' => $orders->where('status', 'pending')->sum('total'),
             'orders_count' => $orders->count(),
         ];
 

@@ -165,7 +165,7 @@
                                 </div>
 
                                 <h5 class="card-title course-title">
-                                    <a href="{{ route('courses.show', $enrollment->course->slug ?? $enrollment->course->id) }}"
+                                    <a href="{{ route('courses.show', $enrollment->course) }}"
                                         class="text-decoration-none">
                                         {{ $enrollment->course->localized_name }}
                                     </a>
@@ -224,7 +224,7 @@
 
                             <div class="card-footer bg-transparent">
                                 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                                    <a href="{{ route('courses.show', $enrollment->course->slug ?? $enrollment->course->id) }}"
+                                    <a href="{{ route('courses.show', $enrollment->course) }}"
                                         class="btn btn-outline-primary btn-sm">
                                         <i class="fas fa-eye me-1"></i>{{ custom_trans('View Details', 'front') }}
                                     </a>

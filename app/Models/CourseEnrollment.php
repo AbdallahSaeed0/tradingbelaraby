@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-
 class CourseEnrollment extends Model
 {
     use HasFactory;
@@ -194,12 +193,56 @@ class CourseEnrollment extends Model
     }
 
     /**
+     * Actual amount paid after discounts (falls back to linked order when stored amount is list price).
+     */
+    public function getEffectiveAmountPaidAttribute(): float
+    {
+        $amount = (float) ($this->amount_paid ?? 0);
+
+        if (!$this->transaction_id || !$this->user_id) {
+            return $amount;
+        }
+
+        $order = Order::query()
+            ->where('user_id', $this->user_id)
+            ->where(function ($query) {
+                $query->where('order_number', $this->transaction_id)
+                    ->orWhere('payment_gateway_id', $this->transaction_id);
+            })
+            ->with('orderItems')
+            ->first();
+
+        if (!$order) {
+            return $amount;
+        }
+
+        $courseIds = $order->getCourseIds();
+        if (!in_array((int) $this->course_id, $courseIds, true)) {
+            return $amount;
+        }
+
+        if (count($courseIds) === 1) {
+            return (float) $order->total;
+        }
+
+        $itemTotal = (float) $order->orderItems->sum('price');
+        $item = $order->orderItems->firstWhere('course_id', $this->course_id);
+
+        if ($item && $itemTotal > 0) {
+            return round((float) $order->total * ((float) $item->price / $itemTotal), 2);
+        }
+
+        return $amount;
+    }
+
+    /**
      * Get formatted amount paid
      */
     public function getFormattedAmountPaidAttribute(): string
     {
-        if ($this->amount_paid) {
-            return '$' . number_format($this->amount_paid, 2);
+        $amount = $this->effective_amount_paid;
+        if ($amount > 0) {
+            return 'SAR ' . number_format($amount, 2);
         }
         return 'Free';
     }

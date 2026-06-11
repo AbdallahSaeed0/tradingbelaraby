@@ -123,6 +123,27 @@ class Course extends Model
         });
     }
 
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
+    public function getRouteKey()
+    {
+        return $this->slug ?: $this->getKey();
+    }
+
+    public function resolveRouteBinding($value, $field = null)
+    {
+        if (is_numeric($value)) {
+            return $this->where('id', $value)->firstOrFail();
+        }
+
+        $course = $this->where('slug', $value)->first();
+
+        return $course ?? $this->where('id', $value)->firstOrFail();
+    }
+
     /**
      * Get the category that owns the course
      */

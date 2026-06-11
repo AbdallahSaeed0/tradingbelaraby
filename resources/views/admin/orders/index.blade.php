@@ -161,9 +161,19 @@
                                         <small class="text-muted">{{ $order->created_at->diffForHumans() }}</small>
                                     </td>
                                     <td>
-                                        <a href="{{ route('admin.orders.show', $order) }}" class="btn btn-sm btn-outline-primary">
-                                            <i class="fa fa-eye"></i> View
-                                        </a>
+                                        <div class="d-flex gap-1">
+                                            <a href="{{ route('admin.orders.show', $order) }}" class="btn btn-sm btn-outline-primary" title="View">
+                                                <i class="fa fa-eye"></i>
+                                            </a>
+                                            <form action="{{ route('admin.orders.destroy', $order) }}" method="POST"
+                                                onsubmit="return confirm('Delete this order and remove linked enrollments? This cannot be undone.');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty

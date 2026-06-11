@@ -176,6 +176,28 @@
                         </div>
                     </div>
                 @endif
+
+                <div class="card border-danger mt-3">
+                    <div class="card-header bg-danger bg-opacity-10">
+                        <h5 class="mb-0 text-danger">Delete Order</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="small text-muted mb-3">
+                            Permanently delete this order and remove all linked enrollments for this student.
+                            @if ($order->status === 'completed')
+                                <strong class="text-danger d-block mt-1">This order is completed — the student will lose course access.</strong>
+                            @endif
+                        </p>
+                        <form action="{{ route('admin.orders.destroy', $order) }}" method="POST"
+                            onsubmit="return confirm('Delete order {{ $order->order_number }} and all linked enrollments? This cannot be undone.');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger w-100">
+                                <i class="fa fa-trash me-1"></i>Delete Order & Enrollments
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
