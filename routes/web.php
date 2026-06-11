@@ -115,7 +115,7 @@ Route::get('/email/verify/{id}/{hash}', function (\Illuminate\Http\Request $requ
     return redirect()->route('home')->with('success', 'Your email has been verified successfully! You are now logged in.');
 })->middleware(['signed'])->name('verification.verify');
 
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Public pages
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
@@ -362,7 +362,7 @@ Route::middleware('guest.admin')->group(function () {
     Route::post('/loginadmin', [App\Http\Controllers\Admin\AdminAuthController::class, 'login'])->middleware('throttle:login')->name('admin.login.attempt');
 });
 
-Route::post('/admin/logout', [App\Http\Controllers\Admin\AdminAuthController::class, 'logout'])->name('admin.logout')->middleware('auth:admin');
+Route::post('/admin/logout', [App\Http\Controllers\Admin\AdminAuthController::class, 'logout'])->name('admin.logout');
 
 // Admin routes
 Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(function () {
