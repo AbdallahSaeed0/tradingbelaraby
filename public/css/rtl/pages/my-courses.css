@@ -1,0 +1,19 @@
+@import url('/css/pages/my-courses.css');
+
+[dir="rtl"] .my-course-card__title,
+[dir="rtl"] .my-course-card__desc,
+[dir="rtl"] .my-course-card__instructor {
+    text-align: right;
+}
+
+[dir="rtl"] .my-course-card__stat {
+    text-align: center;
+}
+
+[dir="rtl"] .my-courses-filters .input-group-text {
+    border-radius: 0 10px 10px 0;
+}
+
+[dir="rtl"] .my-courses-filters .input-group .form-control {
+    border-radius: 10px 0 0 10px;
+}

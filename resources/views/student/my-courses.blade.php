@@ -3,9 +3,28 @@
 @section('title', custom_trans('My Courses', 'front'))
 
 @section('content')
-    <div class="container py-5">
+    @php
+        $isRtl = \App\Helpers\TranslationHelper::getCurrentLanguage()->direction === 'rtl';
+        $levelLabels = [
+            'beginner' => custom_trans('Beginner', 'front'),
+            'intermediate' => custom_trans('Intermediate', 'front'),
+            'advanced' => custom_trans('Advanced', 'front'),
+        ];
+    @endphp
+
+    @if ($isRtl)
+        @push('rtl-styles')
+            <link rel="stylesheet" href="{{ asset('css/rtl/pages/my-courses.css') }}">
+        @endpush
+    @else
+        @push('styles')
+            <link rel="stylesheet" href="{{ asset('css/pages/my-courses.css') }}">
+        @endpush
+    @endif
+
+    <div class="container py-5 my-courses-page">
         <!-- Page Header -->
-        <div class="row mb-4">
+        <div class="row mb-4 my-courses-page__header">
             <div class="col-12">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
@@ -25,54 +44,54 @@
 
         <!-- Stats Cards -->
         <div class="row g-4 mb-4">
-            <div class="col-md-3">
-                <div class="card stat-card h-100">
-                    <div class="card-body text-center">
-                        <div class="stat-icon bg-primary-soft mb-3">
-                            <i class="fas fa-book text-primary fa-2x"></i>
+            <div class="col-md-3 col-6">
+                <div class="my-courses-stat h-100">
+                    <div class="card-body text-center py-4">
+                        <div class="my-courses-stat__icon my-courses-stat__icon--primary">
+                            <i class="fas fa-book fa-lg"></i>
                         </div>
-                        <h3 class="fw-bold text-primary mb-1">{{ $stats['total_courses'] }}</h3>
-                        <p class="text-muted mb-0">{{ custom_trans('Total Courses', 'front') }}</p>
+                        <div class="my-courses-stat__value text-primary">{{ $stats['total_courses'] }}</div>
+                        <p class="my-courses-stat__label">{{ custom_trans('Total Courses', 'front') }}</p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card stat-card h-100">
-                    <div class="card-body text-center">
-                        <div class="stat-icon bg-success-soft mb-3">
-                            <i class="fas fa-check-circle text-success fa-2x"></i>
+            <div class="col-md-3 col-6">
+                <div class="my-courses-stat h-100">
+                    <div class="card-body text-center py-4">
+                        <div class="my-courses-stat__icon my-courses-stat__icon--success">
+                            <i class="fas fa-check-circle fa-lg"></i>
                         </div>
-                        <h3 class="fw-bold text-success mb-1">{{ $stats['completed_courses'] }}</h3>
-                        <p class="text-muted mb-0">{{ custom_trans('Completed', 'front') }}</p>
+                        <div class="my-courses-stat__value text-success">{{ $stats['completed_courses'] }}</div>
+                        <p class="my-courses-stat__label">{{ custom_trans('Completed', 'front') }}</p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card stat-card h-100">
-                    <div class="card-body text-center">
-                        <div class="stat-icon bg-warning-soft mb-3">
-                            <i class="fas fa-clock text-warning fa-2x"></i>
+            <div class="col-md-3 col-6">
+                <div class="my-courses-stat h-100">
+                    <div class="card-body text-center py-4">
+                        <div class="my-courses-stat__icon my-courses-stat__icon--warning">
+                            <i class="fas fa-clock fa-lg"></i>
                         </div>
-                        <h3 class="fw-bold text-warning mb-1">{{ $stats['in_progress_courses'] }}</h3>
-                        <p class="text-muted mb-0">{{ custom_trans('In Progress', 'front') }}</p>
+                        <div class="my-courses-stat__value text-warning">{{ $stats['in_progress_courses'] }}</div>
+                        <p class="my-courses-stat__label">{{ custom_trans('In Progress', 'front') }}</p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card stat-card h-100">
-                    <div class="card-body text-center">
-                        <div class="stat-icon bg-info-soft mb-3">
-                            <i class="fas fa-chart-line text-info fa-2x"></i>
+            <div class="col-md-3 col-6">
+                <div class="my-courses-stat h-100">
+                    <div class="card-body text-center py-4">
+                        <div class="my-courses-stat__icon my-courses-stat__icon--info">
+                            <i class="fas fa-chart-line fa-lg"></i>
                         </div>
-                        <h3 class="fw-bold text-info mb-1">{{ $stats['average_progress'] }}%</h3>
-                        <p class="text-muted mb-0">{{ custom_trans('Avg Progress', 'front') }}</p>
+                        <div class="my-courses-stat__value text-info">{{ $stats['average_progress'] }}%</div>
+                        <p class="my-courses-stat__label">{{ custom_trans('Avg Progress', 'front') }}</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Filters -->
-        <div class="card mb-4">
+        <div class="my-courses-filters card mb-4 border-0">
             <div class="card-body">
                 <form method="GET" action="{{ route('student.my-courses') }}" id="filterForm">
                     <div class="row g-3">
@@ -89,6 +108,8 @@
                                 <option value="enrolled" {{ request('status') == 'enrolled' ? 'selected' : '' }}>{{ custom_trans('In Progress', 'front') }}
                                 </option>
                                 <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>{{ custom_trans('Completed', 'front') }}
+                                </option>
+                                <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>{{ custom_trans('Pending Confirmation', 'front') }}
                                 </option>
                             </select>
                         </div>
@@ -125,137 +146,145 @@
         @if ($enrollments->count() > 0)
             <div class="row g-4">
                 @foreach ($enrollments as $enrollment)
+                    @php
+                        $course = $enrollment->course;
+                        $progress = (int) ($enrollment->progress_percentage ?? 0);
+                        $levelKey = strtolower($course->level ?? 'beginner');
+                        $levelLabel = $levelLabels[$levelKey] ?? custom_trans('Beginner', 'front');
+                        $statusClass = $enrollment->status === 'pending'
+                            ? 'pending'
+                            : ($enrollment->status === 'completed' ? 'completed' : 'progress');
+                    @endphp
                     <div class="col-lg-4 col-md-6">
-                        <div class="card course-card h-100">
-                            <div class="course-thumbnail">
-                                @if ($enrollment->course->image)
-                                    <img src="{{ $enrollment->course->image_url }}" alt="{{ $enrollment->course->localized_name }}"
-                                        class="card-img-top">
+                        <article class="my-course-card">
+                            <div class="my-course-card__media">
+                                @if ($course->image)
+                                    <img src="{{ $course->image_url }}" alt="{{ $course->localized_name }}">
                                 @else
-                                    <div class="course-placeholder">
-                                        <i class="fas fa-graduation-cap fa-3x text-muted"></i>
+                                    <div class="my-course-card__placeholder">
+                                        <i class="fas fa-graduation-cap"></i>
                                     </div>
                                 @endif
-                                @if ($enrollment->grantsAccess())
-                                    <div class="course-overlay">
-                                        <div class="course-actions">
-                                            <a href="{{ route('courses.learn', $enrollment->course->id) }}"
-                                                class="btn btn-primary btn-sm">
-                                                <i class="fas fa-play me-1"></i>{{ custom_trans('Continue Learning', 'front') }}
-                                            </a>
-                                        </div>
-                                    </div>
-                                @endif
-                                <div class="course-status-badge">
-                                    @if ($enrollment->status == 'pending')
-                                        <span class="badge bg-warning text-dark">{{ custom_trans('Pending Confirmation', 'front') }}</span>
-                                    @elseif ($enrollment->status == 'completed')
-                                        <span class="badge bg-success">{{ custom_trans('Completed', 'front') }}</span>
+
+                                <span class="my-course-card__status my-course-card__status--{{ $statusClass }}">
+                                    @if ($enrollment->status === 'pending')
+                                        {{ custom_trans('Pending Confirmation', 'front') }}
+                                    @elseif ($enrollment->status === 'completed')
+                                        {{ custom_trans('Completed', 'front') }}
                                     @else
-                                        <span class="badge bg-primary">{{ custom_trans('In Progress', 'front') }}</span>
+                                        {{ custom_trans('In Progress', 'front') }}
                                     @endif
-                                </div>
+                                </span>
+
+                                @if ($enrollment->grantsAccess())
+                                    <div class="my-course-card__overlay">
+                                        <a href="{{ route('courses.learn', $course->id) }}"
+                                            class="my-course-card__overlay-btn">
+                                            <i class="fas fa-play me-1"></i>{{ custom_trans('Continue Learning', 'front') }}
+                                        </a>
+                                    </div>
+                                @endif
                             </div>
 
-                            <div class="card-body">
-                                <div class="course-category mb-2">
-                                    <span class="badge bg-light text-dark">
-                                        {{ $enrollment->course->category->localized_name ?? custom_trans('Uncategorized', 'front') }}
+                            <div class="my-course-card__body">
+                                <span class="my-course-card__category">
+                                    {{ $course->category->localized_name ?? custom_trans('Uncategorized', 'front') }}
+                                </span>
+
+                                <h3 class="my-course-card__title">
+                                    <a href="{{ route('courses.show', $course) }}">{{ $course->localized_name }}</a>
+                                </h3>
+
+                                @if ($course->localized_description)
+                                    <p class="my-course-card__desc">
+                                        {{ Str::limit($course->localized_description, 100) }}
+                                    </p>
+                                @endif
+
+                                <div class="my-course-card__instructor">
+                                    <i class="fas fa-user"></i>
+                                    <span>
+                                        @if ($course->instructors && $course->instructors->count() > 0)
+                                            {{ $course->instructors->pluck('name')->take(2)->join(', ') }}
+                                            @if ($course->instructors->count() > 2)
+                                                +{{ $course->instructors->count() - 2 }}
+                                            @endif
+                                        @else
+                                            {{ $course->instructor->name ?? custom_trans('Unknown Instructor', 'front') }}
+                                        @endif
                                     </span>
                                 </div>
 
-                                <h5 class="card-title course-title">
-                                    <a href="{{ route('courses.show', $enrollment->course) }}"
-                                        class="text-decoration-none">
-                                        {{ $enrollment->course->localized_name }}
-                                    </a>
-                                </h5>
-
-                                <p class="card-text course-description">
-                                    {{ Str::limit($enrollment->course->localized_description, 100) }}
-                                </p>
-
-                                <div class="course-instructor mb-3">
-                                    <small class="text-muted">
-                                        <i class="fas fa-user me-1"></i>
-                                        @if ($enrollment->course->instructors && $enrollment->course->instructors->count() > 0)
-                                            {{ $enrollment->course->instructors->pluck('name')->take(2)->join(', ') }}
-                                            @if ($enrollment->course->instructors->count() > 2)
-                                                +{{ $enrollment->course->instructors->count() - 2 }}
-                                            @endif
-                                        @else
-                                            {{ $enrollment->course->instructor->name ?? custom_trans('Unknown Instructor', 'front') }}
-                                        @endif
-                                    </small>
+                                <div class="my-course-card__progress">
+                                    <div class="my-course-card__progress-head">
+                                        <span>{{ custom_trans('Progress', 'front') }}</span>
+                                        <span class="my-course-card__progress-pct">{{ $progress }}%</span>
+                                    </div>
+                                    <div class="my-course-card__progress-track">
+                                        <div class="my-course-card__progress-fill" style="width: {{ $progress }}%"></div>
+                                    </div>
+                                    <div class="my-course-card__progress-sub">
+                                        {{ $enrollment->completed_lectures }}/{{ $enrollment->total_lectures }}
+                                        {{ custom_trans('lectures completed', 'front') }}
+                                    </div>
                                 </div>
 
-                                <div class="course-progress mb-3">
-                                    <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <small class="text-muted">{{ custom_trans('Progress', 'front') }}</small>
-                                        <small class="text-muted">{{ $enrollment->progress_percentage }}%</small>
+                                <div class="my-course-card__stats">
+                                    <div class="my-course-card__stat">
+                                        <span class="my-course-card__stat-label">{{ custom_trans('Duration', 'front') }}</span>
+                                        <span class="my-course-card__stat-value">
+                                            <i class="fas fa-clock"></i>{{ $course->duration ?? custom_trans('N/A', 'front') }}
+                                        </span>
                                     </div>
-                                    <div class="progress progress-h-8">
-                                        <div class="progress-bar bg-primary"
-                                            style="width: {{ $enrollment->progress_percentage }}%"></div>
+                                    <div class="my-course-card__stat">
+                                        <span class="my-course-card__stat-label">{{ custom_trans('Level', 'front') }}</span>
+                                        <span class="my-course-card__stat-value">
+                                            <i class="fas fa-signal"></i>{{ $levelLabel }}
+                                        </span>
                                     </div>
-                                    <small class="text-muted">
-                                        {{ $enrollment->completed_lectures }}/{{ $enrollment->total_lectures }} {{ custom_trans('lectures completed', 'front') }}
-                                    </small>
-                                </div>
-
-                                <div class="course-meta">
-                                    <div class="row text-center">
-                                        <div class="col-4">
-                                            <small class="text-muted d-block">{{ custom_trans('Duration', 'front') }}</small>
-                                            <small class="fw-bold">{{ $enrollment->course->duration ?? custom_trans('N/A', 'front') }}</small>
-                                        </div>
-                                        <div class="col-4">
-                                            <small class="text-muted d-block">{{ custom_trans('Level', 'front') }}</small>
-                                            <small
-                                                class="fw-bold">{{ ucfirst($enrollment->course->level ?? custom_trans('Beginner', 'front')) }}</small>
-                                        </div>
-                                        <div class="col-4">
-                                            <small class="text-muted d-block">{{ custom_trans('Enrolled', 'front') }}</small>
-                                            <small class="fw-bold">{{ $enrollment->created_at->format('M d') }}</small>
-                                        </div>
+                                    <div class="my-course-card__stat">
+                                        <span class="my-course-card__stat-label">{{ custom_trans('Enrolled', 'front') }}</span>
+                                        <span class="my-course-card__stat-value">
+                                            <i class="fas fa-calendar-alt"></i>{{ $enrollment->created_at->translatedFormat('M d') }}
+                                        </span>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="card-footer bg-transparent">
-                                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                                    <a href="{{ route('courses.show', $enrollment->course) }}"
-                                        class="btn btn-outline-primary btn-sm">
-                                        <i class="fas fa-eye me-1"></i>{{ custom_trans('View Details', 'front') }}
-                                    </a>
-                                    <div class="d-flex gap-2">
-                                        @if ($enrollment->status == 'completed' && $enrollment->course->enable_certificate)
-                                            @if ($enrollment->certificate_path)
-                                                <a href="{{ route('certificate.download', $enrollment->id) }}"
-                                                    class="btn btn-success btn-sm" title="{{ custom_trans('Download Certificate', 'front') }}">
-                                                    <i class="fas fa-certificate me-1"></i>{{ custom_trans('Certificate', 'front') }}
-                                                </a>
-                                            @else
-                                                <a href="{{ route('certificate.request', $enrollment->course->id) }}"
-                                                    class="btn btn-warning btn-sm" title="{{ custom_trans('Request Certificate', 'front') }}">
-                                                    <i class="fas fa-certificate me-1"></i>{{ custom_trans('Get Certificate', 'front') }}
-                                                </a>
-                                            @endif
-                                        @endif
-                                        @if ($enrollment->grantsAccess())
-                                            <a href="{{ route('courses.learn', $enrollment->course->id) }}"
-                                                class="btn btn-primary btn-sm">
-                                                <i class="fas fa-play me-1"></i>{{ custom_trans('Continue', 'front') }}
+                            <div class="my-course-card__footer">
+                                <a href="{{ route('courses.show', $course) }}"
+                                    class="my-course-card__btn my-course-card__btn--outline">
+                                    <i class="fas fa-eye"></i>{{ custom_trans('View Details', 'front') }}
+                                </a>
+                                <div class="my-course-card__actions">
+                                    @if ($enrollment->status === 'completed' && $course->enable_certificate)
+                                        @if ($enrollment->certificate_path)
+                                            <a href="{{ route('certificate.download', $enrollment->id) }}"
+                                                class="my-course-card__btn my-course-card__btn--success"
+                                                title="{{ custom_trans('Download Certificate', 'front') }}">
+                                                <i class="fas fa-certificate"></i>
                                             </a>
                                         @else
-                                            <button class="btn btn-secondary btn-sm" disabled>
-                                                <i class="fas fa-clock me-1"></i>{{ custom_trans('Pending Confirmation', 'front') }}
-                                            </button>
+                                            <a href="{{ route('certificate.request', $course->id) }}"
+                                                class="my-course-card__btn my-course-card__btn--warning"
+                                                title="{{ custom_trans('Request Certificate', 'front') }}">
+                                                <i class="fas fa-certificate"></i>
+                                            </a>
                                         @endif
-                                    </div>
+                                    @endif
+                                    @if ($enrollment->grantsAccess())
+                                        <a href="{{ route('courses.learn', $course->id) }}"
+                                            class="my-course-card__btn my-course-card__btn--primary">
+                                            <i class="fas fa-play"></i>{{ custom_trans('Continue', 'front') }}
+                                        </a>
+                                    @else
+                                        <span class="my-course-card__btn my-course-card__btn--disabled">
+                                            <i class="fas fa-clock"></i>{{ custom_trans('Pending Confirmation', 'front') }}
+                                        </span>
+                                    @endif
                                 </div>
                             </div>
-                        </div>
+                        </article>
                     </div>
                 @endforeach
             </div>
@@ -270,7 +299,7 @@
             </div>
         @else
             <!-- Empty State -->
-            <div class="text-center py-5">
+            <div class="text-center py-5 my-courses-empty">
                 <div class="empty-state">
                     <i class="fas fa-graduation-cap fa-4x text-muted mb-4"></i>
                     <h3 class="text-muted mb-3">{{ custom_trans('No Courses Found', 'front') }}</h3>
@@ -287,7 +316,9 @@
                 </div>
             </div>
         @endif
-    </div><script>
+    </div>
+
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Auto-submit form on filter change
             document.getElementById('statusFilter').addEventListener('change', function() {
