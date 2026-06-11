@@ -136,7 +136,7 @@
                                         </td>
                                         <td>
                                             <small>
-                                                {{ $coupon->used_count }}
+                                                {{ $coupon->usages_count }}
                                                 @if($coupon->usage_limit)
                                                     / {{ $coupon->usage_limit }}
                                                 @else

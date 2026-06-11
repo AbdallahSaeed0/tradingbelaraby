@@ -195,6 +195,41 @@ class Coupon extends Model
     }
 
     /**
+     * Live usage count (always from DB, not the cached column).
+     */
+    public function liveUsedCount(): int
+    {
+        return $this->usages()->count();
+    }
+
+    /**
+     * Remove stale usage rows (deleted orders, cancelled orders), then sync counts.
+     */
+    public static function pruneOrphanedUsages(): int
+    {
+        $affectedCouponIds = CouponUsage::query()
+            ->where(function ($query) {
+                $query->whereDoesntHave('order')
+                    ->orWhereHas('order', fn ($orderQuery) => $orderQuery->where('status', 'cancelled'));
+            })
+            ->pluck('coupon_id')
+            ->unique();
+
+        $deleted = CouponUsage::query()
+            ->where(function ($query) {
+                $query->whereDoesntHave('order')
+                    ->orWhereHas('order', fn ($orderQuery) => $orderQuery->where('status', 'cancelled'));
+            })
+            ->delete();
+
+        foreach ($affectedCouponIds as $couponId) {
+            static::find($couponId)?->syncUsedCount();
+        }
+
+        return $deleted;
+    }
+
+    /**
      * Scope for active coupons
      */
     public function scopeActive($query)

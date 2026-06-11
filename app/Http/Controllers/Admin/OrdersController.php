@@ -114,8 +114,10 @@ class OrdersController extends Controller
             $couponIds = $this->couponIdsForOrder($order);
 
             $this->linkedEnrollments($order)->delete();
+            $this->releaseCouponUsage($order);
             $order->delete();
 
+            CouponUsage::pruneOrphanedUsages();
             $this->syncCouponsUsedCount($couponIds);
         });
 

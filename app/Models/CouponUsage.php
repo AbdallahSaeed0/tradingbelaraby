@@ -10,6 +10,13 @@ class CouponUsage extends Model
 {
     use HasFactory;
 
+    protected static function booted(): void
+    {
+        static::deleted(function (CouponUsage $usage) {
+            $usage->coupon?->syncUsedCount();
+        });
+    }
+
     protected $fillable = [
         'coupon_id',
         'user_id',

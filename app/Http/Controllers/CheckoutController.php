@@ -76,6 +76,7 @@ class CheckoutController extends Controller
         ]);
 
         $user = Auth::user();
+        CouponUsage::pruneOrphanedUsages();
         $cartItems = $user->cartItems()->with('course', 'bundle')->get();
 
         if ($cartItems->isEmpty()) {

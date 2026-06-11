@@ -177,10 +177,11 @@
                             <strong>Global Usage:</strong>
                             <div class="progress mt-2">
                                 @php
-                                    $usagePercentage = $coupon->usage_limit ? ($coupon->used_count / $coupon->usage_limit) * 100 : 0;
+                                    $liveUsed = $coupon->liveUsedCount();
+                                    $usagePercentage = $coupon->usage_limit ? ($liveUsed / $coupon->usage_limit) * 100 : 0;
                                 @endphp
                                 <div class="progress-bar" role="progressbar" style="width: {{ min($usagePercentage, 100) }}%">
-                                    {{ $coupon->used_count }}
+                                    {{ $liveUsed }}
                                     @if($coupon->usage_limit)
                                         / {{ $coupon->usage_limit }}
                                     @endif
@@ -202,7 +203,7 @@
                             <strong>Remaining Uses:</strong>
                             <p class="fs-4 text-success">
                                 @if($coupon->usage_limit)
-                                    {{ max(0, $coupon->usage_limit - $coupon->used_count) }}
+                                    {{ max(0, $coupon->usage_limit - $liveUsed) }}
                                 @else
                                     ∞
                                 @endif

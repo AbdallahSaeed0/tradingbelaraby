@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Coupon;
+use App\Models\CouponUsage;
 use App\Models\Course;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -12,7 +13,9 @@ class CouponsController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Coupon::with(['course', 'user']);
+        CouponUsage::pruneOrphanedUsages();
+
+        $query = Coupon::with(['course', 'user'])->withCount('usages');
 
         // Apply search filter
         if ($request->filled('search')) {
@@ -99,8 +102,11 @@ class CouponsController extends Controller
 
     public function show(Coupon $coupon)
     {
+        CouponUsage::pruneOrphanedUsages();
+        $coupon->syncUsedCount();
+        $coupon->refresh();
         $coupon->load(['course', 'user', 'usages.user', 'usages.order']);
-        
+
         return view('admin.coupons.show', compact('coupon'));
     }
 
