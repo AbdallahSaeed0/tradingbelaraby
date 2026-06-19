@@ -25,15 +25,22 @@
             </div>
         @endif
 
-        <div class="row">
+        @include('admin.settings.partials.section-nav', [
+            'sections' => [
+                ['id' => 'settings-section-bank', 'label' => 'Bank', 'icon' => 'fa-university'],
+                ['id' => 'settings-section-preview', 'label' => 'Preview', 'icon' => 'fa-eye'],
+            ],
+        ])
+
+        <div class="row admin-settings-form-row">
             <div class="col-xl-8">
-                <div class="card">
+                <div class="card" id="settings-section-bank" data-settings-section="Bank Transfer">
                     <div class="card-header d-flex align-items-center">
                         <i class="fas fa-university me-2 text-primary"></i>
                         <h5 class="card-title mb-0">Bank Transfer Settings</h5>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('admin.settings.payment.update') }}" method="POST">
+                        <form id="paymentSettingsForm" action="{{ route('admin.settings.payment.update') }}" method="POST">
                             @csrf
                             @method('PUT')
 
@@ -125,7 +132,7 @@
                                 @enderror
                             </div>
 
-                            <div class="d-flex gap-2">
+                            <div class="d-flex gap-2 admin-settings-inline-actions">
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-save me-1"></i> Save Settings
                                 </button>
@@ -138,7 +145,7 @@
 
             {{-- Preview card --}}
             <div class="col-xl-4">
-                <div class="card border-info">
+                <div class="card border-info admin-settings-preview-card" id="settings-section-preview" data-settings-section="Preview">
                     <div class="card-header bg-info bg-opacity-10 border-info">
                         <h6 class="card-title mb-0 text-info">
                             <i class="fas fa-eye me-1"></i> How it looks to students

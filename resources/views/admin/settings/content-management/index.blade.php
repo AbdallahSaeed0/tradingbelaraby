@@ -19,7 +19,7 @@
                     </ol>
                 </div>
                 <div class="col-sm-6">
-                    <div class="float-end">
+                    <div class="float-end admin-settings-header-actions">
                         <a href="{{ route('admin.settings.contact-forms.index') }}" class="btn btn-success">
                             <i class="fas fa-envelope me-2"></i>{{ custom_trans('View Contact Forms', 'admin') }}
                         </a>
@@ -28,10 +28,17 @@
             </div>
         </div>
 
+        @include('admin.settings.partials.section-nav', [
+            'sections' => [
+                ['id' => 'settings-section-scholarship', 'label' => 'Scholarship', 'icon' => 'fa-graduation-cap'],
+                ['id' => 'settings-section-cta', 'label' => 'CTA Video', 'icon' => 'fa-video'],
+            ],
+        ])
+
         <div class="row">
             <!-- Scholarship Banner Management -->
             <div class="col-lg-6">
-                <div class="card content-card mb-4">
+                <div class="card content-card mb-4" id="settings-section-scholarship" data-settings-section="Scholarship">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">
                             <i
@@ -124,7 +131,7 @@
 
             <!-- CTA Video Management -->
             <div class="col-lg-6">
-                <div class="card content-card mb-4">
+                <div class="card content-card mb-4" id="settings-section-cta" data-settings-section="CTA Video">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">
                             <i class="fas fa-video text-info me-2"></i>{{ custom_trans('CTA Video Section', 'admin') }}

@@ -1,0 +1,318 @@
+/* Smart mobile UX for admin settings pages (hub + sub-pages) */
+
+@media (max-width: 991.98px) {
+    body.admin-settings-page {
+        padding-bottom: 4.75rem;
+    }
+
+    body.admin-settings-page .container-fluid {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+
+    /* Page title / breadcrumbs */
+    body.admin-settings-page .page-title-box {
+        margin-bottom: 1rem;
+    }
+
+    body.admin-settings-page .page-title-box .page-title-right,
+    body.admin-settings-page .page-title-box > .row .breadcrumb,
+    body.admin-settings-page .page-title-box .breadcrumb {
+        display: none;
+    }
+
+    body.admin-settings-page .page-title-box .page-title,
+    body.admin-settings-page .page-title-box h4.page-title {
+        font-size: 1.25rem;
+        margin-bottom: 0.25rem;
+    }
+
+    body.admin-settings-page .page-title-box .text-muted {
+        font-size: 0.875rem;
+    }
+
+    body.admin-settings-page .page-title-box .d-flex.justify-content-between,
+    body.admin-settings-page .page-title-box > .row.align-items-center {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 0.75rem;
+    }
+
+    body.admin-settings-page .page-title-box .admin-settings-header-actions,
+    body.admin-settings-page .page-title-box .float-end,
+    body.admin-settings-page .page-title-box .d-flex.justify-content-between > div:last-child:not(:first-child) {
+        display: none !important;
+    }
+
+    /* Section jump nav */
+    body.admin-settings-page .admin-settings-section-nav {
+        position: sticky;
+        top: 0;
+        z-index: 1020;
+        display: flex;
+        gap: 0.5rem;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        -webkit-overflow-scrolling: touch;
+        padding: 0.5rem 0 0.75rem;
+        margin-bottom: 0.5rem;
+        background: var(--admin-bg, #f8f9fa);
+        scrollbar-width: none;
+    }
+
+    body.admin-settings-page .admin-settings-section-nav::-webkit-scrollbar {
+        display: none;
+    }
+
+    body.admin-settings-page .admin-settings-section-nav__link {
+        flex: 0 0 auto;
+        padding: 0.45rem 0.75rem;
+        border-radius: 999px;
+        border: 1px solid var(--admin-border, #dee2e6);
+        background: var(--admin-card-bg, #fff);
+        color: var(--admin-text, #333);
+        font-size: 0.78rem;
+        font-weight: 600;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+
+    body.admin-settings-page .admin-settings-section-nav__link.is-active {
+        background: var(--admin-active-bg, #eff6ff);
+        border-color: var(--admin-active-text, #2563eb);
+        color: var(--admin-active-text, #2563eb);
+    }
+
+    body.admin-settings-page [data-settings-section],
+    body.admin-settings-page [id^="settings-section-"] {
+        scroll-margin-top: 4.5rem;
+    }
+
+    /* Filter / search bars */
+    body.admin-settings-page .card.mb-4 .row.g-3 > [class*="col-"],
+    body.admin-settings-page .card .row.g-3 > [class*="col-md-"],
+    body.admin-settings-page .card .row.g-3 > [class*="col-lg-"] {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    body.admin-settings-page .card .row.g-3 .d-flex.gap-2 {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    body.admin-settings-page .card .row.g-3 .d-flex.gap-2 .btn {
+        width: 100%;
+    }
+
+    /* Form layouts */
+    body.admin-settings-page [class*="col-md-"],
+    body.admin-settings-page [class*="col-lg-"],
+    body.admin-settings-page [class*="col-xl-"] {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    body.admin-settings-page .card .card-body {
+        padding: 1rem;
+    }
+
+    body.admin-settings-page .card .card-header {
+        padding: 0.75rem 1rem;
+    }
+
+    body.admin-settings-page .card-header-tabs {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        border-bottom: 0;
+    }
+
+    body.admin-settings-page .card-header-tabs .nav-link {
+        white-space: nowrap;
+        font-size: 0.875rem;
+    }
+
+    body.admin-settings-page .method-card {
+        margin-bottom: 0.5rem !important;
+    }
+
+    body.admin-settings-page .form-check.method-card .form-check-label {
+        font-size: 0.9rem;
+    }
+
+    /* Hide duplicate inline save rows when sticky toolbar is active */
+    body.admin-settings-page.settings-has-mobile-toolbar .admin-settings-inline-actions {
+        display: none !important;
+    }
+
+    /* Preview / info side cards after main form */
+    body.admin-settings-page .admin-settings-preview-card {
+        margin-bottom: 0.75rem;
+    }
+
+    body.admin-settings-page .admin-settings-preview-card .table-sm td {
+        padding: 0.25rem 0;
+        font-size: 0.85rem;
+    }
+
+    /* Multilingual tabs */
+    body.admin-settings-page .nav-tabs {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+    }
+
+    body.admin-settings-page .nav-tabs .nav-link {
+        white-space: nowrap;
+        font-size: 0.82rem;
+    }
+
+    /* Content management cards */
+    body.admin-settings-page .content-card .card-header {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    body.admin-settings-page .content-card .card-header .form-check.form-switch {
+        margin-left: auto;
+    }
+
+    /* Detail / show pages */
+    body.admin-settings-page .admin-settings-detail-grid {
+        display: grid;
+        gap: 0.75rem;
+    }
+
+    body.admin-settings-page .admin-settings-detail-item {
+        padding: 0.85rem 1rem;
+        border: 1px solid var(--admin-border, #dee2e6);
+        border-radius: 0.5rem;
+        background: var(--admin-card-bg, #fff);
+    }
+
+    body.admin-settings-page .admin-settings-detail-item__label {
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        color: var(--admin-text-muted, #6c757d);
+        margin-bottom: 0.25rem;
+    }
+
+    body.admin-settings-page .admin-settings-detail-item__value {
+        font-size: 0.92rem;
+        word-break: break-word;
+    }
+
+    /* Sticky toolbar */
+    body.admin-settings-page .admin-settings-mobile-toolbar {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1035;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.65rem 0.75rem calc(0.65rem + env(safe-area-inset-bottom, 0px));
+        background: var(--admin-navbar-bg, #fff);
+        border-top: 1px solid var(--admin-border, #dee2e6);
+        box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    body.admin-settings-page .admin-settings-mobile-toolbar .btn-outline-secondary {
+        flex: 0 0 auto;
+    }
+
+    body.admin-settings-page .admin-settings-mobile-toolbar .btn-primary,
+    body.admin-settings-page .admin-settings-mobile-toolbar .btn-warning,
+    body.admin-settings-page .admin-settings-mobile-toolbar .btn-success {
+        flex: 1 1 auto;
+        font-weight: 600;
+    }
+}
+
+@media (max-width: 767.98px) {
+    /* Settings hub: compact smart cards */
+    body.admin-settings-page .settings-cards-grid {
+        grid-template-columns: 1fr;
+        gap: 0.65rem;
+    }
+
+    body.admin-settings-page .card.settings-card .card-body {
+        text-align: left !important;
+        padding: 0.9rem 1rem !important;
+        display: grid;
+        grid-template-columns: 3rem 1fr;
+        grid-template-areas:
+            "icon title"
+            "icon desc"
+            "cta cta";
+        column-gap: 0.75rem;
+        row-gap: 0.35rem;
+        align-items: start;
+    }
+
+    body.admin-settings-page .card.settings-card .settings-icon {
+        grid-area: icon;
+        margin-bottom: 0 !important;
+    }
+
+    body.admin-settings-page .card.settings-card .settings-icon .icon-wrapper {
+        width: 3rem;
+        height: 3rem;
+    }
+
+    body.admin-settings-page .card.settings-card .settings-icon .icon-wrapper i {
+        font-size: 1.2rem;
+    }
+
+    body.admin-settings-page .card.settings-card .card-title {
+        grid-area: title;
+        font-size: 0.95rem;
+        margin-bottom: 0 !important;
+        align-self: center;
+    }
+
+    body.admin-settings-page .card.settings-card .card-text {
+        grid-area: desc;
+        font-size: 0.78rem;
+        line-height: 1.4;
+        margin-bottom: 0 !important;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    body.admin-settings-page .card.settings-card .features-list {
+        display: none !important;
+    }
+
+    body.admin-settings-page .card.settings-card .settings-card-cta {
+        grid-area: cta;
+        width: 100%;
+        margin-top: 0.35rem !important;
+        padding: 0.45rem 0.75rem;
+        font-size: 0.85rem;
+    }
+
+    body.admin-settings-page .page-title-box {
+        flex-direction: column;
+        align-items: flex-start !important;
+    }
+
+    body.admin-settings-page .page-title-box .page-title-content {
+        width: 100%;
+    }
+}
+
+@media (min-width: 992px) {
+    body.admin-settings-page .admin-settings-section-nav,
+    body.admin-settings-page .admin-settings-mobile-toolbar {
+        display: none !important;
+    }
+}
+
+[data-theme="dark"] body.admin-settings-page .admin-settings-section-nav {
+    background: var(--admin-bg, #1a1d29);
+}

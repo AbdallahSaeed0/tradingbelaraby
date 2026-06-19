@@ -37,6 +37,15 @@
             </div>
         @endif
 
+        @include('admin.settings.partials.section-nav', [
+            'sections' => [
+                ['id' => 'settings-section-logo', 'label' => 'Logo', 'icon' => 'fa-image'],
+                ['id' => 'settings-section-favicon', 'label' => 'Favicon', 'icon' => 'fa-star'],
+                ['id' => 'settings-section-site', 'label' => 'Site Info', 'icon' => 'fa-info-circle'],
+                ['id' => 'settings-section-coming-soon', 'label' => 'Coming Soon', 'icon' => 'fa-clock'],
+            ],
+        ])
+
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <div class="card">
@@ -53,7 +62,7 @@
                             @method('PUT')
 
                             <!-- Logo Section -->
-                            <div class="row mb-4">
+                            <div class="row mb-4" id="settings-section-logo" data-settings-section="Logo">
                                 <div class="col-12">
                                     <h6 class="text-primary mb-3">
                                         <i class="fas fa-image me-2"></i>
@@ -105,7 +114,7 @@
                             </div>
 
                             <!-- Favicon Section -->
-                            <div class="row mb-4">
+                            <div class="row mb-4" id="settings-section-favicon" data-settings-section="Favicon">
                                 <div class="col-12">
                                     <h6 class="text-primary mb-3">
                                         <i class="fas fa-star me-2"></i>
@@ -146,7 +155,7 @@
                             </div>
 
                             <!-- Site Information Section -->
-                            <div class="row mb-4">
+                            <div class="row mb-4" id="settings-section-site" data-settings-section="Site Info">
                                 <div class="col-12">
                                     <h6 class="text-primary mb-3">
                                         <i class="fas fa-info-circle me-2"></i>
@@ -215,7 +224,7 @@
                             <!-- Submit Button -->
                             <div class="row">
                                 <div class="col-12">
-                                    <div class="d-flex justify-content-between">
+                                    <div class="d-flex justify-content-between admin-settings-inline-actions">
                                         <a href="{{ route('admin.settings.index') }}" class="btn btn-secondary">
                                             <i class="fas fa-arrow-left me-2"></i>
                                             Back to Settings
@@ -241,7 +250,7 @@
         <!-- Coming Soon Control - Outside main form to avoid nesting -->
         <div class="row justify-content-center mt-4">
             <div class="col-lg-8">
-                <div class="card border-warning">
+                <div class="card border-warning" id="settings-section-coming-soon" data-settings-section="Coming Soon">
                     <div class="card-header bg-warning text-white">
                         <h6 class="mb-0">
                             <i class="fas fa-clock me-2"></i>
@@ -274,7 +283,7 @@
                                     </div>
                                 </div>
                                 <form action="{{ route('admin.settings.coming-soon.update') }}"
-                                    method="POST" class="d-inline">
+                                    method="POST" class="d-inline" data-settings-mobile-toolbar="skip">
                                     @csrf
                                     @method('PUT')
                                     <input type="hidden" name="coming_soon_enabled"

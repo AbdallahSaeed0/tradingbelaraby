@@ -44,9 +44,14 @@
     @stack('styles')
     <link rel="stylesheet" href="{{ asset('css/admin/admin-tables-mobile.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/admin-form-mobile.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/admin-settings-mobile.css') }}">
 </head>
 
-<body class="bg-light @yield('body_class')">
+@php
+    $isAdminSettingsPage = request()->routeIs('admin.settings.*', 'admin.partner-logos.*');
+@endphp
+
+<body class="bg-light @yield('body_class'){{ $isAdminSettingsPage ? ' admin-settings-page' : '' }}">
     <!-- Top Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm admin-top-navbar">
         <div class="container-fluid admin-navbar-inner">
@@ -588,6 +593,194 @@
 
         window.initAdminFormMobile = initAdminFormMobile;
 
+        function initAdminSettingsMobile() {
+            if (!document.body.classList.contains('admin-settings-page')) {
+                return;
+            }
+
+            initSettingsSectionNav();
+            initSettingsMobileToolbar();
+        }
+
+        function initSettingsSectionNav() {
+            var page = document.body;
+            var existingNav = document.querySelector('.admin-settings-section-nav');
+            var sectionNodes = Array.from(document.querySelectorAll('[data-settings-section]'));
+
+            if (!sectionNodes.length) {
+                sectionNodes = Array.from(document.querySelectorAll('[id^="settings-section-"]'));
+            }
+
+            if (!sectionNodes.length) {
+                return;
+            }
+
+            var links = [];
+
+            if (existingNav) {
+                links = Array.from(existingNav.querySelectorAll('[data-settings-section-link]'));
+            } else if (window.matchMedia('(max-width: 991.98px)').matches) {
+                var nav = document.createElement('nav');
+                nav.className = 'admin-settings-section-nav d-lg-none';
+                nav.setAttribute('aria-label', 'Settings sections');
+
+                sectionNodes.forEach(function(section) {
+                    var label = section.getAttribute('data-settings-section') || section.getAttribute('data-section-label');
+                    if (!label) {
+                        var heading = section.querySelector('h5, h6, .card-title');
+                        label = heading ? heading.textContent.trim() : section.id.replace(/^settings-section-/, '');
+                    }
+
+                    var link = document.createElement('a');
+                    link.href = '#' + section.id;
+                    link.className = 'admin-settings-section-nav__link';
+                    link.setAttribute('data-settings-section-link', section.id);
+                    link.textContent = label;
+                    nav.appendChild(link);
+                    links.push(link);
+                });
+
+                var anchor = document.querySelector('.page-title-box');
+                if (anchor && anchor.parentNode) {
+                    anchor.parentNode.insertBefore(nav, anchor.nextSibling);
+                } else {
+                    var container = document.querySelector('.container-fluid');
+                    if (container) {
+                        container.insertBefore(nav, container.firstChild);
+                    }
+                }
+            } else {
+                links = Array.from(document.querySelectorAll('[data-settings-section-link]'));
+            }
+
+            links.forEach(function(link) {
+                var sectionId = link.getAttribute('data-settings-section-link');
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var target = document.getElementById(sectionId);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+
+            if (links.length && window.matchMedia('(max-width: 991.98px)').matches) {
+                var observer = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        if (!entry.isIntersecting) {
+                            return;
+                        }
+                        links.forEach(function(navLink) {
+                            navLink.classList.toggle(
+                                'is-active',
+                                navLink.getAttribute('data-settings-section-link') === entry.target.id
+                            );
+                        });
+                    });
+                }, { rootMargin: '-20% 0px -60% 0px', threshold: 0 });
+
+                sectionNodes.forEach(function(section) {
+                    observer.observe(section);
+                });
+            }
+        }
+
+        function initSettingsMobileToolbar() {
+            if (window.innerWidth >= 992) {
+                return;
+            }
+
+            if (document.getElementById('settingsMobileToolbar')) {
+                document.body.classList.add('settings-has-mobile-toolbar');
+                return;
+            }
+
+            var pageForms = Array.from(document.querySelectorAll('.container-fluid form')).filter(function(form) {
+                if (form.closest('.modal')) {
+                    return false;
+                }
+                if (form.dataset.settingsMobileToolbar === 'skip') {
+                    return false;
+                }
+                if ((form.method || '').toLowerCase() === 'get') {
+                    return false;
+                }
+                return !!form.querySelector('button[type="submit"], input[type="submit"]');
+            });
+
+            var primaryForm = document.getElementById('mainContentForm')
+                || document.getElementById('paymentSettingsForm')
+                || document.getElementById('verificationSettingsForm');
+
+            if (primaryForm) {
+                pageForms = [primaryForm];
+            }
+
+            var toolbar = document.createElement('div');
+            toolbar.className = 'admin-settings-mobile-toolbar d-lg-none';
+            toolbar.id = 'settingsMobileToolbar';
+
+            var backBtn = document.createElement('a');
+            backBtn.href = backUrl;
+            backBtn.className = 'btn btn-outline-secondary btn-sm';
+            backBtn.innerHTML = '<i class="fa fa-arrow-left me-1"></i>Settings';
+
+            toolbar.appendChild(backBtn);
+
+            if (pageForms.length === 1) {
+                var form = pageForms[0];
+                if (!form.id) {
+                    form.id = 'settingsPrimaryForm';
+                }
+
+                var submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
+                var label = submitBtn ? submitBtn.textContent.trim() : 'Save';
+                var actionWrap = submitBtn ? submitBtn.closest('.d-flex, .d-grid, .text-end, .mt-3, .mb-3') : null;
+                if (actionWrap) {
+                    actionWrap.classList.add('admin-settings-inline-actions');
+                }
+
+                var saveBtn = document.createElement('button');
+                saveBtn.type = 'submit';
+                saveBtn.setAttribute('form', form.id);
+                saveBtn.className = 'btn btn-primary btn-sm';
+                saveBtn.innerHTML = '<i class="fa fa-save me-1"></i>' + label;
+                toolbar.appendChild(saveBtn);
+            } else {
+                var titleBox = document.querySelector('.page-title-box');
+                var headerAction = titleBox
+                    ? titleBox.querySelector('.btn-primary, .btn-warning, .btn-success')
+                    : null;
+
+                if (headerAction) {
+                    var actionWrap = headerAction.closest('.float-end, .admin-settings-header-actions');
+                    if (!actionWrap) {
+                        actionWrap = headerAction.parentElement;
+                    }
+                    if (actionWrap && titleBox.contains(actionWrap)) {
+                        actionWrap.classList.add('admin-settings-header-actions');
+                    }
+
+                    if (headerAction.hasAttribute('data-bs-toggle') && headerAction.getAttribute('data-bs-target')) {
+                        var clone = headerAction.cloneNode(true);
+                        clone.classList.add('btn-sm');
+                        toolbar.appendChild(clone);
+                    } else if (headerAction.tagName === 'A') {
+                        var linkClone = headerAction.cloneNode(true);
+                        linkClone.classList.add('btn-sm');
+                        toolbar.appendChild(linkClone);
+                    }
+                }
+            }
+
+            if (toolbar.children.length > 1) {
+                document.body.appendChild(toolbar);
+                document.body.classList.add('settings-has-mobile-toolbar');
+            }
+        }
+
+        window.initAdminSettingsMobile = initAdminSettingsMobile;
+
         // Close sidebar after navigation on mobile/tablet
         function initAdminSidebarMobile() {
             var sidebarEl = document.getElementById('adminSidebar');
@@ -613,11 +806,13 @@
             document.addEventListener('DOMContentLoaded', function() {
                 initAdminMobileTables();
                 initAdminFormMobile();
+                initAdminSettingsMobile();
                 initAdminSidebarMobile();
             });
         } else {
             initAdminMobileTables();
             initAdminFormMobile();
+            initAdminSettingsMobile();
             initAdminSidebarMobile();
         }
 

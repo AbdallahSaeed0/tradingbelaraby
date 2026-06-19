@@ -40,7 +40,14 @@
             </div>
         @endif
 
-        <form action="{{ route('admin.settings.verification.update') }}" method="POST">
+        @include('admin.settings.partials.section-nav', [
+            'sections' => [
+                ['id' => 'settings-section-method', 'label' => 'Method', 'icon' => 'fa-shield-alt'],
+                ['id' => 'settings-section-whatsapp', 'label' => 'WhatsApp', 'icon' => 'fa-whatsapp'],
+            ],
+        ])
+
+        <form id="verificationSettingsForm" action="{{ route('admin.settings.verification.update') }}" method="POST">
             @csrf
             @method('PUT')
 
@@ -48,7 +55,7 @@
 
                 {{-- Verification Method --}}
                 <div class="col-12 col-lg-5 mb-4">
-                    <div class="card h-100">
+                    <div class="card h-100" id="settings-section-method" data-settings-section="Method">
                         <div class="card-header">
                             <h5 class="card-title mb-0">
                                 <i class="fas fa-shield-alt me-2 text-primary"></i>
@@ -105,7 +112,7 @@
 
                 {{-- WhatsApp API Config --}}
                 <div class="col-12 col-lg-7 mb-4">
-                    <div class="card h-100" id="whatsapp-card">
+                    <div class="card h-100" id="settings-section-whatsapp" data-settings-section="WhatsApp">
                         <div class="card-header d-flex align-items-center gap-2">
                             <i class="fab fa-whatsapp fa-lg text-success"></i>
                             <h5 class="card-title mb-0">{{ custom_trans('WhatsApp API Configuration', 'admin') }}</h5>
@@ -184,7 +191,7 @@
 
             </div>
 
-            <div class="d-flex gap-2 mb-4">
+            <div class="d-flex gap-2 mb-4 admin-settings-inline-actions">
                 <button type="submit" class="btn btn-primary px-4">
                     <i class="fas fa-save me-2"></i>{{ custom_trans('Save Settings', 'admin') }}
                 </button>

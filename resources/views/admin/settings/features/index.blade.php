@@ -25,7 +25,7 @@
                                 {{ custom_trans('Manage the homepage features section with statistics and achievements', 'admin') }}
                             </p>
                         </div>
-                        <div>
+                        <div class="admin-settings-header-actions">
                             <button type="button" class="btn btn-warning" data-bs-toggle="modal"
                                 data-bs-target="#addFeatureModal">
                                 <i class="fas fa-plus me-2"></i>{{ custom_trans('Add New Feature', 'admin') }}
