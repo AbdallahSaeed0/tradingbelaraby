@@ -3,51 +3,54 @@
 @section('title', 'User Details')
 
 @section('content')
-    <div class="container-fluid">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb small">
-                <li class="breadcrumb-item"><a href="{{ route('admin.users.index') }}">Users</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Details</li>
-            </ol>
-        </nav>
+    <div class="container-fluid py-4 admin-detail-page">
+        @include('admin.partials.detail-page-header', [
+            'title' => $user->name,
+            'subtitle' => 'User #' . $user->id,
+            'backUrl' => route('admin.users.index'),
+            'backLabel' => 'Users',
+            'primaryUrl' => route('admin.users.edit', $user),
+            'primaryLabel' => 'Edit User',
+        ])
 
-        <div class="row justify-content-center">
-            <div class="col-lg-6">
-                <div class="card shadow-sm">
-                    <div class="card-header fw-semibold">User #{{ $user->id }}</div>
-                    <div class="card-body">
-                        <div class="text-center mb-3">
+        <div class="row admin-detail-main-row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-sm" id="detail-section-info">
+                    <div class="card-header fw-semibold">Profile</div>
+                    <div class="card-body admin-detail-grid">
+                        <div class="text-center mb-4">
                             <img src="{{ $user->avatar ? asset('storage/' . $user->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&size=100&background=007bff&color=fff' }}"
                                 class="rounded-circle" width="100" height="100" alt="avatar">
                         </div>
-                        <table class="table table-borderless">
-                            <tr>
-                                <th>Name:</th>
-                                <td>{{ $user->name }}</td>
-                            </tr>
-                            <tr>
-                                <th>Email:</th>
-                                <td>{{ $user->email }}</td>
-                            </tr>
-                            @if($user->country)
-                            <tr>
-                                <th>Country:</th>
-                                <td>{{ $user->country }}</td>
-                            </tr>
-                            @endif
-                            @if($user->phone)
-                            <tr>
-                                <th>Phone:</th>
-                                <td>{{ $user->phone }}</td>
-                            </tr>
-                            @endif
-                            <tr>
-                                <th>Joined:</th>
-                                <td>{{ $user->created_at->format('d M Y') }}</td>
-                            </tr>
-                        </table>
-                        <div class="text-end">
-                            <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-outline-secondary">Edit</a>
+                        <div class="row mb-0">
+                            <div class="col-md-6 admin-detail-field">
+                                <strong>Name</strong>
+                                <span class="admin-detail-value">{{ $user->name }}</span>
+                            </div>
+                            <div class="col-md-6 admin-detail-field">
+                                <strong>Email</strong>
+                                <span class="admin-detail-value">{{ $user->email }}</span>
+                            </div>
+                        </div>
+                        @if ($user->country || $user->phone)
+                            <div class="row mb-0">
+                                @if ($user->country)
+                                    <div class="col-md-6 admin-detail-field">
+                                        <strong>Country</strong>
+                                        <span class="admin-detail-value">{{ $user->country }}</span>
+                                    </div>
+                                @endif
+                                @if ($user->phone)
+                                    <div class="col-md-6 admin-detail-field">
+                                        <strong>Phone</strong>
+                                        <span class="admin-detail-value">{{ $user->phone }}</span>
+                                    </div>
+                                @endif
+                            </div>
+                        @endif
+                        <div class="admin-detail-field">
+                            <strong>Joined</strong>
+                            <span class="admin-detail-value">{{ $user->created_at->format('M d, Y') }}</span>
                         </div>
                     </div>
                 </div>

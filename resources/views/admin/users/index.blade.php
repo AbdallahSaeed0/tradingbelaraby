@@ -12,7 +12,7 @@
                         <h1 class="h3 mb-0">User Management</h1>
                         <p class="text-muted">Manage system users and their permissions</p>
                     </div>
-                    <div>
+                    <div class="admin-list-header-actions">
                         <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
                             <i class="fa fa-plus me-2"></i>Add New User
                         </a>
@@ -80,7 +80,7 @@
         <!-- Filters -->
         <div class="card mb-4">
             <div class="card-body">
-                <form method="GET" action="{{ route('admin.users.index') }}" id="filterForm">
+                <form method="GET" action="{{ route('admin.users.index') }}" id="filterForm" data-settings-mobile-toolbar="skip">
                     <div class="row g-3">
                         <div class="col-md-3">
                             <div class="input-group">
@@ -125,7 +125,7 @@
         <!-- Users Table -->
         <div class="card">
             <div class="card-body">
-                <div class="table-responsive">
+                <div class="table-responsive d-none d-lg-block admin-table-no-mobile-cards">
                     <table class="table table-hover table-striped">
                         <thead>
                             <tr>
@@ -288,6 +288,18 @@
                     </table>
                 </div>
 
+                <div class="admin-mobile-list d-lg-none" id="mobileUsersList">
+                    @forelse($users as $user)
+                        @include('admin.users.partials.mobile-user-card', ['user' => $user])
+                    @empty
+                        <div class="text-center py-4 text-muted">
+                            <i class="fa fa-users fa-3x mb-3"></i>
+                            <h5>No users found</h5>
+                            <p>No users match your current filters.</p>
+                        </div>
+                    @endforelse
+                </div>
+
                 <!-- Bulk Actions -->
                 <div class="row mt-3">
                     <div class="col-md-6">
@@ -420,6 +432,7 @@
             let searchTimeout;
             const searchInput = document.getElementById('searchInput');
             const tableBody = document.querySelector('.table tbody');
+            const mobileList = document.getElementById('mobileUsersList');
             const paginationContainer = document.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
 
             // AJAX search function
@@ -430,6 +443,9 @@
                 // Show loading state
                 if (tableBody) {
                     tableBody.innerHTML = '<tr><td colspan="9" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
+                }
+                if (mobileList) {
+                    mobileList.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>';
                 }
 
                 fetch(`{{ route('admin.users.index') }}?${params.toString()}`, {
@@ -447,11 +463,16 @@
 
                         // Extract table body
                         const newTableBody = tempDiv.querySelector('.table tbody');
+                        const newMobileList = tempDiv.querySelector('#mobileUsersList');
                         const newPagination = tempDiv.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
                         const newBulkActions = tempDiv.querySelector('.row.mt-3 .col-md-6:first-child');
 
                         if (newTableBody && tableBody) {
                             tableBody.innerHTML = newTableBody.innerHTML;
+                        }
+
+                        if (newMobileList && mobileList) {
+                            mobileList.innerHTML = newMobileList.innerHTML;
                         }
 
                         if (newPagination && paginationContainer) {
@@ -476,6 +497,9 @@
                         console.error('Error:', error);
                         if (tableBody) {
                             tableBody.innerHTML = '<tr><td colspan="9" class="text-center py-4 text-danger">Error loading data. Please try again.</td></tr>';
+                        }
+                        if (mobileList) {
+                            mobileList.innerHTML = '<div class="text-center py-4 text-danger">Error loading data. Please try again.</div>';
                         }
                     });
             }

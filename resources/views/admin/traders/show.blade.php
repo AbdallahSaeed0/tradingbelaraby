@@ -3,25 +3,16 @@
 @section('title', 'Trader Details')
 
 @section('content')
-    <div class="container-fluid py-4">
-        <!-- Page Header -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h1 class="h3 mb-0">{{ custom_trans('Trader Details', 'admin') }}</h1>
-                        <p class="text-muted">View detailed information about {{ $trader->name }}</p>
-                    </div>
-                    <div>
-                        <a href="{{ route('admin.traders.index') }}" class="btn btn-outline-secondary">
-                            <i class="fas fa-arrow-left me-1"></i>{{ custom_trans('Back to List', 'admin') }}
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="container-fluid py-4 admin-detail-page">
+        @include('admin.partials.detail-page-header', [
+            'title' => $trader->name,
+            'subtitle' => custom_trans('Trader Details', 'admin') . ' · ' . $trader->email,
+            'backUrl' => route('admin.traders.index'),
+            'backLabel' => custom_trans('Traders', 'admin'),
+            'primaryUrl' => null,
+        ])
 
-        <div class="row">
+        <div class="row admin-detail-main-row">
             <!-- Personal Information -->
             <div class="col-lg-6 mb-4">
                 <div class="card shadow-sm">

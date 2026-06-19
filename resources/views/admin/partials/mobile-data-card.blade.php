@@ -3,6 +3,7 @@
     $checkboxClass = $checkboxClass ?? 'row-checkbox';
     $checkboxValue = $checkboxValue ?? null;
     $checkboxLabel = $checkboxLabel ?? 'Select item';
+    $checkboxExtraAttrs = $checkboxExtraAttrs ?? '';
     $statusHtml = $statusHtml ?? '';
     $heroUrl = $heroUrl ?? null;
     $heroTag = $heroUrl ? 'a' : 'div';
@@ -25,7 +26,7 @@
             @if ($checkboxValue !== null)
                 <div class="form-check mb-0">
                     <input class="form-check-input {{ $checkboxClass }}" type="checkbox" value="{{ $checkboxValue }}"
-                        aria-label="{{ $checkboxLabel }}">
+                        aria-label="{{ $checkboxLabel }}" {!! $checkboxExtraAttrs !!}>
                 </div>
             @else
                 <span></span>

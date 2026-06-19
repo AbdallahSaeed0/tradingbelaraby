@@ -12,7 +12,7 @@
                         <h1 class="h3 mb-0">Admin Types</h1>
                         <p class="text-muted">Manage administrator types and their permissions</p>
                     </div>
-                    <div>
+                    <div class="admin-list-header-actions">
                         <a href="{{ route('admin.admin-types.create') }}" class="btn btn-primary">
                             <i class="fa fa-plus me-2"></i>Add New Type
                         </a>
@@ -93,7 +93,7 @@
                 </h5>
             </div>
             <div class="card-body">
-                <form method="GET" action="{{ route('admin.admin-types.index') }}" id="filterForm">
+                <form method="GET" action="{{ route('admin.admin-types.index') }}" id="filterForm" data-settings-mobile-toolbar="skip">
                     <div class="row">
                         <div class="col-md-3">
                             <label for="search" class="form-label">
@@ -170,7 +170,7 @@
             </div>
             <div class="card-body">
                 @if ($adminTypes->count() > 0)
-                    <div class="table-responsive">
+                    <div class="table-responsive d-none d-lg-block admin-table-no-mobile-cards">
                         <table class="table table-hover table-striped">
                             <thead class="table-light">
                                 <tr>
@@ -299,6 +299,12 @@
                                 @endforeach
                             </tbody>
                         </table>
+                    </div>
+
+                    <div class="admin-mobile-list d-lg-none" id="mobileAdminTypesList">
+                        @foreach ($adminTypes as $type)
+                            @include('admin.admin-types.partials.mobile-admin-type-card', ['type' => $type])
+                        @endforeach
                     </div>
                 @else
                     <div class="text-center py-5">

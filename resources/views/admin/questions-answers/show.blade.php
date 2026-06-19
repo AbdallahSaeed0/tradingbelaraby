@@ -3,61 +3,57 @@
 @section('title', 'Question Details')
 
 @section('content')
-    <div class="container-fluid">
-        <!-- Page Header -->
-        <div class="page-header">
-            <div class="row align-items-center">
-                <div class="col">
-                    <h3 class="page-title">Question Details</h3>
-                    <ul class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.questions-answers.index') }}">Q&A Management</a>
-                        </li>
-                        <li class="breadcrumb-item active">Question Details</li>
-                    </ul>
-                </div>
-                <div class="col-auto">
-                    <a href="{{ route('admin.questions-answers.index') }}" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Back to List
-                    </a>
-                    @if ($questionsAnswer->status === 'pending')
-                        <a href="{{ route('admin.questions-answers.reply', $questionsAnswer) }}" class="btn btn-primary">
-                            <i class="fas fa-reply"></i> Reply
-                        </a>
-                    @elseif($questionsAnswer->status === 'answered')
-                        <a href="{{ route('admin.questions-answers.reply', $questionsAnswer) }}" class="btn btn-warning">
-                            <i class="fas fa-edit"></i> Edit Reply
-                        </a>
-                    @endif
-                </div>
-            </div>
-        </div>
+    <div class="container-fluid py-4 admin-detail-page">
+        @php
+            $replyAction = '';
+            if ($questionsAnswer->status === 'pending') {
+                $replyAction = '<a href="' . route('admin.questions-answers.reply', $questionsAnswer) . '" class="btn btn-primary ms-lg-2"><i class="fas fa-reply me-2"></i>Reply</a>';
+            } elseif ($questionsAnswer->status === 'answered') {
+                $replyAction = '<a href="' . route('admin.questions-answers.reply', $questionsAnswer) . '" class="btn btn-warning ms-lg-2"><i class="fas fa-edit me-2"></i>Edit Reply</a>';
+            }
+        @endphp
 
-        <div class="row">
+        @include('admin.partials.detail-page-header', [
+            'title' => 'Question Details',
+            'subtitle' => Str::limit($questionsAnswer->question_title, 80),
+            'backUrl' => route('admin.questions-answers.index'),
+            'backLabel' => 'Q&A List',
+            'extraActions' => $replyAction,
+        ])
+
+        <nav class="admin-detail-section-nav d-lg-none" aria-label="Question sections">
+            <a href="#detail-section-question" class="admin-detail-section-nav__link">Question</a>
+            <a href="#detail-section-meta" class="admin-detail-section-nav__link">Details</a>
+            @if ($questionsAnswer->answer_content)
+                <a href="#detail-section-answer" class="admin-detail-section-nav__link">Answer</a>
+            @endif
+        </nav>
+
+        <div class="row admin-detail-main-row">
             <!-- Question Details -->
             <div class="col-lg-8">
-                <div class="card">
+                <div class="card" id="detail-section-question">
                     <div class="card-header">
-                        <div class="row align-items-center">
+                        <div class="row align-items-center g-2">
                             <div class="col">
                                 <h5 class="card-title mb-0">{{ $questionsAnswer->question_title }}</h5>
                             </div>
                             <div class="col-auto">
                                 @switch($questionsAnswer->status)
                                     @case('pending')
-                                        <span class="badge badge-warning">Pending</span>
+                                        <span class="badge bg-warning text-dark">Pending</span>
                                     @break
 
                                     @case('answered')
-                                        <span class="badge badge-success">Answered</span>
+                                        <span class="badge bg-success">Answered</span>
                                     @break
 
                                     @case('closed')
-                                        <span class="badge badge-secondary">Closed</span>
+                                        <span class="badge bg-secondary">Closed</span>
                                     @break
 
                                     @case('flagged')
-                                        <span class="badge badge-danger">Flagged</span>
+                                        <span class="badge bg-danger">Flagged</span>
                                     @break
                                 @endswitch
                             </div>
@@ -65,7 +61,7 @@
                     </div>
                     <div class="card-body">
                         <!-- Question Meta -->
-                        <div class="question-meta mb-4">
+                        <div class="question-meta mb-4 admin-detail-grid" id="detail-section-meta">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="meta-item">
@@ -99,7 +95,7 @@
                                     <div class="meta-item">
                                         <strong>Question Type:</strong>
                                         <span
-                                            class="badge badge-light">{{ ucfirst(str_replace('_', ' ', $questionsAnswer->question_type)) }}</span>
+                                            class="badge bg-light text-dark">{{ ucfirst(str_replace('_', ' ', $questionsAnswer->question_type)) }}</span>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -107,19 +103,19 @@
                                         <strong>Priority:</strong>
                                         @switch($questionsAnswer->priority)
                                             @case('urgent')
-                                                <span class="badge badge-danger">Urgent</span>
+                                                <span class="badge bg-danger">Urgent</span>
                                             @break
 
                                             @case('high')
-                                                <span class="badge badge-warning">High</span>
+                                                <span class="badge bg-warning text-dark">High</span>
                                             @break
 
                                             @case('normal')
-                                                <span class="badge badge-info">Normal</span>
+                                                <span class="badge bg-info">Normal</span>
                                             @break
 
                                             @case('low')
-                                                <span class="badge badge-secondary">Low</span>
+                                                <span class="badge bg-secondary">Low</span>
                                             @break
                                         @endswitch
                                     </div>
@@ -157,7 +153,7 @@
 
                         <!-- Answer Content -->
                         @if ($questionsAnswer->answer_content)
-                            <div class="answer-content">
+                            <div class="answer-content" id="detail-section-answer">
                                 <h6>Answer:</h6>
                                 <div class="content-box answer-box">
                                     {!! nl2br(e($questionsAnswer->answer_content)) !!}
@@ -264,7 +260,7 @@
             </div>
 
             <!-- Sidebar Actions -->
-            <div class="col-lg-4">
+            <div class="col-lg-4 admin-detail-sidebar">
                 <!-- Quick Actions -->
                 <div class="card">
                     <div class="card-header">

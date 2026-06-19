@@ -24,7 +24,7 @@
             <div class="col-12">
                 <div class="card shadow-sm">
                     <div class="card-body">
-                        <form method="GET" action="{{ route('admin.traders.index') }}" id="filterForm" class="row g-3">
+                        <form method="GET" action="{{ route('admin.traders.index') }}" id="filterForm" class="row g-3" data-settings-mobile-toolbar="skip">
                             <div class="col-md-6">
                                 <label for="search" class="form-label">{{ custom_trans('Search', 'admin') }}</label>
                                 <input type="text" class="form-control" id="searchInput" name="search"
@@ -80,7 +80,7 @@
                 <div class="card shadow-sm">
                     <div class="card-body p-0">
                         @if ($traders->count() > 0)
-                            <div class="table-responsive">
+                            <div class="table-responsive d-none d-lg-block admin-table-no-mobile-cards">
                                 <table class="table table-hover table-striped">
                                     <thead class="table-light">
                                         <tr>
@@ -177,6 +177,12 @@
                                         @endforeach
                                     </tbody>
                                 </table>
+                            </div>
+
+                            <div class="admin-mobile-list d-lg-none" id="mobileTradersList">
+                                @foreach ($traders as $trader)
+                                    @include('admin.traders.partials.mobile-trader-card', ['trader' => $trader])
+                                @endforeach
                             </div>
                         @else
                             <div class="text-center py-5">
@@ -347,7 +353,8 @@
             let searchTimeout;
             const searchInput = document.getElementById('searchInput');
             const tableBody = document.querySelector('.table tbody');
-            const paginationContainer = document.querySelector('.row.mt-4 .col-12');
+            const mobileList = document.getElementById('mobileTradersList');
+            const paginationContainer = document.querySelector('.row.mt-4 .col-md-6:last-child .d-flex');
 
             // AJAX search function
             function performAjaxSearch() {
@@ -357,6 +364,9 @@
                 // Show loading state
                 if (tableBody) {
                     tableBody.innerHTML = '<tr><td colspan="9" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
+                }
+                if (mobileList) {
+                    mobileList.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>';
                 }
 
                 fetch(`{{ route('admin.traders.index') }}?${params.toString()}`, {
@@ -374,10 +384,15 @@
 
                         // Extract table body
                         const newTableBody = tempDiv.querySelector('.table tbody');
-                        const newPagination = tempDiv.querySelector('.row.mt-4 .col-12');
+                        const newMobileList = tempDiv.querySelector('#mobileTradersList');
+                        const newPagination = tempDiv.querySelector('.row.mt-4 .col-md-6:last-child .d-flex');
 
                         if (newTableBody && tableBody) {
                             tableBody.innerHTML = newTableBody.innerHTML;
+                        }
+
+                        if (newMobileList && mobileList) {
+                            mobileList.innerHTML = newMobileList.innerHTML;
                         }
 
                         if (newPagination && paginationContainer) {
@@ -395,6 +410,9 @@
                         console.error('Error:', error);
                         if (tableBody) {
                             tableBody.innerHTML = '<tr><td colspan="9" class="text-center py-4 text-danger">Error loading data. Please try again.</td></tr>';
+                        }
+                        if (mobileList) {
+                            mobileList.innerHTML = '<div class="text-center py-4 text-danger">Error loading data. Please try again.</div>';
                         }
                     });
             }

@@ -9,7 +9,7 @@
                 <h1 class="h3 mb-0">Subscribers</h1>
                 <p class="text-muted">Manage coming soon page subscribers</p>
             </div>
-            <div class="d-flex gap-2">
+            <div class="admin-list-header-actions d-flex gap-2">
                 <button id="bulkDeleteBtn" class="btn btn-danger d-none-initially">
                     <i class="fa fa-trash me-2"></i>Delete Selected (<span id="selectedCount">0</span>)
                 </button>
@@ -53,7 +53,7 @@
         <!-- Filters -->
         <div class="card shadow-sm mb-4">
             <div class="card-body">
-                <form method="GET" action="{{ route('admin.subscribers.index') }}" class="row g-3" id="filterForm">
+                <form method="GET" action="{{ route('admin.subscribers.index') }}" class="row g-3" id="filterForm" data-settings-mobile-toolbar="skip">
                     <div class="col-md-3">
                         <label for="search" class="form-label">Search</label>
                         <input type="text" class="form-control" id="searchInput" name="search"
@@ -114,7 +114,7 @@
         <!-- Subscribers Table -->
         <div class="card shadow-sm">
             <div class="card-body">
-                <div class="table-responsive">
+                <div class="table-responsive d-none d-lg-block admin-table-no-mobile-cards">
                     <table class="table table-hover table-striped">
                         <thead>
                             <tr>
@@ -225,6 +225,17 @@
                     </table>
                 </div>
 
+                <div class="admin-mobile-list d-lg-none" id="mobileSubscribersList">
+                    @forelse($subscribers as $subscriber)
+                        @include('admin.subscribers.partials.mobile-subscriber-card', ['subscriber' => $subscriber])
+                    @empty
+                        <div class="text-center py-4 text-muted">
+                            <i class="fa fa-users fa-3x mb-3"></i>
+                            <p class="mb-0">No subscribers found.</p>
+                        </div>
+                    @endforelse
+                </div>
+
                 <div class="row mt-3">
                     <div class="col-md-6">
                         <div class="d-flex align-items-center">
@@ -270,6 +281,7 @@
             let searchTimeout;
             const searchInput = document.getElementById('searchInput');
             const tableBody = document.querySelector('.table tbody');
+            const mobileList = document.getElementById('mobileSubscribersList');
             const paginationContainer = document.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
 
             // AJAX search function
@@ -280,6 +292,9 @@
                 // Show loading state
                 if (tableBody) {
                     tableBody.innerHTML = '<tr><td colspan="9" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
+                }
+                if (mobileList) {
+                    mobileList.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>';
                 }
 
                 fetch(`{{ route('admin.subscribers.index') }}?${params.toString()}`, {
@@ -297,10 +312,15 @@
 
                         // Extract table body
                         const newTableBody = tempDiv.querySelector('.table tbody');
+                        const newMobileList = tempDiv.querySelector('#mobileSubscribersList');
                         const newPagination = tempDiv.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
 
                         if (newTableBody && tableBody) {
                             tableBody.innerHTML = newTableBody.innerHTML;
+                        }
+
+                        if (newMobileList && mobileList) {
+                            mobileList.innerHTML = newMobileList.innerHTML;
                         }
 
                         if (newPagination && paginationContainer) {
@@ -318,6 +338,9 @@
                         console.error('Error:', error);
                         if (tableBody) {
                             tableBody.innerHTML = '<tr><td colspan="9" class="text-center py-4 text-danger">Error loading data. Please try again.</td></tr>';
+                        }
+                        if (mobileList) {
+                            mobileList.innerHTML = '<div class="text-center py-4 text-danger">Error loading data. Please try again.</div>';
                         }
                     });
             }

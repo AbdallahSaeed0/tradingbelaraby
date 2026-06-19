@@ -3,9 +3,24 @@
 @section('title', 'Course Details - ' . $course->name)
 
 @section('content')
-    <div class="container-fluid py-4">
+    <div class="container-fluid py-4 admin-detail-page">
+        @include('admin.partials.detail-page-header', [
+            'title' => $course->name,
+            'subtitle' => Str::limit(strip_tags($course->description ?? ''), 120),
+            'backUrl' => route('admin.courses.index'),
+            'backLabel' => 'Courses',
+            'primaryUrl' => route('admin.courses.edit', $course),
+            'primaryLabel' => 'Edit Course',
+        ])
+
+        <nav class="admin-detail-section-nav d-lg-none" aria-label="Course sections">
+            <a href="#detail-section-content" class="admin-detail-section-nav__link">Content</a>
+            <a href="#detail-section-info" class="admin-detail-section-nav__link">Info</a>
+            <a href="#detail-section-actions" class="admin-detail-section-nav__link">Actions</a>
+        </nav>
+
         <!-- Course Header -->
-        <div class="course-header">
+        <div class="course-header mb-4">
             <div class="row align-items-center">
                 <div class="col-md-8">
                     <div class="d-flex align-items-center">
@@ -36,12 +51,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 text-md-end">
+                <div class="col-md-4 text-md-end admin-form-inline-actions">
                     <div class="btn-group" role="group">
                         <a href="{{ route('admin.courses.edit', $course) }}" class="btn btn-outline-light">
                             <i class="fa fa-edit me-1"></i>Edit Course
                         </a>
-                        <a href="{{ route('admin.courses.index') }}" class="btn btn-outline-light">
+                        <a href="{{ route('admin.courses.index') }}" class="btn btn-outline-light admin-detail-back-url">
                             <i class="fa fa-arrow-left me-1"></i>Back to List
                         </a>
                     </div>
@@ -95,11 +110,11 @@
             </div>
         </div>
 
-        <div class="row">
+        <div class="row admin-detail-main-row">
             <!-- Course Content -->
             <div class="col-lg-8">
                 <!-- Course Sections -->
-                <div class="card mb-4">
+                <div class="card mb-4" id="detail-section-content">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="mb-0"><i class="fa fa-list me-2"></i>Course Content</h5>
                         <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addSectionModal">
@@ -207,9 +222,9 @@
             </div>
 
             <!-- Sidebar -->
-            <div class="col-lg-4">
+            <div class="col-lg-4 admin-detail-sidebar">
                 <!-- Course Info -->
-                <div class="card mb-4">
+                <div class="card mb-4" id="detail-section-info">
                     <div class="card-header">
                         <h5 class="mb-0"><i class="fa fa-info-circle me-2"></i>Course Information</h5>
                     </div>
@@ -279,7 +294,7 @@
                 </div>
 
                 <!-- Quick Actions -->
-                <div class="card mb-4">
+                <div class="card mb-4 admin-form-inline-actions" id="detail-section-actions">
                     <div class="card-header">
                         <h5 class="mb-0"><i class="fa fa-bolt me-2"></i>Quick Actions</h5>
                     </div>

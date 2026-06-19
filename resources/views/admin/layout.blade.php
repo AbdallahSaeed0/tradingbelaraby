@@ -57,7 +57,13 @@
         'admin.homework.*',
         'admin.live-classes.*',
         'admin.enrollments.*',
-        'admin.questions-answers.*'
+        'admin.questions-answers.*',
+        'admin.courses.show',
+        'admin.admins.*',
+        'admin.admin-types.*',
+        'admin.users.*',
+        'admin.subscribers.*',
+        'admin.traders.*'
     );
 @endphp
 
@@ -803,31 +809,48 @@
                 return;
             }
 
-            var shell = document.querySelector('.admin-form-page[data-mobile-back-url]');
+            var shell = document.querySelector('.container-fluid.admin-form-page[data-mobile-back-url]');
             var backUrl = shell ? shell.getAttribute('data-mobile-back-url') : null;
             var backLabel = shell ? shell.getAttribute('data-mobile-back-label') : 'Back';
-            var pageForms = Array.from(document.querySelectorAll('.container-fluid form')).filter(function(form) {
-                if (form.closest('.modal')) {
-                    return false;
-                }
-                if (form.dataset.settingsMobileToolbar === 'skip') {
-                    return false;
-                }
-                if ((form.method || '').toLowerCase() === 'get') {
-                    return false;
-                }
-                return !!form.querySelector('button[type="submit"], input[type="submit"]');
-            });
+            var isListIndex = !!document.querySelector('.admin-mobile-list') && !backUrl;
+            var isDetailPage = !!document.querySelector('.admin-detail-page');
+            var pageForms = [];
+
+            if (!isListIndex) {
+                pageForms = Array.from(document.querySelectorAll('.container-fluid form')).filter(function(form) {
+                    if (form.closest('.modal')) {
+                        return false;
+                    }
+                    if (form.closest('.admin-mobile-list')) {
+                        return false;
+                    }
+                    if (form.id === 'filterForm' || form.dataset.settingsMobileToolbar === 'skip') {
+                        return false;
+                    }
+                    if (form.classList.contains('d-inline')) {
+                        return false;
+                    }
+                    if ((form.method || 'get').toLowerCase() === 'get') {
+                        return false;
+                    }
+                    return !!form.querySelector('button[type="submit"], input[type="submit"]');
+                });
+            }
 
             var primaryForm = document.getElementById('bundleForm')
                 || document.getElementById('couponForm')
                 || document.getElementById('quizForm')
                 || document.getElementById('homeworkForm')
-                || document.getElementById('liveClassForm')
-                || document.querySelector('.admin-form-page form[id]');
+                || document.getElementById('liveClassForm');
+
+            if (!primaryForm && shell) {
+                primaryForm = shell.querySelector('form[id]:not(#filterForm)');
+            }
 
             if (primaryForm) {
                 pageForms = [primaryForm];
+            } else if (isListIndex || isDetailPage) {
+                pageForms = [];
             }
 
             var toolbar = document.createElement('div');
@@ -862,8 +885,27 @@
                 saveBtn.innerHTML = '<i class="fa fa-save me-1"></i>' + label;
                 toolbar.appendChild(saveBtn);
             } else {
-                var header = document.querySelector('.row.mb-4 .admin-list-header-actions, .row.mb-4 .d-flex.justify-content-between > div:last-child');
+                var header = document.querySelector('.admin-list-header-actions')
+                    || document.querySelector('.admin-detail-header-actions')
+                    || document.querySelector('.row.mb-4 .d-flex.justify-content-between > div:last-child')
+                    || document.querySelector('.page-header .col-auto');
                 var headerAction = header ? header.querySelector('.btn-primary, .btn-warning, .btn-success') : null;
+
+                if (!backUrl && isDetailPage) {
+                    var detailBack = document.querySelector('.admin-detail-back-url');
+                    if (detailBack) {
+                        backUrl = detailBack.getAttribute('href');
+                        backLabel = detailBack.textContent.trim() || 'Back';
+                    }
+                }
+
+                if (backUrl && !toolbar.querySelector('a.btn-outline-secondary')) {
+                    var detailBackBtn = document.createElement('a');
+                    detailBackBtn.href = backUrl;
+                    detailBackBtn.className = 'btn btn-outline-secondary btn-sm';
+                    detailBackBtn.innerHTML = '<i class="fa fa-arrow-left me-1"></i>' + backLabel;
+                    toolbar.insertBefore(detailBackBtn, toolbar.firstChild);
+                }
 
                 if (headerAction) {
                     header.classList.add('admin-list-header-actions');

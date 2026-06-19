@@ -24,7 +24,7 @@
         <!-- Filters and Search -->
         <div class="card mb-4">
             <div class="card-body">
-                <form method="GET" action="{{ route('admin.coupons.index') }}" id="filterForm">
+                <form method="GET" action="{{ route('admin.coupons.index') }}" id="filterForm" data-settings-mobile-toolbar="skip">
                     <div class="row g-3">
                         <div class="col-md-3">
                             <div class="input-group">

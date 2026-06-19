@@ -3,78 +3,67 @@
 @section('title', 'Admin Type Details')
 
 @section('content')
-    <div class="container-fluid py-4">
-        <!-- Page Header -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h1 class="h3 mb-0">Admin Type Details</h1>
-                        <p class="text-muted">View administrator type information and permissions</p>
-                    </div>
-                    <div>
-                        <a href="{{ route('admin.admin-types.edit', $adminType) }}" class="btn btn-primary me-2">
-                            <i class="fa fa-edit me-2"></i>Edit Type
-                        </a>
-                        <a href="{{ route('admin.admin-types.index') }}" class="btn btn-outline-secondary">
-                            <i class="fa fa-arrow-left me-2"></i>Back to Admin Types
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="container-fluid py-4 admin-detail-page">
+        @include('admin.partials.detail-page-header', [
+            'title' => $adminType->display_name,
+            'subtitle' => 'Admin Type · ' . $adminType->slug,
+            'backUrl' => route('admin.admin-types.index'),
+            'backLabel' => 'Admin Types',
+            'primaryUrl' => $adminType->isAdminType() ? null : route('admin.admin-types.edit', $adminType),
+            'primaryLabel' => 'Edit Type',
+        ])
 
-        <div class="row">
+        <div class="row admin-detail-main-row">
             <!-- Admin Type Information -->
             <div class="col-lg-8">
-                <div class="card shadow-sm mb-4">
+                <div class="card shadow-sm mb-4" id="detail-section-info">
                     <div class="card-header">
                         <h5 class="mb-0"><i class="fa fa-info-circle me-2"></i>Type Information</h5>
                     </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">Type Name</label>
-                                <p class="mb-0">{{ $adminType->display_name }}</p>
+                    <div class="card-body admin-detail-grid">
+                        <div class="row mb-0">
+                            <div class="col-md-6 admin-detail-field">
+                                <strong>Type Name</strong>
+                                <span class="admin-detail-value">{{ $adminType->display_name }}</span>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">Slug</label>
-                                <p class="mb-0"><code>{{ $adminType->slug }}</code></p>
+                            <div class="col-md-6 admin-detail-field">
+                                <strong>Slug</strong>
+                                <span class="admin-detail-value"><code>{{ $adminType->slug }}</code></span>
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">Status</label>
-                                <p class="mb-0">
+                        <div class="row mb-0">
+                            <div class="col-md-6 admin-detail-field">
+                                <strong>Status</strong>
+                                <span class="admin-detail-value">
                                     @if ($adminType->is_active)
                                         <span class="badge bg-success">Active</span>
                                     @else
                                         <span class="badge bg-secondary">Inactive</span>
                                     @endif
-                                </p>
+                                </span>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">Sort Order</label>
-                                <p class="mb-0">{{ $adminType->sort_order }}</p>
+                            <div class="col-md-6 admin-detail-field">
+                                <strong>Sort Order</strong>
+                                <span class="admin-detail-value">{{ $adminType->sort_order }}</span>
                             </div>
                         </div>
 
                         @if ($adminType->description)
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Description</label>
-                                <p class="mb-0">{{ $adminType->description }}</p>
+                            <div class="admin-detail-field">
+                                <strong>Description</strong>
+                                <span class="admin-detail-value">{{ $adminType->description }}</span>
                             </div>
                         @endif
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">Created</label>
-                                <p class="mb-0">{{ $adminType->created_at->format('M d, Y \a\t g:i A') }}</p>
+                        <div class="row mb-0">
+                            <div class="col-md-6 admin-detail-field">
+                                <strong>Created</strong>
+                                <span class="admin-detail-value">{{ $adminType->created_at->format('M d, Y \a\t g:i A') }}</span>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">Last Updated</label>
-                                <p class="mb-0">{{ $adminType->updated_at->format('M d, Y \a\t g:i A') }}</p>
+                            <div class="col-md-6 admin-detail-field">
+                                <strong>Last Updated</strong>
+                                <span class="admin-detail-value">{{ $adminType->updated_at->format('M d, Y \a\t g:i A') }}</span>
                             </div>
                         </div>
                     </div>
