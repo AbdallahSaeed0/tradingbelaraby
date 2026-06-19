@@ -261,3 +261,100 @@
     vertical-align: middle;
     font-size: 15px;
 }
+
+/* ==============================
+   Mobile table cards
+   ============================== */
+@media (max-width: 767.98px) {
+    main .table-responsive.admin-table-mobile {
+        overflow: visible;
+        border: 0;
+    }
+
+    main .table-responsive.admin-table-mobile > .table {
+        border: 0;
+    }
+
+    main .table-responsive.admin-table-mobile > .table thead {
+        display: none;
+    }
+
+    main .table-responsive.admin-table-mobile > .table tbody {
+        display: block;
+    }
+
+    main .table-responsive.admin-table-mobile > .table tbody tr {
+        display: block;
+        margin-bottom: 0.85rem;
+        padding: 0.85rem;
+        background: var(--admin-card-bg, #fff);
+        border: 1px solid var(--admin-border, #dee2e6);
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    }
+
+    main .table-responsive.admin-table-mobile > .table tbody tr:hover {
+        background: var(--admin-card-bg, #fff);
+    }
+
+    main .table-responsive.admin-table-mobile > .table.table-striped tbody tr:nth-of-type(odd) {
+        background-color: var(--admin-card-bg, #fff);
+    }
+
+    main .table-responsive.admin-table-mobile > .table tbody td {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 0.75rem;
+        padding: 0.45rem 0;
+        border: 0;
+        text-align: end !important;
+        font-size: 0.875rem;
+        word-break: break-word;
+    }
+
+    main .table-responsive.admin-table-mobile > .table tbody td::before {
+        content: attr(data-label);
+        flex: 0 0 38%;
+        max-width: 42%;
+        font-weight: 600;
+        color: var(--admin-text-muted, #6c757d);
+        text-align: start;
+        padding-inline-end: 0.5rem;
+    }
+
+    main .table-responsive.admin-table-mobile > .table tbody td[data-label=""]::before,
+    main .table-responsive.admin-table-mobile > .table tbody td:not([data-label])::before {
+        content: none;
+    }
+
+    main .table-responsive.admin-table-mobile > .table tbody td .d-flex {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 0.35rem;
+    }
+
+    main .table-responsive.admin-table-mobile > .table tbody td .btn-sm {
+        padding: 0.35rem 0.55rem;
+    }
+
+    main .table-responsive.admin-table-mobile > .table tbody td:last-child {
+        border-top: 1px solid var(--admin-border, #dee2e6);
+        margin-top: 0.35rem;
+        padding-top: 0.65rem;
+    }
+
+    main .table-responsive.admin-table-mobile > .table tbody td:last-child::before {
+        align-self: center;
+    }
+}
+
+@media (max-width: 767.98px) {
+    main .table-responsive:not(.admin-table-mobile) {
+        -webkit-overflow-scrolling: touch;
+    }
+
+    main .table-responsive:not(.admin-table-mobile) > .table {
+        min-width: 640px;
+    }
+}

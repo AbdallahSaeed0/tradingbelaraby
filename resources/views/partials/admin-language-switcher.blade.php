@@ -6,10 +6,10 @@
 @if ($availableLanguages->count() > 1)
     <div class="admin-language-switcher">
         <div class="dropdown">
-            <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="adminLanguageDropdown"
-                data-bs-toggle="dropdown" aria-expanded="false">
+            <button class="btn btn-outline-secondary btn-sm dropdown-toggle admin-lang-toggle" type="button" id="adminLanguageDropdown"
+                data-bs-toggle="dropdown" aria-expanded="false" title="Language">
                 <i class="fa fa-globe me-2"></i>
-                {{ $currentLanguage ? $currentLanguage->name : 'English' }}
+                <span class="admin-lang-label">{{ $currentLanguage ? $currentLanguage->name : 'English' }}</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminLanguageDropdown">
                 @foreach ($availableLanguages as $language)

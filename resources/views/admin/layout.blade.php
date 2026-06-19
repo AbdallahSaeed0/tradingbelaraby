@@ -16,6 +16,7 @@
     <!-- Admin Styles - Base (always loaded) -->
     <link rel="stylesheet" href="{{ asset('css/admin/admin-theme.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/admin-common.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/admin-responsive.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/admin-dashboard.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/admin-forms.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/admin-tables.css') }}">
@@ -45,22 +46,28 @@
 
 <body class="bg-light @yield('body_class')">
     <!-- Top Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
-        <div class="container-fluid">
-            <button id="sidebarToggle" class="btn btn-outline-secondary me-3 shadow-sm" type="button"
-                data-bs-toggle="offcanvas" data-bs-target="#adminSidebar" aria-controls="adminSidebar">
-                <i class="fa fa-bars"></i>
-            </button>
-            <ul class="navbar-nav ms-auto align-items-center">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm admin-top-navbar">
+        <div class="container-fluid admin-navbar-inner">
+            <div class="admin-navbar-start">
+                <button id="sidebarToggle" class="btn btn-outline-secondary shadow-sm" type="button"
+                    data-bs-toggle="offcanvas" data-bs-target="#adminSidebar" aria-controls="adminSidebar"
+                    aria-label="Toggle sidebar">
+                    <i class="fa fa-bars"></i>
+                </button>
+            </div>
+
+            <ul class="navbar-nav admin-navbar-actions ms-auto align-items-center">
                 <!-- Visit Site -->
-                <li class="nav-item me-3">
-                    <a class="nav-link" href="{{ url('/') }}" target="_blank">
+                <li class="nav-item me-3 admin-nav-visit-site">
+                    <a class="nav-link admin-navbar-icon-btn" href="{{ url('/') }}" target="_blank"
+                        title="Visit site">
                         <i class="fa fa-globe"></i>
                     </a>
                 </li>
                 <!-- Theme Toggle -->
                 <li class="nav-item me-3">
-                    <button class="btn btn-link nav-link p-0" id="themeToggle" type="button" title="Toggle theme">
+                    <button class="btn btn-link nav-link admin-navbar-icon-btn p-0" id="themeToggle" type="button"
+                        title="Toggle theme">
                         <i class="fa fa-moon" id="themeIcon"></i>
                     </button>
                 </li>
@@ -75,8 +82,8 @@
                     $totalNotifications = $pendingQuestions + $urgentQuestions;
                 @endphp
                 <li class="nav-item dropdown me-3">
-                    <a class="nav-link position-relative" href="#" id="notifDropdown" role="button"
-                        data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="nav-link admin-navbar-icon-btn position-relative" href="#" id="notifDropdown"
+                        role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications">
                         <i class="fa fa-bell"></i>
                         @if ($totalNotifications > 0)
                             <span
@@ -110,53 +117,6 @@
                     </ul>
                 </li>
 
-                <!-- Language Switcher -->
-                @php
-                    $currentLanguage = \App\Helpers\TranslationHelper::getCurrentLanguage();
-                    $availableLanguages = \App\Helpers\TranslationHelper::getAvailableLanguages();
-                @endphp
-                <li class="nav-item dropdown me-3">
-                    <a class="nav-link d-flex align-items-center" href="#" id="langDropdown" role="button"
-                        data-bs-toggle="dropdown" aria-expanded="false" title="{{ custom_trans('switch_language', 'admin') }}">
-                        <i class="fa fa-globe me-1"></i>
-                        <span class="d-none d-md-inline">{{ $currentLanguage->code }}</span>
-                        <i class="fa fa-chevron-down ms-1 small"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end language-switcher min-w-200"
-                        aria-labelledby="langDropdown">
-                        <li class="dropdown-header">
-                            <i class="fa fa-language me-2"></i>{{ custom_trans('select_language', 'admin') }}
-                        </li>
-                        @foreach ($availableLanguages as $language)
-                            <li>
-                                <a class="dropdown-item d-flex align-items-center {{ $currentLanguage->id == $language->id ? 'active bg-primary text-white' : '' }}"
-                                    href="{{ route('language.switch', $language->code) }}">
-                                    <span class="me-2">
-                                        @if ($language->direction == 'rtl')
-                                            <i class="fa fa-text-width" title="RTL"></i>
-                                        @else
-                                            <i class="fa fa-text-width" title="LTR"></i>
-                                        @endif
-                                    </span>
-                                    <span class="flex-grow-1">{{ $language->native_name }}</span>
-                                    <small class="text-muted">({{ $language->code }})</small>
-                                    @if ($currentLanguage->id == $language->id)
-                                        <i class="fa fa-check ms-2"></i>
-                                    @endif
-                                </a>
-                            </li>
-                        @endforeach
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="{{ route('admin.languages.index') }}">
-                                <i class="fa fa-cog me-2"></i>{{ custom_trans('manage_languages', 'admin') }}
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-
                 <!-- Profile -->
                 <li class="nav-item dropdown">
                     <a class="nav-link d-flex align-items-center profile-dropdown" href="#"
@@ -168,7 +128,7 @@
                             <img src="https://ui-avatars.com/api/?name={{ urlencode(auth('admin')->user()->name) }}&size=32&background=007bff&color=fff"
                                 class="rounded-circle me-2" width="32" height="32" alt="avatar">
                         @endif
-                        <span>Hi {{ auth('admin')->user()->name }}</span>
+                        <span class="admin-profile-name">Hi {{ auth('admin')->user()->name }}</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                         <li><a class="dropdown-item" href="{{ route('admin.profile') }}">My Profile</a></li>
@@ -440,6 +400,67 @@
                 sidebar.classList.toggle('d-none');
             }
         });
+
+        // Mobile tables: add column labels for card layout
+        function initAdminMobileTables() {
+            document.querySelectorAll('main .table-responsive').forEach(function(wrapper) {
+                var table = wrapper.querySelector(':scope > table');
+                if (!table || !table.tHead || !table.tHead.rows.length) {
+                    return;
+                }
+
+                var headers = Array.from(table.tHead.rows[0].cells).map(function(th) {
+                    return th.textContent.replace(/\s+/g, ' ').trim();
+                });
+
+                if (!headers.length) {
+                    return;
+                }
+
+                wrapper.classList.add('admin-table-mobile');
+
+                Array.from(table.tBodies).forEach(function(tbody) {
+                    Array.from(tbody.rows).forEach(function(row) {
+                        Array.from(row.cells).forEach(function(cell, index) {
+                            if (!cell.getAttribute('data-label')) {
+                                cell.setAttribute('data-label', headers[index] || '');
+                            }
+                        });
+                    });
+                });
+            });
+        }
+
+        // Close sidebar after navigation on mobile
+        function initAdminSidebarMobile() {
+            var sidebarEl = document.getElementById('adminSidebar');
+            if (!sidebarEl) {
+                return;
+            }
+
+            sidebarEl.querySelectorAll('a.list-group-item-action').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth >= 992) {
+                        return;
+                    }
+
+                    var instance = bootstrap.Offcanvas.getInstance(sidebarEl);
+                    if (instance) {
+                        instance.hide();
+                    }
+                });
+            });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                initAdminMobileTables();
+                initAdminSidebarMobile();
+            });
+        } else {
+            initAdminMobileTables();
+            initAdminSidebarMobile();
+        }
 
         // Display session messages as toasts
         @if (session('success'))
