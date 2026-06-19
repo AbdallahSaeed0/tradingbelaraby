@@ -90,26 +90,26 @@ body {
     animation: fadeInDropdown 0.2s ease-in-out both;
 }
 
-/* Sidebar fixed on large screens */
-@media (min-width: 992px) {
-    #adminSidebar.offcanvas-lg-show.offcanvas-sidebar-width,
-    #adminSidebar.offcanvas-lg-show.offcanvas-sidebar-width.offcanvas-start,
-    #adminSidebar.offcanvas-lg-show.offcanvas-sidebar-width.bg-white,
-    #adminSidebar.offcanvas-lg-show.offcanvas-sidebar-width.offcanvas-start.bg-white,
-    .offcanvas-lg-show.offcanvas-sidebar-width,
-    .offcanvas-lg-show.offcanvas-sidebar-width.offcanvas-start,
-    .offcanvas-lg-show.offcanvas-sidebar-width.bg-white,
-    .offcanvas-lg-show.offcanvas-sidebar-width.offcanvas-start.bg-white {
+/* Sidebar fixed on xl screens and up */
+@media (min-width: 1200px) {
+    #adminSidebar.offcanvas-xl-show.offcanvas-sidebar-width,
+    #adminSidebar.offcanvas-xl-show.offcanvas-sidebar-width.offcanvas-start,
+    #adminSidebar.offcanvas-xl-show.offcanvas-sidebar-width.bg-white,
+    #adminSidebar.offcanvas-xl-show.offcanvas-sidebar-width.offcanvas-start.bg-white,
+    .offcanvas-xl-show.offcanvas-sidebar-width,
+    .offcanvas-xl-show.offcanvas-sidebar-width.offcanvas-start,
+    .offcanvas-xl-show.offcanvas-sidebar-width.bg-white,
+    .offcanvas-xl-show.offcanvas-sidebar-width.offcanvas-start.bg-white {
         position: static !important;
         transform: none !important;
         visibility: visible !important;
         border-right: 1px solid var(--admin-border, rgba(0, 0, 0, 0.1));
-        width: 15% !important;
-        --bs-offcanvas-width: 15% !important;
-        max-width: 15% !important;
-        min-width: 15% !important;
+        width: 260px !important;
+        --bs-offcanvas-width: 260px !important;
+        max-width: 260px !important;
+        min-width: 260px !important;
     }
-    .offcanvas-lg-show .offcanvas-header .btn-close {
+    .offcanvas-xl-show .offcanvas-header .btn-close {
         display: none;
     }
 }
@@ -151,12 +151,12 @@ body {
 }
 
 /* Ensure sidebar fills height when static */
-.offcanvas-lg-show {
+.offcanvas-xl-show {
     min-height: 100vh;
 }
 
 /* Flex wrapper adjustment */
-.d-lg-flex > main {
+.d-xl-flex > main {
     padding-left: 0;
 }
 

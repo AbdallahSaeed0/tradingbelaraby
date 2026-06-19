@@ -1,5 +1,5 @@
 <!-- Admin Sidebar -->
-<div class="offcanvas offcanvas-start offcanvas-lg-show bg-white offcanvas-sidebar-width admin-sidebar" data-bs-backdrop="true"
+<div class="offcanvas offcanvas-start offcanvas-xl-show bg-white offcanvas-sidebar-width admin-sidebar" data-bs-backdrop="true"
     data-bs-scroll="false" tabindex="-1" id="adminSidebar" aria-labelledby="adminSidebarLabel">
     <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="adminSidebarLabel">Admin Panel</h5>

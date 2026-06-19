@@ -161,32 +161,4 @@
     display: inline-block;
 }
 
-/* Ensure sidebar width is consistent on settings page */
-#adminSidebar,
-#adminSidebar.offcanvas-sidebar-width,
-#adminSidebar.offcanvas-lg-show,
-#adminSidebar.offcanvas-sidebar-width.offcanvas-lg-show {
-    width: 15% !important;
-    --bs-offcanvas-width: 15% !important;
-    max-width: 15% !important;
-    min-width: 15% !important;
-}
-
-@media (min-width: 992px) {
-    #adminSidebar,
-    #adminSidebar.offcanvas-sidebar-width,
-    #adminSidebar.offcanvas-lg-show,
-    #adminSidebar.offcanvas-sidebar-width.offcanvas-lg-show {
-        width: 15% !important;
-        --bs-offcanvas-width: 15% !important;
-        max-width: 15% !important;
-        min-width: 15% !important;
-    }
-}
-
-@media (max-width: 991px) {
-    #adminSidebar.offcanvas {
-        width: 280px !important;
-        max-width: 85vw !important;
-    }
-}
+/* Sidebar width: see admin-common.css + admin-responsive.css */

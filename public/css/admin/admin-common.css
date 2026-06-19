@@ -1,47 +1,34 @@
 /* Admin Common Styles */
 
-/* Sidebar Width - Ensure consistent width across all pages */
-#adminSidebar,
-.offcanvas-sidebar-width,
-.offcanvas-sidebar-width.offcanvas-start,
-.offcanvas-sidebar-width.offcanvas-lg-show,
-.offcanvas-sidebar-width.offcanvas-start.offcanvas-lg-show,
-#adminSidebar.offcanvas-sidebar-width,
-#adminSidebar.offcanvas-sidebar-width.offcanvas-start,
-#adminSidebar.offcanvas-sidebar-width.offcanvas-lg-show {
-    --bs-offcanvas-width: 15% !important;
-    width: 15% !important;
-    max-width: 15% !important;
-    min-width: 15% !important;
-}
-
-/* Ensure sidebar width is consistent on large screens */
-@media (min-width: 992px) {
+/* Sidebar — fixed width on desktop, overlay below xl */
+@media (min-width: 1200px) {
     #adminSidebar,
     #adminSidebar.offcanvas-sidebar-width,
     #adminSidebar.offcanvas-sidebar-width.offcanvas-start,
-    #adminSidebar.offcanvas-sidebar-width.offcanvas-lg-show,
-    #adminSidebar.offcanvas-sidebar-width.offcanvas-start.offcanvas-lg-show,
-    #adminSidebar.offcanvas-sidebar-width.offcanvas-lg-show.offcanvas-start.bg-white,
+    #adminSidebar.offcanvas-sidebar-width.offcanvas-xl-show,
+    #adminSidebar.offcanvas-sidebar-width.offcanvas-start.offcanvas-xl-show,
+    #adminSidebar.offcanvas-sidebar-width.offcanvas-xl-show.offcanvas-start.bg-white,
     .offcanvas-sidebar-width,
     .offcanvas-sidebar-width.offcanvas-start,
-    .offcanvas-sidebar-width.offcanvas-lg-show,
-    .offcanvas-sidebar-width.offcanvas-start.offcanvas-lg-show,
-    .offcanvas-sidebar-width.offcanvas-lg-show.offcanvas-start.bg-white {
-        width: 15% !important;
-        --bs-offcanvas-width: 15% !important;
-        max-width: 15% !important;
-        min-width: 15% !important;
+    .offcanvas-sidebar-width.offcanvas-xl-show,
+    .offcanvas-sidebar-width.offcanvas-start.offcanvas-xl-show,
+    .offcanvas-sidebar-width.offcanvas-xl-show.offcanvas-start.bg-white,
+    #adminSidebar.offcanvas-sidebar-width.offcanvas-xl-show,
+    #adminSidebar.offcanvas-xl-show.offcanvas-sidebar-width {
+        --bs-offcanvas-width: 260px !important;
+        width: 260px !important;
+        max-width: 260px !important;
+        min-width: 260px !important;
     }
-}
 
-/* Override any conflicting styles - Highest priority */
-#adminSidebar.offcanvas-sidebar-width.offcanvas-lg-show,
-#adminSidebar.offcanvas-lg-show.offcanvas-sidebar-width {
-    width: 15% !important;
-    --bs-offcanvas-width: 15% !important;
-    max-width: 15% !important;
-    min-width: 15% !important;
+    #adminSidebar .btn-close {
+        display: none;
+    }
+
+    #adminSidebar .offcanvas-body {
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
 }
 
 /* Page Title Box */
@@ -165,15 +152,32 @@
     left: 0 !important;
 }
 
-/* Mobile sidebar width — override desktop 15% rules */
-@media (max-width: 991.98px) {
+/* Sidebar overlay on tablet/mobile */
+@media (max-width: 1199.98px) {
     #adminSidebar,
     #adminSidebar.offcanvas-sidebar-width,
     #adminSidebar.offcanvas-sidebar-width.offcanvas-start,
-    #adminSidebar.offcanvas-sidebar-width.offcanvas-lg-show {
-        width: min(280px, 88vw) !important;
-        max-width: 88vw !important;
+    #adminSidebar.offcanvas-sidebar-width.offcanvas-xl-show,
+    #adminSidebar.offcanvas.offcanvas-start {
+        width: min(300px, 92vw) !important;
+        max-width: 92vw !important;
         min-width: 0 !important;
-        --bs-offcanvas-width: min(280px, 88vw) !important;
+        --bs-offcanvas-width: min(300px, 92vw) !important;
+    }
+
+    #adminSidebar .offcanvas-body {
+        overflow-x: hidden;
+    }
+
+    #adminSidebar .list-group-item .sidebar-nav-text {
+        white-space: normal;
+        word-break: normal;
+        overflow-wrap: anywhere;
+        line-height: 1.35;
+    }
+
+    #adminSidebar .offcanvas-title {
+        white-space: normal;
+        line-height: 1.3;
     }
 }

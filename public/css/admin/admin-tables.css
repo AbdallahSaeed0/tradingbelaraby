@@ -263,7 +263,7 @@
 }
 
 /* ==============================
-   Mobile table cards
+   Mobile table cards — stacked label / value
    ============================== */
 @media (max-width: 767.98px) {
     main .table-responsive.admin-table-mobile {
@@ -302,50 +302,79 @@
     }
 
     main .table-responsive.admin-table-mobile > .table tbody td {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 0.75rem;
-        padding: 0.45rem 0;
+        display: block;
+        width: 100% !important;
+        max-width: 100%;
+        padding: 0.55rem 0;
         border: 0;
-        text-align: end !important;
+        text-align: start !important;
         font-size: 0.875rem;
-        word-break: break-word;
+        word-break: normal;
+        overflow-wrap: anywhere;
     }
 
     main .table-responsive.admin-table-mobile > .table tbody td::before {
         content: attr(data-label);
-        flex: 0 0 38%;
-        max-width: 42%;
+        display: block;
         font-weight: 600;
+        font-size: 0.72rem;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
         color: var(--admin-text-muted, #6c757d);
-        text-align: start;
-        padding-inline-end: 0.5rem;
+        margin-bottom: 0.35rem;
     }
 
     main .table-responsive.admin-table-mobile > .table tbody td[data-label=""]::before,
+    main .table-responsive.admin-table-mobile > .table tbody td.admin-table-mobile-skip-label::before,
     main .table-responsive.admin-table-mobile > .table tbody td:not([data-label])::before {
         content: none;
+        display: none;
+        margin: 0;
+    }
+
+    main .table-responsive.admin-table-mobile > .table tbody td.admin-table-mobile-skip-label {
+        padding-top: 0;
+        padding-bottom: 0.35rem;
     }
 
     main .table-responsive.admin-table-mobile > .table tbody td .d-flex {
         flex-wrap: wrap;
-        justify-content: flex-end;
+        justify-content: flex-start;
         gap: 0.35rem;
+    }
+
+    main .table-responsive.admin-table-mobile > .table tbody td .course-name-cell,
+    main .table-responsive.admin-table-mobile > .table tbody td .min-w-0 {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    main .table-responsive.admin-table-mobile > .table tbody td .course-title-text,
+    main .table-responsive.admin-table-mobile > .table tbody td .instructor-name-text {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: unset;
     }
 
     main .table-responsive.admin-table-mobile > .table tbody td .btn-sm {
         padding: 0.35rem 0.55rem;
     }
 
-    main .table-responsive.admin-table-mobile > .table tbody td:last-child {
+    main .table-responsive.admin-table-mobile > .table tbody td:last-child,
+    main .table-responsive.admin-table-mobile > .table tbody td.col-actions {
         border-top: 1px solid var(--admin-border, #dee2e6);
         margin-top: 0.35rem;
-        padding-top: 0.65rem;
+        padding-top: 0.75rem;
     }
 
-    main .table-responsive.admin-table-mobile > .table tbody td:last-child::before {
-        align-self: center;
+    main .table-responsive.admin-table-mobile > .table tbody td:last-child::before,
+    main .table-responsive.admin-table-mobile > .table tbody td.col-actions::before {
+        margin-bottom: 0.5rem;
+    }
+
+    main .table-responsive.admin-table-mobile > .table tbody td:last-child .d-flex,
+    main .table-responsive.admin-table-mobile > .table tbody td.col-actions .d-flex {
+        justify-content: flex-start;
     }
 }
 

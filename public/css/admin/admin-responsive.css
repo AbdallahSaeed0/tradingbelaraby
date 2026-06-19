@@ -82,38 +82,47 @@
 /* ==============================
    Sidebar
    ============================== */
-@media (max-width: 991.98px) {
+@media (max-width: 1199.98px) {
     #adminSidebar,
     #adminSidebar.offcanvas-sidebar-width,
     #adminSidebar.offcanvas-sidebar-width.offcanvas-start {
-        width: min(280px, 88vw) !important;
-        max-width: 88vw !important;
+        width: min(300px, 92vw) !important;
+        max-width: 92vw !important;
         min-width: 0 !important;
-        --bs-offcanvas-width: min(280px, 88vw) !important;
+        --bs-offcanvas-width: min(300px, 92vw) !important;
     }
 
     #adminSidebar .offcanvas-body {
-        max-height: calc(100vh - 3.5rem);
+        max-height: calc(100vh - 3.75rem);
         overflow-y: auto;
+        overflow-x: hidden;
         overscroll-behavior: contain;
         -webkit-overflow-scrolling: touch;
     }
 
     #adminSidebar .offcanvas-header {
-        padding: 0.75rem 1rem;
+        padding: 0.85rem 1rem;
     }
 
     #adminSidebar .offcanvas-title {
-        font-size: 1rem;
+        font-size: 1.05rem;
+        padding-inline-end: 0.5rem;
     }
 
     #adminSidebar .list-group-item {
-        padding: 0.75rem 1rem;
+        padding: 0.8rem 1rem;
         min-height: 2.85rem;
     }
 
     #adminSidebar .list-group-item .sidebar-nav-text {
-        font-size: 0.9rem;
+        font-size: 0.92rem;
+        flex: 1;
+        min-width: 0;
+    }
+
+    #adminSidebar .list-group-item.sidebar-section-header .sidebar-nav-text {
+        font-size: 0.68rem;
+        letter-spacing: 0.03em;
     }
 
     .offcanvas-backdrop {
@@ -127,6 +136,7 @@
     main.flex-grow-1 {
         width: 100%;
         min-width: 0;
+        max-width: 100%;
     }
 }
 

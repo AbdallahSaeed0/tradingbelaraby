@@ -148,7 +148,7 @@
     </nav>
 
     <!-- Main Wrapper -->
-    <div class="d-lg-flex">
+    <div class="d-xl-flex">
         @include('admin.partials.sidebar')
 
         <!-- Page Content -->
@@ -393,10 +393,10 @@
             "hideMethod": "fadeOut"
         };
 
-        // extra toggle to hide sidebar on lg when button clicked
+        // extra toggle to hide sidebar on xl+ when button clicked
         document.getElementById('sidebarToggle').addEventListener('click', function() {
             const sidebar = document.getElementById('adminSidebar');
-            if (window.innerWidth >= 992) {
+            if (window.innerWidth >= 1200) {
                 sidebar.classList.toggle('d-none');
             }
         });
@@ -410,7 +410,11 @@
                 }
 
                 var headers = Array.from(table.tHead.rows[0].cells).map(function(th) {
-                    return th.textContent.replace(/\s+/g, ' ').trim();
+                    var clone = th.cloneNode(true);
+                    clone.querySelectorAll('input, button, .form-check').forEach(function(el) {
+                        el.remove();
+                    });
+                    return clone.textContent.replace(/\s+/g, ' ').trim();
                 });
 
                 if (!headers.length) {
@@ -425,13 +429,17 @@
                             if (!cell.getAttribute('data-label')) {
                                 cell.setAttribute('data-label', headers[index] || '');
                             }
+
+                            if (!headers[index]) {
+                                cell.classList.add('admin-table-mobile-skip-label');
+                            }
                         });
                     });
                 });
             });
         }
 
-        // Close sidebar after navigation on mobile
+        // Close sidebar after navigation on mobile/tablet
         function initAdminSidebarMobile() {
             var sidebarEl = document.getElementById('adminSidebar');
             if (!sidebarEl) {
@@ -440,7 +448,7 @@
 
             sidebarEl.querySelectorAll('a.list-group-item-action').forEach(function(link) {
                 link.addEventListener('click', function() {
-                    if (window.innerWidth >= 992) {
+                    if (window.innerWidth >= 1200) {
                         return;
                     }
 
