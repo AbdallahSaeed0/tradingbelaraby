@@ -5,7 +5,7 @@
     $course = $course ?? null;
 @endphp
 
-<div class="form-section">
+<div class="form-section" id="section-seo">
     <div class="section-header">
         <h5><i class="fa fa-search me-2"></i>SEO Settings</h5>
     </div>

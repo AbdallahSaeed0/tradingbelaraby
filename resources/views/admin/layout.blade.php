@@ -43,6 +43,7 @@
 
     @stack('styles')
     <link rel="stylesheet" href="{{ asset('css/admin/admin-tables-mobile.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/admin-form-mobile.css') }}">
 </head>
 
 <body class="bg-light @yield('body_class')">
@@ -479,6 +480,114 @@
 
         window.initAdminMobileTables = initAdminMobileTables;
 
+        function initAdminFormMobile() {
+            var page = document.querySelector('.admin-form-page');
+            if (!page) {
+                return;
+            }
+
+            var links = page.querySelectorAll('[data-form-section-link]');
+            var observedSections = [];
+
+            links.forEach(function(link) {
+                var sectionId = link.getAttribute('data-form-section-link');
+                var sectionEl = document.getElementById(sectionId);
+                if (sectionEl) {
+                    observedSections.push({ link: link, el: sectionEl });
+                }
+
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var target = document.getElementById(sectionId);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+
+            if (observedSections.length && window.matchMedia('(max-width: 991.98px)').matches) {
+                var navObserver = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        if (!entry.isIntersecting) {
+                            return;
+                        }
+                        links.forEach(function(navLink) {
+                            navLink.classList.toggle(
+                                'is-active',
+                                navLink.getAttribute('data-form-section-link') === entry.target.id
+                            );
+                        });
+                    });
+                }, { rootMargin: '-20% 0px -60% 0px', threshold: 0 });
+
+                observedSections.forEach(function(item) {
+                    navObserver.observe(item.el);
+                });
+            }
+
+            var summary = document.getElementById('mobilePublishSummary');
+            if (!summary) {
+                return;
+            }
+
+            var statusEl = page.querySelector('#status');
+            var priceEl = page.querySelector('#price');
+            var originalEl = page.querySelector('#original_price');
+            var featuredEl = page.querySelector('#is_featured, #featured');
+            var freeEl = page.querySelector('#is_free');
+
+            function updatePublishSummary() {
+                var statusBadge = summary.querySelector('[data-summary="status"]');
+                if (statusBadge && statusEl) {
+                    statusBadge.textContent = statusEl.options[statusEl.selectedIndex].text;
+                    statusBadge.className = 'badge ' + (
+                        statusEl.value === 'published' ? 'bg-success' :
+                        statusEl.value === 'archived' ? 'bg-secondary' :
+                        'bg-warning text-dark'
+                    );
+                }
+
+                var priceBadge = summary.querySelector('[data-summary="price"]');
+                if (priceBadge) {
+                    var isFree = freeEl && freeEl.checked;
+                    var original = parseFloat(originalEl && originalEl.value) || 0;
+                    var discount = priceEl && priceEl.value !== '' ? parseFloat(priceEl.value) : null;
+
+                    if (isFree || discount === 0) {
+                        priceBadge.textContent = 'Free';
+                    } else if (discount !== null && !isNaN(discount) && original > discount) {
+                        priceBadge.textContent = discount + ' SAR (sale)';
+                    } else if (original > 0) {
+                        priceBadge.textContent = original + ' SAR';
+                    } else {
+                        priceBadge.textContent = 'Pricing';
+                    }
+                }
+
+                var featuredBadge = summary.querySelector('[data-summary="featured"]');
+                if (featuredBadge && featuredEl) {
+                    featuredBadge.textContent = featuredEl.checked ? 'Featured' : 'Not featured';
+                    featuredBadge.className = 'badge ' + (
+                        featuredEl.checked ? 'bg-primary' : 'bg-light text-dark border'
+                    );
+                }
+            }
+
+            [statusEl, priceEl, originalEl, featuredEl, freeEl].forEach(function(el) {
+                if (!el) {
+                    return;
+                }
+                el.addEventListener('change', updatePublishSummary);
+                if (el.type !== 'checkbox') {
+                    el.addEventListener('input', updatePublishSummary);
+                }
+            });
+
+            updatePublishSummary();
+        }
+
+        window.initAdminFormMobile = initAdminFormMobile;
+
         // Close sidebar after navigation on mobile/tablet
         function initAdminSidebarMobile() {
             var sidebarEl = document.getElementById('adminSidebar');
@@ -503,10 +612,12 @@
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', function() {
                 initAdminMobileTables();
+                initAdminFormMobile();
                 initAdminSidebarMobile();
             });
         } else {
             initAdminMobileTables();
+            initAdminFormMobile();
             initAdminSidebarMobile();
         }
 

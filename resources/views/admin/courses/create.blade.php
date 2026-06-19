@@ -329,33 +329,28 @@
         });
     </script>
 
-    <div class="container-fluid py-4 course-create-page">
-        <!-- Page Header -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h1 class="h3 mb-0">Create New Course</h1>
-                        <p class="text-muted">Build a comprehensive course with sections and lectures</p>
-                    </div>
-                    <div>
-                        <a href="{{ route('admin.courses.index') }}" class="btn btn-outline-secondary me-2">
-                            <i class="fa fa-arrow-left me-2"></i>Back to Courses
-                        </a>
-                        <button type="submit" form="courseForm" class="btn btn-primary">
-                            <i class="fa fa-save me-2"></i>Create Course
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="container-fluid py-4 course-create-page admin-form-page">
+        @include('admin.partials.form-page-header', [
+            'title' => 'Create New Course',
+            'subtitle' => 'Build a comprehensive course with sections and lectures',
+            'backUrl' => route('admin.courses.index'),
+            'backLabel' => 'Back to Courses',
+            'formId' => 'courseForm',
+            'submitLabel' => 'Create Course',
+        ])
+
+        @include('admin.courses.partials.form-mobile-extras', [
+            'formId' => 'courseForm',
+            'submitLabel' => 'Create Course',
+            'statusValue' => old('status', 'draft'),
+        ])
 
         <form id="courseForm" action="{{ route('admin.courses.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
-            <div class="row">
-                <div class="col-lg-8">
+            <div class="row admin-form-main-row">
+                <div class="col-lg-8 admin-form-main">
                     <!-- Basic Information -->
-                    <div class="form-section">
+                    <div class="form-section" id="section-basics">
                         <div class="section-header">
                             <h5><i class="fa fa-info-circle me-2"></i>Basic Information</h5>
                         </div>
@@ -458,6 +453,7 @@
                                     <small class="text-muted">Click to add multiple instructors to this course</small>
                                 </div>
                             </div>
+                            <div class="row admin-form-price-grid">
                             <div class="col-md-4 mb-3">
                                 <label for="original_price" class="form-label">Original Price (SAR)</label>
                                 <input type="number" class="form-control" id="original_price" name="original_price"
@@ -475,6 +471,7 @@
                                 <label for="duration" class="form-label">Duration</label>
                                 <input type="text" class="form-control" id="duration" name="duration"
                                     value="{{ old('duration') }}" placeholder="e.g., 8 weeks, 40 hours">
+                            </div>
                             </div>
                             <div class="col-md-12 mb-3" id="discount_preview" style="display: none;">
                                 <div class="alert alert-info mb-0">
@@ -501,7 +498,7 @@
                     </div>
 
                     <!-- Course Content -->
-                    <div class="form-section">
+                    <div class="form-section" id="section-content">
                         <div class="section-header">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h5><i class="fa fa-list me-2"></i>Course Content</h5>
@@ -574,7 +571,7 @@
                     </div>
 
                     <!-- What You'll Learn (Multilingual) -->
-                    <div class="form-section">
+                    <div class="form-section" id="section-learn">
                         <div class="section-header">
                             <h5><i class="fa fa-graduation-cap me-2"></i>What You'll Learn</h5>
                         </div>
@@ -652,7 +649,7 @@
                     </div>
 
                     <!-- Frequently Asked Questions (Multilingual) -->
-                    <div class="form-section">
+                    <div class="form-section" id="section-faq">
                         <div class="section-header">
                             <h5><i class="fa fa-question-circle me-2"></i>Frequently Asked Questions</h5>
                         </div>
@@ -743,7 +740,8 @@
                     </div>
                 </div>
 
-                <div class="col-lg-4">
+                <div class="col-lg-4 admin-form-sidebar">
+                    <div id="section-publish">
                     <!-- Course Image -->
                     <div class="form-section">
                         <div class="section-header">
@@ -860,6 +858,7 @@
                             <small class="text-muted">Select one or more sections to display this course on the
                                 homepage</small>
                         </div>
+                    </div>
                     </div>
 
                     <!-- SEO Settings -->
