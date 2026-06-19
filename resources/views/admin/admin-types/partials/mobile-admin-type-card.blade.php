@@ -22,7 +22,7 @@
 
     $actionsHtml = '<a href="' . route('admin.admin-types.show', $type) . '" class="btn btn-sm btn-outline-primary" title="View"><i class="fa fa-eye"></i></a>';
     if (!$type->isAdminType()) {
-        $actionsHtml .= '<a href="' . route('admin.admin-types.edit', $type) . '" class="btn btn-sm btn-outline-secondary" title="Edit"><i class="fa fa-edit"></i></a>';
+        $actionsHtml .= '<a href="' . route('admin.admin-types.edit', $type) . '" class="btn btn-sm btn-outline-primary" title="Edit"><i class="fa fa-edit"></i></a>';
         if (($type->admins_count ?? 0) == 0) {
             $actionsHtml .= '<form action="' . route('admin.admin-types.destroy', $type) . '" method="POST" class="d-inline" onsubmit="return confirm(\'Are you sure you want to delete this admin type?\');">'
                 . '<input type="hidden" name="_token" value="' . csrf_token() . '"><input type="hidden" name="_method" value="DELETE">'

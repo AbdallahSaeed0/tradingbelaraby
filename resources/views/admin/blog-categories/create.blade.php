@@ -3,30 +3,29 @@
 @section('title', 'Create Blog Category')
 
 @section('content')
-    <div class="container-fluid">
-        <!-- Page Header -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h1 class="h3 mb-0 text-gray-800">Create Blog Category</h1>
-                <p class="text-muted">Add a new blog category to organize your content</p>
-            </div>
-            <div>
-                <a href="{{ route('admin.blog-categories.index') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left me-1"></i> Back to Categories
-                </a>
-            </div>
-        </div>
+    <div class="container-fluid py-4 admin-form-page" data-mobile-back-url="{{ route('admin.blog-categories.index') }}" data-mobile-back-label="Back to Categories">
+        @include('admin.partials.crud-form-shell', [
+            'title' => 'Create Blog Category',
+            'subtitle' => 'Add a new blog category to organize your content',
+            'backUrl' => route('admin.blog-categories.index'),
+            'backLabel' => 'Back to Categories',
+            'formId' => 'blogCategoryForm',
+            'submitLabel' => 'Create Category',
+            'sections' => [
+                ['id' => 'section-basics', 'label' => 'Basics', 'icon' => 'fa-info-circle'],
+                ['id' => 'section-settings', 'label' => 'Settings', 'icon' => 'fa-cog'],
+                ['id' => 'section-media', 'label' => 'Image', 'icon' => 'fa-image'],
+            ],
+        ])
 
-        <div class="row">
-            <div class="col-lg-8">
-                <!-- Category Form -->
-                <div class="card shadow">
+        <div class="row admin-form-main-row">
+            <div class="col-lg-8 admin-form-main order-lg-2">
+                <div class="card shadow mb-4" id="section-basics">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary">Category Information</h6>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('admin.blog-categories.store') }}" method="POST"
-                            enctype="multipart/form-data">
+                        <form id="blogCategoryForm" action="{{ route('admin.blog-categories.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
 
                             <!-- Basic Information Section -->
@@ -87,7 +86,7 @@
                             <hr class="my-4">
 
                             <!-- Settings Section -->
-                            <div class="mb-4">
+                            <div class="mb-4" id="section-settings">
                                 <h6 class="mb-3 text-primary">
                                     <i class="fas fa-cog me-2"></i>Settings
                                 </h6>
@@ -118,7 +117,7 @@
                             <hr class="my-4">
 
                             <!-- Image Section -->
-                            <div class="mb-4">
+                            <div class="mb-4" id="section-media">
                                 <h6 class="mb-3 text-primary">
                                     <i class="fas fa-image me-2"></i>Category Image
                                 </h6>
@@ -149,8 +148,7 @@
 
                             <hr class="my-4">
 
-                            <!-- Form Actions -->
-                            <div class="d-flex gap-2">
+                            <div class="d-flex gap-2 d-none d-lg-flex">
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-save me-1"></i> Create Category
                                 </button>
@@ -163,7 +161,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-4">
+            <div class="col-lg-4 admin-form-sidebar order-lg-1">
                 <!-- Help Card -->
                 <div class="card shadow">
                     <div class="card-header py-3">

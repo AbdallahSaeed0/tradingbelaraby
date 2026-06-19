@@ -4,7 +4,7 @@
         <i class="fa fa-eye"></i>
     </a>
     <a href="{{ route('admin.courses.edit', $course) }}"
-        class="btn btn-sm btn-outline-secondary" title="Edit">
+        class="btn btn-sm btn-outline-primary" title="Edit">
         <i class="fa fa-edit"></i>
     </a>
     <a href="{{ route('admin.courses.analytics', $course) }}"

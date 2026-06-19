@@ -3,32 +3,28 @@
 @section('title', 'Add Admin')
 
 @section('content')
-    <div class="container-fluid py-4">
-        <!-- Page Header -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h1 class="h3 mb-0">Add New Admin</h1>
-                        <p class="text-muted">Create a new administrator account</p>
-                    </div>
-                    <div>
-                        <a href="{{ route('admin.admins.index') }}" class="btn btn-outline-secondary">
-                            <i class="fa fa-arrow-left me-2"></i>Back to Admins
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="container-fluid py-4 admin-form-page" data-mobile-back-url="{{ route('admin.admins.index') }}" data-mobile-back-label="Back to Admins">
+        @include('admin.partials.crud-form-shell', [
+            'title' => 'Add New Admin',
+            'subtitle' => 'Create a new administrator account',
+            'backUrl' => route('admin.admins.index'),
+            'backLabel' => 'Back to Admins',
+            'formId' => 'adminForm',
+            'submitLabel' => 'Create Admin',
+            'sections' => [
+                ['id' => 'section-profile', 'label' => 'Profile', 'icon' => 'fa-user'],
+                ['id' => 'section-access', 'label' => 'Access', 'icon' => 'fa-shield-alt'],
+            ],
+        ])
 
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="card shadow-sm">
+        <div class="row justify-content-center admin-form-main-row">
+            <div class="col-lg-8 admin-form-main">
+                <div class="card shadow-sm" id="section-profile">
                     <div class="card-header">
                         <h5 class="mb-0"><i class="fa fa-user-plus me-2"></i>Admin Information</h5>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('admin.admins.store') }}" method="POST" enctype="multipart/form-data">
+                        <form id="adminForm" action="{{ route('admin.admins.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
 
                             <div class="row">
@@ -98,7 +94,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="row">
+                                    <div class="row" id="section-access">
                                         <div class="col-md-6 mb-3">
                                             <label for="password" class="form-label">Password <span
                                                     class="text-danger">*</span></label>
@@ -204,7 +200,7 @@
 
                             <hr>
 
-                            <div class="text-end">
+                            <div class="text-end d-none d-lg-block">
                                 <a href="{{ route('admin.admins.index') }}" class="btn btn-secondary me-2">Cancel</a>
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fa fa-save me-2"></i>Create Admin

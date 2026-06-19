@@ -63,7 +63,10 @@
         'admin.admin-types.*',
         'admin.users.*',
         'admin.subscribers.*',
-        'admin.traders.*'
+        'admin.traders.*',
+        'admin.categories.*',
+        'admin.blog-categories.*',
+        'admin.blogs.*'
     );
 @endphp
 

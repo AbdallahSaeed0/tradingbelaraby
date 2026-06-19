@@ -14,7 +14,7 @@
     ];
 
     $actionsHtml = '<a href="' . route('admin.quizzes.show', $quiz) . '" class="btn btn-sm btn-outline-primary" title="View"><i class="fa fa-eye"></i></a>'
-        . '<a href="' . route('admin.quizzes.edit', $quiz) . '" class="btn btn-sm btn-outline-secondary" title="Edit"><i class="fa fa-edit"></i></a>'
+        . '<a href="' . route('admin.quizzes.edit', $quiz) . '" class="btn btn-sm btn-outline-primary" title="Edit"><i class="fa fa-edit"></i></a>'
         . '<a href="' . route('admin.quizzes.analytics', $quiz) . '" class="btn btn-sm btn-outline-info" title="Analytics"><i class="fa fa-chart-bar"></i></a>'
         . '<form action="' . route('admin.quizzes.destroy', $quiz) . '" method="POST" class="d-inline" onsubmit="return confirm(\'Are you sure?\');">'
         . '<input type="hidden" name="_token" value="' . csrf_token() . '"><input type="hidden" name="_method" value="DELETE">'

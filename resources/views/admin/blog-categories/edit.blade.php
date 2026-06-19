@@ -3,109 +3,116 @@
 @section('title', 'Edit Blog Category')
 
 @section('content')
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h4 class="mb-0">
-                                <i class="fas fa-edit me-2"></i>Edit Blog Category
-                            </h4>
-                            <a href="{{ route('admin.blog-categories.index') }}" class="btn btn-secondary">
-                                <i class="fas fa-arrow-left me-1"></i>Back to List
-                            </a>
+    <div class="container-fluid py-4 admin-form-page" data-mobile-back-url="{{ route('admin.blog-categories.index') }}" data-mobile-back-label="Back to Categories">
+        @include('admin.partials.crud-form-shell', [
+            'title' => 'Edit Blog Category',
+            'subtitle' => $category->name,
+            'backUrl' => route('admin.blog-categories.index'),
+            'backLabel' => 'Back to Categories',
+            'formId' => 'blogCategoryForm',
+            'submitLabel' => 'Update Category',
+            'sections' => [
+                ['id' => 'section-basics', 'label' => 'Basics', 'icon' => 'fa-info-circle'],
+                ['id' => 'section-settings', 'label' => 'Settings', 'icon' => 'fa-cog'],
+                ['id' => 'section-stats', 'label' => 'Stats', 'icon' => 'fa-chart-bar'],
+            ],
+        ])
+
+        <form id="blogCategoryForm" action="{{ route('admin.blog-categories.update', $category) }}" method="POST">
+            @csrf
+            @method('PUT')
+
+            <div class="row admin-form-main-row">
+                <div class="col-lg-8 admin-form-main order-lg-2">
+                    <div class="card shadow-sm mb-4" id="section-basics">
+                        <div class="card-header">
+                            <h6 class="mb-0"><i class="fas fa-edit me-2"></i>Category Details</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                @include('admin.courses.partials.multilingual-fields', [
+                                    'fieldName' => 'name',
+                                    'label' => 'Category Name',
+                                    'type' => 'input',
+                                    'required' => true,
+                                    'placeholder' => 'Enter category name',
+                                    'value' => old('name', $category->name),
+                                    'valueAr' => old('name_ar', $category->name_ar),
+                                ])
+                            </div>
+
+                            <div class="mb-3">
+                                @include('admin.courses.partials.multilingual-fields', [
+                                    'fieldName' => 'description',
+                                    'label' => 'Description',
+                                    'type' => 'textarea',
+                                    'required' => false,
+                                    'rows' => 4,
+                                    'placeholder' => 'Enter category description',
+                                    'value' => old('description', $category->description),
+                                    'valueAr' => old('description_ar', $category->description_ar),
+                                ])
+                            </div>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <form action="{{ route('admin.blog-categories.update', $category) }}" method="POST">
-                            @csrf
-                            @method('PUT')
 
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <div class="mb-3">
-                                        @include('admin.courses.partials.multilingual-fields', [
-                                            'fieldName' => 'name',
-                                            'label' => 'Category Name',
-                                            'type' => 'input',
-                                            'required' => true,
-                                            'placeholder' => 'Enter category name',
-                                            'value' => old('name', $category->name),
-                                            'valueAr' => old('name_ar', $category->name_ar),
-                                        ])
-                                    </div>
-
-                                    <div class="mb-3">
-                                        @include('admin.courses.partials.multilingual-fields', [
-                                            'fieldName' => 'description',
-                                            'label' => 'Description',
-                                            'type' => 'textarea',
-                                            'required' => false,
-                                            'rows' => 4,
-                                            'placeholder' => 'Enter category description',
-                                            'value' => old('description', $category->description),
-                                            'valueAr' => old('description_ar', $category->description_ar),
-                                        ])
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <div class="form-check">
-                                            <input type="checkbox" name="is_featured" id="is_featured"
-                                                class="form-check-input" value="1"
-                                                {{ old('is_featured', $category->is_featured) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="is_featured">
-                                                <i class="fas fa-star me-1"></i>Featured Category
-                                            </label>
-                                        </div>
-                                        <small class="text-muted">Featured categories will be highlighted</small>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <div class="form-check">
-                                            <input type="checkbox" name="status" id="status" class="form-check-input"
-                                                value="active"
-                                                {{ old('status', $category->status) === 'active' ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="status">
-                                                <i class="fas fa-check-circle me-1"></i>Active
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h6 class="mb-0">Category Statistics</h6>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="row text-center">
-                                                <div class="col-6">
-                                                    <h4 class="text-primary">{{ $category->blogs_count ?? 0 }}</h4>
-                                                    <small class="text-muted">Blogs</small>
-                                                </div>
-                                                <div class="col-6">
-                                                    <h4 class="text-success">{{ $category->created_at->format('M d') }}</h4>
-                                                    <small class="text-muted">Created</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                    <div class="card shadow-sm mb-4" id="section-settings">
+                        <div class="card-header">
+                            <h6 class="mb-0"><i class="fas fa-cog me-2"></i>Settings</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" name="is_featured" id="is_featured" class="form-check-input" value="1"
+                                        {{ old('is_featured', $category->is_featured) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="is_featured">
+                                        <i class="fas fa-star me-1"></i>Featured Category
+                                    </label>
                                 </div>
                             </div>
 
-                            <div class="text-end">
-                                <a href="{{ route('admin.blog-categories.index') }}" class="btn btn-secondary me-2">
-                                    <i class="fas fa-times me-1"></i>Cancel
-                                </a>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save me-1"></i>Update Category
-                                </button>
+                            <div class="mb-0">
+                                <div class="form-check">
+                                    <input type="checkbox" name="status" id="status" class="form-check-input" value="active"
+                                        {{ old('status', $category->status) === 'active' ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="status">
+                                        <i class="fas fa-check-circle me-1"></i>Active
+                                    </label>
+                                </div>
                             </div>
-                        </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 admin-form-sidebar order-lg-1">
+                    <div class="card shadow-sm mb-4" id="section-stats">
+                        <div class="card-header">
+                            <h6 class="mb-0">Category Statistics</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row text-center">
+                                <div class="col-6">
+                                    <h4 class="text-primary">{{ $category->blogs_count ?? 0 }}</h4>
+                                    <small class="text-muted">Blogs</small>
+                                </div>
+                                <div class="col-6">
+                                    <h4 class="text-success">{{ $category->created_at->format('M d') }}</h4>
+                                    <small class="text-muted">Created</small>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+
+            <div class="text-end d-none d-lg-block">
+                <a href="{{ route('admin.blog-categories.index') }}" class="btn btn-secondary me-2">
+                    <i class="fas fa-times me-1"></i>Cancel
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-1"></i>Update Category
+                </button>
+            </div>
+        </form>
     </div>
 @endsection

@@ -3,33 +3,28 @@
 @section('title', 'Edit Admin Type')
 
 @section('content')
-    <div class="container-fluid py-4">
-        <!-- Page Header -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h1 class="h3 mb-0">Edit Admin Type</h1>
-                        <p class="text-muted">Update administrator type and permissions</p>
-                    </div>
-                    <div>
-                        <a href="{{ route('admin.admin-types.index') }}" class="btn btn-outline-secondary">
-                            <i class="fa fa-arrow-left me-2"></i>Back to Admin Types
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="container-fluid py-4 admin-form-page" data-mobile-back-url="{{ route('admin.admin-types.index') }}" data-mobile-back-label="Back to Admin Types">
+        @include('admin.partials.crud-form-shell', [
+            'title' => 'Edit Admin Type',
+            'subtitle' => $adminType->display_name,
+            'backUrl' => route('admin.admin-types.index'),
+            'backLabel' => 'Back to Admin Types',
+            'formId' => 'adminTypeForm',
+            'submitLabel' => 'Update Type',
+            'sections' => [
+                ['id' => 'section-basics', 'label' => 'Basics', 'icon' => 'fa-info-circle'],
+                ['id' => 'section-permissions', 'label' => 'Permissions', 'icon' => 'fa-shield-alt'],
+            ],
+        ])
 
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="card shadow-sm">
+        <div class="row justify-content-center admin-form-main-row">
+            <div class="col-lg-8 admin-form-main">
+                <div class="card shadow-sm" id="section-basics">
                     <div class="card-header">
-                        <h5 class="mb-0"><i class="fa fa-edit me-2"></i>Edit Admin Type: {{ $adminType->display_name }}
-                        </h5>
+                        <h5 class="mb-0"><i class="fa fa-edit me-2"></i>Edit Admin Type: {{ $adminType->display_name }}</h5>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('admin.admin-types.update', $adminType) }}" method="POST">
+                        <form id="adminTypeForm" action="{{ route('admin.admin-types.update', $adminType) }}" method="POST">
                             @csrf
                             @method('PUT')
 
@@ -83,8 +78,7 @@
 
                             <hr>
 
-                            <!-- Permissions Section -->
-                            <div class="mb-4">
+                            <div class="mb-4" id="section-permissions">
                                 <h6 class="mb-3"><i class="fa fa-shield-alt me-2"></i>Permissions</h6>
                                 <p class="text-muted mb-3">Select the permissions that admins of this type will have:</p>
 
@@ -307,7 +301,7 @@
 
                             <hr>
 
-                            <div class="text-end">
+                            <div class="text-end d-none d-lg-block">
                                 <a href="{{ route('admin.admin-types.index') }}"
                                     class="btn btn-secondary me-2">Cancel</a>
                                 <button type="submit" class="btn btn-primary">

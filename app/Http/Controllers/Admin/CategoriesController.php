@@ -26,7 +26,7 @@ class CategoriesController extends Controller
         $categories = CourseCategory::when($search, fn($q)=>$q->where('name','like',"%{$search}%"))
             ->latest()->paginate($perPage)->withQueryString();
         if($request->ajax())
-            return view('admin.categories.partials.table', compact('categories'))->render();
+            return view('admin.categories.partials.ajax-results', compact('categories'))->render();
         abort(404);
     }
 

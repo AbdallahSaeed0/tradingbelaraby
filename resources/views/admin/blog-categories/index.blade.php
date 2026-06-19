@@ -12,7 +12,7 @@
                         <h1 class="h3 mb-0">Blog Categories Management</h1>
                         <p class="text-muted">Organize your blog content with categories</p>
                     </div>
-                    <div>
+                    <div class="admin-list-header-actions">
                         <a href="{{ route('admin.blog-categories.analytics') }}" class="btn btn-outline-info me-2">
                             <i class="fa fa-chart-bar me-2"></i>Analytics
                         </a>
@@ -98,7 +98,7 @@
         <!-- Filters -->
         <div class="card mb-4">
             <div class="card-body">
-                <form method="GET" action="{{ route('admin.blog-categories.index') }}" id="filterForm">
+                <form method="GET" action="{{ route('admin.blog-categories.index') }}" id="filterForm" data-settings-mobile-toolbar="skip">
                     <div class="row g-3">
                         <div class="col-md-4">
                             <div class="input-group">
@@ -144,17 +144,6 @@
                         </div>
                     </div>
                 </form>
-                    <div class="col-md-1">
-                        <div class="d-flex gap-2">
-                            <button class="btn btn-outline-primary btn-sm" id="gridView">
-                                <i class="fa fa-th"></i>
-                            </button>
-                            <button class="btn btn-outline-primary btn-sm active" id="listView">
-                                <i class="fa fa-list"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -164,7 +153,7 @@
             <div id="listViewContainer">
                 <div class="card">
                     <div class="card-body">
-                        <div class="table-responsive">
+                        <div class="table-responsive d-none d-lg-block admin-table-no-mobile-cards">
                             <table class="table table-hover table-striped">
                                 <thead>
                                     <tr>
@@ -294,6 +283,18 @@
                             </table>
                         </div>
 
+                        <div class="admin-mobile-list d-lg-none" id="mobileBlogCategoriesList">
+                            @forelse($categories as $category)
+                                @include('admin.blog-categories.partials.mobile-blog-category-card', ['category' => $category])
+                            @empty
+                                <div class="text-center py-4 text-muted">
+                                    <i class="fa fa-tags fa-3x mb-3"></i>
+                                    <h5>No categories found</h5>
+                                    <p>Create your first blog category to get started</p>
+                                </div>
+                            @endforelse
+                        </div>
+
                         <!-- Bulk Actions -->
                         <div class="row mt-3">
                             <div class="col-md-6">
@@ -394,6 +395,7 @@
             // Initialize variables for AJAX search
             let searchTimeout;
             const tableBody = document.querySelector('.table tbody');
+            const mobileList = document.getElementById('mobileBlogCategoriesList');
             const paginationContainer = document.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
 
             // AJAX search function
@@ -403,7 +405,10 @@
 
                 // Show loading state
                 if (tableBody) {
-                    tableBody.innerHTML = '<tr><td colspan="7" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
+                    tableBody.innerHTML = '<tr><td colspan="8" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
+                }
+                if (mobileList) {
+                    mobileList.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>';
                 }
 
                 fetch(`{{ route('admin.blog-categories.index') }}?${params.toString()}`, {
@@ -421,11 +426,16 @@
 
                         // Extract table body
                         const newTableBody = tempDiv.querySelector('.table tbody');
+                        const newMobileList = tempDiv.querySelector('#mobileBlogCategoriesList');
                         const newPagination = tempDiv.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
                         const newBulkActions = tempDiv.querySelector('.row.mt-3 .col-md-6:first-child');
 
                         if (newTableBody && tableBody) {
                             tableBody.innerHTML = newTableBody.innerHTML;
+                        }
+
+                        if (newMobileList && mobileList) {
+                            mobileList.innerHTML = newMobileList.innerHTML;
                         }
 
                         if (newPagination && paginationContainer) {
@@ -449,7 +459,10 @@
                     .catch(error => {
                         console.error('Error:', error);
                         if (tableBody) {
-                            tableBody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-danger">Error loading data. Please try again.</td></tr>';
+                            tableBody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-danger">Error loading data. Please try again.</td></tr>';
+                        }
+                        if (mobileList) {
+                            mobileList.innerHTML = '<div class="text-center py-4 text-danger">Error loading data. Please try again.</div>';
                         }
                     });
             }

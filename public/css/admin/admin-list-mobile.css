@@ -222,6 +222,14 @@
 
 .admin-mobile-card__actions .btn-sm {
     padding: 0.35rem 0.5rem;
+    border-width: 1px;
+    border-style: solid;
+}
+
+/* outline-secondary blends into dark card footers — keep action icons visibly bordered */
+.admin-mobile-card__actions .btn-outline-secondary {
+    border-color: var(--admin-active-text, #0d6efd);
+    color: var(--admin-active-text, #6ea8fe);
 }
 
 .admin-mobile-empty {

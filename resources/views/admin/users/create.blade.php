@@ -3,23 +3,33 @@
 @section('title', 'Add User')
 
 @section('content')
-    <div class="container-fluid">
-        <div class="row justify-content-center">
-            <div class="col-lg-6">
-                <div class="card shadow-sm">
-                    <div class="card-header fw-semibold">Add User</div>
+    <div class="container-fluid py-4 admin-form-page" data-mobile-back-url="{{ route('admin.users.index') }}" data-mobile-back-label="Back to Users">
+        @include('admin.partials.crud-form-shell', [
+            'title' => 'Add User',
+            'subtitle' => 'Create a new user account',
+            'backUrl' => route('admin.users.index'),
+            'backLabel' => 'Back to Users',
+            'formId' => 'userForm',
+            'submitLabel' => 'Create User',
+            'sections' => [
+                ['id' => 'section-profile', 'label' => 'Profile', 'icon' => 'fa-user'],
+            ],
+        ])
+
+        <div class="row justify-content-center admin-form-main-row">
+            <div class="col-lg-6 admin-form-main">
+                <div class="card shadow-sm" id="section-profile">
+                    <div class="card-header fw-semibold">User Details</div>
                     <div class="card-body">
-                        <form action="{{ route('admin.users.store') }}" method="POST">
+                        <form id="userForm" action="{{ route('admin.users.store') }}" method="POST">
                             @csrf
                             <div class="mb-3">
                                 <label class="form-label">Name</label>
-                                <input type="text" name="name" class="form-control" value="{{ old('name') }}"
-                                    required>
+                                <input type="text" name="name" class="form-control" value="{{ old('name') }}" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Email</label>
-                                <input type="email" name="email" class="form-control" value="{{ old('email') }}"
-                                    required>
+                                <input type="email" name="email" class="form-control" value="{{ old('email') }}" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Country</label>
@@ -30,21 +40,19 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Phone Number</label>
-                                <input type="tel" name="phone" class="form-control" value="{{ old('phone') }}"
-                                    placeholder="+1234567890" required>
+                                <input type="tel" name="phone" class="form-control" value="{{ old('phone') }}" placeholder="+1234567890" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Password</label>
                                 <input type="password" name="password" class="form-control" required>
                             </div>
                             <div class="mb-3 form-check">
-                                <input type="checkbox" name="is_active" class="form-check-input" id="activeUser"
-                                    value="1" checked>
+                                <input type="checkbox" name="is_active" class="form-check-input" id="activeUser" value="1" checked>
                                 <label class="form-check-label" for="activeUser">Active</label>
                             </div>
-                            <div class="text-end">
+                            <div class="text-end d-none d-lg-block">
                                 <a href="{{ route('admin.users.index') }}" class="btn btn-secondary me-2">Cancel</a>
-                                <button class="btn btn-primary">Create</button>
+                                <button class="btn btn-primary">Create User</button>
                             </div>
                         </form>
                     </div>

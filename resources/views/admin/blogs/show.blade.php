@@ -3,27 +3,20 @@
 @section('title', 'View Blog Post')
 
 @section('content')
-    <div class="container-fluid">
-        <!-- Page Header -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h1 class="h3 mb-0 text-gray-800">View Blog Post</h1>
-                <p class="text-muted">Blog post details and statistics</p>
-            </div>
-            <div class="d-flex gap-2">
-                <a href="{{ route('admin.blogs.edit', $blog) }}" class="btn btn-primary">
-                    <i class="fas fa-edit me-1"></i> Edit Post
-                </a>
-                <a href="{{ route('admin.blogs.index') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left me-1"></i> Back to Blogs
-                </a>
-            </div>
-        </div>
+    <div class="container-fluid py-4 admin-detail-page">
+        @include('admin.partials.detail-page-header', [
+            'title' => $blog->title,
+            'subtitle' => 'Blog Post · ' . ucfirst($blog->status),
+            'backUrl' => route('admin.blogs.index'),
+            'backLabel' => 'Blogs',
+            'primaryUrl' => route('admin.blogs.edit', $blog),
+            'primaryLabel' => 'Edit Post',
+        ])
 
-        <div class="row">
-            <div class="col-lg-8">
+        <div class="row admin-detail-main-row">
+            <div class="col-lg-8 order-lg-1">
                 <!-- Blog Content -->
-                <div class="card shadow">
+                <div class="card shadow" id="detail-section-content">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary">Blog Content</h6>
                     </div>
@@ -77,7 +70,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-4">
+            <div class="col-lg-4 order-lg-2 mb-4">
                 <!-- Blog Stats -->
                 <div class="card shadow">
                     <div class="card-header py-3">

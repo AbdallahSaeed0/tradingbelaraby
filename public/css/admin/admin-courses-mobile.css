@@ -172,6 +172,13 @@
 
 .admin-course-mobile-card__footer .admin-course-actions .btn-sm {
     padding: 0.35rem 0.5rem;
+    border-width: 1px;
+    border-style: solid;
+}
+
+.admin-course-mobile-card__footer .admin-course-actions .btn-outline-secondary {
+    border-color: var(--admin-active-text, #0d6efd);
+    color: var(--admin-active-text, #6ea8fe);
 }
 
 .admin-course-mobile-card__footer .dropdown-toggle::after {

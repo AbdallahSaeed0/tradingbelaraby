@@ -3,22 +3,20 @@
 @section('title', 'Create Blog Post')
 
 @section('content')
-    <div class="container-fluid">
-        <!-- Page Header -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h1 class="h3 mb-0 text-gray-800">Create Blog Post</h1>
-                <p class="text-muted">Add a new blog post to your website</p>
-            </div>
-            <div class="d-flex gap-2">
-                <a href="{{ route('admin.blogs.index') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left me-1"></i> Back to Blogs
-                </a>
-                <button type="submit" form="blogForm" class="btn btn-primary">
-                    <i class="fas fa-save me-1"></i> Create Blog
-                </button>
-            </div>
-        </div>
+    <div class="container-fluid py-4 admin-form-page" data-mobile-back-url="{{ route('admin.blogs.index') }}" data-mobile-back-label="Back to Blogs">
+        @include('admin.partials.crud-form-shell', [
+            'title' => 'Create Blog Post',
+            'subtitle' => 'Add a new blog post to your website',
+            'backUrl' => route('admin.blogs.index'),
+            'backLabel' => 'Back to Blogs',
+            'formId' => 'blogForm',
+            'submitLabel' => 'Create Blog',
+            'sections' => [
+                ['id' => 'section-content', 'label' => 'Content', 'icon' => 'fa-file-alt'],
+                ['id' => 'section-seo', 'label' => 'SEO', 'icon' => 'fa-search'],
+                ['id' => 'section-publish', 'label' => 'Publish', 'icon' => 'fa-cog'],
+            ],
+        ])
 
         @if (session('error'))
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -42,10 +40,10 @@
         <form id="blogForm" action="{{ route('admin.blogs.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
-            <div class="row">
-                <div class="col-lg-8">
+            <div class="row admin-form-main-row">
+                <div class="col-lg-8 admin-form-main order-lg-2">
                     <!-- Language Tabs -->
-                    <div class="card shadow mb-4">
+                    <div class="card shadow mb-4" id="section-content">
                         <div class="card-header py-3">
                             <h6 class="m-0 font-weight-bold text-primary">Blog Content</h6>
                         </div>
@@ -179,7 +177,7 @@
                     </div>
 
                     <!-- SEO Section -->
-                    <div class="seo-section">
+                    <div class="seo-section card shadow mb-4" id="section-seo">
                         <h5 class="mb-3"><i class="fas fa-search me-2"></i>SEO Settings</h5>
 
                         <!-- Language Tabs for SEO -->
@@ -260,9 +258,9 @@
                     </div>
                 </div>
 
-                <div class="col-lg-4">
+                <div class="col-lg-4 admin-form-sidebar order-lg-1">
                     <!-- Blog Settings -->
-                    <div class="card shadow mb-4">
+                    <div class="card shadow mb-4" id="section-publish">
                         <div class="card-header py-3">
                             <h6 class="m-0 font-weight-bold text-primary">Blog Settings</h6>
                         </div>

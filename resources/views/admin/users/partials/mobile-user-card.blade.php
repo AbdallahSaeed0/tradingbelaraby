@@ -19,7 +19,7 @@
 
     $actionsHtml = '<a href="' . route('admin.users.show', $user) . '" class="btn btn-sm btn-outline-primary" title="View"><i class="fa fa-eye"></i></a>'
         . '<a href="' . route('admin.users.enrollments-report', $user) . '" class="btn btn-sm btn-outline-success" title="Enrollments"><i class="fa fa-chart-bar"></i></a>'
-        . '<a href="' . route('admin.users.edit', $user) . '" class="btn btn-sm btn-outline-secondary" title="Edit"><i class="fa fa-edit"></i></a>';
+        . '<a href="' . route('admin.users.edit', $user) . '" class="btn btn-sm btn-outline-primary" title="Edit"><i class="fa fa-edit"></i></a>';
 @endphp
 
 @include('admin.partials.mobile-data-card', [

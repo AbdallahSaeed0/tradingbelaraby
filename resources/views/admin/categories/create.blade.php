@@ -3,18 +3,29 @@
 @section('title', 'Add Category')
 
 @section('content')
-    <div class="container-fluid">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="card shadow-sm">
-                    <div class="card-header fw-semibold">
-                        <i class="fas fa-plus-circle me-2"></i>Add Category
-                    </div>
-                    <div class="card-body">
-                        <form action="{{ route('admin.categories.store') }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            <div class="row">
-                                <div class="col-md-8">
+    <div class="container-fluid py-4 admin-form-page" data-mobile-back-url="{{ route('admin.categories.index') }}" data-mobile-back-label="Back to Categories">
+        @include('admin.partials.crud-form-shell', [
+            'title' => 'Add Category',
+            'subtitle' => 'Create a new course category',
+            'backUrl' => route('admin.categories.index'),
+            'backLabel' => 'Back to Categories',
+            'formId' => 'categoryForm',
+            'submitLabel' => 'Create Category',
+            'sections' => [
+                ['id' => 'section-basics', 'label' => 'Basics', 'icon' => 'fa-info-circle'],
+                ['id' => 'section-media', 'label' => 'Image', 'icon' => 'fa-image'],
+            ],
+        ])
+
+        <form id="categoryForm" action="{{ route('admin.categories.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <div class="row admin-form-main-row">
+                <div class="col-lg-8 admin-form-main order-lg-2">
+                    <div class="card shadow-sm mb-4" id="section-basics">
+                        <div class="card-header fw-semibold">
+                            <i class="fas fa-info-circle me-2"></i>Category Details
+                        </div>
+                        <div class="card-body">
                                     <div class="mb-3">
                                         @include('admin.courses.partials.multilingual-fields', [
                                             'fieldName' => 'name',
@@ -51,9 +62,16 @@
                                         <small class="text-muted">Featured categories will be highlighted on the
                                             homepage</small>
                                     </div>
-                                </div>
+                        </div>
+                    </div>
+                </div>
 
-                                <div class="col-md-4">
+                <div class="col-lg-4 admin-form-sidebar order-lg-1">
+                    <div class="card shadow-sm mb-4" id="section-media">
+                        <div class="card-header fw-semibold">
+                            <i class="fas fa-image me-2"></i>Category Image
+                        </div>
+                        <div class="card-body">
                                     <div class="mb-3">
                                         <label class="form-label">Category Image</label>
                                         <div class="image-upload-container">
@@ -70,22 +88,20 @@
                                             <small class="text-muted">Recommended size: 400x300px. Max size: 2MB</small>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-
-                            <div class="text-end">
-                                <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary me-2">
-                                    <i class="fas fa-arrow-left me-1"></i>Cancel
-                                </a>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save me-1"></i>Create Category
-                                </button>
-                            </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+
+            <div class="text-end d-none d-lg-block">
+                <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary me-2">
+                    <i class="fas fa-arrow-left me-1"></i>Cancel
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-1"></i>Create Category
+                </button>
+            </div>
+        </form>
     </div>
 @endsection
 
