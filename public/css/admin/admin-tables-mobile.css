@@ -28,14 +28,25 @@
 
     main .table-responsive.admin-table-mobile > table tbody tr,
     main .table-responsive.admin-table-mobile > .table tbody tr {
-        display: block !important;
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 0.75rem;
+        row-gap: 0;
         width: 100% !important;
-        margin-bottom: 0.85rem;
-        padding: 0.85rem;
+        margin-bottom: 0.75rem;
+        padding: 0.75rem;
         background: var(--admin-card-bg, #fff) !important;
         border: 1px solid var(--admin-border, #dee2e6) !important;
         border-radius: 0.5rem;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    }
+
+    main .table-responsive.admin-table-mobile tbody td.admin-table-mobile-skip-label,
+    main .table-responsive.admin-table-mobile tbody td.col-course,
+    main .table-responsive.admin-table-mobile tbody td.col-instructor,
+    main .table-responsive.admin-table-mobile tbody td.col-actions,
+    main .table-responsive.admin-table-mobile tbody td:last-child {
+        grid-column: 1 / -1;
     }
 
     main .table-responsive.admin-table-mobile > table tbody tr:hover,
@@ -54,7 +65,7 @@
         width: 100% !important;
         max-width: 100% !important;
         min-width: 0 !important;
-        padding: 0.55rem 0 !important;
+        padding: 0.4rem 0 !important;
         border: 0 !important;
         text-align: start !important;
         font-size: 0.875rem;
@@ -133,6 +144,11 @@
         white-space: normal !important;
         overflow: visible !important;
         text-overflow: unset !important;
+        display: -webkit-box !important;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden !important;
+        line-height: 1.4;
     }
 
     main .table-responsive.admin-table-mobile .instructor-name-text,

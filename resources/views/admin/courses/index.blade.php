@@ -213,7 +213,7 @@
                                             <div class="min-w-0 flex-grow-1 overflow-hidden">
                                                 <h6 class="mb-0 course-title-text" title="{{ $course->name }}">{{ $course->name }}</h6>
                                                 <small
-                                                    class="text-muted d-block course-desc-text" title="{{ $course->description }}">{{ Str::limit($course->description, 40) }}</small>
+                                                    class="text-muted d-block course-desc-text" title="{{ $course->description }}">{{ Str::limit(strip_tags($course->description ?? ''), 160) }}</small>
                                                 <div class="course-stats mt-1 small">
                                                     <span class="me-2">
                                                         <i class="fa fa-play-circle me-1"></i>{{ $course->total_lessons }}
