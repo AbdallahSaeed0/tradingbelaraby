@@ -68,9 +68,22 @@
         'admin.blog-categories.*',
         'admin.blogs.*'
     );
+    $isAdminDetailPage = request()->routeIs(
+        'admin.courses.show',
+        'admin.admins.show',
+        'admin.admin-types.show',
+        'admin.users.show',
+        'admin.subscribers.show',
+        'admin.traders.show',
+        'admin.coupons.show',
+        'admin.questions-answers.show',
+        'admin.blog-categories.show',
+        'admin.blogs.show'
+    );
+    $isAdminCourseDetailPage = request()->routeIs('admin.courses.show');
 @endphp
 
-<body class="bg-light @yield('body_class'){{ $isAdminSettingsPage ? ' admin-settings-page' : '' }}{{ $isAdminListPage ? ' admin-list-page admin-form-page' : '' }}">
+<body class="bg-light @yield('body_class'){{ $isAdminSettingsPage ? ' admin-settings-page' : '' }}{{ $isAdminListPage ? ' admin-list-page admin-form-page' : '' }}{{ $isAdminDetailPage ? ' admin-detail-page' : '' }}{{ $isAdminCourseDetailPage ? ' admin-course-detail-page' : '' }}">
     <!-- Top Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm admin-top-navbar">
         <div class="container-fluid admin-navbar-inner">

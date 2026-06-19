@@ -442,12 +442,16 @@
         border: 1px solid var(--admin-border, #dee2e6);
         border-radius: 0.75rem;
         overflow: hidden;
+        max-width: 100%;
     }
 
     body.admin-course-detail-page .admin-course-detail-hero__img {
         width: 100%;
+        max-width: 100%;
+        height: 180px;
         max-height: 180px;
         object-fit: cover;
+        object-position: center;
         display: block;
     }
 
