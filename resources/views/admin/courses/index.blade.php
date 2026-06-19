@@ -175,19 +175,19 @@
                     <table class="table table-hover table-striped courses-admin-table">
                         <thead>
                             <tr>
-                                <th class="col-select" width="50">
+                                <th class="col-select" width="50" data-label="">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="selectAll">
                                     </div>
                                 </th>
-                                <th class="col-course">Course</th>
-                                <th class="col-category">Category</th>
-                                <th class="col-instructor">Instructor</th>
-                                <th class="col-price">Price</th>
-                                <th class="col-students">Students</th>
-                                <th class="col-status">Status</th>
-                                <th class="col-created">Created</th>
-                                <th class="col-actions" width="150">Actions</th>
+                                <th class="col-course" data-label="Course">Course</th>
+                                <th class="col-category" data-label="Category">Category</th>
+                                <th class="col-instructor" data-label="Instructor">Instructor</th>
+                                <th class="col-price" data-label="Price">Price</th>
+                                <th class="col-students" data-label="Students">Students</th>
+                                <th class="col-status" data-label="Status">Status</th>
+                                <th class="col-created" data-label="Created">Created</th>
+                                <th class="col-actions" width="150" data-label="Actions">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -298,7 +298,7 @@
                                         <small
                                             class="text-muted d-block">{{ $course->created_at->diffForHumans() }}</small>
                                     </td>
-                                    <td>
+                                    <td class="col-actions">
                                         <div class="action-buttons">
                                             <a href="{{ route('admin.courses.show', $course) }}"
                                                 class="btn btn-sm btn-outline-primary" title="View">
@@ -441,63 +441,65 @@
 @endsection
 @push('styles')
     <style>
-        .courses-admin-table {
-            table-layout: fixed;
-            width: 100%;
-        }
+        @media (min-width: 992px) {
+            .courses-admin-table {
+                table-layout: fixed;
+                width: 100%;
+            }
 
-        .courses-admin-table th,
-        .courses-admin-table td {
-            overflow: hidden;
-            vertical-align: middle;
-        }
+            .courses-admin-table th,
+            .courses-admin-table td {
+                overflow: hidden;
+                vertical-align: middle;
+            }
 
-        .courses-admin-table .col-course {
-            width: 28%;
-        }
+            .courses-admin-table .col-course {
+                width: 28%;
+            }
 
-        .courses-admin-table .col-category {
-            width: 11%;
-        }
+            .courses-admin-table .col-category {
+                width: 11%;
+            }
 
-        .courses-admin-table .col-instructor {
-            width: 14%;
-        }
+            .courses-admin-table .col-instructor {
+                width: 14%;
+            }
 
-        .courses-admin-table .col-price {
-            width: 9%;
-        }
+            .courses-admin-table .col-price {
+                width: 9%;
+            }
 
-        .courses-admin-table .col-students {
-            width: 8%;
-        }
+            .courses-admin-table .col-students {
+                width: 8%;
+            }
 
-        .courses-admin-table .col-status {
-            width: 9%;
-        }
+            .courses-admin-table .col-status {
+                width: 9%;
+            }
 
-        .courses-admin-table .col-created {
-            width: 10%;
-        }
+            .courses-admin-table .col-created {
+                width: 10%;
+            }
 
-        .course-name-cell .course-title-text {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            word-break: break-word;
-            line-height: 1.35;
-        }
+            .course-name-cell .course-title-text {
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                word-break: break-word;
+                line-height: 1.35;
+            }
 
-        .course-name-cell .course-desc-text {
-            display: block;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
+            .course-name-cell .course-desc-text {
+                display: block;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
 
-        .courses-admin-table .instructor-name-text {
-            min-width: 0;
+            .courses-admin-table .instructor-name-text {
+                min-width: 0;
+            }
         }
     </style>
 @endpush
@@ -600,7 +602,7 @@
 
                 // Show loading state
                 if (tableBody) {
-                    tableBody.innerHTML = '<tr><td colspan="8" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
+                    tableBody.innerHTML = '<tr><td colspan="9" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
                 }
 
                 fetch(`{{ route('admin.courses.index') }}?${params.toString()}`, {
@@ -642,11 +644,14 @@
 
                         // Re-attach event listeners
                         setupCheckboxes();
+                        if (typeof window.initAdminMobileTables === 'function') {
+                            window.initAdminMobileTables();
+                        }
                     })
                     .catch(error => {
                         console.error('Error:', error);
                         if (tableBody) {
-                            tableBody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-danger">Error loading data. Please try again.</td></tr>';
+                            tableBody.innerHTML = '<tr><td colspan="9" class="text-center py-4 text-danger">Error loading data. Please try again.</td></tr>';
                         }
                     });
             }

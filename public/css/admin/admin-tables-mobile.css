@@ -1,0 +1,183 @@
+/* Admin tables — mobile card layout (loaded after page styles) */
+
+@media (max-width: 991.98px) {
+    main .table-responsive.admin-table-mobile {
+        overflow: visible !important;
+        border: 0;
+    }
+
+    main .table-responsive.admin-table-mobile > table,
+    main .table-responsive.admin-table-mobile > .table {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        table-layout: auto !important;
+        border: 0 !important;
+    }
+
+    main .table-responsive.admin-table-mobile > table thead,
+    main .table-responsive.admin-table-mobile > .table thead {
+        display: none !important;
+    }
+
+    main .table-responsive.admin-table-mobile > table tbody,
+    main .table-responsive.admin-table-mobile > .table tbody {
+        display: block !important;
+        width: 100% !important;
+    }
+
+    main .table-responsive.admin-table-mobile > table tbody tr,
+    main .table-responsive.admin-table-mobile > .table tbody tr {
+        display: block !important;
+        width: 100% !important;
+        margin-bottom: 0.85rem;
+        padding: 0.85rem;
+        background: var(--admin-card-bg, #fff) !important;
+        border: 1px solid var(--admin-border, #dee2e6) !important;
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    }
+
+    main .table-responsive.admin-table-mobile > table tbody tr:hover,
+    main .table-responsive.admin-table-mobile > .table tbody tr:hover {
+        background: var(--admin-card-bg, #fff) !important;
+    }
+
+    main .table-responsive.admin-table-mobile > table.table-striped tbody tr:nth-of-type(odd),
+    main .table-responsive.admin-table-mobile > .table.table-striped tbody tr:nth-of-type(odd) {
+        background-color: var(--admin-card-bg, #fff) !important;
+    }
+
+    main .table-responsive.admin-table-mobile > table tbody td,
+    main .table-responsive.admin-table-mobile > .table tbody td {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        padding: 0.55rem 0 !important;
+        border: 0 !important;
+        text-align: start !important;
+        font-size: 0.875rem;
+        overflow: visible !important;
+        word-break: normal !important;
+        white-space: normal !important;
+        vertical-align: top !important;
+    }
+
+    main .table-responsive.admin-table-mobile > table tbody td::before,
+    main .table-responsive.admin-table-mobile > .table tbody td::before {
+        content: attr(data-label);
+        display: block;
+        font-weight: 600;
+        font-size: 0.72rem;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        color: var(--admin-text-muted, #6c757d);
+        margin-bottom: 0.35rem;
+    }
+
+    main .table-responsive.admin-table-mobile > table tbody td[data-label=""]::before,
+    main .table-responsive.admin-table-mobile > table tbody td.admin-table-mobile-skip-label::before,
+    main .table-responsive.admin-table-mobile > .table tbody td[data-label=""]::before,
+    main .table-responsive.admin-table-mobile > .table tbody td.admin-table-mobile-skip-label::before {
+        content: none !important;
+        display: none !important;
+        margin: 0 !important;
+    }
+
+    main .table-responsive.admin-table-mobile > table tbody td.admin-table-mobile-skip-label,
+    main .table-responsive.admin-table-mobile > .table tbody td.admin-table-mobile-skip-label {
+        padding-top: 0 !important;
+        padding-bottom: 0.35rem !important;
+    }
+
+    /* Reset desktop column width classes */
+    main .table-responsive.admin-table-mobile .col-select,
+    main .table-responsive.admin-table-mobile .col-course,
+    main .table-responsive.admin-table-mobile .col-category,
+    main .table-responsive.admin-table-mobile .col-instructor,
+    main .table-responsive.admin-table-mobile .col-price,
+    main .table-responsive.admin-table-mobile .col-students,
+    main .table-responsive.admin-table-mobile .col-status,
+    main .table-responsive.admin-table-mobile .col-created,
+    main .table-responsive.admin-table-mobile .col-actions {
+        width: 100% !important;
+    }
+
+    main .table-responsive.admin-table-mobile .d-flex {
+        flex-wrap: wrap !important;
+        justify-content: flex-start !important;
+        max-width: 100% !important;
+    }
+
+    main .table-responsive.admin-table-mobile .course-name-cell,
+    main .table-responsive.admin-table-mobile .min-w-0,
+    main .table-responsive.admin-table-mobile .overflow-hidden {
+        overflow: visible !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }
+
+    main .table-responsive.admin-table-mobile .course-title-text {
+        display: block !important;
+        -webkit-line-clamp: unset !important;
+        -webkit-box-orient: unset !important;
+        overflow: visible !important;
+        white-space: normal !important;
+        word-break: normal !important;
+        font-size: 0.95rem;
+        font-weight: 600;
+    }
+
+    main .table-responsive.admin-table-mobile .course-desc-text {
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: unset !important;
+    }
+
+    main .table-responsive.admin-table-mobile .instructor-name-text,
+    main .table-responsive.admin-table-mobile .text-truncate {
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: unset !important;
+        max-width: 100% !important;
+    }
+
+    main .table-responsive.admin-table-mobile .course-thumbnail {
+        width: 56px !important;
+        height: 40px !important;
+        flex-shrink: 0;
+    }
+
+    main .table-responsive.admin-table-mobile .btn-sm {
+        padding: 0.4rem 0.6rem;
+    }
+
+    main .table-responsive.admin-table-mobile tbody td:last-child,
+    main .table-responsive.admin-table-mobile tbody td.col-actions {
+        border-top: 1px solid var(--admin-border, #dee2e6) !important;
+        margin-top: 0.35rem;
+        padding-top: 0.75rem !important;
+    }
+
+    main .table-responsive.admin-table-mobile tbody td:last-child::before,
+    main .table-responsive.admin-table-mobile tbody td.col-actions::before {
+        margin-bottom: 0.5rem;
+    }
+
+    main .table-responsive.admin-table-mobile .action-buttons,
+    main .table-responsive.admin-table-mobile tbody td .d-flex.gap-1 {
+        justify-content: flex-start !important;
+        flex-wrap: wrap;
+        gap: 0.35rem !important;
+    }
+
+    main .table-responsive:not(.admin-table-mobile) {
+        -webkit-overflow-scrolling: touch;
+    }
+
+    main .table-responsive:not(.admin-table-mobile) > table,
+    main .table-responsive:not(.admin-table-mobile) > .table {
+        min-width: 640px;
+    }
+}

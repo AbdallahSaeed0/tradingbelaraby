@@ -42,6 +42,7 @@
     <link rel="stylesheet" href="{{ asset('css/utilities-extended.css') }}">
 
     @stack('styles')
+    <link rel="stylesheet" href="{{ asset('css/admin/admin-tables-mobile.css') }}">
 </head>
 
 <body class="bg-light @yield('body_class')">
@@ -402,21 +403,53 @@
         });
 
         // Mobile tables: add column labels for card layout
+        function getAdminTableHeaderLabel(th) {
+            if (th.getAttribute('data-label')) {
+                return th.getAttribute('data-label').trim();
+            }
+
+            var clone = th.cloneNode(true);
+            clone.querySelectorAll('input, button, .form-check, .dropdown, .btn').forEach(function(el) {
+                el.remove();
+            });
+            var text = clone.textContent.replace(/\s+/g, ' ').trim();
+            if (text) {
+                return text;
+            }
+
+            var classLabelMap = {
+                'col-select': '',
+                'col-course': 'Course',
+                'col-category': 'Category',
+                'col-instructor': 'Instructor',
+                'col-price': 'Price',
+                'col-students': 'Students',
+                'col-status': 'Status',
+                'col-created': 'Created',
+                'col-actions': 'Actions'
+            };
+
+            for (var i = 0; i < th.classList.length; i++) {
+                var cls = th.classList[i];
+                if (Object.prototype.hasOwnProperty.call(classLabelMap, cls)) {
+                    return classLabelMap[cls];
+                }
+            }
+
+            return '';
+        }
+
         function initAdminMobileTables() {
             document.querySelectorAll('main .table-responsive').forEach(function(wrapper) {
-                var table = wrapper.querySelector(':scope > table');
+                var table = wrapper.firstElementChild;
+                if (!table || table.tagName !== 'TABLE') {
+                    table = wrapper.querySelector('table');
+                }
                 if (!table || !table.tHead || !table.tHead.rows.length) {
                     return;
                 }
 
-                var headers = Array.from(table.tHead.rows[0].cells).map(function(th) {
-                    var clone = th.cloneNode(true);
-                    clone.querySelectorAll('input, button, .form-check').forEach(function(el) {
-                        el.remove();
-                    });
-                    return clone.textContent.replace(/\s+/g, ' ').trim();
-                });
-
+                var headers = Array.from(table.tHead.rows[0].cells).map(getAdminTableHeaderLabel);
                 if (!headers.length) {
                     return;
                 }
@@ -425,19 +458,26 @@
 
                 Array.from(table.tBodies).forEach(function(tbody) {
                     Array.from(tbody.rows).forEach(function(row) {
-                        Array.from(row.cells).forEach(function(cell, index) {
-                            if (!cell.getAttribute('data-label')) {
-                                cell.setAttribute('data-label', headers[index] || '');
-                            }
+                        if (row.cells.length !== headers.length) {
+                            return;
+                        }
 
-                            if (!headers[index]) {
+                        Array.from(row.cells).forEach(function(cell, index) {
+                            var label = headers[index] || '';
+                            cell.setAttribute('data-label', label);
+
+                            if (!label) {
                                 cell.classList.add('admin-table-mobile-skip-label');
+                            } else {
+                                cell.classList.remove('admin-table-mobile-skip-label');
                             }
                         });
                     });
                 });
             });
         }
+
+        window.initAdminMobileTables = initAdminMobileTables;
 
         // Close sidebar after navigation on mobile/tablet
         function initAdminSidebarMobile() {
