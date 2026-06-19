@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\CourseResource;
 use App\Models\Course;
 use App\Models\WishlistItem;
-use App\Support\Platform;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -20,7 +19,6 @@ class WishlistController extends Controller
         $user = $request->user();
         $wishlistItems = $user->wishlistItems()->with('course.category', 'course.instructor')->get();
 
-        // Filter out null courses (in case a course was deleted)
         $courses = $wishlistItems
             ->map(function ($item) {
                 return $item->course;
@@ -29,12 +27,6 @@ class WishlistController extends Controller
                 return $course !== null;
             })
             ->values();
-
-        if (Platform::isIOS($request)) {
-            $courses = $courses->filter(function ($course) {
-                return $course->is_free && (float) $course->price <= 0;
-            })->values();
-        }
 
         return response()->json([
             'success' => true,
@@ -57,14 +49,6 @@ class WishlistController extends Controller
             ], 404);
         }
 
-        if (Platform::isIOS($request) && (! $course->is_free || (float) $course->price > 0)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Paid courses are not available on this platform.',
-            ], 403);
-        }
-
-        // Check if already in wishlist
         if ($user->hasInWishlist($course)) {
             return response()->json([
                 'success' => false,
@@ -72,7 +56,6 @@ class WishlistController extends Controller
             ], 400);
         }
 
-        // Add to wishlist
         WishlistItem::create([
             'user_id' => $user->id,
             'course_id' => $course->id,
@@ -100,7 +83,6 @@ class WishlistController extends Controller
             ], 404);
         }
 
-        // Remove from wishlist
         $deleted = $user->wishlistItems()->where('course_id', $course->id)->delete();
 
         if (!$deleted) {
@@ -131,22 +113,11 @@ class WishlistController extends Controller
             ], 404);
         }
 
-        if (Platform::isIOS($request) && (! $course->is_free || (float) $course->price > 0)) {
-            if (! $user->hasInWishlist($course)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Paid courses are not available on this platform.',
-                ], 403);
-            }
-        }
-
         if ($user->hasInWishlist($course)) {
-            // Remove from wishlist
             $user->wishlistItems()->where('course_id', $course->id)->delete();
             $message = 'Course removed from wishlist';
             $inWishlist = false;
         } else {
-            // Add to wishlist
             WishlistItem::create([
                 'user_id' => $user->id,
                 'course_id' => $course->id,
@@ -181,15 +152,6 @@ class WishlistController extends Controller
                     'in_wishlist' => false,
                 ],
             ], 404);
-        }
-
-        if (Platform::isIOS($request) && (! $course->is_free || (float) $course->price > 0)) {
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'in_wishlist' => false,
-                ],
-            ]);
         }
 
         $inWishlist = $user->hasInWishlist($course);

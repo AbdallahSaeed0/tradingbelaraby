@@ -9,9 +9,9 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\CourseEnrollment;
 use App\Models\Coupon;
-use App\Support\Platform;
 use App\Support\CheckoutPricing;
 use App\Services\Payment\PayPalService;
+use App\Services\Payment\AppleIapService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -24,7 +24,7 @@ class OrderController extends Controller
     /**
      * Create a new order
      */
-    public function store(Request $request, PayPalService $paypalService): JsonResponse
+    public function store(Request $request, PayPalService $paypalService, AppleIapService $appleIapService): JsonResponse
     {
         $user = Auth::user();
         
@@ -38,9 +38,11 @@ class OrderController extends Controller
         $request->validate([
             'course_ids'            => 'required|array|min:1',
             'course_ids.*'          => 'exists:courses,id',
-            'payment_method'        => 'required|in:visa,free,cash_on_delivery,paypal,bank_transfer',
+            'payment_method'        => 'required|in:visa,free,cash_on_delivery,paypal,bank_transfer,apple_iap',
             'coupon_code'           => 'nullable|string|max:50',
             'transaction_reference' => 'nullable|string|max:255',
+            'apple_receipt'         => 'required_if:payment_method,apple_iap|string',
+            'apple_transaction_id'  => 'required_if:payment_method,apple_iap|string|max:255',
         ]);
 
         DB::beginTransaction();
@@ -55,14 +57,47 @@ class OrderController extends Controller
                 ], 400);
             }
 
-            if (Platform::isIOS($request)) {
-                $hasPaidCourse = $courses->contains(fn ($course) => !$course->is_free && (float) $course->price > 0);
-                if ($hasPaidCourse) {
+            if ($request->payment_method === 'apple_iap') {
+                if ($courses->count() !== 1) {
                     DB::rollBack();
                     return response()->json([
                         'success' => false,
-                        'message' => 'Paid courses are not available on this platform.',
-                    ], 403);
+                        'message' => 'App Store purchases must be completed one course at a time.',
+                    ], 422);
+                }
+
+                $course = $courses->first();
+                if ($course->is_free || (float) $course->price <= 0) {
+                    DB::rollBack();
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'This course does not require App Store purchase.',
+                    ], 422);
+                }
+
+                $existingOrder = Order::where('payment_gateway_id', $request->apple_transaction_id)->first();
+                if ($existingOrder) {
+                    DB::rollBack();
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Order already processed.',
+                        'data' => new OrderResource($existingOrder->load('items')),
+                    ], 200);
+                }
+
+                try {
+                    $appleIapService->verifyPurchase(
+                        (string) $request->apple_receipt,
+                        (string) $request->apple_transaction_id,
+                        $appleIapService->expectedProductIdForCourse($course->id),
+                    );
+                } catch (\Throwable $e) {
+                    DB::rollBack();
+                    Log::warning('Apple IAP verification failed: ' . $e->getMessage());
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'App Store purchase verification failed.',
+                    ], 402);
                 }
             }
 
@@ -71,8 +106,8 @@ class OrderController extends Controller
             $discountAmount = 0;
             $couponId = null;
 
-            // Apply coupon if provided
-            if ($request->coupon_code) {
+            // Apply coupon if provided (not for App Store purchases)
+            if ($request->coupon_code && $request->payment_method !== 'apple_iap') {
                 $coupon = Coupon::where('code', strtoupper($request->coupon_code))->first();
                 if ($coupon && $coupon->isValidForUser($user)) {
                     $discountAmount = $coupon->calculateDiscount($subtotal);
@@ -97,6 +132,16 @@ class OrderController extends Controller
                 ], 400);
             }
 
+            $initialStatus = match ($request->payment_method) {
+                'cash_on_delivery' => 'pending',
+                'apple_iap' => 'completed',
+                default => $total == 0 ? 'completed' : 'pending',
+            };
+
+            $paymentGatewayId = $request->payment_method === 'apple_iap'
+                ? (string) $request->apple_transaction_id
+                : null;
+
             // Generate order number
             $orderNumber = 'ORD-' . strtoupper(Str::random(8)) . '-' . now()->format('Ymd');
 
@@ -110,8 +155,8 @@ class OrderController extends Controller
                 'discount_amount' => $discountAmount,
                 'coupon_id' => $couponId,
                 'payment_method' => $request->payment_method,
-                'payment_gateway_id' => null,
-                'status' => $request->payment_method === 'cash_on_delivery' ? 'pending' : ($total == 0 ? 'completed' : 'pending'),
+                'payment_gateway_id' => $paymentGatewayId,
+                'status' => $initialStatus,
                 'billing_email' => $user->email,
                 'billing_first_name' => $parts[0] ?? '',
                 'billing_last_name' => $parts[1] ?? '',
@@ -174,8 +219,8 @@ class OrderController extends Controller
                 }
             }
 
-            // If cash-on-delivery, bank_transfer, or free (not PayPal), create enrollments
-            if (in_array($request->payment_method, ['cash_on_delivery', 'bank_transfer']) || $total == 0) {
+            // If cash-on-delivery, bank_transfer, apple_iap, or free (not PayPal), create enrollments
+            if (in_array($request->payment_method, ['cash_on_delivery', 'bank_transfer', 'apple_iap']) || $total == 0) {
                 foreach ($courses as $course) {
                     $existingEnrollment = CourseEnrollment::where('user_id', $user->id)
                         ->where('course_id', $course->id)
@@ -187,21 +232,25 @@ class OrderController extends Controller
                             'course_id'          => $course->id,
                             'transaction_id'     => $request->payment_method === 'bank_transfer' && $request->transaction_reference
                                 ? $request->transaction_reference
-                                : $order->order_number,
-                            'status'             => $total == 0 ? 'active' : 'pending',
-                            'enrolled_at'        => $total == 0 ? now() : null,
+                                : ($request->payment_method === 'apple_iap'
+                                    ? (string) $request->apple_transaction_id
+                                    : $order->order_number),
+                            'status'             => in_array($request->payment_method, ['apple_iap']) || $total == 0 ? 'active' : 'pending',
+                            'enrolled_at'        => in_array($request->payment_method, ['apple_iap']) || $total == 0 ? now() : null,
                             'progress_percentage'=> 0,
                             'payment_method'     => $request->payment_method,
                             'amount_paid'        => $paidByCourse['course_' . $course->id] ?? $course->price,
                             'notes'              => $request->payment_method === 'bank_transfer'
                                 ? 'Bank transfer reference: ' . ($request->transaction_reference ?? 'Not provided')
-                                : null,
+                                : ($request->payment_method === 'apple_iap'
+                                    ? 'Verified App Store purchase'
+                                    : null),
                         ]);
                     }
                 }
             }
 
-            if ($total == 0) {
+            if ($total == 0 || $request->payment_method === 'apple_iap') {
                 $order->update(['status' => 'completed']);
             }
 
@@ -211,13 +260,15 @@ class OrderController extends Controller
                 'success' => true,
                 'message' => $total == 0
                     ? 'Order created and enrollment completed successfully'
-                    : ($request->payment_method === 'paypal'
+                    : ($request->payment_method === 'apple_iap'
+                        ? 'App Store purchase completed successfully.'
+                        : ($request->payment_method === 'paypal'
                         ? 'Complete your payment in the browser.'
                         : ($request->payment_method === 'cash_on_delivery'
                             ? 'Order created. Enrollment will be activated after payment confirmation.'
                             : ($request->payment_method === 'bank_transfer'
                                 ? 'Your order has been received. Enrollment will be activated once your bank transfer is confirmed by the admin.'
-                                : 'Order created successfully'))),
+                                : 'Order created successfully')))),
                 'data' => new OrderResource($order->load('items')),
             ];
             if ($approvalUrl !== null) {
@@ -247,19 +298,6 @@ class OrderController extends Controller
                 'success' => false,
                 'message' => 'Unauthorized',
             ], 401);
-        }
-
-        if (Platform::isIOS($request)) {
-            return response()->json([
-                'success' => true,
-                'data' => [],
-                'meta' => [
-                    'current_page' => 1,
-                    'last_page' => 1,
-                    'per_page' => 20,
-                    'total' => 0,
-                ],
-            ]);
         }
 
         $orders = $user->orders()
@@ -293,13 +331,6 @@ class OrderController extends Controller
             ], 401);
         }
 
-        if (Platform::isIOS($request)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Orders are not available on this platform.',
-            ], 403);
-        }
-
         $order = $user->orders()
             ->with('items.course')
             ->findOrFail($id);
@@ -322,13 +353,6 @@ class OrderController extends Controller
                 'success' => false,
                 'message' => 'Unauthorized',
             ], 401);
-        }
-
-        if (Platform::isIOS($request)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Orders are not available on this platform.',
-            ], 403);
         }
 
         $order = $user->orders()->findOrFail($id);

@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\EnrollmentResource;
 use App\Models\Course;
 use App\Models\CourseEnrollment;
-use App\Support\Platform;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -29,10 +28,6 @@ class EnrollmentController extends Controller
 
         $enrollments = $user->enrollments()
             ->with(['course.category', 'course.instructor', 'course.sections.lectures'])
-            ->when(
-                Platform::isIOS($request),
-                fn ($query) => $query->whereHas('course', fn ($courseQuery) => $courseQuery->published()->free())
-            )
             ->orderBy('enrolled_at', 'desc')
             ->paginate(20);
 
@@ -66,11 +61,7 @@ class EnrollmentController extends Controller
             'course_id' => 'required|exists:courses,id',
         ]);
 
-        $courseQuery = Course::query();
-        if (Platform::isIOS($request)) {
-            $courseQuery->published()->free();
-        }
-        $course = $courseQuery->findOrFail($request->course_id);
+        $course = Course::query()->findOrFail($request->course_id);
 
         // Check if already enrolled
         $existingEnrollment = $user->enrollments()
@@ -125,16 +116,6 @@ class EnrollmentController extends Controller
             ->with('course')
             ->findOrFail($id);
 
-        if (Platform::isIOS($request)) {
-            $course = $enrollment->course;
-            if (! $course || ! $course->is_free || (float) $course->price > 0) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Not found',
-                ], 404);
-            }
-        }
-
         return response()->json([
             'success' => true,
             'data' => new EnrollmentResource($enrollment),
@@ -156,11 +137,6 @@ class EnrollmentController extends Controller
         }
 
         $enrolledQuery = $user->enrollments()->where('course_id', $courseId)->accessible();
-
-        if (Platform::isIOS($request)) {
-            $enrolledQuery->whereHas('course', fn ($query) => $query->published()->free());
-        }
-
         $pending = $user->enrollments()->where('course_id', $courseId)->pending()->exists();
 
         return response()->json([

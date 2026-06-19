@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\QuestionsAnswer;
-use App\Support\Platform;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,11 +15,7 @@ class CourseQuestionController extends Controller
      */
     public function index(Request $request, $courseId)
     {
-        $courseQuery = Course::published();
-        if (Platform::isIOS($request)) {
-            $courseQuery->free();
-        }
-        $course = $courseQuery->findOrFail($courseId);
+        $course = Course::published()->findOrFail($courseId);
         $user = Auth::user();
 
         $query = QuestionsAnswer::where('course_id', $course->id)
@@ -76,11 +71,7 @@ class CourseQuestionController extends Controller
             return response()->json(['success' => false, 'message' => 'Unauthenticated.'], 401);
         }
 
-        $courseQuery = Course::published();
-        if (Platform::isIOS($request)) {
-            $courseQuery->free();
-        }
-        $course = $courseQuery->findOrFail($courseId);
+        $course = Course::published()->findOrFail($courseId);
 
         if (!$course->isEnrolledBy($user)) {
             return response()->json([

@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\CourseResource;
 use App\Models\Course;
 use App\Models\CourseRating;
-use App\Support\Platform;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,11 +19,6 @@ class CourseController extends Controller
         $query = Course::query()
             ->published()
             ->with(['category', 'instructor', 'instructors']);
-
-        if (Platform::isIOS($request)) {
-            $query->free();
-        }
-
         // Category filter
         if ($request->filled('category_id')) {
             $query->where('category_id', $request->category_id);
@@ -110,11 +104,6 @@ class CourseController extends Controller
                 },
                 'approvedRatings.user'
             ]);
-
-        if (Platform::isIOS($request)) {
-            $courseQuery->free();
-        }
-
         $course = $courseQuery->findOrFail($id);
 
         return response()->json([
@@ -134,11 +123,6 @@ class CourseController extends Controller
             ->featured()
             ->with(['category', 'instructor', 'instructors'])
             ->orderBy('enrolled_students', 'desc');
-
-        if (Platform::isIOS($request)) {
-            $query->free();
-        }
-
         $courses = $query->limit($limit)->get();
 
         return response()->json([
@@ -155,11 +139,6 @@ class CourseController extends Controller
 
         $query = Course::published()
             ->with(['category', 'instructor', 'instructors']);
-
-        if (Platform::isIOS($request)) {
-            $query->free();
-        }
-
         if (!empty($searchQuery)) {
             $query->where(function ($q) use ($searchQuery) {
                 $q->where('name', 'like', '%' . $searchQuery . '%')
@@ -208,11 +187,7 @@ class CourseController extends Controller
      */
     public function getReviews(Request $request, $id)
     {
-        $courseQuery = Course::published();
-        if (Platform::isIOS($request)) {
-            $courseQuery->free();
-        }
-        $course = $courseQuery->findOrFail($id);
+        $courseQuery = Course::published();        $course = $courseQuery->findOrFail($id);
 
         $query = $course->approvedRatings()->with('user');
 
@@ -256,11 +231,7 @@ class CourseController extends Controller
             return response()->json(['success' => false, 'message' => 'Unauthenticated.'], 401);
         }
 
-        $courseQuery = Course::published();
-        if (Platform::isIOS($request)) {
-            $courseQuery->free();
-        }
-        $course = $courseQuery->findOrFail($id);
+        $courseQuery = Course::published();        $course = $courseQuery->findOrFail($id);
 
         if (!$course->isEnrolledBy($user)) {
             return response()->json([

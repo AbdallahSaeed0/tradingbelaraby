@@ -57,6 +57,7 @@ return [
         'team_id' => env('APPLE_TEAM_ID'),
         'private_key' => env('APPLE_PRIVATE_KEY'),
         'passphrase' => env('APPLE_PASSPHRASE'),
+        'iap_shared_secret' => env('APPLE_IAP_SHARED_SECRET'),
     ],
 
     'fcm' => [
