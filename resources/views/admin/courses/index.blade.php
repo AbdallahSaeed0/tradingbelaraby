@@ -168,10 +168,10 @@
             </div>
         </div>
 
-        <!-- Courses Table -->
+        <!-- Courses Table (desktop) -->
         <div class="card" id="listViewContainer">
             <div class="card-body">
-                <div class="table-responsive">
+                <div class="table-responsive d-none d-lg-block admin-table-no-mobile-cards">
                     <table class="table table-hover table-striped courses-admin-table">
                         <thead>
                             <tr>
@@ -299,48 +299,7 @@
                                             class="text-muted d-block">{{ $course->created_at->diffForHumans() }}</small>
                                     </td>
                                     <td class="col-actions">
-                                        <div class="action-buttons">
-                                            <a href="{{ route('admin.courses.show', $course) }}"
-                                                class="btn btn-sm btn-outline-primary" title="View">
-                                                <i class="fa fa-eye"></i>
-                                            </a>
-                                            <a href="{{ route('admin.courses.edit', $course) }}"
-                                                class="btn btn-sm btn-outline-secondary" title="Edit">
-                                                <i class="fa fa-edit"></i>
-                                            </a>
-                                            <a href="{{ route('admin.courses.analytics', $course) }}"
-                                                class="btn btn-sm btn-outline-info" title="Analytics">
-                                                <i class="fa fa-chart-bar"></i>
-                                            </a>
-                                            <div class="dropdown d-inline">
-                                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                                                    type="button" data-bs-toggle="dropdown">
-                                                    <i class="fa fa-ellipsis-v"></i>
-                                                </button>
-                                                <ul class="dropdown-menu">
-                                                    <li><a class="dropdown-item"
-                                                            href="{{ route('admin.courses.duplicate', $course) }}"><i
-                                                                class="fa fa-copy me-2"></i>Duplicate</a></li>
-                                                    <li><a class="dropdown-item"
-                                                            href="{{ route('admin.courses.enrollments', $course) }}"><i
-                                                                class="fa fa-users me-2"></i>Enrollments</a></li>
-                                                    <li>
-                                                        <hr class="dropdown-divider">
-                                                    </li>
-                                                    <li>
-                                                        <form action="{{ route('admin.courses.destroy', $course) }}"
-                                                            method="POST" class="d-inline">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="dropdown-item text-danger"
-                                                                onclick="return confirm('Are you sure you want to delete this course?')">
-                                                                <i class="fa fa-trash me-2"></i>Delete
-                                                            </button>
-                                                        </form>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
+                                        @include('admin.courses.partials.course-row-actions', ['course' => $course])
                                     </td>
                                 </tr>
                             @empty
@@ -359,6 +318,28 @@
                             @endforelse
                         </tbody>
                     </table>
+                </div>
+
+                <!-- Smart mobile cards -->
+                <div class="d-lg-none mb-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="selectAllMobile">
+                        <label class="form-check-label small text-muted" for="selectAllMobile">Select all on this page</label>
+                    </div>
+                </div>
+                <div class="admin-course-mobile-list d-lg-none" id="mobileCoursesList">
+                    @forelse($courses as $course)
+                        @include('admin.courses.partials.mobile-course-card', ['course' => $course])
+                    @empty
+                        <div class="admin-course-mobile-empty">
+                            <i class="fa fa-book fa-3x mb-3 d-block"></i>
+                            <h5>No courses found</h5>
+                            <p class="mb-3">Start by creating your first course.</p>
+                            <a href="{{ route('admin.courses.create') }}" class="btn btn-primary">
+                                <i class="fa fa-plus me-2"></i>Create Course
+                            </a>
+                        </div>
+                    @endforelse
                 </div>
 
                 <!-- Bulk Actions -->
@@ -440,6 +421,7 @@
     </div>
 @endsection
 @push('styles')
+    <link rel="stylesheet" href="{{ asset('css/admin/admin-courses-mobile.css') }}">
     <style>
         @media (min-width: 992px) {
             .courses-admin-table {
@@ -510,30 +492,50 @@
             // Select all checkbox functionality
             function setupCheckboxes() {
                 const selectAllCheckbox = document.getElementById('selectAll');
+                const selectAllMobile = document.getElementById('selectAllMobile');
                 const rowCheckboxes = document.querySelectorAll('.row-checkbox');
                 const bulkDeleteBtn = document.getElementById('bulkDelete');
                 const bulkStatusDropdown = document.getElementById('bulkStatusDropdown');
 
-                if (selectAllCheckbox) {
-                    selectAllCheckbox.addEventListener('change', function() {
-                        rowCheckboxes.forEach(checkbox => {
-                            checkbox.checked = this.checked;
-                        });
-                        toggleBulkActions();
+                function syncSelectAllStates() {
+                    const allCheckboxes = document.querySelectorAll('.row-checkbox');
+                    const checkedCount = document.querySelectorAll('.row-checkbox:checked').length;
+                    const allChecked = allCheckboxes.length > 0 && checkedCount === allCheckboxes.length;
+                    const indeterminate = checkedCount > 0 && checkedCount < allCheckboxes.length;
+
+                    [selectAllCheckbox, selectAllMobile].forEach(function(master) {
+                        if (master) {
+                            master.checked = allChecked;
+                            master.indeterminate = indeterminate;
+                        }
                     });
                 }
 
-                rowCheckboxes.forEach(checkbox => {
-                    checkbox.addEventListener('change', function() {
-                        const selectAll = document.getElementById('selectAll');
-                        const allCheckboxes = document.querySelectorAll('.row-checkbox');
-                        const checkedCount = document.querySelectorAll('.row-checkbox:checked').length;
-                        if (selectAll) {
-                            selectAll.checked = checkedCount === allCheckboxes.length;
-                            selectAll.indeterminate = checkedCount > 0 && checkedCount < allCheckboxes.length;
-                        }
-                        toggleBulkActions();
+                function setAllRowsChecked(checked) {
+                    document.querySelectorAll('.row-checkbox').forEach(function(checkbox) {
+                        checkbox.checked = checked;
                     });
+                    syncSelectAllStates();
+                    toggleBulkActions();
+                }
+
+                if (selectAllCheckbox) {
+                    selectAllCheckbox.onchange = function() {
+                        setAllRowsChecked(this.checked);
+                    };
+                }
+
+                if (selectAllMobile) {
+                    selectAllMobile.onchange = function() {
+                        setAllRowsChecked(this.checked);
+                    };
+                }
+
+                rowCheckboxes.forEach(function(checkbox) {
+                    checkbox.onchange = function() {
+                        syncSelectAllStates();
+                        toggleBulkActions();
+                    };
                 });
 
                 function toggleBulkActions() {
@@ -545,6 +547,7 @@
                         bulkStatusDropdown.style.display = checkedCount > 0 ? 'inline-block' : 'none';
                     }
                 }
+                syncSelectAllStates();
                 toggleBulkActions();
             }
             setupCheckboxes();
@@ -593,6 +596,7 @@
             let searchTimeout;
             const searchInput = document.getElementById('searchInput');
             const tableBody = document.querySelector('#listViewContainer .table tbody');
+            const mobileCoursesList = document.getElementById('mobileCoursesList');
             const paginationContainer = document.querySelector('#listViewContainer .row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
 
             // AJAX search function
@@ -603,6 +607,9 @@
                 // Show loading state
                 if (tableBody) {
                     tableBody.innerHTML = '<tr><td colspan="9" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
+                }
+                if (mobileCoursesList) {
+                    mobileCoursesList.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>';
                 }
 
                 fetch(`{{ route('admin.courses.index') }}?${params.toString()}`, {
@@ -620,11 +627,16 @@
 
                         // Extract table body
                         const newTableBody = tempDiv.querySelector('#listViewContainer .table tbody');
+                        const newMobileList = tempDiv.querySelector('#mobileCoursesList');
                         const newPagination = tempDiv.querySelector('#listViewContainer .row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
                         const newBulkActions = tempDiv.querySelector('#listViewContainer .row.mt-3 .col-md-6:first-child');
 
                         if (newTableBody && tableBody) {
                             tableBody.innerHTML = newTableBody.innerHTML;
+                        }
+
+                        if (newMobileList && mobileCoursesList) {
+                            mobileCoursesList.innerHTML = newMobileList.innerHTML;
                         }
 
                         if (newPagination && paginationContainer) {
@@ -644,14 +656,14 @@
 
                         // Re-attach event listeners
                         setupCheckboxes();
-                        if (typeof window.initAdminMobileTables === 'function') {
-                            window.initAdminMobileTables();
-                        }
                     })
                     .catch(error => {
                         console.error('Error:', error);
                         if (tableBody) {
                             tableBody.innerHTML = '<tr><td colspan="9" class="text-center py-4 text-danger">Error loading data. Please try again.</td></tr>';
+                        }
+                        if (mobileCoursesList) {
+                            mobileCoursesList.innerHTML = '<div class="text-center py-4 text-danger">Error loading data. Please try again.</div>';
                         }
                     });
             }

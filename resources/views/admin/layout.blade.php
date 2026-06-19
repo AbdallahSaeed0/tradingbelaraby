@@ -440,7 +440,7 @@
         }
 
         function initAdminMobileTables() {
-            document.querySelectorAll('main .table-responsive').forEach(function(wrapper) {
+            document.querySelectorAll('main .table-responsive:not(.admin-table-no-mobile-cards)').forEach(function(wrapper) {
                 var table = wrapper.firstElementChild;
                 if (!table || table.tagName !== 'TABLE') {
                     table = wrapper.querySelector('table');
