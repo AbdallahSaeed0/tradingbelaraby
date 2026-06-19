@@ -123,12 +123,14 @@
         scroll-margin-top: 4.5rem;
     }
 
-    .admin-form-page .section-header {
+    .admin-form-page .admin-form-main .section-header,
+    .admin-form-page .form-section > .section-header {
         flex-wrap: wrap;
         gap: 0.5rem;
     }
 
-    .admin-form-page .section-header .btn {
+    .admin-form-page .admin-form-main .section-header .btn,
+    .admin-form-page .form-section > .section-header .btn {
         width: 100%;
     }
 

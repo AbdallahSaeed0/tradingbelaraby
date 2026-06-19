@@ -83,7 +83,7 @@
     $isAdminCourseDetailPage = request()->routeIs('admin.courses.show');
 @endphp
 
-<body class="bg-light @yield('body_class'){{ $isAdminSettingsPage ? ' admin-settings-page' : '' }}{{ $isAdminListPage ? ' admin-list-page admin-form-page' : '' }}{{ $isAdminDetailPage ? ' admin-detail-page' : '' }}{{ $isAdminCourseDetailPage ? ' admin-course-detail-page' : '' }}">
+<body class="bg-light @yield('body_class'){{ $isAdminSettingsPage ? ' admin-settings-page' : '' }}{{ $isAdminListPage ? ' admin-list-page' : '' }}{{ $isAdminDetailPage ? ' admin-detail-page' : '' }}{{ $isAdminCourseDetailPage ? ' admin-course-detail-page' : '' }}">
     <!-- Top Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm admin-top-navbar">
         <div class="container-fluid admin-navbar-inner">

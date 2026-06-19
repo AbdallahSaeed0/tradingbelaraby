@@ -389,6 +389,80 @@
         gap: 0.5rem;
     }
 
+    /* Course show: compact section/lecture actions (not full-width form buttons) */
+    body.admin-course-detail-page #detail-section-content .card-header {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        padding: 0.85rem 1rem;
+    }
+
+    body.admin-course-detail-page .section-card {
+        margin: 0.75rem;
+    }
+
+    body.admin-course-detail-page .section-card .section-header {
+        padding: 0.85rem 1rem;
+    }
+
+    body.admin-course-detail-page .section-card .section-header .d-flex {
+        gap: 0.65rem;
+    }
+
+    body.admin-course-detail-page .section-card .section-header .d-flex > div:last-child {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+        width: 100%;
+    }
+
+    body.admin-course-detail-page .section-card .section-header .btn-group {
+        width: auto !important;
+        flex-wrap: nowrap;
+        margin-left: 0 !important;
+    }
+
+    body.admin-course-detail-page .section-card .section-header .btn-group .btn {
+        width: auto !important;
+        min-width: 2.25rem;
+        padding: 0.25rem 0.55rem;
+    }
+
+    body.admin-course-detail-page .section-card .section-content {
+        padding: 0.65rem;
+    }
+
+    body.admin-course-detail-page .section-card .lecture-item {
+        flex-direction: row !important;
+        align-items: center !important;
+        flex-wrap: nowrap;
+        margin-left: 0;
+        gap: 0.5rem;
+        padding: 0.65rem 0.75rem;
+    }
+
+    body.admin-course-detail-page .section-card .lecture-item > .d-flex {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    body.admin-course-detail-page .section-card .lecture-item > .d-flex .fw-medium {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    body.admin-course-detail-page .section-card .lecture-item .btn-group {
+        flex-shrink: 0;
+        width: auto !important;
+    }
+
+    body.admin-course-detail-page .section-card .lecture-item .btn-group .btn {
+        width: auto !important;
+        padding: 0.2rem 0.45rem;
+    }
+
     body.admin-detail-page .admin-detail-section-nav {
         position: sticky;
         top: 0;
