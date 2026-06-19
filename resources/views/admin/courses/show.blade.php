@@ -3,10 +3,12 @@
 @section('title', 'Course Details - ' . $course->name)
 
 @section('content')
-    <div class="container-fluid py-4 admin-detail-page">
+    <div class="container-fluid py-4 admin-detail-page admin-course-detail-page"
+        data-mobile-back-url="{{ route('admin.courses.index') }}"
+        data-mobile-back-label="Courses">
         @include('admin.partials.detail-page-header', [
             'title' => $course->name,
-            'subtitle' => Str::limit(strip_tags($course->description ?? ''), 120),
+            'subtitle' => ($course->category->name ?? 'Uncategorized') . ' · ' . ucfirst($course->status),
             'backUrl' => route('admin.courses.index'),
             'backLabel' => 'Courses',
             'primaryUrl' => route('admin.courses.edit', $course),
@@ -19,8 +21,46 @@
             <a href="#detail-section-actions" class="admin-detail-section-nav__link">Actions</a>
         </nav>
 
-        <!-- Course Header -->
-        <div class="course-header mb-4">
+        <div class="admin-course-detail-mobile-actions d-lg-none">
+            <a href="{{ route('admin.courses.edit', $course) }}" class="btn btn-primary btn-sm">
+                <i class="fa fa-edit me-1"></i>Edit Course
+            </a>
+            <a href="{{ route('admin.courses.analytics', $course) }}" class="btn btn-outline-info btn-sm">
+                <i class="fa fa-chart-bar me-1"></i>Analytics
+            </a>
+            <a href="{{ route('admin.courses.enrollments', $course) }}" class="btn btn-outline-success btn-sm">
+                <i class="fa fa-user-plus me-1"></i>Enrollments
+            </a>
+        </div>
+
+        {{-- Mobile hero --}}
+        <div class="admin-course-detail-hero d-lg-none mb-3">
+            @if ($course->image)
+                <img src="{{ $course->image_url }}" alt="{{ $course->name }}" class="admin-course-detail-hero__img">
+            @else
+                <div class="admin-course-detail-hero__placeholder">
+                    <i class="fa fa-book fa-2x"></i>
+                </div>
+            @endif
+            <div class="admin-course-detail-hero__chips">
+                <span class="badge bg-primary">{{ $course->category->name ?? 'Uncategorized' }}</span>
+                <span class="badge bg-{{ $course->status === 'published' ? 'success' : ($course->status === 'draft' ? 'warning text-dark' : 'secondary') }}">{{ ucfirst($course->status) }}</span>
+                @if ($course->is_featured)
+                    <span class="badge bg-warning text-dark">Featured</span>
+                @endif
+                @if ($course->price == 0)
+                    <span class="badge bg-success">Free</span>
+                @else
+                    <span class="badge bg-dark">{{ number_format($course->price, 2) }} SAR</span>
+                @endif
+            </div>
+            @if ($course->description)
+                <p class="admin-course-detail-hero__desc">{{ Str::limit(strip_tags($course->description), 160) }}</p>
+            @endif
+        </div>
+
+        {{-- Desktop hero --}}
+        <div class="course-header mb-4 d-none d-lg-block">
             <div class="row align-items-center">
                 <div class="col-md-8">
                     <div class="d-flex align-items-center">
@@ -65,7 +105,7 @@
         </div>
 
         <!-- Statistics Cards -->
-        <div class="row g-4 mb-4">
+        <div class="row g-3 g-lg-4 mb-4 admin-course-detail-stats">
             <div class="col-md-2">
                 <div class="stat-card text-center">
                     <i class="fa fa-list fa-2x text-primary mb-2"></i>
@@ -112,7 +152,7 @@
 
         <div class="row admin-detail-main-row">
             <!-- Course Content -->
-            <div class="col-lg-8">
+            <div class="col-lg-8 order-lg-2">
                 <!-- Course Sections -->
                 <div class="card mb-4" id="detail-section-content">
                     <div class="card-header d-flex justify-content-between align-items-center">
@@ -139,7 +179,7 @@
                                                     data-section-id="{{ $section->id }}">
                                                     <i class="fa fa-plus"></i>
                                                 </button>
-                                                <button class="btn btn-outline-secondary">
+                                                <button class="btn btn-outline-primary">
                                                     <i class="fa fa-edit"></i>
                                                 </button>
                                                 <button class="btn btn-outline-danger">
@@ -171,7 +211,7 @@
                                                 <button class="btn btn-outline-primary btn-sm">
                                                     <i class="fa fa-eye"></i>
                                                 </button>
-                                                <button class="btn btn-outline-secondary btn-sm">
+                                                <button class="btn btn-outline-primary btn-sm">
                                                     <i class="fa fa-edit"></i>
                                                 </button>
                                                 <button class="btn btn-outline-danger btn-sm">
@@ -222,72 +262,76 @@
             </div>
 
             <!-- Sidebar -->
-            <div class="col-lg-4 admin-detail-sidebar">
+            <div class="col-lg-4 order-lg-1 admin-detail-sidebar">
                 <!-- Course Info -->
                 <div class="card mb-4" id="detail-section-info">
                     <div class="card-header">
                         <h5 class="mb-0"><i class="fa fa-info-circle me-2"></i>Course Information</h5>
                     </div>
-                    <div class="card-body">
-                        <div class="row g-3">
-                            <div class="col-6">
-                                <label class="form-label text-muted small">Instructor(s)</label>
-                                <div class="fw-medium">
-                                    @if ($course->instructors->count() > 0)
-                                        @foreach ($course->instructors as $instructor)
-                                            <div class="d-flex align-items-center mb-1">
-                                                @if ($instructor->avatar)
-                                                    <img src="{{ asset('storage/' . $instructor->avatar) }}"
-                                                        class="rounded-circle me-2" width="20" height="20">
-                                                @else
-                                                    <div
-                                                        class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-2 w-20 h-20 fs-9px">
-                                                        {{ strtoupper(substr($instructor->name, 0, 2)) }}
-                                                    </div>
-                                                @endif
-                                                <span>{{ $instructor->name }}</span>
-                                            </div>
-                                        @endforeach
-                                    @else
-                                        <span class="text-muted">Not assigned</span>
-                                    @endif
-                                </div>
+                    <div class="card-body admin-detail-grid">
+                        <div class="admin-detail-field">
+                            <strong>Instructor(s)</strong>
+                            <span class="admin-detail-value">
+                                @if ($course->instructors->count() > 0)
+                                    @foreach ($course->instructors as $instructor)
+                                        <span class="d-flex align-items-center mb-1">
+                                            @if ($instructor->avatar)
+                                                <img src="{{ asset('storage/' . $instructor->avatar) }}" class="rounded-circle me-2" width="20" height="20" alt="">
+                                            @else
+                                                <span class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center me-2 w-20 h-20 fs-9px">{{ strtoupper(substr($instructor->name, 0, 2)) }}</span>
+                                            @endif
+                                            {{ $instructor->name }}
+                                        </span>
+                                    @endforeach
+                                @else
+                                    <span class="text-muted">Not assigned</span>
+                                @endif
+                            </span>
+                        </div>
+                        <div class="row mb-0">
+                            <div class="col-6 admin-detail-field">
+                                <strong>Duration</strong>
+                                <span class="admin-detail-value">{{ $course->duration ?? 'Not set' }}</span>
                             </div>
-                            <div class="col-6">
-                                <label class="form-label text-muted small">Duration</label>
-                                <div class="fw-medium">{{ $course->duration ?? 'Not set' }}</div>
-                            </div>
-                            <div class="col-6">
-                                <label class="form-label text-muted small">Price</label>
-                                <div class="fw-medium">
+                            <div class="col-6 admin-detail-field">
+                                <strong>Price</strong>
+                                <span class="admin-detail-value">
                                     @if ($course->price == 0)
                                         <span class="text-success">Free</span>
                                     @else
                                         {{ number_format($course->price, 2) }} SAR
                                     @endif
-                                </div>
+                                </span>
                             </div>
-                            <div class="col-6">
-                                <label class="form-label text-muted small">Status</label>
-                                <div>
+                        </div>
+                        <div class="row mb-0">
+                            <div class="col-6 admin-detail-field">
+                                <strong>Status</strong>
+                                <span class="admin-detail-value">
                                     @php
                                         $statusClasses = [
                                             'published' => 'success',
-                                            'draft' => 'warning',
+                                            'draft' => 'warning text-dark',
                                             'archived' => 'secondary',
                                         ];
                                         $statusClass = $statusClasses[$course->status] ?? 'secondary';
                                     @endphp
                                     <span class="badge bg-{{ $statusClass }}">{{ ucfirst($course->status) }}</span>
-                                </div>
+                                </span>
                             </div>
-                            <div class="col-6">
-                                <label class="form-label text-muted small">Created</label>
-                                <div class="fw-medium">{{ $course->created_at->format('M d, Y') }}</div>
+                            <div class="col-6 admin-detail-field">
+                                <strong>Students</strong>
+                                <span class="admin-detail-value">{{ $stats['total_enrollments'] ?? 0 }}</span>
                             </div>
-                            <div class="col-6">
-                                <label class="form-label text-muted small">Updated</label>
-                                <div class="fw-medium">{{ $course->updated_at->format('M d, Y') }}</div>
+                        </div>
+                        <div class="row mb-0">
+                            <div class="col-6 admin-detail-field">
+                                <strong>Created</strong>
+                                <span class="admin-detail-value">{{ $course->created_at->format('M d, Y') }}</span>
+                            </div>
+                            <div class="col-6 admin-detail-field">
+                                <strong>Updated</strong>
+                                <span class="admin-detail-value">{{ $course->updated_at->format('M d, Y') }}</span>
                             </div>
                         </div>
                     </div>
@@ -303,10 +347,9 @@
                             <a href="{{ route('admin.courses.edit', $course) }}" class="btn btn-outline-primary">
                                 <i class="fa fa-edit me-2"></i>Edit Course
                             </a>
-                            <button class="btn btn-outline-success" data-bs-toggle="modal"
-                                data-bs-target="#enrollStudentsModal">
-                                <i class="fa fa-user-plus me-2"></i>Enroll Students
-                            </button>
+                            <a href="{{ route('admin.courses.enrollments', $course) }}" class="btn btn-outline-success">
+                                <i class="fa fa-user-plus me-2"></i>View Enrollments
+                            </a>
                             <a href="{{ route('admin.courses.analytics', $course) }}" class="btn btn-outline-info">
                                 <i class="fa fa-chart-bar me-2"></i>View Analytics
                             </a>

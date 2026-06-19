@@ -812,7 +812,7 @@
                 return;
             }
 
-            var shell = document.querySelector('.container-fluid.admin-form-page[data-mobile-back-url]');
+            var shell = document.querySelector('.container-fluid[data-mobile-back-url]');
             var backUrl = shell ? shell.getAttribute('data-mobile-back-url') : null;
             var backLabel = shell ? shell.getAttribute('data-mobile-back-label') : 'Back';
             var isListIndex = !!document.querySelector('.admin-mobile-list') && !backUrl;
