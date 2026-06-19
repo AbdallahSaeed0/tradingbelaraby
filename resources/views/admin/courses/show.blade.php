@@ -3,6 +3,14 @@
 @section('title', 'Course Details - ' . $course->name)
 
 @section('content')
+    @php
+        $courseStatusBadgeClass = match ($course->status) {
+            'published' => 'success',
+            'draft' => 'warning text-dark',
+            'archived' => 'secondary',
+            default => 'secondary',
+        };
+    @endphp
     <div class="container-fluid py-4 admin-detail-page admin-course-detail-page"
         data-mobile-back-url="{{ route('admin.courses.index') }}"
         data-mobile-back-label="Courses">
@@ -44,7 +52,7 @@
             @endif
             <div class="admin-course-detail-hero__chips">
                 <span class="badge bg-primary">{{ $course->category->name ?? 'Uncategorized' }}</span>
-                <span class="badge bg-{{ $course->status === 'published' ? 'success' : ($course->status === 'draft' ? 'warning text-dark' : 'secondary') }}">{{ ucfirst($course->status) }}</span>
+                <span class="badge bg-{{ $courseStatusBadgeClass }}">{{ ucfirst($course->status) }}</span>
                 @if ($course->is_featured)
                     <span class="badge bg-warning text-dark">Featured</span>
                 @endif
@@ -76,9 +84,8 @@
                             <h1 class="h2 mb-2">{{ $course->name }}</h1>
                             <p class="mb-2 opacity-75">{{ Str::limit($course->description, 150) }}</p>
                             <div class="d-flex align-items-center">
-                                <span
-                                    class="badge bg-white text-dark me-2">{{ $course->category->name ?? 'Uncategorized' }}</span>
-                                <span class="badge bg-white bg-opacity-20 me-2">{{ ucfirst($course->status) }}</span>
+                                <span class="badge bg-white text-dark me-2">{{ $course->category->name ?? 'Uncategorized' }}</span>
+                                <span class="badge bg-{{ $courseStatusBadgeClass }} me-2">{{ ucfirst($course->status) }}</span>
                                 @if ($course->is_featured)
                                     <span class="badge bg-warning text-dark me-2">Featured</span>
                                 @endif
@@ -308,15 +315,7 @@
                             <div class="col-6 admin-detail-field">
                                 <strong>Status</strong>
                                 <span class="admin-detail-value">
-                                    @php
-                                        $statusClasses = [
-                                            'published' => 'success',
-                                            'draft' => 'warning text-dark',
-                                            'archived' => 'secondary',
-                                        ];
-                                        $statusClass = $statusClasses[$course->status] ?? 'secondary';
-                                    @endphp
-                                    <span class="badge bg-{{ $statusClass }}">{{ ucfirst($course->status) }}</span>
+                                    <span class="badge bg-{{ $courseStatusBadgeClass }}">{{ ucfirst($course->status) }}</span>
                                 </span>
                             </div>
                             <div class="col-6 admin-detail-field">

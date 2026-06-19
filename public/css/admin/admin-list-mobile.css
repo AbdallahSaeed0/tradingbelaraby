@@ -73,6 +73,58 @@
     body.admin-list-page .admin-form-inline-actions {
         display: none !important;
     }
+
+    /* Shared mobile card polish — list pages, detail pages, course show */
+    body.admin-list-page .card.mb-4,
+    body.admin-detail-page .card.mb-4 {
+        border-radius: 0.75rem;
+        border: 1px solid var(--admin-border, #dee2e6);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+        overflow: hidden;
+        margin-bottom: 0.85rem !important;
+    }
+
+    body.admin-list-page .card > .card-header,
+    body.admin-detail-page .card > .card-header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+        padding: 0.85rem 1rem;
+        background: var(--admin-dropdown-hover, rgba(0, 0, 0, 0.03)) !important;
+        border-bottom: 1px solid var(--admin-border, #dee2e6);
+    }
+
+    body.admin-list-page .card > .card-header h5,
+    body.admin-detail-page .card > .card-header h5 {
+        font-size: 0.95rem;
+        margin-bottom: 0;
+    }
+
+    body.admin-list-page .card > .card-body:not(.p-0),
+    body.admin-detail-page .card > .card-body:not(.p-0) {
+        padding: 1rem;
+    }
+
+    body.admin-detail-page .stat-card {
+        border: 1px solid var(--admin-border, #dee2e6);
+        border-radius: 0.65rem;
+        background: var(--admin-card-bg, #fff) !important;
+    }
+
+    .admin-mobile-list {
+        gap: 0.85rem;
+        padding-bottom: 0.25rem;
+    }
+
+    .admin-mobile-card {
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .admin-mobile-card__footer {
+        background: var(--admin-dropdown-hover, rgba(0, 0, 0, 0.03));
+    }
 }
 
 .admin-mobile-list {
@@ -397,11 +449,23 @@
     }
 
     body.admin-course-detail-page .section-card {
-        margin: 0.75rem;
+        margin: 0.65rem;
+        border-radius: 0.65rem;
+        overflow: hidden;
     }
 
     body.admin-course-detail-page .section-card .section-header {
         padding: 0.85rem 1rem;
+        border-radius: 0;
+    }
+
+    body.admin-course-detail-page .section-card .lecture-item {
+        border-radius: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    body.admin-course-detail-page .section-card .lecture-item:last-child {
+        margin-bottom: 0;
     }
 
     body.admin-course-detail-page .section-card .section-header .d-flex {
@@ -543,6 +607,11 @@
         flex-wrap: wrap;
         gap: 0.35rem;
         padding: 0.75rem 0.85rem 0;
+    }
+
+    body.admin-course-detail-page .admin-course-detail-hero__chips .badge {
+        font-weight: 600;
+        font-size: 0.72rem;
     }
 
     body.admin-course-detail-page .admin-course-detail-hero__desc {
