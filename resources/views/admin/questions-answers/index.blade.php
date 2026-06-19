@@ -11,7 +11,7 @@
                     <h1 class="h3 mb-0">Q&A Management</h1>
                     <p class="text-muted">Moderate, reply, and manage all course questions and answers</p>
                 </div>
-                <div>
+                <div class="admin-list-header-actions">
                     <a href="{{ route('admin.questions-answers.analytics') }}" class="btn btn-outline-primary me-2">
                         <i class="fas fa-chart-bar me-1"></i> Analytics
                     </a>
@@ -197,7 +197,7 @@
                 </div>
             </div>
             <div class="card-body p-0">
-                <div class="table-responsive">
+                <div class="table-responsive d-none d-lg-block admin-table-no-mobile-cards">
                     <table class="table table-hover table-striped qa-table">
                         <thead>
                             <tr>
@@ -362,6 +362,18 @@
                         </tbody>
                     </table>
                 </div>
+
+                <div class="d-lg-none mb-2 px-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="selectAllMobile">
+                        <label class="form-check-label small" for="selectAllMobile">Select all on this page</label>
+                    </div>
+                </div>
+                <div class="admin-mobile-list d-lg-none px-3 pb-3" id="mobileQaList">
+                    @foreach ($questions as $question)
+                        @include('admin.questions-answers.partials.mobile-qa-card', ['question' => $question])
+                    @endforeach
+                </div>
                 <!-- Pagination -->
                 <div class="row mt-3">
                     <div class="col-md-6">
@@ -410,6 +422,7 @@
             let searchTimeout;
             const searchInput = document.getElementById('searchInput');
             const tableBody = document.querySelector('.table tbody');
+            const mobileList = document.getElementById('mobileQaList');
             const paginationContainer = document.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
 
             // AJAX search function
@@ -419,7 +432,10 @@
 
                 // Show loading state
                 if (tableBody) {
-                    tableBody.innerHTML = '<tr><td colspan="8" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
+                    tableBody.innerHTML = '<tr><td colspan="11" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
+                }
+                if (mobileList) {
+                    mobileList.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>';
                 }
 
                 fetch(`{{ route('admin.questions-answers.index') }}?${params.toString()}`, {
@@ -437,11 +453,16 @@
 
                         // Extract table body
                         const newTableBody = tempDiv.querySelector('.table tbody');
+                        const newMobileList = tempDiv.querySelector('#mobileQaList');
                         const newPagination = tempDiv.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
                         const newBulkActions = tempDiv.querySelector('.row.mt-3 .col-md-6:first-child');
 
                         if (newTableBody && tableBody) {
                             tableBody.innerHTML = newTableBody.innerHTML;
+                        }
+
+                        if (newMobileList && mobileList) {
+                            mobileList.innerHTML = newMobileList.innerHTML;
                         }
 
                         if (newPagination && paginationContainer) {
@@ -472,7 +493,10 @@
                     .catch(error => {
                         console.error('Error:', error);
                         if (tableBody) {
-                            tableBody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-danger">Error loading data. Please try again.</td></tr>';
+                            tableBody.innerHTML = '<tr><td colspan="11" class="text-center py-4 text-danger">Error loading data. Please try again.</td></tr>';
+                        }
+                        if (mobileList) {
+                            mobileList.innerHTML = '<div class="text-center py-4 text-danger">Error loading data. Please try again.</div>';
                         }
                     });
             }

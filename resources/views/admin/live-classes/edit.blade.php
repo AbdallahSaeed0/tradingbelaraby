@@ -29,29 +29,26 @@
             opacity: 1 !important;
         }
     </style>
-    <div class="container-fluid py-4">
-        <!-- Page Header -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h1 class="h3 mb-0">Edit Live Class</h1>
-                        <p class="text-muted">Update live class information</p>
-                    </div>
-                    <div>
-                        <a href="{{ route('admin.live-classes.index') }}" class="btn btn-outline-secondary">
-                            <i class="fa fa-arrow-left me-2"></i>Back to Live Classes
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="container-fluid py-4 admin-form-page" data-mobile-back-url="{{ route('admin.live-classes.index') }}" data-mobile-back-label="Back to Live Classes">
+        @include('admin.partials.crud-form-shell', [
+            'title' => 'Edit Live Class',
+            'subtitle' => 'Update live class information',
+            'backUrl' => route('admin.live-classes.index'),
+            'backLabel' => 'Back to Live Classes',
+            'formId' => 'liveClassForm',
+            'submitLabel' => 'Update Live Class',
+            'sections' => [
+                ['id' => 'section-basics', 'label' => 'Basics', 'icon' => 'fa-info-circle'],
+                ['id' => 'section-schedule', 'label' => 'Schedule', 'icon' => 'fa-calendar'],
+                ['id' => 'section-materials', 'label' => 'Materials', 'icon' => 'fa-file-alt'],
+            ],
+        ])
 
-        <div class="row">
-            <div class="col-md-12">
+        <div class="row admin-form-main-row">
+            <div class="col-lg-12 admin-form-main">
                 <div class="card">
                     <div class="card-body">
-                        <form action="{{ route('admin.live-classes.update', $liveClass) }}" method="POST"
+                        <form id="liveClassForm" action="{{ route('admin.live-classes.update', $liveClass) }}" method="POST"
                             enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
@@ -82,7 +79,7 @@
                             </div>
 
                             <!-- Basic Information -->
-                            <div class="form-section">
+                            <div class="form-section" id="section-basics">
                                 <h5><i class="fa fa-info-circle me-2"></i>Basic Information</h5>
 
                                 <div class="row">
@@ -187,7 +184,7 @@
                             </div>
 
                             <!-- Scheduling & Settings -->
-                            <div class="form-section">
+                            <div class="form-section" id="section-schedule">
                                 <h5><i class="fa fa-calendar me-2"></i>Scheduling & Settings</h5>
 
                                 <div class="row">
@@ -260,7 +257,7 @@
                             </div>
 
                             <!-- Materials Section -->
-                            <div class="form-section">
+                            <div class="form-section" id="section-materials">
                                 <h5><i class="fa fa-file-alt me-2"></i>Materials</h5>
                                 <div id="materials-container">
                                     @if ($liveClass->materials && count($liveClass->materials) > 0)
@@ -382,7 +379,7 @@
                             </div>
 
                             <!-- Form Actions -->
-                            <div class="d-flex justify-content-end gap-2">
+                            <div class="d-flex justify-content-end gap-2 admin-form-inline-actions">
                                 <a href="{{ route('admin.live-classes.index') }}" class="btn btn-secondary">Cancel</a>
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fa fa-save me-2"></i>Update Live Class

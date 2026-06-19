@@ -3,26 +3,21 @@
 @section('title', 'Create New Coupon')
 
 @section('content')
-    <div class="container-fluid py-4">
-        <!-- Page Header -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h1 class="h3 mb-0">Create New Coupon</h1>
-                        <p class="text-muted">Create a discount coupon</p>
-                    </div>
-                    <div>
-                        <a href="{{ route('admin.coupons.index') }}" class="btn btn-outline-secondary me-2">
-                            <i class="fa fa-arrow-left me-2"></i>Back to Coupons
-                        </a>
-                        <button type="submit" form="couponForm" class="btn btn-primary">
-                            <i class="fa fa-save me-2"></i>Create Coupon
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="container-fluid py-4 admin-form-page" data-mobile-back-url="{{ route('admin.coupons.index') }}" data-mobile-back-label="Back to Coupons">
+        @include('admin.partials.crud-form-shell', [
+            'title' => 'Create New Coupon',
+            'subtitle' => 'Create a discount coupon',
+            'backUrl' => route('admin.coupons.index'),
+            'backLabel' => 'Back to Coupons',
+            'formId' => 'couponForm',
+            'submitLabel' => 'Create Coupon',
+            'sections' => [
+                ['id' => 'section-basics', 'label' => 'Basics', 'icon' => 'fa-info-circle'],
+                ['id' => 'section-discount', 'label' => 'Discount', 'icon' => 'fa-percent'],
+                ['id' => 'section-scope', 'label' => 'Scope', 'icon' => 'fa-bullseye'],
+                ['id' => 'section-publish', 'label' => 'Publish', 'icon' => 'fa-toggle-on'],
+            ],
+        ])
 
         @if ($errors->any())
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -38,10 +33,10 @@
 
         <form id="couponForm" action="{{ route('admin.coupons.store') }}" method="POST">
             @csrf
-            <div class="row">
-                <div class="col-lg-8">
+            <div class="row admin-form-main-row">
+                <div class="col-lg-8 admin-form-main">
                     <!-- Basic Information -->
-                    <div class="card mb-4">
+                    <div class="card mb-4" id="section-basics">
                         <div class="card-header">
                             <h5 class="mb-0"><i class="fa fa-info-circle me-2"></i>Basic Information</h5>
                         </div>
@@ -79,7 +74,7 @@
                     </div>
 
                     <!-- Discount Settings -->
-                    <div class="card mb-4">
+                    <div class="card mb-4" id="section-discount">
                         <div class="card-header">
                             <h5 class="mb-0"><i class="fa fa-percent me-2"></i>Discount Settings</h5>
                         </div>
@@ -112,7 +107,7 @@
                     </div>
 
                     <!-- Scope Settings -->
-                    <div class="card mb-4">
+                    <div class="card mb-4" id="section-scope">
                         <div class="card-header">
                             <h5 class="mb-0"><i class="fa fa-bullseye me-2"></i>Scope Settings</h5>
                         </div>
@@ -178,9 +173,9 @@
                     </div>
                 </div>
 
-                <div class="col-lg-4">
+                <div class="col-lg-4 admin-form-sidebar">
                     <!-- Validity Period -->
-                    <div class="card mb-4">
+                    <div class="card mb-4" id="section-publish">
                         <div class="card-header">
                             <h5 class="mb-0"><i class="fa fa-calendar me-2"></i>Validity Period</h5>
                         </div>

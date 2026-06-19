@@ -12,7 +12,7 @@
                         <h1 class="h3 mb-0">Quiz Management</h1>
                         <p class="text-muted">Create and manage quizzes for your courses</p>
                     </div>
-                    <div>
+                    <div class="admin-list-header-actions">
                         <button class="btn btn-outline-secondary me-2" data-bs-toggle="modal" data-bs-target="#importModal">
                             <i class="fa fa-upload me-2"></i>Import Questions
                         </button>
@@ -157,7 +157,7 @@
             <!-- List View -->
             <div class="card" id="listViewContainer">
                 <div class="card-body">
-                    <div class="table-responsive">
+                    <div class="table-responsive d-none d-lg-block admin-table-no-mobile-cards">
                         <table class="table table-hover table-striped">
                             <thead>
                                 <tr>
@@ -277,6 +277,18 @@
                                 @endforelse
                             </tbody>
                         </table>
+                    </div>
+
+                    <div class="d-lg-none mb-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="selectAllMobile">
+                            <label class="form-check-label small" for="selectAllMobile">Select all on this page</label>
+                        </div>
+                    </div>
+                    <div class="admin-mobile-list d-lg-none" id="mobileQuizzesList">
+                        @foreach ($quizzes as $quiz)
+                            @include('admin.quizzes.partials.mobile-quiz-card', ['quiz' => $quiz])
+                        @endforeach
                     </div>
 
                     <!-- Bulk Actions -->
@@ -563,6 +575,7 @@
             let searchTimeout;
             const searchInput = document.getElementById('searchInput');
             const tableBody = document.querySelector('#listViewContainer .table tbody');
+            const mobileList = document.getElementById('mobileQuizzesList');
             const paginationContainer = document.querySelector('#listViewContainer .row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
 
             // AJAX search function
@@ -573,6 +586,9 @@
                 // Show loading state
                 if (tableBody) {
                     tableBody.innerHTML = '<tr><td colspan="7" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
+                }
+                if (mobileList) {
+                    mobileList.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>';
                 }
 
                 fetch(`{{ route('admin.quizzes.index') }}?${params.toString()}`, {
@@ -590,11 +606,16 @@
 
                         // Extract table body
                         const newTableBody = tempDiv.querySelector('#listViewContainer .table tbody');
+                        const newMobileList = tempDiv.querySelector('#mobileQuizzesList');
                         const newPagination = tempDiv.querySelector('#listViewContainer .row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
                         const newBulkActions = tempDiv.querySelector('#listViewContainer .row.mt-3 .col-md-6:first-child');
 
                         if (newTableBody && tableBody) {
                             tableBody.innerHTML = newTableBody.innerHTML;
+                        }
+
+                        if (newMobileList && mobileList) {
+                            mobileList.innerHTML = newMobileList.innerHTML;
                         }
 
                         if (newPagination && paginationContainer) {
@@ -619,6 +640,9 @@
                         console.error('Error:', error);
                         if (tableBody) {
                             tableBody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-danger">Error loading data. Please try again.</td></tr>';
+                        }
+                        if (mobileList) {
+                            mobileList.innerHTML = '<div class="text-center py-4 text-danger">Error loading data. Please try again.</div>';
                         }
                     });
             }

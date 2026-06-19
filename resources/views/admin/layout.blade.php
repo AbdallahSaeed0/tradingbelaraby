@@ -45,13 +45,23 @@
     <link rel="stylesheet" href="{{ asset('css/admin/admin-tables-mobile.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/admin-form-mobile.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/admin-settings-mobile.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/admin-list-mobile.css') }}">
 </head>
 
 @php
     $isAdminSettingsPage = request()->routeIs('admin.settings.*', 'admin.partner-logos.*');
+    $isAdminListPage = request()->routeIs(
+        'admin.bundles.*',
+        'admin.coupons.*',
+        'admin.quizzes.*',
+        'admin.homework.*',
+        'admin.live-classes.*',
+        'admin.enrollments.*',
+        'admin.questions-answers.*'
+    );
 @endphp
 
-<body class="bg-light @yield('body_class'){{ $isAdminSettingsPage ? ' admin-settings-page' : '' }}">
+<body class="bg-light @yield('body_class'){{ $isAdminSettingsPage ? ' admin-settings-page' : '' }}{{ $isAdminListPage ? ' admin-list-page admin-form-page' : '' }}">
     <!-- Top Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm admin-top-navbar">
         <div class="container-fluid admin-navbar-inner">
@@ -781,6 +791,100 @@
 
         window.initAdminSettingsMobile = initAdminSettingsMobile;
 
+        function initAdminListMobile() {
+            if (!document.body.classList.contains('admin-list-page')) {
+                return;
+            }
+
+            if (window.innerWidth >= 992 || document.getElementById('listMobileToolbar')) {
+                if (document.getElementById('listMobileToolbar')) {
+                    document.body.classList.add('list-has-mobile-toolbar');
+                }
+                return;
+            }
+
+            var shell = document.querySelector('.admin-form-page[data-mobile-back-url]');
+            var backUrl = shell ? shell.getAttribute('data-mobile-back-url') : null;
+            var backLabel = shell ? shell.getAttribute('data-mobile-back-label') : 'Back';
+            var pageForms = Array.from(document.querySelectorAll('.container-fluid form')).filter(function(form) {
+                if (form.closest('.modal')) {
+                    return false;
+                }
+                if (form.dataset.settingsMobileToolbar === 'skip') {
+                    return false;
+                }
+                if ((form.method || '').toLowerCase() === 'get') {
+                    return false;
+                }
+                return !!form.querySelector('button[type="submit"], input[type="submit"]');
+            });
+
+            var primaryForm = document.getElementById('bundleForm')
+                || document.getElementById('couponForm')
+                || document.getElementById('quizForm')
+                || document.getElementById('homeworkForm')
+                || document.getElementById('liveClassForm')
+                || document.querySelector('.admin-form-page form[id]');
+
+            if (primaryForm) {
+                pageForms = [primaryForm];
+            }
+
+            var toolbar = document.createElement('div');
+            toolbar.className = 'admin-list-mobile-toolbar d-lg-none';
+            toolbar.id = 'listMobileToolbar';
+
+            if (backUrl) {
+                var backBtn = document.createElement('a');
+                backBtn.href = backUrl;
+                backBtn.className = 'btn btn-outline-secondary btn-sm';
+                backBtn.innerHTML = '<i class="fa fa-arrow-left me-1"></i>' + backLabel;
+                toolbar.appendChild(backBtn);
+            }
+
+            if (pageForms.length === 1) {
+                var form = pageForms[0];
+                if (!form.id) {
+                    form.id = 'listPrimaryForm';
+                }
+
+                var submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
+                var label = submitBtn ? submitBtn.textContent.trim() : 'Save';
+                var actionWrap = submitBtn ? submitBtn.closest('.d-flex, .d-grid, .text-end, .mt-3, .mb-3, .card-footer') : null;
+                if (actionWrap) {
+                    actionWrap.classList.add('admin-form-inline-actions');
+                }
+
+                var saveBtn = document.createElement('button');
+                saveBtn.type = 'submit';
+                saveBtn.setAttribute('form', form.id);
+                saveBtn.className = 'btn btn-primary btn-sm';
+                saveBtn.innerHTML = '<i class="fa fa-save me-1"></i>' + label;
+                toolbar.appendChild(saveBtn);
+            } else {
+                var header = document.querySelector('.row.mb-4 .admin-list-header-actions, .row.mb-4 .d-flex.justify-content-between > div:last-child');
+                var headerAction = header ? header.querySelector('.btn-primary, .btn-warning, .btn-success') : null;
+
+                if (headerAction) {
+                    header.classList.add('admin-list-header-actions');
+                    if (headerAction.hasAttribute('data-bs-toggle') && headerAction.getAttribute('data-bs-target')) {
+                        toolbar.appendChild(headerAction.cloneNode(true));
+                    } else if (headerAction.tagName === 'A') {
+                        var linkClone = headerAction.cloneNode(true);
+                        linkClone.classList.add('btn-sm');
+                        toolbar.appendChild(linkClone);
+                    }
+                }
+            }
+
+            if (toolbar.children.length > 0) {
+                document.body.appendChild(toolbar);
+                document.body.classList.add('list-has-mobile-toolbar');
+            }
+        }
+
+        window.initAdminListMobile = initAdminListMobile;
+
         // Close sidebar after navigation on mobile/tablet
         function initAdminSidebarMobile() {
             var sidebarEl = document.getElementById('adminSidebar');
@@ -807,12 +911,14 @@
                 initAdminMobileTables();
                 initAdminFormMobile();
                 initAdminSettingsMobile();
+                initAdminListMobile();
                 initAdminSidebarMobile();
             });
         } else {
             initAdminMobileTables();
             initAdminFormMobile();
             initAdminSettingsMobile();
+            initAdminListMobile();
             initAdminSidebarMobile();
         }
 

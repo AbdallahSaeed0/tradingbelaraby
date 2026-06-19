@@ -12,7 +12,7 @@
                         <h1 class="h3 mb-0">Bundle Management</h1>
                         <p class="text-muted">Manage course bundles</p>
                     </div>
-                    <div>
+                    <div class="admin-list-header-actions">
                         <a href="{{ route('admin.bundles.create') }}" class="btn btn-primary">
                             <i class="fa fa-plus me-2"></i>Add New Bundle
                         </a>
@@ -66,7 +66,7 @@
         <div class="card">
             <div class="card-body">
                 @if($bundles->count() > 0)
-                    <div class="table-responsive">
+                    <div class="table-responsive d-none d-lg-block admin-table-no-mobile-cards">
                         <table class="table table-hover">
                             <thead>
                                 <tr>
@@ -165,6 +165,18 @@
                         </table>
                     </div>
 
+                    <div class="d-lg-none mb-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="selectAllMobile">
+                            <label class="form-check-label small" for="selectAllMobile">Select all on this page</label>
+                        </div>
+                    </div>
+                    <div class="admin-mobile-list d-lg-none" id="mobileBundlesList">
+                        @foreach ($bundles as $bundle)
+                            @include('admin.bundles.partials.mobile-bundle-card', ['bundle' => $bundle])
+                        @endforeach
+                    </div>
+
                     <!-- Pagination -->
                     <div class="row mt-3">
                         <div class="col-md-6">
@@ -220,6 +232,7 @@
             let searchTimeout;
             const searchInput = document.getElementById('searchInput');
             const tableBody = document.querySelector('.table tbody');
+            const mobileList = document.getElementById('mobileBundlesList');
             const paginationContainer = document.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
 
             // AJAX search function
@@ -230,6 +243,9 @@
                 // Show loading state
                 if (tableBody) {
                     tableBody.innerHTML = '<tr><td colspan="9" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
+                }
+                if (mobileList) {
+                    mobileList.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>';
                 }
 
                 fetch(`{{ route('admin.bundles.index') }}?${params.toString()}`, {
@@ -247,10 +263,15 @@
 
                         // Extract table body
                         const newTableBody = tempDiv.querySelector('.table tbody');
+                        const newMobileList = tempDiv.querySelector('#mobileBundlesList');
                         const newPagination = tempDiv.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
 
                         if (newTableBody && tableBody) {
                             tableBody.innerHTML = newTableBody.innerHTML;
+                        }
+
+                        if (newMobileList && mobileList) {
+                            mobileList.innerHTML = newMobileList.innerHTML;
                         }
 
                         if (newPagination && paginationContainer) {
@@ -265,6 +286,9 @@
                         console.error('Error:', error);
                         if (tableBody) {
                             tableBody.innerHTML = '<tr><td colspan="9" class="text-center py-4 text-danger">Error loading data. Please try again.</td></tr>';
+                        }
+                        if (mobileList) {
+                            mobileList.innerHTML = '<div class="text-center py-4 text-danger">Error loading data. Please try again.</div>';
                         }
                     });
             }

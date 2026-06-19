@@ -12,7 +12,7 @@
                         <h1 class="h3 mb-0">Homework Management</h1>
                         <p class="text-muted">Create and manage homework assignments for your courses</p>
                     </div>
-                    <div>
+                    <div class="admin-list-header-actions">
                         <button class="btn btn-outline-secondary me-2" data-bs-toggle="modal" data-bs-target="#importModal">
                             <i class="fa fa-upload me-2"></i>Import
                         </button>
@@ -219,7 +219,7 @@
             <div id="listViewContainer">
                 <div class="card">
                     <div class="card-body">
-                        <div class="table-responsive">
+                        <div class="table-responsive d-none d-lg-block admin-table-no-mobile-cards">
                             <table class="table table-hover table-striped">
                                 <thead>
                                     <tr>
@@ -344,6 +344,18 @@
                                     @endforelse
                                 </tbody>
                             </table>
+                        </div>
+
+                        <div class="d-lg-none mb-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="selectAllMobile">
+                                <label class="form-check-label small" for="selectAllMobile">Select all on this page</label>
+                            </div>
+                        </div>
+                        <div class="admin-mobile-list d-lg-none" id="mobileHomeworkList">
+                            @foreach ($homework as $hw)
+                                @include('admin.homework.partials.mobile-homework-card', ['hw' => $hw])
+                            @endforeach
                         </div>
 
                         <!-- Bulk Actions -->
@@ -574,6 +586,7 @@
             let searchTimeout;
             const searchInput = document.getElementById('searchInput');
             const tableBody = document.querySelector('.table tbody');
+            const mobileList = document.getElementById('mobileHomeworkList');
             const paginationContainer = document.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
 
             // AJAX search function
@@ -584,6 +597,9 @@
                 // Show loading state
                 if (tableBody) {
                     tableBody.innerHTML = '<tr><td colspan="8" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
+                }
+                if (mobileList) {
+                    mobileList.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>';
                 }
 
                 fetch(`{{ route('admin.homework.index') }}?${params.toString()}`, {
@@ -601,11 +617,16 @@
 
                         // Extract table body
                         const newTableBody = tempDiv.querySelector('.table tbody');
+                        const newMobileList = tempDiv.querySelector('#mobileHomeworkList');
                         const newPagination = tempDiv.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
                         const newBulkActions = tempDiv.querySelector('.row.mt-3 .col-md-6:first-child');
 
                         if (newTableBody && tableBody) {
                             tableBody.innerHTML = newTableBody.innerHTML;
+                        }
+
+                        if (newMobileList && mobileList) {
+                            mobileList.innerHTML = newMobileList.innerHTML;
                         }
 
                         if (newPagination && paginationContainer) {
@@ -630,6 +651,9 @@
                         console.error('Error:', error);
                         if (tableBody) {
                             tableBody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-danger">Error loading data. Please try again.</td></tr>';
+                        }
+                        if (mobileList) {
+                            mobileList.innerHTML = '<div class="text-center py-4 text-danger">Error loading data. Please try again.</div>';
                         }
                     });
             }

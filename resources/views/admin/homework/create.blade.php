@@ -3,33 +3,30 @@
 @section('title', 'Create Homework')
 
 @section('content')
-    <div class="container-fluid py-4">
-        <!-- Page Header -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h1 class="h3 mb-0">Create Homework</h1>
-                        <p class="text-muted">Add a new homework assignment to your course</p>
-                    </div>
-                    <div>
-                        <a href="{{ route('admin.homework.index') }}" class="btn btn-outline-secondary">
-                            <i class="fa fa-arrow-left me-2"></i>Back to Homework
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="container-fluid py-4 admin-form-page" data-mobile-back-url="{{ route('admin.homework.index') }}" data-mobile-back-label="Back to Homework">
+        @include('admin.partials.crud-form-shell', [
+            'title' => 'Create Homework',
+            'subtitle' => 'Add a new homework assignment to your course',
+            'backUrl' => route('admin.homework.index'),
+            'backLabel' => 'Back to Homework',
+            'formId' => 'homeworkForm',
+            'submitLabel' => 'Create Homework',
+            'sections' => [
+                ['id' => 'section-basics', 'label' => 'Basics', 'icon' => 'fa-info-circle'],
+                ['id' => 'section-settings', 'label' => 'Settings', 'icon' => 'fa-cog'],
+                ['id' => 'section-files', 'label' => 'Files', 'icon' => 'fa-file-alt'],
+            ],
+        ])
 
-        <div class="row">
-            <div class="col-md-12">
+        <div class="row admin-form-main-row">
+            <div class="col-lg-12 admin-form-main">
                 <div class="card">
                     <div class="card-body">
-                        <form action="{{ route('admin.homework.store') }}" method="POST" enctype="multipart/form-data">
+                        <form id="homeworkForm" action="{{ route('admin.homework.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
 
                             <!-- Basic Information -->
-                            <div class="form-section">
+                            <div class="form-section" id="section-basics">
                                 <h5><i class="fa fa-info-circle me-2"></i>Basic Information</h5>
 
                                 <div class="row">
@@ -131,7 +128,7 @@
                             </div>
 
                             <!-- Scoring & Settings -->
-                            <div class="form-section">
+                            <div class="form-section" id="section-settings">
                                 <h5><i class="fa fa-chart-line me-2"></i>Scoring & Settings</h5>
 
                                 <div class="row">
@@ -221,7 +218,7 @@
                             </div>
 
                             <!-- Files Section -->
-                            <div class="form-section">
+                            <div class="form-section" id="section-files">
                                 <h5><i class="fa fa-file-alt me-2"></i>Files & Materials</h5>
 
                                 <div class="form-group mb-3">
@@ -273,7 +270,7 @@
                             </div>
 
                             <!-- Form Actions -->
-                            <div class="d-flex justify-content-end gap-2">
+                            <div class="d-flex justify-content-end gap-2 admin-form-inline-actions">
                                 <a href="{{ route('admin.homework.index') }}" class="btn btn-secondary">Cancel</a>
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fa fa-save me-2"></i>Create Homework

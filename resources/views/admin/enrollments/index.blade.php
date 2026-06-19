@@ -12,7 +12,7 @@
                         <h1 class="h3 mb-0">All Enrollments Management</h1>
                         <p class="text-muted">Monitor and manage student enrollments across all courses</p>
                     </div>
-                    <div>
+                    <div class="admin-list-header-actions">
                         <a href="{{ route('admin.enrollments.export') }}" class="btn btn-outline-success me-2">
                             <i class="fa fa-download me-2"></i>Export All
                         </a>
@@ -205,7 +205,7 @@
         <!-- Enrollments Table -->
         <div class="card">
             <div class="card-body">
-                <div class="table-responsive">
+                <div class="table-responsive d-none d-lg-block admin-table-no-mobile-cards">
                     <table class="table table-hover table-striped">
                         <thead>
                             <tr>
@@ -349,6 +349,18 @@
                     </table>
                 </div>
 
+                <div class="d-lg-none mb-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="selectAllMobile">
+                        <label class="form-check-label small" for="selectAllMobile">Select all on this page</label>
+                    </div>
+                </div>
+                <div class="admin-mobile-list d-lg-none" id="mobileEnrollmentsList">
+                    @foreach ($enrollments as $enrollment)
+                        @include('admin.enrollments.partials.mobile-enrollment-card', ['enrollment' => $enrollment])
+                    @endforeach
+                </div>
+
                 <!-- Pagination -->
                 <div class="row mt-3">
                     <div class="col-md-6">
@@ -484,6 +496,7 @@
             let searchTimeout;
             const searchInput = document.getElementById('searchInput');
             const tableBody = document.querySelector('.table tbody');
+            const mobileList = document.getElementById('mobileEnrollmentsList');
             const paginationContainer = document.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
 
             // AJAX search function
@@ -494,6 +507,9 @@
                 // Show loading state
                 if (tableBody) {
                     tableBody.innerHTML = '<tr><td colspan="8" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
+                }
+                if (mobileList) {
+                    mobileList.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>';
                 }
 
                 fetch(`{{ route('admin.enrollments.index') }}?${params.toString()}`, {
@@ -511,10 +527,15 @@
 
                         // Extract table body
                         const newTableBody = tempDiv.querySelector('.table tbody');
+                        const newMobileList = tempDiv.querySelector('#mobileEnrollmentsList');
                         const newPagination = tempDiv.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
 
                         if (newTableBody && tableBody) {
                             tableBody.innerHTML = newTableBody.innerHTML;
+                        }
+
+                        if (newMobileList && mobileList) {
+                            mobileList.innerHTML = newMobileList.innerHTML;
                         }
 
                         if (newPagination && paginationContainer) {
@@ -529,6 +550,9 @@
                         console.error('Error:', error);
                         if (tableBody) {
                             tableBody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-danger">Error loading data. Please try again.</td></tr>';
+                        }
+                        if (mobileList) {
+                            mobileList.innerHTML = '<div class="text-center py-4 text-danger">Error loading data. Please try again.</div>';
                         }
                     });
             }

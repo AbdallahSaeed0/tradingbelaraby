@@ -3,23 +3,20 @@
 @section('title', 'Create Quiz')
 
 @section('content')
-    <div class="container-fluid py-4">
-        <!-- Page Header -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h1 class="h3 mb-0">Create New Quiz</h1>
-                        <p class="text-muted">Set up a new quiz for your course</p>
-                    </div>
-                    <div>
-                        <a href="{{ route('admin.quizzes.index') }}" class="btn btn-outline-secondary">
-                            <i class="fa fa-arrow-left me-2"></i>Back to Quizzes
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="container-fluid py-4 admin-form-page" data-mobile-back-url="{{ route('admin.quizzes.index') }}" data-mobile-back-label="Back to Quizzes">
+        @include('admin.partials.crud-form-shell', [
+            'title' => 'Create New Quiz',
+            'subtitle' => 'Set up a new quiz for your course',
+            'backUrl' => route('admin.quizzes.index'),
+            'backLabel' => 'Back to Quizzes',
+            'formId' => 'quizForm',
+            'submitLabel' => 'Create Quiz',
+            'sections' => [
+                ['id' => 'section-basics', 'label' => 'Basics', 'icon' => 'fa-info-circle'],
+                ['id' => 'section-questions', 'label' => 'Questions', 'icon' => 'fa-question-circle'],
+                ['id' => 'section-publish', 'label' => 'Publish', 'icon' => 'fa-save'],
+            ],
+        ])
 
         <form action="{{ route('admin.quizzes.store') }}" method="POST" id="quizForm">
             @csrf
@@ -45,10 +42,10 @@
             <div class="tab-content" id="quizTabsContent">
                 <!-- Quiz Info Tab -->
                 <div class="tab-pane fade show active" id="quiz-info" role="tabpanel">
-                    <div class="row">
+                    <div class="row admin-form-main-row">
                         <!-- Quiz Details -->
-                        <div class="col-lg-8">
-                            <div class="card mb-4">
+                        <div class="col-lg-8 admin-form-main">
+                            <div class="card mb-4" id="section-basics">
                                 <div class="card-header">
                                     <h5 class="mb-0"><i class="fa fa-info-circle me-2"></i>Quiz Details</h5>
                                 </div>
@@ -265,7 +262,7 @@
                         </div>
 
                         <!-- Sidebar -->
-                        <div class="col-lg-4">
+                        <div class="col-lg-4 admin-form-sidebar">
                             <!-- Quiz Preview -->
                             <div class="card mb-4">
                                 <div class="card-header">
@@ -282,12 +279,12 @@
                             </div>
 
                             <!-- Actions -->
-                            <div class="card">
+                            <div class="card" id="section-publish">
                                 <div class="card-header">
                                     <h5 class="mb-0"><i class="fa fa-save me-2"></i>Actions</h5>
                                 </div>
                                 <div class="card-body">
-                                    <div class="d-grid gap-2">
+                                    <div class="d-grid gap-2 admin-form-inline-actions">
                                         <button type="submit" class="btn btn-primary">
                                             <i class="fa fa-save me-2"></i>Create Quiz
                                         </button>
@@ -303,10 +300,10 @@
 
                 <!-- Questions Tab -->
                 <div class="tab-pane fade" id="questions" role="tabpanel">
-                    <div class="row">
+                    <div class="row admin-form-main-row">
                         <!-- Questions Management -->
-                        <div class="col-lg-8">
-                            <div class="card mb-4">
+                        <div class="col-lg-8 admin-form-main">
+                            <div class="card mb-4" id="section-questions">
                                 <div class="card-header d-flex justify-content-between align-items-center">
                                     <h5 class="mb-0"><i class="fa fa-question-circle me-2"></i>Questions Management</h5>
                                     <button class="btn btn-primary btn-sm" onclick="showQuestionForm()">
@@ -523,7 +520,7 @@
                         </div>
 
                         <!-- Sidebar -->
-                        <div class="col-lg-4">
+                        <div class="col-lg-4 admin-form-sidebar">
                             <!-- Statistics -->
                             <div class="card mb-4">
                                 <div class="card-header">

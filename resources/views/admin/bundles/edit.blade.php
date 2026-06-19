@@ -3,26 +3,21 @@
 @section('title', 'Edit Bundle')
 
 @section('content')
-    <div class="container-fluid py-4">
-        <!-- Page Header -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h1 class="h3 mb-0">Edit Bundle</h1>
-                        <p class="text-muted">Update bundle information</p>
-                    </div>
-                    <div>
-                        <a href="{{ route('admin.bundles.index') }}" class="btn btn-outline-secondary me-2">
-                            <i class="fa fa-arrow-left me-2"></i>Back to Bundles
-                        </a>
-                        <button type="submit" form="bundleForm" class="btn btn-primary">
-                            <i class="fa fa-save me-2"></i>Update Bundle
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="container-fluid py-4 admin-form-page" data-mobile-back-url="{{ route('admin.bundles.index') }}" data-mobile-back-label="Back to Bundles">
+        @include('admin.partials.crud-form-shell', [
+            'title' => 'Edit Bundle',
+            'subtitle' => 'Update bundle information',
+            'backUrl' => route('admin.bundles.index'),
+            'backLabel' => 'Back to Bundles',
+            'formId' => 'bundleForm',
+            'submitLabel' => 'Update Bundle',
+            'sections' => [
+                ['id' => 'section-basics', 'label' => 'Basics', 'icon' => 'fa-info-circle'],
+                ['id' => 'section-courses', 'label' => 'Courses', 'icon' => 'fa-graduation-cap'],
+                ['id' => 'section-pricing', 'label' => 'Pricing', 'icon' => 'fa-dollar-sign'],
+                ['id' => 'section-publish', 'label' => 'Publish', 'icon' => 'fa-cog'],
+            ],
+        ])
 
         <form id="bundleForm" action="{{ route('admin.bundles.update', $bundle) }}" method="POST" enctype="multipart/form-data">
             @if ($errors->any())
@@ -39,10 +34,10 @@
 
         @csrf
             @method('PUT')
-            <div class="row">
-                <div class="col-lg-8">
+            <div class="row admin-form-main-row">
+                <div class="col-lg-8 admin-form-main">
                     <!-- Basic Information -->
-                    <div class="card mb-4">
+                    <div class="card mb-4" id="section-basics">
                         <div class="card-header">
                             <h5 class="mb-0"><i class="fa fa-info-circle me-2"></i>Basic Information</h5>
                         </div>
@@ -92,7 +87,7 @@
                     </div>
 
                     <!-- Courses Selection -->
-                    <div class="card mb-4">
+                    <div class="card mb-4" id="section-courses">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="mb-0"><i class="fa fa-book me-2"></i>Select Courses</h5>
                             <span class="badge bg-primary" id="selected-count">0 selected</span>
@@ -161,9 +156,9 @@
                     </div>
                 </div>
 
-                <div class="col-lg-4">
+                <div class="col-lg-4 admin-form-sidebar">
                     <!-- Pricing -->
-                    <div class="card mb-4">
+                    <div class="card mb-4" id="section-pricing">
                         <div class="card-header">
                             <h5 class="mb-0"><i class="fa fa-dollar-sign me-2"></i>Pricing</h5>
                         </div>
@@ -226,7 +221,7 @@
                     </div>
 
                     <!-- Settings -->
-                    <div class="card mb-4">
+                    <div class="card mb-4" id="section-publish">
                         <div class="card-header">
                             <h5 class="mb-0"><i class="fa fa-cog me-2"></i>Settings</h5>
                         </div>
