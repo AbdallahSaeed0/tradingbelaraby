@@ -6,31 +6,21 @@
     <div class="container-fluid admin-settings-subpage py-3 py-lg-4"
         data-settings-back-url="{{ route('admin.settings.index') }}"
         data-settings-back-label="{{ custom_trans('Settings', 'admin') }}">
-        <!-- Page Header -->
-        <div class="page-title-box">
-            <div class="row align-items-center">
-                <div class="col-sm-6">
-                    <h4 class="page-title">{{ custom_trans('Features Split Section Management', 'admin') }}</h4>
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ custom_trans('Dashboard', 'admin') }}</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ custom_trans('Settings', 'admin') }}</a>
-                        </li>
-                        <li class="breadcrumb-item active">{{ custom_trans('Features Split Section', 'admin') }}</li>
-                    </ol>
-                </div>
-                <div class="col-sm-6">
-                    <div class="float-end admin-settings-header-actions">
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#addFeatureModal">
-                            <i class="fas fa-plus me-2"></i>{{ custom_trans('Add Feature Item', 'admin') }}
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @include('admin.settings.partials.subpage-header', [
+            'title' => custom_trans('Features Split Section Management', 'admin'),
+            'activeBreadcrumb' => custom_trans('Features Split', 'admin'),
+            'actions' => '<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFeatureModal"><i class="fas fa-plus me-2"></i>' . custom_trans('Add Feature Item', 'admin') . '</button>',
+        ])
+
+        @include('admin.settings.partials.section-nav', [
+            'sections' => [
+                ['id' => 'settings-section-main', 'label' => 'Content', 'icon' => 'fa-cogs'],
+                ['id' => 'settings-section-items', 'label' => 'Items', 'icon' => 'fa-list'],
+            ],
+        ])
 
         <!-- Main Content Section -->
-        <div class="row mb-4">
+        <div class="row mb-4" id="settings-section-main" data-settings-section="Content">
             <div class="col-12">
                 <div class="card content-card">
                     <div class="card-header">
@@ -135,7 +125,7 @@
         </div>
 
         <!-- Filters -->
-        <div class="card content-card mb-4">
+        <div class="card content-card mb-4 admin-settings-filter-card">
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-4">
@@ -178,7 +168,7 @@
         </div>
 
         <!-- Features Table -->
-        <div class="card content-card">
+        <div class="card content-card" id="settings-section-items" data-settings-section="Items">
             <div class="card-header">
                 <div class="row align-items-center">
                     <div class="col">

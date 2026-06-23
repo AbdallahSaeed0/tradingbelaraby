@@ -6,19 +6,11 @@
     <div class="container-fluid admin-settings-subpage py-3 py-lg-4"
         data-settings-back-url="{{ route('admin.settings.index') }}"
         data-settings-back-label="Settings">
-        <div class="page-title-box">
-            <div class="page-title-content">
-                <h4 class="page-title">Payment Settings</h4>
-                <p class="text-muted mb-0">Configure payment methods available to students</p>
-            </div>
-            <div class="page-title-right">
-                <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">Settings</a></li>
-                    <li class="breadcrumb-item active">Payment Settings</li>
-                </ol>
-            </div>
-        </div>
+        @include('admin.settings.partials.subpage-header', [
+            'title' => 'Payment Settings',
+            'subtitle' => 'Configure payment methods available to students',
+            'activeBreadcrumb' => 'Payment Settings',
+        ])
 
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">

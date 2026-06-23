@@ -3,47 +3,14 @@
 @section('title', custom_trans('Contact Form Submissions', 'admin'))
 
 @section('content')
-    <div class="container-fluid py-4">
-        <!-- Page Header -->
-        <div class="page-title-box">
-            <div class="row align-items-center">
-                <div class="col-sm-6">
-                    <h4 class="page-title">{{ custom_trans('Contact Form Submissions', 'admin') }}</h4>
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ custom_trans('Dashboard', 'admin') }}</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ custom_trans('Settings', 'admin') }}</a>
-                        </li>
-                        <li class="breadcrumb-item"><a
-                                href="{{ route('admin.settings.content-management.index') }}">{{ custom_trans('Content Management', 'admin') }}</a>
-                        </li>
-                        <li class="breadcrumb-item active">{{ custom_trans('Contact Forms', 'admin') }}</li>
-                    </ol>
-                </div>
-                <div class="col-sm-6">
-                    <div class="float-end">
-                        <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown">
-                                <i class="fas fa-download me-2"></i>{{ custom_trans('Export', 'admin') }}
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item"
-                                        href="{{ route('admin.settings.contact-forms.export') }}?format=csv">{{ custom_trans('Export All (CSV)', 'admin') }}</a>
-                                </li>
-                                <li><a class="dropdown-item"
-                                        href="{{ route('admin.settings.contact-forms.export') }}?format=csv&status=new">{{ custom_trans('Export New Only (CSV)', 'admin') }}</a>
-                                </li>
-                                <li><a class="dropdown-item"
-                                        href="{{ route('admin.settings.contact-forms.export') }}?format=csv&status=replied">{{ custom_trans('Export Replied Only (CSV)', 'admin') }}</a>
-                                </li>
-                            </ul>
-                        </div>
-                        <a href="{{ route('admin.settings.content-management.index') }}" class="btn btn-secondary ms-2">
-                            <i class="fas fa-arrow-left me-2"></i>{{ custom_trans('Back to Content Management', 'admin') }}
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="container-fluid admin-settings-subpage py-3 py-lg-4"
+        data-settings-back-url="{{ route('admin.settings.content-management.index') }}"
+        data-settings-back-label="{{ custom_trans('Content Management', 'admin') }}">
+        @include('admin.settings.partials.subpage-header', [
+            'title' => custom_trans('Contact Form Submissions', 'admin'),
+            'activeBreadcrumb' => custom_trans('Contact Forms', 'admin'),
+            'actions' => '<a href="' . route('admin.settings.contact-forms.export') . '?format=csv" class="btn btn-success"><i class="fas fa-download me-2"></i>' . custom_trans('Export CSV', 'admin') . '</a>',
+        ])
 
         <!-- Filters and Stats -->
         <div class="row mb-4">

@@ -3,34 +3,14 @@
 @section('title', custom_trans('Contact Form Details', 'admin'))
 
 @section('content')
-    <div class="container-fluid py-4">
-        <!-- Page Header -->
-        <div class="page-title-box">
-            <div class="row align-items-center">
-                <div class="col-sm-6">
-                    <h4 class="page-title">{{ custom_trans('Contact Form Details', 'admin') }}</h4>
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ custom_trans('Dashboard', 'admin') }}</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ custom_trans('Settings', 'admin') }}</a>
-                        </li>
-                        <li class="breadcrumb-item"><a
-                                href="{{ route('admin.settings.contact-management.index') }}">{{ custom_trans('Contact Management', 'admin') }}</a>
-                        </li>
-                        <li class="breadcrumb-item"><a
-                                href="{{ route('admin.settings.contact-management.contact-forms') }}">{{ custom_trans('Submissions', 'admin') }}</a>
-                        </li>
-                        <li class="breadcrumb-item active">{{ custom_trans('Details', 'admin') }}</li>
-                    </ol>
-                </div>
-                <div class="col-sm-6">
-                    <div class="float-end">
-                        <a href="{{ route('admin.settings.contact-management.contact-forms') }}" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left me-2"></i>{{ custom_trans('Back to List', 'admin') }}
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="container-fluid admin-settings-subpage py-3 py-lg-4"
+        data-settings-back-url="{{ route('admin.settings.contact-management.contact-forms') }}"
+        data-settings-back-label="{{ custom_trans('Submissions', 'admin') }}">
+        @include('admin.settings.partials.subpage-header', [
+            'title' => custom_trans('Contact Form Details', 'admin'),
+            'activeBreadcrumb' => custom_trans('Details', 'admin'),
+            'actions' => '<a href="' . route('admin.settings.contact-management.contact-forms') . '" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i>' . custom_trans('Back to List', 'admin') . '</a>',
+        ])
 
         <div class="row">
             <!-- Contact Form Details -->

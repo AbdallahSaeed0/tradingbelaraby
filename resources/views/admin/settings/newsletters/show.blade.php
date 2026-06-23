@@ -3,26 +3,13 @@
 @section('title', custom_trans('Newsletter Subscriber Details', 'admin'))
 
 @section('content')
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-12">
-                <div class="page-title-box">
-                    <div class="page-title-right">
-                        <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ custom_trans('Dashboard', 'admin') }}</a>
-                            </li>
-                            <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ custom_trans('Settings', 'admin') }}</a>
-                            </li>
-                            <li class="breadcrumb-item"><a
-                                    href="{{ route('admin.settings.newsletters.index') }}">{{ custom_trans('Newsletter Subscriptions', 'admin') }}</a>
-                            </li>
-                            <li class="breadcrumb-item active">{{ custom_trans('Subscriber Details', 'admin') }}</li>
-                        </ol>
-                    </div>
-                    <h4 class="page-title">{{ custom_trans('Newsletter Subscriber Details', 'admin') }}</h4>
-                </div>
-            </div>
-        </div>
+    <div class="container-fluid admin-settings-subpage py-3 py-lg-4"
+        data-settings-back-url="{{ route('admin.settings.newsletters.index') }}"
+        data-settings-back-label="{{ custom_trans('Newsletters', 'admin') }}">
+        @include('admin.settings.partials.subpage-header', [
+            'title' => custom_trans('Newsletter Subscriber Details', 'admin'),
+            'activeBreadcrumb' => custom_trans('Subscriber Details', 'admin'),
+        ])
 
         <div class="row">
             <div class="col-12">

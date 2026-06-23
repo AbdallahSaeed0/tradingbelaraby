@@ -6,29 +6,11 @@
     <div class="container-fluid admin-settings-subpage py-3 py-lg-4"
         data-settings-back-url="{{ route('admin.settings.index') }}"
         data-settings-back-label="{{ custom_trans('Settings', 'admin') }}">
-        <!-- Page Header -->
-        <div class="page-title-box">
-            <div class="row align-items-center">
-                <div class="col-sm-6">
-                    <h4 class="page-title">{{ custom_trans('Info Split Section Management', 'admin') }}</h4>
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ custom_trans('Dashboard', 'admin') }}</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ custom_trans('Settings', 'admin') }}</a>
-                        </li>
-                        <li class="breadcrumb-item active">{{ custom_trans('Info Split Section', 'admin') }}</li>
-                    </ol>
-                </div>
-                <div class="col-sm-6">
-                    <div class="float-end admin-settings-header-actions">
-                        <button type="button" class="btn btn-success" id="toggleStatus"
-                            data-status="{{ $infoSplit && $infoSplit->is_active ? 1 : 0 }}">
-                            <i class="fas fa-toggle-{{ $infoSplit && $infoSplit->is_active ? 'on' : 'off' }} me-2"></i>
-                            {{ $infoSplit && $infoSplit->is_active ? custom_trans('Deactivate', 'admin') : custom_trans('Activate', 'admin') }}
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @include('admin.settings.partials.subpage-header', [
+            'title' => custom_trans('Info Split Section Management', 'admin'),
+            'activeBreadcrumb' => custom_trans('Info Split', 'admin'),
+            'actions' => '<button type="button" class="btn btn-success" id="toggleStatus" data-status="' . ($infoSplit && $infoSplit->is_active ? '1' : '0') . '"><i class="fas fa-toggle-' . ($infoSplit && $infoSplit->is_active ? 'on' : 'off') . ' me-2"></i>' . ($infoSplit && $infoSplit->is_active ? custom_trans('Deactivate', 'admin') : custom_trans('Activate', 'admin')) . '</button>',
+        ])
 
         <!-- Main Content Section -->
         <div class="row">

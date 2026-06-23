@@ -6,29 +6,11 @@
     <div class="container-fluid admin-settings-subpage py-3 py-lg-4"
         data-settings-back-url="{{ route('admin.settings.index') }}"
         data-settings-back-label="{{ custom_trans('Settings', 'admin') }}">
-        <!-- Page Header -->
-        <div class="page-title-box">
-            <div class="row align-items-center">
-                <div class="col-sm-6">
-                    <h4 class="page-title">{{ custom_trans('Contact Management', 'admin') }}</h4>
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a
-                                href="{{ route('admin.dashboard') }}">{{ custom_trans('Dashboard', 'admin') }}</a></li>
-                        <li class="breadcrumb-item"><a
-                                href="{{ route('admin.settings.index') }}">{{ custom_trans('Settings', 'admin') }}</a>
-                        </li>
-                        <li class="breadcrumb-item active">{{ custom_trans('Contact Management', 'admin') }}</li>
-                    </ol>
-                </div>
-                <div class="col-sm-6">
-                    <div class="float-end admin-settings-header-actions">
-                        <a href="{{ route('admin.settings.contact-management.contact-forms') }}" class="btn btn-info">
-                            <i class="fas fa-list me-2"></i>{{ custom_trans('View All Submissions', 'admin') }}
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @include('admin.settings.partials.subpage-header', [
+            'title' => custom_trans('Contact Management', 'admin'),
+            'activeBreadcrumb' => custom_trans('Contact Management', 'admin'),
+            'actions' => '<a href="' . route('admin.settings.contact-management.contact-forms') . '" class="btn btn-info"><i class="fas fa-list me-2"></i>' . custom_trans('View All Submissions', 'admin') . '</a>',
+        ])
 
         <!-- Stats Cards -->
         <div class="row mb-4">
@@ -255,9 +237,11 @@
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save me-2"></i>{{ custom_trans('Save Settings', 'admin') }}
-                            </button>
+                            <div class="admin-settings-inline-actions">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>{{ custom_trans('Save Settings', 'admin') }}
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </div>

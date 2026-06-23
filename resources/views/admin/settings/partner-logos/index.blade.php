@@ -6,19 +6,11 @@
     <div class="container-fluid admin-settings-subpage py-3 py-lg-4"
         data-settings-back-url="{{ route('admin.settings.index') }}"
         data-settings-back-label="{{ custom_trans('Settings', 'admin') }}">
-        <div class="row">
-            <div class="col-12">
-                <div class="page-title-box">
-                    <div class="page-title-right">
-                        <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                            <li class="breadcrumb-item active">Partner Logos</li>
-                        </ol>
-                    </div>
-                    <h4 class="page-title">Partner Logos Management</h4>
-                </div>
-            </div>
-        </div>
+        @include('admin.settings.partials.subpage-header', [
+            'title' => 'Partner Logos Management',
+            'activeBreadcrumb' => 'Partner Logos',
+            'actions' => '<a href="' . route('admin.partner-logos.create') . '" class="btn btn-primary"><i class="fas fa-plus me-1"></i>Add New Logo</a>',
+        ])
 
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">

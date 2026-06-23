@@ -697,6 +697,12 @@
                     e.preventDefault();
                     var target = document.getElementById(sectionId);
                     if (target) {
+                        if (target.classList.contains('tab-pane')) {
+                            var tabTrigger = document.querySelector('[data-bs-target="#' + sectionId + '"]');
+                            if (tabTrigger && window.bootstrap && bootstrap.Tab) {
+                                bootstrap.Tab.getOrCreateInstance(tabTrigger).show();
+                            }
+                        }
                         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }
                 });
@@ -749,7 +755,11 @@
             var primaryForm = document.getElementById('mainContentForm')
                 || document.getElementById('paymentSettingsForm')
                 || document.getElementById('verificationSettingsForm')
-                || document.getElementById('aboutUniversityForm');
+                || document.getElementById('aboutUniversityForm')
+                || document.getElementById('contactSettingsForm')
+                || document.getElementById('termsConditionsForm')
+                || document.getElementById('aboutUsForm')
+                || document.getElementById('academyPolicyForm');
 
             if (primaryForm) {
                 pageForms = [primaryForm];
@@ -898,24 +908,28 @@
                 return;
             }
 
-            document.querySelectorAll('#filterForm').forEach(function(form) {
-                var card = form.closest('.card');
-                if (!card || card.classList.contains('admin-settings-filter-card')) {
+            function wireFilterCard(card) {
+                if (!card || card.dataset.settingsFilterWired === '1') {
                     return;
                 }
-
-                card.classList.add('admin-settings-filter-card');
-
-                var toggle = document.createElement('button');
-                toggle.type = 'button';
-                toggle.className = 'admin-settings-filter-card__toggle';
-                toggle.setAttribute('aria-expanded', 'false');
-                toggle.innerHTML = '<span><i class="fa fa-filter me-2"></i>Search &amp; Filters</span><i class="fa fa-chevron-down admin-settings-filter-card__chevron"></i>';
 
                 var body = card.querySelector('.card-body');
                 if (!body) {
                     return;
                 }
+
+                card.dataset.settingsFilterWired = '1';
+                card.classList.add('admin-settings-filter-card');
+
+                if (card.querySelector('.admin-settings-filter-card__toggle')) {
+                    return;
+                }
+
+                var toggle = document.createElement('button');
+                toggle.type = 'button';
+                toggle.className = 'admin-settings-filter-card__toggle';
+                toggle.setAttribute('aria-expanded', card.classList.contains('is-open') ? 'true' : 'false');
+                toggle.innerHTML = '<span><i class="fa fa-filter me-2"></i>Search &amp; Filters</span><i class="fa fa-chevron-down admin-settings-filter-card__chevron"></i>';
 
                 card.insertBefore(toggle, body);
                 body.classList.add('admin-settings-filter-card__body');
@@ -924,6 +938,14 @@
                     var open = card.classList.toggle('is-open');
                     toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
                 });
+            }
+
+            document.querySelectorAll('#filterForm').forEach(function(form) {
+                wireFilterCard(form.closest('.card'));
+            });
+
+            document.querySelectorAll('.admin-settings-filter-card').forEach(function(card) {
+                wireFilterCard(card);
             });
         }
 

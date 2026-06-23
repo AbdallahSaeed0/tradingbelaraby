@@ -6,29 +6,11 @@
     <div class="container-fluid admin-settings-subpage py-3 py-lg-4"
         data-settings-back-url="{{ route('admin.settings.index') }}"
         data-settings-back-label="{{ custom_trans('Settings', 'admin') }}">
-        <!-- Page Header -->
-        <div class="page-title-box">
-            <div class="row align-items-center">
-                <div class="col-sm-6">
-                    <h4 class="page-title">{{ custom_trans('Content Management', 'admin') }}</h4>
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a
-                                href="{{ route('admin.dashboard') }}">{{ custom_trans('Dashboard', 'admin') }}</a></li>
-                        <li class="breadcrumb-item"><a
-                                href="{{ route('admin.settings.index') }}">{{ custom_trans('Settings', 'admin') }}</a>
-                        </li>
-                        <li class="breadcrumb-item active">{{ custom_trans('Content Management', 'admin') }}</li>
-                    </ol>
-                </div>
-                <div class="col-sm-6">
-                    <div class="float-end admin-settings-header-actions">
-                        <a href="{{ route('admin.settings.contact-forms.index') }}" class="btn btn-success">
-                            <i class="fas fa-envelope me-2"></i>{{ custom_trans('View Contact Forms', 'admin') }}
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @include('admin.settings.partials.subpage-header', [
+            'title' => custom_trans('Content Management', 'admin'),
+            'activeBreadcrumb' => custom_trans('Content Management', 'admin'),
+            'actions' => '<a href="' . route('admin.settings.contact-forms.index') . '" class="btn btn-success"><i class="fas fa-envelope me-2"></i>' . custom_trans('View Contact Forms', 'admin') . '</a>',
+        ])
 
         @include('admin.settings.partials.section-nav', [
             'sections' => [

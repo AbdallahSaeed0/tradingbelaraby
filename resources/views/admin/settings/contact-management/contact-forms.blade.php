@@ -3,31 +3,14 @@
 @section('title', custom_trans('Contact Form Submissions', 'admin'))
 
 @section('content')
-    <div class="container-fluid py-4">
-        <!-- Page Header -->
-        <div class="page-title-box">
-            <div class="row align-items-center">
-                <div class="col-sm-6">
-                    <h4 class="page-title">{{ custom_trans('Contact Form Submissions', 'admin') }}</h4>
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ custom_trans('Dashboard', 'admin') }}</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ custom_trans('Settings', 'admin') }}</a>
-                        </li>
-                        <li class="breadcrumb-item"><a
-                                href="{{ route('admin.settings.contact-management.index') }}">{{ custom_trans('Contact Management', 'admin') }}</a>
-                        </li>
-                        <li class="breadcrumb-item active">{{ custom_trans('Submissions', 'admin') }}</li>
-                    </ol>
-                </div>
-                <div class="col-sm-6">
-                    <div class="float-end">
-                        <a href="{{ route('admin.settings.contact-management.export') }}" class="btn btn-success">
-                            <i class="fas fa-download me-2"></i>{{ custom_trans('Export CSV', 'admin') }}
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="container-fluid admin-settings-subpage py-3 py-lg-4"
+        data-settings-back-url="{{ route('admin.settings.contact-management.index') }}"
+        data-settings-back-label="{{ custom_trans('Contact Management', 'admin') }}">
+        @include('admin.settings.partials.subpage-header', [
+            'title' => custom_trans('Contact Form Submissions', 'admin'),
+            'activeBreadcrumb' => custom_trans('Submissions', 'admin'),
+            'actions' => '<a href="' . route('admin.settings.contact-management.export') . '" class="btn btn-success"><i class="fas fa-download me-2"></i>' . custom_trans('Export CSV', 'admin') . '</a>',
+        ])
 
         <!-- Stats Cards -->
         <div class="row mb-4">

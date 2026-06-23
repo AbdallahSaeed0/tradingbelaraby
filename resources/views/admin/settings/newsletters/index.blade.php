@@ -6,27 +6,11 @@
     <div class="container-fluid admin-settings-subpage py-3 py-lg-4"
         data-settings-back-url="{{ route('admin.settings.index') }}"
         data-settings-back-label="{{ custom_trans('Settings', 'admin') }}">
-        <!-- Page Header -->
-        <div class="page-title-box">
-            <div class="row align-items-center">
-                <div class="col-sm-6">
-                    <h4 class="page-title">{{ custom_trans('Newsletter Subscriptions Management', 'admin') }}</h4>
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ custom_trans('Dashboard', 'admin') }}</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ custom_trans('Settings', 'admin') }}</a>
-                        </li>
-                        <li class="breadcrumb-item active">{{ custom_trans('Newsletter Subscriptions', 'admin') }}</li>
-                    </ol>
-                </div>
-                <div class="col-sm-6">
-                    <div class="float-end admin-settings-header-actions">
-                        <button type="button" class="btn btn-success" id="exportSubscribers">
-                            <i class="fas fa-download me-2"></i>{{ custom_trans('Export CSV', 'admin') }}
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @include('admin.settings.partials.subpage-header', [
+            'title' => custom_trans('Newsletter Subscriptions Management', 'admin'),
+            'activeBreadcrumb' => custom_trans('Newsletters', 'admin'),
+            'actions' => '<button type="button" class="btn btn-success" id="exportSubscribers"><i class="fas fa-download me-2"></i>' . custom_trans('Export CSV', 'admin') . '</button>',
+        ])
 
         <!-- Statistics Cards -->
         <div class="row mb-4">

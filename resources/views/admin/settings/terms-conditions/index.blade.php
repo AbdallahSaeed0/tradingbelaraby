@@ -6,21 +6,11 @@
     <div class="container-fluid admin-settings-subpage py-3 py-lg-4"
         data-settings-back-url="{{ route('admin.settings.index') }}"
         data-settings-back-label="{{ custom_trans('Settings', 'admin') }}">
-        <div class="row">
-            <div class="col-12">
-                <div class="page-title-box">
-                    <div class="page-title-right">
-                        <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                            <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">Settings</a></li>
-                            <li class="breadcrumb-item active">Terms and Conditions</li>
-                        </ol>
-                    </div>
-                    <h4 class="page-title">Terms and Conditions</h4>
-                    <p class="text-muted mb-0">Manage your website's terms and conditions in both English and Arabic.</p>
-                </div>
-            </div>
-        </div>
+        @include('admin.settings.partials.subpage-header', [
+            'title' => 'Terms and Conditions',
+            'subtitle' => "Manage your website's terms and conditions in both English and Arabic.",
+            'activeBreadcrumb' => 'Terms and Conditions',
+        ])
 
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -48,7 +38,7 @@
                         </h5>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('admin.settings.terms-conditions.update') }}" method="POST">
+                        <form id="termsConditionsForm" action="{{ route('admin.settings.terms-conditions.update') }}" method="POST">
                             @csrf
                             @method('PUT')
 
@@ -182,7 +172,7 @@
                             <!-- Submit Button -->
                             <div class="row">
                                 <div class="col-12">
-                                    <div class="d-flex justify-content-between">
+                                    <div class="d-flex justify-content-between admin-settings-inline-actions">
                                         <a href="{{ route('admin.settings.index') }}" class="btn btn-secondary">
                                             <i class="fas fa-arrow-left me-2"></i>
                                             Back to Settings

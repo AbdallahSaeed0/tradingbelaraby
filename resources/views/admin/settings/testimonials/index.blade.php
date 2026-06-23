@@ -6,31 +6,14 @@
     <div class="container-fluid admin-settings-subpage py-3 py-lg-4"
         data-settings-back-url="{{ route('admin.settings.index') }}"
         data-settings-back-label="{{ custom_trans('Settings', 'admin') }}">
-        <!-- Page Header -->
-        <div class="page-title-box">
-            <div class="row align-items-center">
-                <div class="col-sm-6">
-                    <h4 class="page-title">{{ custom_trans('Testimonials Management', 'admin') }}</h4>
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ custom_trans('Dashboard', 'admin') }}</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ custom_trans('Settings', 'admin') }}</a>
-                        </li>
-                        <li class="breadcrumb-item active">{{ custom_trans('Testimonials', 'admin') }}</li>
-                    </ol>
-                </div>
-                <div class="col-sm-6">
-                    <div class="float-end admin-settings-header-actions">
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#addTestimonialModal">
-                            <i class="fas fa-plus me-2"></i>{{ custom_trans('Add Testimonial', 'admin') }}
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @include('admin.settings.partials.subpage-header', [
+            'title' => custom_trans('Testimonials Management', 'admin'),
+            'activeBreadcrumb' => custom_trans('Testimonials', 'admin'),
+            'actions' => '<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTestimonialModal"><i class="fas fa-plus me-2"></i>' . custom_trans('Add Testimonial', 'admin') . '</button>',
+        ])
 
         <!-- Filters -->
-        <div class="card content-card mb-4">
+        <div class="card content-card mb-4 admin-settings-filter-card">
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-4">

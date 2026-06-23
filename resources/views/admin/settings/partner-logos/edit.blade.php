@@ -3,22 +3,13 @@
 @section('title', 'Edit Partner Logo')
 
 @section('content')
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-12">
-                <div class="page-title-box">
-                    <div class="page-title-right">
-                        <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                            <li class="breadcrumb-item"><a href="{{ route('admin.partner-logos.index') }}">Partner Logos</a>
-                            </li>
-                            <li class="breadcrumb-item active">Edit</li>
-                        </ol>
-                    </div>
-                    <h4 class="page-title">Edit Partner Logo</h4>
-                </div>
-            </div>
-        </div>
+    <div class="container-fluid admin-settings-subpage py-3 py-lg-4"
+        data-settings-back-url="{{ route('admin.partner-logos.index') }}"
+        data-settings-back-label="{{ custom_trans('Partner Logos', 'admin') }}">
+        @include('admin.settings.partials.subpage-header', [
+            'title' => 'Edit Partner Logo',
+            'activeBreadcrumb' => 'Edit',
+        ])
 
         <div class="row">
             <div class="col-lg-8 offset-lg-2">

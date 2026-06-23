@@ -6,21 +6,18 @@
     <div class="container-fluid admin-settings-subpage py-3 py-lg-4"
         data-settings-back-url="{{ route('admin.settings.index') }}"
         data-settings-back-label="{{ custom_trans('Settings', 'admin') }}">
-        <div class="row">
-            <div class="col-12">
-                <div class="page-title-box">
-                    <div class="page-title-right">
-                        <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ custom_trans('Dashboard', 'admin') }}</a></li>
-                            <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ custom_trans('Settings', 'admin') }}</a></li>
-                            <li class="breadcrumb-item active">{{ custom_trans('Social Login Providers', 'admin') }}</li>
-                        </ol>
-                    </div>
-                    <h4 class="page-title">{{ custom_trans('Social Login Providers', 'admin') }}</h4>
-                    <p class="text-muted mb-0">{{ custom_trans('Manage Google and Twitter (X) login credentials and redirect URIs. Secrets are stored on the server only.', 'admin') }}</p>
-                </div>
-            </div>
-        </div>
+        @include('admin.settings.partials.subpage-header', [
+            'title' => custom_trans('Social Login Providers', 'admin'),
+            'subtitle' => custom_trans('Manage Google and Twitter (X) login credentials and redirect URIs. Secrets are stored on the server only.', 'admin'),
+            'activeBreadcrumb' => custom_trans('Social Login', 'admin'),
+        ])
+
+        @include('admin.settings.partials.section-nav', [
+            'sections' => [
+                ['id' => 'google-pane', 'label' => 'Google', 'icon' => 'fa-google'],
+                ['id' => 'twitter-pane', 'label' => 'Twitter', 'icon' => 'fa-twitter'],
+            ],
+        ])
 
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -55,7 +52,7 @@
                     <div class="card-body">
                         <div class="tab-content">
                             {{-- Google tab --}}
-                            <div class="tab-pane fade show active" id="google-pane" role="tabpanel">
+                            <div class="tab-pane fade show active" id="google-pane" role="tabpanel" data-settings-section="Google">
                                 @if($google->id)
                                     <p class="text-muted small mb-2"><span class="badge bg-success">Saved</span> Record #{{ $google->id }}</p>
                                 @endif
@@ -95,7 +92,7 @@
                             </div>
 
                             {{-- Twitter tab --}}
-                            <div class="tab-pane fade" id="twitter-pane" role="tabpanel">
+                            <div class="tab-pane fade" id="twitter-pane" role="tabpanel" data-settings-section="Twitter">
                                 @if($twitter->id)
                                     <p class="text-muted small mb-2"><span class="badge bg-success">Saved</span> Record #{{ $twitter->id }}</p>
                                 @endif
