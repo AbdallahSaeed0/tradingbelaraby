@@ -3,7 +3,9 @@
 @section('title', custom_trans('Contact Management', 'admin'))
 
 @section('content')
-    <div class="container-fluid py-4">
+    <div class="container-fluid admin-settings-subpage py-3 py-lg-4"
+        data-settings-back-url="{{ route('admin.settings.index') }}"
+        data-settings-back-label="{{ custom_trans('Settings', 'admin') }}">
         <!-- Page Header -->
         <div class="page-title-box">
             <div class="row align-items-center">
@@ -19,7 +21,7 @@
                     </ol>
                 </div>
                 <div class="col-sm-6">
-                    <div class="float-end">
+                    <div class="float-end admin-settings-header-actions">
                         <a href="{{ route('admin.settings.contact-management.contact-forms') }}" class="btn btn-info">
                             <i class="fas fa-list me-2"></i>{{ custom_trans('View All Submissions', 'admin') }}
                         </a>

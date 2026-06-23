@@ -3,31 +3,24 @@
 @section('title', custom_trans('About University Management', 'admin'))
 
 @section('content')
-    <div class="container-fluid py-4">
-        <!-- Page Header -->
-        <div class="page-title-box">
-            <div class="row align-items-center">
-                <div class="col-sm-6">
-                    <h4 class="page-title">{{ custom_trans('About University Management', 'admin') }}</h4>
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ custom_trans('Dashboard', 'admin') }}</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ custom_trans('Settings', 'admin') }}</a>
-                        </li>
-                        <li class="breadcrumb-item active">{{ custom_trans('About University', 'admin') }}</li>
-                    </ol>
-                </div>
-                <div class="col-sm-6">
-                    <div class="float-end">
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFeatureModal">
-                            <i class="fas fa-plus me-2"></i>{{ custom_trans('Add New Feature', 'admin') }}
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="container-fluid admin-settings-subpage py-3 py-lg-4"
+        data-settings-back-url="{{ route('admin.settings.index') }}"
+        data-settings-back-label="{{ custom_trans('Settings', 'admin') }}">
+        @include('admin.settings.partials.subpage-header', [
+            'title' => custom_trans('About University Management', 'admin'),
+            'activeBreadcrumb' => custom_trans('About University', 'admin'),
+            'actions' => '<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFeatureModal"><i class="fas fa-plus me-2"></i>' . custom_trans('Add New Feature', 'admin') . '</button>',
+        ])
+
+        @include('admin.settings.partials.section-nav', [
+            'sections' => [
+                ['id' => 'settings-section-main', 'label' => 'Content', 'icon' => 'fa-edit'],
+                ['id' => 'settings-section-features', 'label' => 'Features', 'icon' => 'fa-list'],
+            ],
+        ])
 
         <!-- Main Content Section -->
-        <div class="card main-content-card mb-4">
+        <div class="card main-content-card mb-4" id="settings-section-main" data-settings-section="Content">
             <div class="card-header">
                 <h5 class="mb-0">{{ custom_trans('Main Content', 'admin') }}</h5>
             </div>
@@ -103,7 +96,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-between flex-wrap gap-2 admin-settings-inline-actions">
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-save me-2"></i>{{ custom_trans('Save Content', 'admin') }}
                         </button>
@@ -118,7 +111,10 @@
         </div>
 
         <!-- Features Section -->
-        <div class="card mb-4">
+        <div class="card mb-4 content-card" id="settings-section-features" data-settings-section="Features">
+            <div class="card-header">
+                <h5 class="mb-0">{{ custom_trans('University Features', 'admin') }}</h5>
+            </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-hover table-striped" id="features-table">

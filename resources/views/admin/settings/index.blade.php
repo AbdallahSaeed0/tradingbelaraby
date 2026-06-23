@@ -3,7 +3,7 @@
 @section('title', custom_trans('Settings', 'admin'))
 
 @section('content')
-    <div class="container-fluid">
+    <div class="container-fluid admin-settings-subpage py-3 py-lg-4">
         <div class="page-title-box">
             <div class="page-title-content">
                 <h4 class="page-title">{{ custom_trans('Content Management', 'admin') }}</h4>

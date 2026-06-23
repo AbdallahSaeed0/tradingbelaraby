@@ -633,7 +633,10 @@
                 return;
             }
 
+            initAdminMobileTables();
             initSettingsSectionNav();
+            initSettingsTableMobile();
+            initSettingsFilterCards();
             initSettingsMobileToolbar();
         }
 
@@ -745,7 +748,8 @@
 
             var primaryForm = document.getElementById('mainContentForm')
                 || document.getElementById('paymentSettingsForm')
-                || document.getElementById('verificationSettingsForm');
+                || document.getElementById('verificationSettingsForm')
+                || document.getElementById('aboutUniversityForm');
 
             if (primaryForm) {
                 pageForms = [primaryForm];
@@ -755,10 +759,18 @@
             toolbar.className = 'admin-settings-mobile-toolbar d-lg-none';
             toolbar.id = 'settingsMobileToolbar';
 
+            var backShell = document.querySelector('.container-fluid[data-settings-back-url]');
+            var backUrl = backShell
+                ? backShell.getAttribute('data-settings-back-url')
+                : @json(route('admin.settings.index'));
+            var backLabel = backShell
+                ? (backShell.getAttribute('data-settings-back-label') || 'Settings')
+                : 'Settings';
+
             var backBtn = document.createElement('a');
             backBtn.href = backUrl;
             backBtn.className = 'btn btn-outline-secondary btn-sm';
-            backBtn.innerHTML = '<i class="fa fa-arrow-left me-1"></i>Settings';
+            backBtn.innerHTML = '<i class="fa fa-arrow-left me-1"></i>' + backLabel;
 
             toolbar.appendChild(backBtn);
 
@@ -815,6 +827,105 @@
         }
 
         window.initAdminSettingsMobile = initAdminSettingsMobile;
+
+        function initSettingsTableMobile() {
+            if (!document.body.classList.contains('admin-settings-page')) {
+                return;
+            }
+
+            if (window.innerWidth >= 992) {
+                return;
+            }
+
+            var hideLabelPatterns = [
+                /\(ar\)/i,
+                /\(arabic\)/i,
+                /welcome text/i,
+                /subtitle/i,
+                /^content$/i,
+                /^description$/i
+            ];
+
+            document.querySelectorAll('main .admin-table-mobile table').forEach(function(table) {
+                var headers = table.tHead && table.tHead.rows.length
+                    ? Array.from(table.tHead.rows[0].cells).map(getAdminTableHeaderLabel)
+                    : [];
+
+                Array.from(table.tBodies).forEach(function(tbody) {
+                    Array.from(tbody.rows).forEach(function(row) {
+                        if (row.cells.length <= 1) {
+                            return;
+                        }
+
+                        row.classList.add('admin-settings-table-row');
+
+                        Array.from(row.cells).forEach(function(cell, index) {
+                            var label = (cell.getAttribute('data-label') || headers[index] || '').trim();
+
+                            if (index === 0 && cell.querySelector('.form-check-input[type="checkbox"]')) {
+                                cell.classList.add('admin-settings-col-check');
+                            }
+
+                            if (cell.querySelector('img') || cell.querySelector('.slider-thumb')) {
+                                cell.classList.add('admin-settings-col-media');
+                            }
+
+                            if (label && hideLabelPatterns.some(function(pattern) {
+                                return pattern.test(label);
+                            })) {
+                                cell.classList.add('admin-settings-col-hide');
+                            }
+
+                            if (cell.querySelector('.btn-group') || /actions?/i.test(label)) {
+                                cell.classList.add('admin-settings-col-actions');
+                            }
+
+                            if (/^title$/i.test(label) && !cell.classList.contains('admin-settings-col-hide')) {
+                                cell.classList.add('admin-settings-col-title');
+                            }
+
+                            if (/status/i.test(label) || cell.querySelector('.form-switch')) {
+                                cell.classList.add('admin-settings-col-status');
+                            }
+                        });
+                    });
+                });
+            });
+        }
+
+        function initSettingsFilterCards() {
+            if (!document.body.classList.contains('admin-settings-page') || window.innerWidth >= 992) {
+                return;
+            }
+
+            document.querySelectorAll('#filterForm').forEach(function(form) {
+                var card = form.closest('.card');
+                if (!card || card.classList.contains('admin-settings-filter-card')) {
+                    return;
+                }
+
+                card.classList.add('admin-settings-filter-card');
+
+                var toggle = document.createElement('button');
+                toggle.type = 'button';
+                toggle.className = 'admin-settings-filter-card__toggle';
+                toggle.setAttribute('aria-expanded', 'false');
+                toggle.innerHTML = '<span><i class="fa fa-filter me-2"></i>Search &amp; Filters</span><i class="fa fa-chevron-down admin-settings-filter-card__chevron"></i>';
+
+                var body = card.querySelector('.card-body');
+                if (!body) {
+                    return;
+                }
+
+                card.insertBefore(toggle, body);
+                body.classList.add('admin-settings-filter-card__body');
+
+                toggle.addEventListener('click', function() {
+                    var open = card.classList.toggle('is-open');
+                    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+                });
+            });
+        }
 
         function initAdminListMobile() {
             if (!document.body.classList.contains('admin-list-page')) {

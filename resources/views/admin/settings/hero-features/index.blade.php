@@ -3,28 +3,14 @@
 @section('title', custom_trans('Hero Features Management', 'admin'))
 
 @section('content')
-    <div class="container-fluid py-4">
-        <!-- Page Header -->
-        <div class="page-title-box">
-            <div class="row align-items-center">
-                <div class="col-sm-6">
-                    <h4 class="page-title">{{ custom_trans('Hero Features Management', 'admin') }}</h4>
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ custom_trans('Dashboard', 'admin') }}</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">{{ custom_trans('Settings', 'admin') }}</a>
-                        </li>
-                        <li class="breadcrumb-item active">{{ custom_trans('Hero Features', 'admin') }}</li>
-                    </ol>
-                </div>
-                <div class="col-sm-6">
-                    <div class="float-end">
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addHeroFeatureModal">
-                            <i class="fas fa-plus me-2"></i>{{ custom_trans('Add New Hero Feature', 'admin') }}
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="container-fluid admin-settings-subpage py-3 py-lg-4"
+        data-settings-back-url="{{ route('admin.settings.index') }}"
+        data-settings-back-label="{{ custom_trans('Settings', 'admin') }}">
+        @include('admin.settings.partials.subpage-header', [
+            'title' => custom_trans('Hero Features Management', 'admin'),
+            'activeBreadcrumb' => custom_trans('Hero Features', 'admin'),
+            'actions' => '<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addHeroFeatureModal"><i class="fas fa-plus me-2"></i>' . custom_trans('Add New Hero Feature', 'admin') . '</button>',
+        ])
 
         <!-- Filters and Search -->
         <div class="card mb-4">

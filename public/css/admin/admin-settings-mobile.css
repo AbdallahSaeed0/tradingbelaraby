@@ -229,6 +229,227 @@
         flex: 1 1 auto;
         font-weight: 600;
     }
+
+    /* Sub-page shell */
+    body.admin-settings-page .admin-settings-subpage {
+        padding-bottom: 5rem;
+    }
+
+    body.admin-settings-page .admin-settings-subpage-header {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    body.admin-settings-page .admin-settings-subpage-header .page-title {
+        font-size: 1.2rem;
+        line-height: 1.35;
+    }
+
+    /* Collapsible filter cards */
+    body.admin-settings-page .admin-settings-filter-card > .card-body:not(.admin-settings-filter-card__body) {
+        padding: 0;
+    }
+
+    body.admin-settings-page .admin-settings-filter-card__toggle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 0.85rem 1rem;
+        border: 0;
+        background: var(--admin-dropdown-hover, #f8f9fa);
+        color: var(--admin-text, #333);
+        font-size: 0.88rem;
+        font-weight: 600;
+        text-align: start;
+        border-bottom: 1px solid var(--admin-border, #dee2e6);
+    }
+
+    body.admin-settings-page .admin-settings-filter-card__body {
+        display: none;
+        padding: 1rem !important;
+    }
+
+    body.admin-settings-page .admin-settings-filter-card.is-open .admin-settings-filter-card__body {
+        display: block;
+    }
+
+    body.admin-settings-page .admin-settings-filter-card.is-open .admin-settings-filter-card__chevron {
+        transform: rotate(180deg);
+    }
+
+    body.admin-settings-page .admin-settings-filter-card__chevron {
+        transition: transform 0.2s ease;
+        color: var(--admin-text-muted, #6c757d);
+    }
+
+    /* List tables → smart single-column cards */
+    body.admin-settings-page main .admin-table-mobile > table tbody tr.admin-settings-table-row {
+        display: grid !important;
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "check"
+            "media"
+            "title"
+            "status"
+            "actions";
+        gap: 0.35rem 0.75rem;
+        padding: 0.85rem !important;
+        border-radius: 0.65rem !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+    }
+
+    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-hide {
+        display: none !important;
+    }
+
+    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-check {
+        grid-area: check;
+        padding: 0 !important;
+    }
+
+    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-check::before {
+        display: none !important;
+    }
+
+    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-media {
+        grid-area: media;
+        padding: 0 0 0.35rem !important;
+    }
+
+    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-media::before {
+        display: none !important;
+    }
+
+    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-media img {
+        width: 100%;
+        max-width: 100%;
+        max-height: 140px;
+        object-fit: cover;
+        border-radius: 0.5rem;
+        border: 1px solid var(--admin-border, #dee2e6);
+    }
+
+    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-title {
+        grid-area: title;
+        font-size: 0.95rem !important;
+        font-weight: 600;
+        padding: 0 !important;
+    }
+
+    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-title::before {
+        font-size: 0.68rem !important;
+        margin-bottom: 0.15rem !important;
+    }
+
+    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-status {
+        grid-area: status;
+        padding: 0.15rem 0 !important;
+    }
+
+    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-actions {
+        grid-area: actions;
+        padding: 0.35rem 0 0 !important;
+        border-top: 1px solid var(--admin-border-light, #e9ecef);
+        margin-top: 0.25rem;
+        padding-top: 0.65rem !important;
+    }
+
+    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-actions::before {
+        display: none !important;
+    }
+
+    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-actions .btn-group {
+        display: inline-flex;
+        flex-wrap: nowrap;
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-actions .btn-group .btn {
+        margin: 0 !important;
+        margin-inline-end: -1px !important;
+        border-radius: 0 !important;
+        flex: 0 0 auto;
+    }
+
+    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-actions .btn-group .btn:first-child {
+        border-start-start-radius: 0.375rem !important;
+        border-end-start-radius: 0.375rem !important;
+    }
+
+    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-actions .btn-group .btn:last-child {
+        margin-inline-end: 0 !important;
+        border-start-end-radius: 0.375rem !important;
+        border-end-end-radius: 0.375rem !important;
+    }
+
+    /* Cells without explicit area still show in flow */
+    body.admin-settings-page main .admin-table-mobile tbody tr.admin-settings-table-row > td:not(.admin-settings-col-hide):not(.admin-settings-col-check):not(.admin-settings-col-media):not(.admin-settings-col-title):not(.admin-settings-col-status):not(.admin-settings-col-actions) {
+        grid-column: 1 / -1;
+    }
+
+    /* Verification & form cards */
+    body.admin-settings-page .method-card {
+        border-radius: 0.65rem !important;
+        padding: 0.85rem !important;
+    }
+
+    body.admin-settings-page .language-tabs {
+        display: flex;
+        gap: 0.35rem;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 0.25rem;
+        scrollbar-width: none;
+    }
+
+    body.admin-settings-page .language-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    body.admin-settings-page .language-tab {
+        flex: 0 0 auto;
+        white-space: nowrap;
+        font-size: 0.82rem;
+        padding: 0.45rem 0.75rem;
+        border-radius: 999px;
+        border: 1px solid var(--admin-border, #dee2e6);
+        background: var(--admin-card-bg, #fff);
+    }
+
+    body.admin-settings-page .language-tab.active {
+        background: var(--admin-active-bg, #eff6ff);
+        border-color: var(--admin-active-text, #2563eb);
+        color: var(--admin-active-text, #2563eb);
+    }
+
+    body.admin-settings-page .main-content-card,
+    body.admin-settings-page .content-card,
+    body.admin-settings-page .features-card,
+    body.admin-settings-page .faqs-card {
+        border-radius: 0.75rem;
+        overflow: hidden;
+        margin-bottom: 0.85rem;
+        box-shadow: 0 1px 4px var(--admin-shadow, rgba(0, 0, 0, 0.06));
+    }
+
+    body.admin-settings-page .main-content-card > .card-header,
+    body.admin-settings-page .content-card > .card-header {
+        background: var(--admin-dropdown-hover, #f8f9fa) !important;
+        padding: 0.85rem 1rem;
+    }
+
+    body.admin-settings-page .d-flex.justify-content-between {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    body.admin-settings-page .font-monospace.form-control {
+        font-size: 0.78rem;
+    }
 }
 
 @media (max-width: 767.98px) {
@@ -315,4 +536,13 @@
 
 [data-theme="dark"] body.admin-settings-page .admin-settings-section-nav {
     background: var(--admin-bg, #1a1d29);
+}
+
+[data-theme="dark"] body.admin-settings-page .admin-settings-filter-card__toggle {
+    background: var(--surface-2, #252836);
+    border-bottom-color: var(--admin-border, #3d4153);
+}
+
+[data-theme="dark"] body.admin-settings-page main .admin-table-mobile > table tbody tr.admin-settings-table-row {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
 }

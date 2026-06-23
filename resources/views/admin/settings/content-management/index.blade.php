@@ -3,7 +3,9 @@
 @section('title', custom_trans('Content Management', 'admin'))
 
 @section('content')
-    <div class="container-fluid py-4">
+    <div class="container-fluid admin-settings-subpage py-3 py-lg-4"
+        data-settings-back-url="{{ route('admin.settings.index') }}"
+        data-settings-back-label="{{ custom_trans('Settings', 'admin') }}">
         <!-- Page Header -->
         <div class="page-title-box">
             <div class="row align-items-center">

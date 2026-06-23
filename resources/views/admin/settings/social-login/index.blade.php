@@ -3,7 +3,9 @@
 @section('title', custom_trans('Social Login Providers', 'admin'))
 
 @section('content')
-    <div class="container-fluid">
+    <div class="container-fluid admin-settings-subpage py-3 py-lg-4"
+        data-settings-back-url="{{ route('admin.settings.index') }}"
+        data-settings-back-label="{{ custom_trans('Settings', 'admin') }}">
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box">

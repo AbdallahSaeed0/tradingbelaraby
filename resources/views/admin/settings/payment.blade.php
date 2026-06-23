@@ -3,7 +3,9 @@
 @section('title', 'Payment Settings')
 
 @section('content')
-    <div class="container-fluid">
+    <div class="container-fluid admin-settings-subpage py-3 py-lg-4"
+        data-settings-back-url="{{ route('admin.settings.index') }}"
+        data-settings-back-label="Settings">
         <div class="page-title-box">
             <div class="page-title-content">
                 <h4 class="page-title">Payment Settings</h4>
