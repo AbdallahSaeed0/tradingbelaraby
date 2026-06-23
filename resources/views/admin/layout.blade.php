@@ -46,6 +46,9 @@
     <link rel="stylesheet" href="{{ asset('css/admin/admin-form-mobile.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/admin-settings-mobile.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/admin-list-mobile.css') }}">
+    @if (request()->routeIs('admin.courses.show'))
+        <link rel="stylesheet" href="{{ asset('css/admin/admin-course-detail.css') }}">
+    @endif
 </head>
 
 @php

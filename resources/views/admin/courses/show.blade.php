@@ -50,16 +50,16 @@
                     <i class="fa fa-book fa-2x"></i>
                 </div>
             @endif
-            <div class="admin-course-detail-hero__chips">
-                <span class="badge bg-primary">{{ $course->category->name ?? 'Uncategorized' }}</span>
-                <span class="badge bg-{{ $courseStatusBadgeClass }}">{{ ucfirst($course->status) }}</span>
+            <div class="admin-course-detail-hero__chips admin-course-hero__chips">
+                <span class="admin-course-chip admin-course-chip--category">{{ $course->category->name ?? 'Uncategorized' }}</span>
+                <span class="admin-course-chip admin-course-chip--{{ $course->status }}">{{ ucfirst($course->status) }}</span>
                 @if ($course->is_featured)
-                    <span class="badge bg-warning text-dark">Featured</span>
+                    <span class="admin-course-chip admin-course-chip--featured">Featured</span>
                 @endif
                 @if ($course->price == 0)
-                    <span class="badge bg-success">Free</span>
+                    <span class="admin-course-chip admin-course-chip--free">Free</span>
                 @else
-                    <span class="badge bg-dark">{{ number_format($course->price, 2) }} SAR</span>
+                    <span class="admin-course-chip admin-course-chip--price">{{ number_format($course->price, 2) }} SAR</span>
                 @endif
             </div>
             @if ($course->description)
@@ -68,91 +68,88 @@
         </div>
 
         {{-- Desktop hero --}}
-        <div class="course-header mb-4 d-none d-lg-block">
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <div class="d-flex align-items-center">
-                        @if ($course->image)
-                            <img src="{{ $course->image_url }}" alt="Course" class="course-thumbnail me-4">
-                        @else
-                            <div
-                                class="course-thumbnail me-4 bg-white bg-opacity-20 d-flex align-items-center justify-content-center">
-                                <i class="fa fa-book fa-3x text-white"></i>
-                            </div>
-                        @endif
-                        <div>
-                            <h1 class="h2 mb-2">{{ $course->name }}</h1>
-                            <p class="mb-2 opacity-75">{{ Str::limit($course->description, 150) }}</p>
-                            <div class="d-flex align-items-center">
-                                <span class="badge bg-white text-dark me-2">{{ $course->category->name ?? 'Uncategorized' }}</span>
-                                <span class="badge bg-{{ $courseStatusBadgeClass }} me-2">{{ ucfirst($course->status) }}</span>
-                                @if ($course->is_featured)
-                                    <span class="badge bg-warning text-dark me-2">Featured</span>
-                                @endif
-                                @if ($course->price == 0)
-                                    <span class="badge bg-success">Free</span>
-                                @else
-                                    <span class="badge bg-info">{{ number_format($course->price, 2) }} SAR</span>
-                                @endif
-                            </div>
+        <div class="admin-course-hero d-none d-lg-block mb-4">
+            <div class="admin-course-hero__inner">
+                <div class="admin-course-hero__media">
+                    @if ($course->image)
+                        <img src="{{ $course->image_url }}" alt="{{ $course->name }}" class="admin-course-hero__thumb">
+                    @else
+                        <div class="admin-course-hero__thumb admin-course-hero__thumb--placeholder">
+                            <i class="fa fa-book fa-2x"></i>
                         </div>
+                    @endif
+                </div>
+                <div class="admin-course-hero__body">
+                    <h1 class="admin-course-hero__title">{{ $course->name }}</h1>
+                    @if ($course->description)
+                        <p class="admin-course-hero__desc">{{ Str::limit(strip_tags($course->description), 160) }}</p>
+                    @endif
+                    <div class="admin-course-hero__chips">
+                        <span class="admin-course-chip admin-course-chip--category">{{ $course->category->name ?? 'Uncategorized' }}</span>
+                        <span class="admin-course-chip admin-course-chip--{{ $course->status }}">{{ ucfirst($course->status) }}</span>
+                        @if ($course->is_featured)
+                            <span class="admin-course-chip admin-course-chip--featured">Featured</span>
+                        @endif
+                        @if ($course->price == 0)
+                            <span class="admin-course-chip admin-course-chip--free">Free</span>
+                        @else
+                            <span class="admin-course-chip admin-course-chip--price">{{ number_format($course->price, 2) }} SAR</span>
+                        @endif
                     </div>
                 </div>
-                <div class="col-md-4 text-md-end admin-form-inline-actions">
-                    <div class="btn-group" role="group">
-                        <a href="{{ route('admin.courses.edit', $course) }}" class="btn btn-outline-light">
-                            <i class="fa fa-edit me-1"></i>Edit Course
-                        </a>
-                        <a href="{{ route('admin.courses.index') }}" class="btn btn-outline-light admin-detail-back-url">
-                            <i class="fa fa-arrow-left me-1"></i>Back to List
-                        </a>
-                    </div>
+                <div class="admin-course-hero__actions admin-form-inline-actions">
+                    <a href="{{ route('admin.courses.edit', $course) }}" class="btn btn-outline-light btn-sm">
+                        <i class="fa fa-edit me-1"></i>Edit Course
+                    </a>
+                    <a href="{{ route('admin.courses.index') }}" class="btn btn-outline-light btn-sm admin-detail-back-url">
+                        <i class="fa fa-arrow-left me-1"></i>Back to List
+                    </a>
                 </div>
             </div>
         </div>
 
         <!-- Statistics Cards -->
-        <div class="row g-3 g-lg-4 mb-4 admin-course-detail-stats">
-            <div class="col-md-2">
-                <div class="stat-card text-center">
-                    <i class="fa fa-list fa-2x text-primary mb-2"></i>
-                    <h3 class="h4 mb-0">{{ $stats['total_sections'] }}</h3>
-                    <small class="text-muted">Sections</small>
+        <div class="row g-3 admin-course-stats">
+            <div class="col-4 col-md-2">
+                <div class="admin-course-stat">
+                    <div class="admin-course-stat__icon is-primary"><i class="fa fa-list"></i></div>
+                    <div class="admin-course-stat__value">{{ $stats['total_sections'] }}</div>
+                    <div class="admin-course-stat__label">Sections</div>
                 </div>
             </div>
-            <div class="col-md-2">
-                <div class="stat-card text-center">
-                    <i class="fa fa-play-circle fa-2x text-success mb-2"></i>
-                    <h3 class="h4 mb-0">{{ $stats['total_lectures'] }}</h3>
-                    <small class="text-muted">Lectures</small>
+            <div class="col-4 col-md-2">
+                <div class="admin-course-stat">
+                    <div class="admin-course-stat__icon is-success"><i class="fa fa-play-circle"></i></div>
+                    <div class="admin-course-stat__value">{{ $stats['total_lectures'] }}</div>
+                    <div class="admin-course-stat__label">Lectures</div>
                 </div>
             </div>
-            <div class="col-md-2">
-                <div class="stat-card text-center">
-                    <i class="fa fa-question-circle fa-2x text-warning mb-2"></i>
-                    <h3 class="h4 mb-0">{{ $stats['total_quizzes'] }}</h3>
-                    <small class="text-muted">Quizzes</small>
+            <div class="col-4 col-md-2">
+                <div class="admin-course-stat">
+                    <div class="admin-course-stat__icon is-warning"><i class="fa fa-question-circle"></i></div>
+                    <div class="admin-course-stat__value">{{ $stats['total_quizzes'] }}</div>
+                    <div class="admin-course-stat__label">Quizzes</div>
                 </div>
             </div>
-            <div class="col-md-2">
-                <div class="stat-card text-center">
-                    <i class="fa fa-tasks fa-2x text-info mb-2"></i>
-                    <h3 class="h4 mb-0">{{ $stats['total_homework'] }}</h3>
-                    <small class="text-muted">Homework</small>
+            <div class="col-4 col-md-2">
+                <div class="admin-course-stat">
+                    <div class="admin-course-stat__icon is-info"><i class="fa fa-tasks"></i></div>
+                    <div class="admin-course-stat__value">{{ $stats['total_homework'] }}</div>
+                    <div class="admin-course-stat__label">Homework</div>
                 </div>
             </div>
-            <div class="col-md-2">
-                <div class="stat-card text-center">
-                    <i class="fa fa-video fa-2x text-danger mb-2"></i>
-                    <h3 class="h4 mb-0">{{ $stats['total_live_classes'] }}</h3>
-                    <small class="text-muted">Live Classes</small>
+            <div class="col-4 col-md-2">
+                <div class="admin-course-stat">
+                    <div class="admin-course-stat__icon is-danger"><i class="fa fa-video"></i></div>
+                    <div class="admin-course-stat__value">{{ $stats['total_live_classes'] }}</div>
+                    <div class="admin-course-stat__label">Live Classes</div>
                 </div>
             </div>
-            <div class="col-md-2">
-                <div class="stat-card text-center">
-                    <i class="fa fa-users fa-2x text-secondary mb-2"></i>
-                    <h3 class="h4 mb-0">{{ $stats['total_enrollments'] ?? 0 }}</h3>
-                    <small class="text-muted">Students</small>
+            <div class="col-4 col-md-2">
+                <div class="admin-course-stat">
+                    <div class="admin-course-stat__icon is-secondary"><i class="fa fa-users"></i></div>
+                    <div class="admin-course-stat__value">{{ $stats['total_enrollments'] ?? 0 }}</div>
+                    <div class="admin-course-stat__label">Students</div>
                 </div>
             </div>
         </div>
@@ -161,7 +158,7 @@
             <!-- Course Content -->
             <div class="col-lg-8 order-lg-2">
                 <!-- Course Sections -->
-                <div class="card mb-4" id="detail-section-content">
+                <div class="card mb-4 admin-course-panel" id="detail-section-content">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="mb-0"><i class="fa fa-list me-2"></i>Course Content</h5>
                         <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addSectionModal">
@@ -170,64 +167,60 @@
                     </div>
                     <div class="card-body p-0">
                         @forelse($course->sections as $section)
-                            <div class="section-card">
-                                <div class="section-header">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <h6 class="mb-1">{{ $section->title }}</h6>
-                                            <small class="text-muted">{{ $section->description }}</small>
-                                        </div>
-                                        <div>
-                                            <span class="badge bg-secondary">{{ $section->lectures->count() }}
-                                                lectures</span>
-                                            <div class="btn-group btn-group-sm ms-2">
-                                                <button class="btn btn-outline-primary" data-bs-toggle="modal"
-                                                    data-bs-target="#addLectureModal"
-                                                    data-section-id="{{ $section->id }}">
-                                                    <i class="fa fa-plus"></i>
-                                                </button>
-                                                <button class="btn btn-outline-primary">
-                                                    <i class="fa fa-edit"></i>
-                                                </button>
-                                                <button class="btn btn-outline-danger">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
-                                            </div>
+                            <div class="admin-course-section">
+                                <div class="admin-course-section__head">
+                                    <div class="min-w-0">
+                                        <h6 class="admin-course-section__title">{{ $section->title }}</h6>
+                                        @if ($section->description)
+                                            <div class="admin-course-section__desc">{{ $section->description }}</div>
+                                        @endif
+                                    </div>
+                                    <div class="admin-course-section__meta">
+                                        <span class="admin-course-section__count">{{ $section->lectures->count() }} lectures</span>
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-primary" data-bs-toggle="modal"
+                                                data-bs-target="#addLectureModal"
+                                                data-section-id="{{ $section->id }}" title="Add lecture">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                            <button class="btn btn-outline-primary" title="Edit section">
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-outline-danger" title="Delete section">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="section-content">
+                                <div class="admin-course-section__body">
                                     @forelse($section->lectures as $lecture)
-                                        <div class="lecture-item">
-                                            <div class="d-flex align-items-center flex-grow-1">
-                                                <i class="fa fa-play-circle me-3 text-primary"></i>
-                                                <div>
-                                                    <div class="fw-medium">{{ $lecture->title }}</div>
-                                                    <div class="d-flex align-items-center mt-1">
-                                                        <span class="badge bg-light text-dark content-type-badge me-2">
-                                                            {{ ucfirst($lecture->content_type) }}
-                                                        </span>
+                                        <div class="admin-course-lecture">
+                                            <div class="admin-course-lecture__main">
+                                                <span class="admin-course-lecture__play"><i class="fa fa-play"></i></span>
+                                                <div class="min-w-0">
+                                                    <div class="admin-course-lecture__title">{{ $lecture->title }}</div>
+                                                    <div class="admin-course-lecture__meta">
+                                                        <span class="admin-course-lecture__type">{{ ucfirst($lecture->content_type) }}</span>
                                                         @if ($lecture->duration_minutes)
-                                                            <small class="text-muted">{{ $lecture->duration_minutes }}
-                                                                min</small>
+                                                            <span class="admin-course-lecture__duration">{{ $lecture->duration_minutes }} min</span>
                                                         @endif
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="btn-group btn-group-sm">
-                                                <button class="btn btn-outline-primary btn-sm">
+                                            <div class="admin-course-lecture__actions btn-group btn-group-sm">
+                                                <button class="btn btn-outline-primary btn-sm" title="View">
                                                     <i class="fa fa-eye"></i>
                                                 </button>
-                                                <button class="btn btn-outline-primary btn-sm">
+                                                <button class="btn btn-outline-primary btn-sm" title="Edit">
                                                     <i class="fa fa-edit"></i>
                                                 </button>
-                                                <button class="btn btn-outline-danger btn-sm">
+                                                <button class="btn btn-outline-danger btn-sm" title="Delete">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
                                             </div>
                                         </div>
                                     @empty
-                                        <div class="lecture-item text-center text-muted">
+                                        <div class="admin-course-lecture admin-course-lecture--empty">
                                             <i class="fa fa-plus-circle me-2"></i>No lectures yet. Add your first lecture.
                                         </div>
                                     @endforelse
@@ -248,7 +241,7 @@
 
                 <!-- What You'll Learn -->
                 @if ($course->what_to_learn && count($course->what_to_learn) > 0)
-                    <div class="card mb-4">
+                    <div class="card mb-4 admin-course-panel">
                         <div class="card-header">
                             <h5 class="mb-0"><i class="fa fa-graduation-cap me-2"></i>What Students Will Learn</h5>
                         </div>
@@ -271,78 +264,74 @@
             <!-- Sidebar -->
             <div class="col-lg-4 order-lg-1 admin-detail-sidebar">
                 <!-- Course Info -->
-                <div class="card mb-4" id="detail-section-info">
+                <div class="card mb-4 admin-course-panel" id="detail-section-info">
                     <div class="card-header">
                         <h5 class="mb-0"><i class="fa fa-info-circle me-2"></i>Course Information</h5>
                     </div>
-                    <div class="card-body admin-detail-grid">
-                        <div class="admin-detail-field">
-                            <strong>Instructor(s)</strong>
-                            <span class="admin-detail-value">
-                                @if ($course->instructors->count() > 0)
-                                    @foreach ($course->instructors as $instructor)
-                                        <span class="d-flex align-items-center mb-1">
-                                            @if ($instructor->avatar)
-                                                <img src="{{ asset('storage/' . $instructor->avatar) }}" class="rounded-circle me-2" width="20" height="20" alt="">
-                                            @else
-                                                <span class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center me-2 w-20 h-20 fs-9px">{{ strtoupper(substr($instructor->name, 0, 2)) }}</span>
-                                            @endif
-                                            {{ $instructor->name }}
-                                        </span>
-                                    @endforeach
-                                @else
-                                    <span class="text-muted">Not assigned</span>
-                                @endif
-                            </span>
-                        </div>
-                        <div class="row mb-0">
-                            <div class="col-6 admin-detail-field">
-                                <strong>Duration</strong>
-                                <span class="admin-detail-value">{{ $course->duration ?? 'Not set' }}</span>
+                    <div class="card-body p-0">
+                        <div class="admin-course-info-grid">
+                            <div class="admin-course-info-item admin-course-info-item--full">
+                                <span class="admin-course-info-item__label">Instructor(s)</span>
+                                <span class="admin-course-info-item__value">
+                                    @if ($course->instructors->count() > 0)
+                                        @foreach ($course->instructors as $instructor)
+                                            <span class="d-flex align-items-center mb-1">
+                                                @if ($instructor->avatar)
+                                                    <img src="{{ asset('storage/' . $instructor->avatar) }}" class="rounded-circle me-2" width="22" height="22" alt="">
+                                                @else
+                                                    <span class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center me-2" style="width:22px;height:22px;font-size:0.65rem">{{ strtoupper(substr($instructor->name, 0, 2)) }}</span>
+                                                @endif
+                                                {{ $instructor->name }}
+                                            </span>
+                                        @endforeach
+                                    @else
+                                        <span class="text-muted">Not assigned</span>
+                                    @endif
+                                </span>
                             </div>
-                            <div class="col-6 admin-detail-field">
-                                <strong>Price</strong>
-                                <span class="admin-detail-value">
+                            <div class="admin-course-info-item">
+                                <span class="admin-course-info-item__label">Duration</span>
+                                <span class="admin-course-info-item__value">{{ $course->duration ?? 'Not set' }}</span>
+                            </div>
+                            <div class="admin-course-info-item">
+                                <span class="admin-course-info-item__label">Price</span>
+                                <span class="admin-course-info-item__value">
                                     @if ($course->price == 0)
-                                        <span class="text-success">Free</span>
+                                        <span class="text-success fw-semibold">Free</span>
                                     @else
                                         {{ number_format($course->price, 2) }} SAR
                                     @endif
                                 </span>
                             </div>
-                        </div>
-                        <div class="row mb-0">
-                            <div class="col-6 admin-detail-field">
-                                <strong>Status</strong>
-                                <span class="admin-detail-value">
+                            <div class="admin-course-info-item">
+                                <span class="admin-course-info-item__label">Status</span>
+                                <span class="admin-course-info-item__value">
                                     <span class="badge bg-{{ $courseStatusBadgeClass }}">{{ ucfirst($course->status) }}</span>
                                 </span>
                             </div>
-                            <div class="col-6 admin-detail-field">
-                                <strong>Students</strong>
-                                <span class="admin-detail-value">{{ $stats['total_enrollments'] ?? 0 }}</span>
+                            <div class="admin-course-info-item">
+                                <span class="admin-course-info-item__label">Students</span>
+                                <span class="admin-course-info-item__value">{{ $stats['total_enrollments'] ?? 0 }}</span>
                             </div>
-                        </div>
-                        <div class="row mb-0">
-                            <div class="col-6 admin-detail-field">
-                                <strong>Created</strong>
-                                <span class="admin-detail-value">{{ $course->created_at->format('M d, Y') }}</span>
+                            <div class="admin-course-info-item">
+                                <span class="admin-course-info-item__label">Created</span>
+                                <span class="admin-course-info-item__value">{{ $course->created_at->format('M d, Y') }}</span>
                             </div>
-                            <div class="col-6 admin-detail-field">
-                                <strong>Updated</strong>
-                                <span class="admin-detail-value">{{ $course->updated_at->format('M d, Y') }}</span>
+                            <div class="admin-course-info-item">
+                                <span class="admin-course-info-item__label">Updated</span>
+                                <span class="admin-course-info-item__value">{{ $course->updated_at->format('M d, Y') }}</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Quick Actions -->
-                <div class="card mb-4 admin-form-inline-actions" id="detail-section-actions">
+                <div class="card mb-4 admin-course-panel admin-form-inline-actions" id="detail-section-actions">
                     <div class="card-header">
                         <h5 class="mb-0"><i class="fa fa-bolt me-2"></i>Quick Actions</h5>
                     </div>
                     <div class="card-body">
-                        <div class="d-grid gap-2">
+                        <div class="admin-course-actions">
                             <a href="{{ route('admin.courses.edit', $course) }}" class="btn btn-outline-primary">
                                 <i class="fa fa-edit me-2"></i>Edit Course
                             </a>
@@ -355,7 +344,7 @@
                             <a href="{{ route('admin.courses.duplicate', $course) }}" class="btn btn-outline-warning">
                                 <i class="fa fa-copy me-2"></i>Duplicate Course
                             </a>
-                            <hr>
+                            <hr class="admin-course-actions__divider">
                             <button class="btn btn-outline-danger" onclick="confirmDelete()">
                                 <i class="fa fa-trash me-2"></i>Delete Course
                             </button>
@@ -364,36 +353,30 @@
                 </div>
 
                 <!-- Recent Activity -->
-                <div class="card">
+                <div class="card admin-course-panel">
                     <div class="card-header">
                         <h5 class="mb-0"><i class="fa fa-clock me-2"></i>Recent Activity</h5>
                     </div>
                     <div class="card-body">
-                        <div class="list-group list-group-flush">
-                            @forelse($recentEnrollments as $enrollment)
-                                <div class="list-group-item px-0 py-2">
-                                    <div class="d-flex align-items-center">
-                                        <i class="fa fa-user-plus text-success me-2"></i>
-                                        <div class="flex-grow-1">
-                                            <div class="fw-medium">{{ $enrollment->user->name ?? 'Unknown User' }}
-                                                enrolled</div>
-                                            <small
-                                                class="text-muted">{{ $enrollment->created_at->diffForHumans() }}</small>
-                                        </div>
-                                        @if ($enrollment->status == 'completed')
-                                            <span class="badge bg-success">Completed</span>
-                                        @elseif($enrollment->status == 'active')
-                                            <span class="badge bg-primary">Active</span>
-                                        @endif
-                                    </div>
+                        @forelse($recentEnrollments as $enrollment)
+                            <div class="admin-course-activity-item">
+                                <span class="admin-course-activity-item__icon"><i class="fa fa-user-plus"></i></span>
+                                <div class="min-w-0 flex-grow-1">
+                                    <div class="admin-course-activity-item__text">{{ $enrollment->user->name ?? 'Unknown User' }} enrolled</div>
+                                    <div class="admin-course-activity-item__time">{{ $enrollment->created_at->diffForHumans() }}</div>
                                 </div>
-                            @empty
-                                <div class="text-center text-muted py-3">
-                                    <i class="fa fa-clock fa-2x mb-2"></i>
-                                    <p class="mb-0">No recent activity</p>
-                                </div>
-                            @endforelse
-                        </div>
+                                @if ($enrollment->status == 'completed')
+                                    <span class="badge bg-success">Completed</span>
+                                @elseif($enrollment->status == 'active')
+                                    <span class="badge bg-primary">Active</span>
+                                @endif
+                            </div>
+                        @empty
+                            <div class="text-center text-muted py-3">
+                                <i class="fa fa-clock fa-2x mb-2"></i>
+                                <p class="mb-0">No recent activity</p>
+                            </div>
+                        @endforelse
                     </div>
                 </div>
             </div>

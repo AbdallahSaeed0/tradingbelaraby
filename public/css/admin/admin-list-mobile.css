@@ -441,90 +441,38 @@
         gap: 0.5rem;
     }
 
-    /* Course show: compact section/lecture actions (not full-width form buttons) */
+    /* Course show: compact section/lecture actions */
     body.admin-course-detail-page #detail-section-content .card-header {
         flex-wrap: wrap;
         gap: 0.5rem;
         padding: 0.85rem 1rem;
     }
 
-    body.admin-course-detail-page .section-card {
+    body.admin-course-detail-page .admin-course-section {
         margin: 0.65rem;
-        border-radius: 0.65rem;
-        overflow: hidden;
     }
 
-    body.admin-course-detail-page .section-card .section-header {
-        padding: 0.85rem 1rem;
-        border-radius: 0;
+    body.admin-course-detail-page .admin-course-stats > [class*="col-"] {
+        flex: 0 0 33.333%;
+        max-width: 33.333%;
     }
 
-    body.admin-course-detail-page .section-card .lecture-item {
-        border-radius: 0.5rem;
-        margin-bottom: 0.5rem;
+    body.admin-course-detail-page .admin-course-stat {
+        padding: 0.75rem 0.35rem;
     }
 
-    body.admin-course-detail-page .section-card .lecture-item:last-child {
-        margin-bottom: 0;
+    body.admin-course-detail-page .admin-course-stat__icon {
+        width: 2rem;
+        height: 2rem;
+        font-size: 0.95rem;
     }
 
-    body.admin-course-detail-page .section-card .section-header .d-flex {
-        gap: 0.65rem;
+    body.admin-course-detail-page .admin-course-stat__value {
+        font-size: 1.1rem;
     }
 
-    body.admin-course-detail-page .section-card .section-header .d-flex > div:last-child {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: space-between;
-        gap: 0.5rem;
-        width: 100%;
-    }
-
-    body.admin-course-detail-page .section-card .section-header .btn-group {
-        width: auto !important;
-        flex-wrap: nowrap;
-        margin-left: 0 !important;
-    }
-
-    body.admin-course-detail-page .section-card .section-header .btn-group .btn {
-        width: auto !important;
-        min-width: 2.25rem;
-        padding: 0.25rem 0.55rem;
-    }
-
-    body.admin-course-detail-page .section-card .section-content {
-        padding: 0.65rem;
-    }
-
-    body.admin-course-detail-page .section-card .lecture-item {
-        flex-direction: row !important;
-        align-items: center !important;
-        flex-wrap: nowrap;
-        margin-left: 0;
-        gap: 0.5rem;
-        padding: 0.65rem 0.75rem;
-    }
-
-    body.admin-course-detail-page .section-card .lecture-item > .d-flex {
-        flex: 1 1 auto;
-        min-width: 0;
-    }
-
-    body.admin-course-detail-page .section-card .lecture-item > .d-flex .fw-medium {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-    body.admin-course-detail-page .section-card .lecture-item .btn-group {
-        flex-shrink: 0;
-        width: auto !important;
-    }
-
-    body.admin-course-detail-page .section-card .lecture-item .btn-group .btn {
-        width: auto !important;
-        padding: 0.2rem 0.45rem;
+    body.admin-course-detail-page .admin-course-stat__label {
+        font-size: 0.62rem;
     }
 
     body.admin-detail-page .admin-detail-section-nav {
@@ -609,11 +557,6 @@
         padding: 0.75rem 0.85rem 0;
     }
 
-    body.admin-course-detail-page .admin-course-detail-hero__chips .badge {
-        font-weight: 600;
-        font-size: 0.72rem;
-    }
-
     body.admin-course-detail-page .admin-course-detail-hero__desc {
         margin: 0;
         padding: 0.65rem 0.85rem 0.85rem;
@@ -622,36 +565,13 @@
         line-height: 1.45;
     }
 
-    body.admin-course-detail-page .admin-course-detail-stats > [class*="col-"] {
-        flex: 0 0 33.333%;
-        max-width: 33.333%;
-    }
-
-    body.admin-course-detail-page .admin-course-detail-stats .stat-card {
-        padding: 0.75rem 0.5rem;
-    }
-
-    body.admin-course-detail-page .admin-course-detail-stats .stat-card i {
-        font-size: 1.25rem !important;
-        margin-bottom: 0.35rem !important;
-    }
-
-    body.admin-course-detail-page .admin-course-detail-stats .stat-card h3 {
-        font-size: 1.1rem;
-    }
-
-    body.admin-course-detail-page .admin-course-detail-stats .stat-card small {
-        font-size: 0.68rem;
-    }
-
-    body.admin-course-detail-page .section-header .btn-outline-secondary,
-    body.admin-course-detail-page .lecture-item .btn-outline-secondary {
+    body.admin-course-detail-page .admin-course-lecture .btn-outline-secondary {
         border-color: var(--admin-active-text, #0d6efd);
         color: var(--admin-active-text, #6ea8fe);
     }
 
-    body.admin-course-detail-page .section-header .btn,
-    body.admin-course-detail-page .lecture-item .btn {
+    body.admin-course-detail-page .admin-course-section__meta .btn,
+    body.admin-course-detail-page .admin-course-lecture .btn {
         border-width: 1px;
         border-style: solid;
     }
