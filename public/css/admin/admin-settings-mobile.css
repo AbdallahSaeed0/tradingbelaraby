@@ -285,6 +285,36 @@
         color: var(--admin-text-muted, #6c757d);
     }
 
+    body.admin-settings-page main .table-responsive.admin-table-mobile > table tbody,
+    body.admin-settings-page main .table-responsive.admin-table-mobile > .table tbody {
+        display: flex !important;
+        flex-direction: column;
+        gap: 0.65rem;
+    }
+
+    body.admin-settings-page main .table-responsive.admin-table-mobile > table tbody tr,
+    body.admin-settings-page main .table-responsive.admin-table-mobile > .table tbody tr {
+        margin-bottom: 0 !important;
+    }
+
+    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-status .status-badge,
+    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-toggle .status-badge {
+        margin-left: auto;
+    }
+
+    /* Override generic mobile table action row styling */
+    body.admin-settings-page main .table-responsive.admin-table-mobile tbody td:last-child,
+    body.admin-settings-page main .table-responsive.admin-table-mobile tbody td.col-actions {
+        border-top: 0 !important;
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    body.admin-settings-page main .table-responsive.admin-table-mobile tbody td.admin-settings-col-actions {
+        border-top: 1px solid var(--admin-border-light, #e9ecef) !important;
+        padding-top: 0.5rem !important;
+    }
+
     /* List tables → smart single-column cards (override admin-tables-mobile 2-col grid) */
     body.admin-settings-page main .table-responsive.admin-table-mobile > table tbody tr,
     body.admin-settings-page main .table-responsive.admin-table-mobile > .table tbody tr {
@@ -294,12 +324,18 @@
             "media"
             "title"
             "meta"
-            "status"
+            "flags"
             "actions";
-        gap: 0.5rem;
-        padding: 0.85rem !important;
-        border-radius: 0.65rem !important;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+        gap: 0;
+        padding: 0 !important;
+        border-radius: 0.75rem !important;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07) !important;
+        overflow: hidden;
+        border: 1px solid var(--admin-border, #dee2e6) !important;
+    }
+
+    body.admin-settings-page main .admin-table-mobile tbody tr.admin-settings-table-row > td {
+        border: 0 !important;
     }
 
     /* Hide secondary / duplicate columns on mobile */
@@ -324,7 +360,7 @@
 
     body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-media {
         grid-area: media;
-        padding: 0 0 0.35rem !important;
+        padding: 0 !important;
     }
 
     body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-media::before {
@@ -338,16 +374,17 @@
         max-height: 160px;
         height: auto;
         object-fit: cover;
-        border-radius: 0.5rem;
-        border: 1px solid var(--admin-border, #dee2e6);
+        border-radius: 0;
+        border: 0;
+        border-bottom: 1px solid var(--admin-border, #dee2e6);
     }
 
     body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-title {
         grid-area: title;
-        font-size: 1rem !important;
+        font-size: 0.95rem !important;
         font-weight: 600;
-        line-height: 1.35;
-        padding: 0 !important;
+        line-height: 1.4;
+        padding: 0.85rem 0.85rem 0.5rem !important;
     }
 
     body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-title::before {
@@ -356,56 +393,117 @@
 
     body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-meta {
         grid-area: meta;
-        padding: 0 !important;
-        font-size: 0.85rem !important;
+        padding: 0 0.85rem 0.5rem !important;
+        font-size: 0.82rem !important;
+        line-height: 1.45;
         color: var(--admin-text-muted, #6c757d);
     }
 
     body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-meta::before {
-        font-size: 0.68rem !important;
-        margin-bottom: 0.15rem !important;
+        display: none !important;
     }
 
-    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-status {
-        grid-area: status;
-        padding: 0.15rem 0 !important;
+    /* Compact toggle rows (status, expanded, etc.) */
+    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-status,
+    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-toggle {
+        grid-area: flags;
+        display: flex !important;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        padding: 0.55rem 0.85rem !important;
+        margin: 0 !important;
+        background: var(--admin-dropdown-hover, #f8f9fa);
+        border-top: 1px solid var(--admin-border-light, #e9ecef);
+        font-size: 0.84rem !important;
     }
 
-    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-status::before {
-        font-size: 0.68rem !important;
-        margin-bottom: 0.2rem !important;
+    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-status::before,
+    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-toggle::before {
+        content: attr(data-label);
+        display: block;
+        flex: 1 1 auto;
+        min-width: 0;
+        font-size: 0.8rem !important;
+        font-weight: 500;
+        text-transform: none;
+        letter-spacing: 0;
+        color: var(--admin-text, #333);
+        margin: 0 !important;
+    }
+
+    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-status .form-check,
+    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-toggle .form-check,
+    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-status .form-switch,
+    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-toggle .form-switch {
+        flex: 0 0 auto;
+        margin: 0 !important;
+        padding: 0 !important;
+        min-height: 0;
+    }
+
+    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-status .form-check-input,
+    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-toggle .form-check-input {
+        margin: 0 !important;
+        float: none;
     }
 
     body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-actions {
         grid-area: actions;
-        padding: 0.65rem 0 0 !important;
+        padding: 0.5rem 0.85rem 0.65rem !important;
         border-top: 1px solid var(--admin-border-light, #e9ecef);
-        margin-top: 0.15rem;
+        margin: 0 !important;
+        background: transparent;
     }
 
     body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-actions::before {
-        font-size: 0.68rem !important;
-        margin-bottom: 0.45rem !important;
+        display: none !important;
     }
 
-    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-actions .btn-group {
-        display: flex;
-        flex-wrap: wrap;
+    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-actions .btn-group,
+    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-actions .d-flex.gap-1 {
+        display: flex !important;
+        flex-wrap: nowrap;
         width: 100%;
-        gap: 0.35rem;
-        justify-content: flex-start;
+        gap: 0.4rem !important;
+        justify-content: flex-end !important;
     }
 
-    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-actions .btn-group .btn {
+    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-actions .btn-group .btn,
+    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-actions .d-flex.gap-1 .btn {
         margin: 0 !important;
-        border-radius: 0.375rem !important;
-        flex: 1 1 auto;
-        min-width: 2.75rem;
+        border-radius: 0.5rem !important;
+        flex: 0 0 auto !important;
+        width: 2.4rem;
+        height: 2.4rem;
+        min-width: 2.4rem;
+        padding: 0 !important;
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+    }
+
+    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-actions .btn-group .btn i,
+    body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-actions .d-flex.gap-1 .btn i {
+        margin: 0 !important;
+        font-size: 0.9rem;
+    }
+
+    /* Cards without image: tighten top padding on title */
+    body.admin-settings-page main .admin-table-mobile tbody tr.admin-settings-table-row:not(:has(.admin-settings-col-media)) td.admin-settings-col-title {
+        padding-top: 0.9rem !important;
+    }
+
+    /* Cards without toggles: title flows into actions */
+    body.admin-settings-page main .admin-table-mobile tbody tr.admin-settings-table-row:not(:has(.admin-settings-col-status)):not(:has(.admin-settings-col-toggle)) td.admin-settings-col-actions {
+        border-top: 0;
+        padding-top: 0.25rem !important;
     }
 
     /* Any remaining visible cell spans full width */
-    body.admin-settings-page main .admin-table-mobile tbody tr > td:not(.admin-settings-col-hide):not(.admin-settings-col-check):not(.admin-settings-col-order):not(.admin-settings-col-media):not(.admin-settings-col-title):not(.admin-settings-col-meta):not(.admin-settings-col-status):not(.admin-settings-col-actions) {
+    body.admin-settings-page main .admin-table-mobile tbody tr > td:not(.admin-settings-col-hide):not(.admin-settings-col-check):not(.admin-settings-col-order):not(.admin-settings-col-media):not(.admin-settings-col-title):not(.admin-settings-col-meta):not(.admin-settings-col-status):not(.admin-settings-col-toggle):not(.admin-settings-col-actions) {
         grid-column: 1 / -1;
+        padding: 0.5rem 0.85rem !important;
     }
 
     /* Verification & form cards */
@@ -562,5 +660,17 @@
 
 [data-theme="dark"] body.admin-settings-page main .table-responsive.admin-table-mobile > table tbody tr,
 [data-theme="dark"] body.admin-settings-page main .table-responsive.admin-table-mobile > .table tbody tr {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25) !important;
+    border-color: var(--admin-border, #3d4153) !important;
+}
+
+[data-theme="dark"] body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-status,
+[data-theme="dark"] body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-toggle {
+    background: var(--surface-2, #252836);
+    border-top-color: var(--admin-border, #3d4153);
+}
+
+[data-theme="dark"] body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-status::before,
+[data-theme="dark"] body.admin-settings-page main .admin-table-mobile tbody td.admin-settings-col-toggle::before {
+    color: var(--admin-text, #e9ecef);
 }

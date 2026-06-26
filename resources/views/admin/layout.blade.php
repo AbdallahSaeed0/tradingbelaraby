@@ -864,6 +864,7 @@
                 'admin-settings-col-title',
                 'admin-settings-col-meta',
                 'admin-settings-col-status',
+                'admin-settings-col-toggle',
                 'admin-settings-col-actions'
             ];
 
@@ -924,7 +925,11 @@
                                 titleAssigned = true;
                             }
 
-                            if (/status/i.test(label) || cell.querySelector('.form-switch') || cell.querySelector('.status-badge')) {
+                            if (/^status$/i.test(label) || (cell.querySelector('.status-badge') && !cell.querySelector('.form-switch'))) {
+                                cell.classList.add('admin-settings-col-status');
+                            } else if (/expanded/i.test(label) || (cell.querySelector('.form-switch') && !cell.classList.contains('admin-settings-col-status'))) {
+                                cell.classList.add('admin-settings-col-toggle');
+                            } else if (cell.querySelector('.form-switch')) {
                                 cell.classList.add('admin-settings-col-status');
                             }
 
