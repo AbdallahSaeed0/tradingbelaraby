@@ -46,18 +46,17 @@
                             </button>
                         </div>
                     </div>
+                </form>
             </div>
-            </form>
         </div>
-    </div>
 
-    <!-- Sliders Table -->
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover table-striped" id="sliders-table">
+        <!-- Sliders Table -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped" id="sliders-table">
                             <thead>
                                 <tr>
                                     <th width="30">
@@ -139,7 +138,6 @@
                 </div>
             </div>
         </div>
-    </div>
     </div>
 
     <!-- Add Slider Modal -->

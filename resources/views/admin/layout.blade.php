@@ -843,23 +843,36 @@
                 return;
             }
 
-            if (window.innerWidth >= 992) {
-                return;
-            }
-
             var hideLabelPatterns = [
                 /\(ar\)/i,
                 /\(arabic\)/i,
                 /welcome text/i,
                 /subtitle/i,
                 /^content$/i,
-                /^description$/i
+                /^description$/i,
+                /^order$/i,
+                /^answer$/i,
+                /^created/i,
+                /^updated/i
+            ];
+
+            var settingsCellClasses = [
+                'admin-settings-col-hide',
+                'admin-settings-col-check',
+                'admin-settings-col-order',
+                'admin-settings-col-media',
+                'admin-settings-col-title',
+                'admin-settings-col-meta',
+                'admin-settings-col-status',
+                'admin-settings-col-actions'
             ];
 
             document.querySelectorAll('main .admin-table-mobile table').forEach(function(table) {
                 var headers = table.tHead && table.tHead.rows.length
                     ? Array.from(table.tHead.rows[0].cells).map(getAdminTableHeaderLabel)
                     : [];
+
+                var titleAssigned = false;
 
                 Array.from(table.tBodies).forEach(function(tbody) {
                     Array.from(tbody.rows).forEach(function(row) {
@@ -869,6 +882,12 @@
 
                         row.classList.add('admin-settings-table-row');
 
+                        Array.from(row.cells).forEach(function(cell) {
+                            settingsCellClasses.forEach(function(cls) {
+                                cell.classList.remove(cls);
+                            });
+                        });
+
                         Array.from(row.cells).forEach(function(cell, index) {
                             var label = (cell.getAttribute('data-label') || headers[index] || '').trim();
 
@@ -876,7 +895,11 @@
                                 cell.classList.add('admin-settings-col-check');
                             }
 
-                            if (cell.querySelector('img') || cell.querySelector('.slider-thumb')) {
+                            if (/^order$/i.test(label)) {
+                                cell.classList.add('admin-settings-col-order');
+                            }
+
+                            if (cell.querySelector('img') || cell.querySelector('.slider-thumb') || cell.querySelector('.logo-preview-max')) {
                                 cell.classList.add('admin-settings-col-media');
                             }
 
@@ -890,18 +913,33 @@
                                 cell.classList.add('admin-settings-col-actions');
                             }
 
-                            if (/^title$/i.test(label) && !cell.classList.contains('admin-settings-col-hide')) {
+                            if (!titleAssigned && /^title$/i.test(label) && !cell.classList.contains('admin-settings-col-hide')) {
                                 cell.classList.add('admin-settings-col-title');
+                                titleAssigned = true;
+                            } else if (!titleAssigned && /^question$/i.test(label) && !cell.classList.contains('admin-settings-col-hide')) {
+                                cell.classList.add('admin-settings-col-title');
+                                titleAssigned = true;
+                            } else if (!titleAssigned && (/^name$/i.test(label) || /^email$/i.test(label)) && !cell.classList.contains('admin-settings-col-hide')) {
+                                cell.classList.add('admin-settings-col-title');
+                                titleAssigned = true;
                             }
 
-                            if (/status/i.test(label) || cell.querySelector('.form-switch')) {
+                            if (/status/i.test(label) || cell.querySelector('.form-switch') || cell.querySelector('.status-badge')) {
                                 cell.classList.add('admin-settings-col-status');
                             }
+
+                            if (/^rating$/i.test(label) || /^category$/i.test(label) || /^type$/i.test(label)) {
+                                cell.classList.add('admin-settings-col-meta');
+                            }
                         });
+
+                        titleAssigned = false;
                     });
                 });
             });
         }
+
+        window.initSettingsTableMobile = initSettingsTableMobile;
 
         function initSettingsFilterCards() {
             if (!document.body.classList.contains('admin-settings-page') || window.innerWidth >= 992) {
@@ -1115,6 +1153,18 @@
             initAdminListMobile();
             initAdminSidebarMobile();
         }
+
+        var settingsTableMobileResizeTimer;
+        window.addEventListener('resize', function() {
+            if (!document.body.classList.contains('admin-settings-page')) {
+                return;
+            }
+            clearTimeout(settingsTableMobileResizeTimer);
+            settingsTableMobileResizeTimer = setTimeout(function() {
+                initAdminMobileTables();
+                initSettingsTableMobile();
+            }, 150);
+        });
 
         // Display session messages as toasts
         @if (session('success'))

@@ -41,6 +41,12 @@
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
     }
 
+    /* Settings pages use dedicated single-column cards in admin-settings-mobile.css */
+    body.admin-settings-page main .table-responsive.admin-table-mobile > table tbody tr,
+    body.admin-settings-page main .table-responsive.admin-table-mobile > .table tbody tr {
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+
     main .table-responsive.admin-table-mobile tbody td.admin-table-mobile-skip-label,
     main .table-responsive.admin-table-mobile tbody td.col-course,
     main .table-responsive.admin-table-mobile tbody td.col-instructor,
