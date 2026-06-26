@@ -30,7 +30,7 @@
 
         <div class="row justify-content-center">
             <div class="col-lg-10">
-                <div class="card">
+                <div class="card admin-settings-form-card">
                     <div class="card-header">
                         <h5 class="card-title mb-0">
                             <i class="fas fa-info-circle me-2"></i>
@@ -46,28 +46,26 @@
                             <input type="hidden" name="is_active" id="is_active_hidden" value="{{ old('is_active', $aboutUs->is_active ?? true) ? '1' : '0' }}">
 
                             <!-- Status Toggle -->
-                            <div class="row mb-4">
-                                <div class="col-12">
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="is_active" 
-                                            {{ old('is_active', $aboutUs->is_active ?? true) ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="is_active">
-                                            <strong>Active</strong> - Display this page on the website
-                                        </label>
-                                    </div>
+                            <div class="admin-settings-active-panel mb-4">
+                                <div class="admin-settings-active-panel__text">
+                                    <strong>Active</strong>
+                                    <span>Display this page on the website</span>
+                                </div>
+                                <div class="form-check form-switch mb-0">
+                                    <input class="form-check-input" type="checkbox" id="is_active"
+                                        {{ old('is_active', $aboutUs->is_active ?? true) ? 'checked' : '' }}>
+                                    <label class="form-check-label visually-hidden" for="is_active">Active</label>
                                 </div>
                             </div>
 
                             <!-- Content Section with Tabs -->
-                            <div class="row mb-4">
-                                <div class="col-12">
-                                    <h6 class="text-primary mb-3">
-                                        <i class="fas fa-language me-2"></i>
-                                        Content
-                                    </h6>
-                                    
-                                    <!-- Language Tabs -->
-                                    <ul class="nav nav-tabs" id="contentTabs" role="tablist">
+                            <div class="admin-settings-content-block mb-4">
+                                <h6 class="admin-settings-section-title">
+                                    <i class="fas fa-language me-2"></i>
+                                    Content
+                                </h6>
+
+                                <ul class="nav nav-tabs admin-settings-lang-tabs" id="contentTabs" role="tablist">
                                         <li class="nav-item" role="presentation">
                                             <button class="nav-link active" id="content-en-tab" data-bs-toggle="tab"
                                                 data-bs-target="#content-en" type="button" role="tab">
@@ -82,8 +80,7 @@
                                         </li>
                                     </ul>
 
-                                    <!-- Tab Content -->
-                                    <div class="tab-content border border-top-0 p-3" id="contentTabContent">
+                                    <div class="tab-content admin-settings-tab-content" id="contentTabContent">
                                         <!-- English Tab -->
                                         <div class="tab-pane fade show active" id="content-en" role="tabpanel">
                                             <div class="mb-3">
@@ -134,22 +131,17 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
                             </div>
 
                             <!-- Slug Section -->
-                            <div class="row mb-4">
-                                <div class="col-12">
-                                    <h6 class="text-primary mb-3">
-                                        <i class="fas fa-link me-2"></i>
-                                        Page URL
-                                    </h6>
-                                </div>
-                                <div class="col-12">
-                                    <div class="mb-3">
-                                        <label for="slug" class="form-label">Slug <span
-                                                class="text-danger">*</span></label>
-                                        <div class="input-group">
+                            <div class="admin-settings-content-block mb-4">
+                                <h6 class="admin-settings-section-title">
+                                    <i class="fas fa-link me-2"></i>
+                                    Page URL
+                                </h6>
+                                <div class="mb-3">
+                                    <label for="slug" class="form-label">Slug <span class="text-danger">*</span></label>
+                                    <div class="input-group admin-settings-slug-group">
                                             <span class="input-group-text">{{ url('/') }}/about-us/</span>
                                             <input type="text" class="form-control @error('slug') is-invalid @enderror"
                                                 id="slug" name="slug"
@@ -165,7 +157,6 @@
                                         </div>
                                         <div class="form-text">URL-friendly version of the title. Use lowercase letters,
                                             numbers, and hyphens only.</div>
-                                    </div>
                                 </div>
                             </div>
 
