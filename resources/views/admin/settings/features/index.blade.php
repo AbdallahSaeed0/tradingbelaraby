@@ -161,7 +161,7 @@
                     @csrf
                     <div class="modal-body">
                         <!-- Language Tabs -->
-                        <div class="language-tabs mb-3">
+                        <div class="language-tabs admin-lang-tabs mb-0">
                             <button type="button" class="language-tab active" data-lang="en">
                                 <i class="fas fa-globe me-1"></i> English
                             </button>
@@ -260,7 +260,7 @@
                     <input type="hidden" id="edit_feature_id" name="feature_id">
                     <div class="modal-body">
                         <!-- Language Tabs -->
-                        <div class="language-tabs mb-3">
+                        <div class="language-tabs admin-lang-tabs mb-0">
                             <button type="button" class="language-tab active" data-lang="edit-en">
                                 <i class="fas fa-globe me-1"></i> English
                             </button>
@@ -358,7 +358,7 @@
                 </div>
                 <div class="modal-body">
                     <!-- Language Tabs -->
-                    <div class="language-tabs mb-3">
+                    <div class="language-tabs admin-lang-tabs mb-0">
                         <button type="button" class="language-tab active" data-lang="view-en">
                             <i class="fas fa-globe me-1"></i> English
                         </button>

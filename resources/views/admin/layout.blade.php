@@ -44,6 +44,7 @@
     @stack('styles')
     <link rel="stylesheet" href="{{ asset('css/admin/admin-tables-mobile.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/admin-form-mobile.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/admin-lang-tabs-mobile.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/admin-settings-mobile.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/admin-list-mobile.css') }}">
     @if (request()->routeIs('admin.courses.show'))

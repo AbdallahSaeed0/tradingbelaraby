@@ -31,7 +31,7 @@
                         </div>
                         <div class="card-body">
                             <!-- Language Tabs -->
-                            <div class="language-tabs">
+                            <div class="language-tabs admin-lang-tabs">
                                 <button type="button" class="language-tab active" data-lang="en">
                                     <i class="fas fa-globe me-1"></i> English
                                 </button>
@@ -175,7 +175,7 @@
                         <h5 class="mb-3"><i class="fas fa-search me-2"></i>SEO Settings</h5>
 
                         <!-- Language Tabs for SEO -->
-                        <div class="language-tabs">
+                        <div class="language-tabs admin-lang-tabs">
                             <button type="button" class="language-tab active" data-seo-lang="en">
                                 <i class="fas fa-globe me-1"></i> English SEO
                             </button>

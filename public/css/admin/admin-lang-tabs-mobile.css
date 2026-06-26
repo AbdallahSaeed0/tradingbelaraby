@@ -1,0 +1,203 @@
+/* Admin panel — mobile-friendly bilingual / two-tab language switchers */
+
+@media (max-width: 991.98px) {
+    /* Tab strip: pill segmented control */
+    main .admin-lang-tabs,
+    main .admin-settings-lang-tabs,
+    main .language-tabs,
+    main .multilingual-field > .nav-tabs,
+    main .nav-tabs.card-header-tabs {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 0.35rem;
+        border: 0;
+        padding: 0.3rem;
+        margin-bottom: 0;
+        background: var(--admin-dropdown-hover, #f8f9fa);
+        border-radius: 0.65rem;
+        overflow-x: visible;
+        scrollbar-width: none;
+        list-style: none;
+    }
+
+    main .admin-lang-tabs::-webkit-scrollbar,
+    main .admin-settings-lang-tabs::-webkit-scrollbar,
+    main .language-tabs::-webkit-scrollbar,
+    main .multilingual-field > .nav-tabs::-webkit-scrollbar,
+    main .nav-tabs.card-header-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    main .admin-lang-tabs .nav-item,
+    main .admin-settings-lang-tabs .nav-item,
+    main .multilingual-field > .nav-tabs .nav-item,
+    main .nav-tabs.card-header-tabs .nav-item {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+
+    main .language-tabs .language-tab {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+
+    main .admin-lang-tabs .nav-link,
+    main .admin-settings-lang-tabs .nav-link,
+    main .language-tabs .language-tab,
+    main .multilingual-field > .nav-tabs .nav-link,
+    main .nav-tabs.card-header-tabs .nav-link {
+        width: 100%;
+        text-align: center;
+        border: 0 !important;
+        border-radius: 0.5rem !important;
+        padding: 0.6rem 0.5rem;
+        font-size: 0.84rem;
+        font-weight: 600;
+        color: var(--admin-text-muted, #6c757d);
+        background: transparent;
+        white-space: nowrap;
+        cursor: pointer;
+    }
+
+    main .admin-lang-tabs .nav-link:hover,
+    main .admin-settings-lang-tabs .nav-link:hover,
+    main .language-tabs .language-tab:hover,
+    main .multilingual-field > .nav-tabs .nav-link:hover,
+    main .nav-tabs.card-header-tabs .nav-link:hover {
+        color: var(--admin-text, #333);
+        background: rgba(255, 255, 255, 0.45);
+    }
+
+    main .admin-lang-tabs .nav-link.active,
+    main .admin-settings-lang-tabs .nav-link.active,
+    main .language-tabs .language-tab.active,
+    main .multilingual-field > .nav-tabs .nav-link.active,
+    main .nav-tabs.card-header-tabs .nav-link.active {
+        background: var(--admin-card-bg, #fff);
+        color: var(--admin-active-text, #2563eb);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    }
+
+    main .card-header:has(.card-header-tabs) {
+        padding: 0.75rem;
+        background: var(--admin-dropdown-hover, #f8f9fa);
+        border-bottom: 1px solid var(--admin-border, #dee2e6);
+    }
+
+    /* Connected content panel below tabs */
+    main .admin-lang-tab-panel,
+    main .admin-settings-tab-content,
+    main .language-content.active,
+    main .multilingual-field > .tab-content.admin-lang-tab-panel {
+        border: 1px solid var(--admin-border, #dee2e6) !important;
+        border-top: 0 !important;
+        border-radius: 0 0 0.65rem 0.65rem;
+        padding: 0.85rem !important;
+        background: var(--admin-card-bg, #fff);
+    }
+
+    main .language-content:not(.active) {
+        display: none !important;
+    }
+
+    main .admin-lang-tabs,
+    main .admin-settings-lang-tabs,
+    main .language-tabs,
+    main .multilingual-field > .nav-tabs,
+    main .admin-settings-content-block .admin-settings-lang-tabs,
+    main .admin-settings-content-block .language-tabs,
+    main .modal-body > .language-tabs,
+    main .main-content-card > .card-body > .language-tabs,
+    main form > .language-tabs {
+        border-radius: 0.65rem 0.65rem 0 0;
+        margin-bottom: 0 !important;
+    }
+
+    main .admin-lang-tab-panel .form-label,
+    main .admin-settings-tab-content .form-label,
+    main .language-content.active .form-label,
+    main .multilingual-field > .tab-content.admin-lang-tab-panel .form-label {
+        font-size: 0.84rem;
+        font-weight: 600;
+        margin-bottom: 0.35rem;
+    }
+
+    main .admin-lang-tab-panel .form-text,
+    main .admin-settings-tab-content .form-text,
+    main .language-content.active .form-text,
+    main .multilingual-field > .tab-content.admin-lang-tab-panel .form-text {
+        font-size: 0.75rem;
+    }
+
+    main .admin-lang-tab-panel .ck.ck-editor,
+    main .admin-lang-tab-panel .ck.ck-editor__main > .ck-editor__editable,
+    main .admin-settings-tab-content .ck.ck-editor,
+    main .admin-settings-tab-content .ck.ck-editor__main > .ck-editor__editable,
+    main .language-content.active .ck.ck-editor,
+    main .language-content.active .ck.ck-editor__main > .ck-editor__editable,
+    main .multilingual-field .ck.ck-editor,
+    main .multilingual-field .ck.ck-editor__main > .ck-editor__editable {
+        max-width: 100%;
+    }
+
+    main .admin-lang-tab-panel .ck.ck-toolbar,
+    main .admin-settings-tab-content .ck.ck-toolbar,
+    main .language-content.active .ck.ck-toolbar,
+    main .multilingual-field .ck.ck-toolbar {
+        flex-wrap: wrap;
+        border-radius: 0.5rem 0.5rem 0 0 !important;
+    }
+
+    main .admin-lang-tab-panel .ck.ck-editor__main > .ck-editor__editable,
+    main .admin-settings-tab-content .ck.ck-editor__main > .ck-editor__editable,
+    main .language-content.active .ck.ck-editor__main > .ck-editor__editable,
+    main .multilingual-field .ck.ck-editor__main > .ck-editor__editable {
+        min-height: 160px;
+        border-radius: 0 0 0.5rem 0.5rem !important;
+    }
+
+    main .multilingual-field {
+        margin-bottom: 1rem !important;
+    }
+
+    main .multilingual-field > .form-label {
+        font-size: 0.84rem;
+        font-weight: 600;
+        margin-bottom: 0.45rem;
+    }
+}
+
+[data-theme="dark"] main .admin-lang-tabs,
+[data-theme="dark"] main .admin-settings-lang-tabs,
+[data-theme="dark"] main .language-tabs,
+[data-theme="dark"] main .multilingual-field > .nav-tabs,
+[data-theme="dark"] main .nav-tabs.card-header-tabs,
+[data-theme="dark"] main .card-header:has(.card-header-tabs) {
+    background: var(--surface-2, #252836);
+    border-color: var(--admin-border, #3d4153);
+}
+
+[data-theme="dark"] main .admin-lang-tabs .nav-link:hover,
+[data-theme="dark"] main .admin-settings-lang-tabs .nav-link:hover,
+[data-theme="dark"] main .language-tabs .language-tab:hover,
+[data-theme="dark"] main .multilingual-field > .nav-tabs .nav-link:hover,
+[data-theme="dark"] main .nav-tabs.card-header-tabs .nav-link:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="dark"] main .admin-lang-tabs .nav-link.active,
+[data-theme="dark"] main .admin-settings-lang-tabs .nav-link.active,
+[data-theme="dark"] main .language-tabs .language-tab.active,
+[data-theme="dark"] main .multilingual-field > .nav-tabs .nav-link.active,
+[data-theme="dark"] main .nav-tabs.card-header-tabs .nav-link.active {
+    background: var(--admin-card-bg, #1a1d29);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+[data-theme="dark"] main .admin-lang-tab-panel,
+[data-theme="dark"] main .admin-settings-tab-content,
+[data-theme="dark"] main .language-content.active,
+[data-theme="dark"] main .multilingual-field > .tab-content.admin-lang-tab-panel {
+    background: var(--admin-card-bg, #1a1d29);
+    border-color: var(--admin-border, #3d4153) !important;
+}

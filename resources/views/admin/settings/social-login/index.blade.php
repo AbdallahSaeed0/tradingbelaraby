@@ -40,7 +40,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+                        <ul class="nav nav-tabs card-header-tabs admin-settings-lang-tabs" role="tablist">
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link active" id="google-tab" data-bs-toggle="tab" data-bs-target="#google-pane" type="button" role="tab">Google</button>
                             </li>

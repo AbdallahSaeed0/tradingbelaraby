@@ -27,8 +27,12 @@
             <div class="card-body">
                 <form id="aboutUniversityForm">
                     @csrf
-                    <!-- Language Tabs -->
-                    <div class="language-tabs mb-3">
+                    <div class="admin-settings-content-block mb-4">
+                        <h6 class="admin-settings-section-title">
+                            <i class="fas fa-language me-2"></i>
+                            {{ custom_trans('Content', 'admin') }}
+                        </h6>
+                        <div class="language-tabs admin-lang-tabs mb-0">
                         <button type="button" class="language-tab active" data-lang="main-en">
                             <i class="fas fa-globe me-1"></i> English
                         </button>
@@ -60,6 +64,8 @@
                             <textarea class="form-control" id="description_ar" name="description_ar" rows="4" dir="rtl">{{ $aboutUniversity->description_ar ?? '' }}</textarea>
                         </div>
                     </div>
+                    </div>
+
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
@@ -209,7 +215,7 @@
                     @csrf
                     <div class="modal-body">
                         <!-- Language Tabs -->
-                        <div class="language-tabs mb-3">
+                        <div class="language-tabs admin-lang-tabs mb-0">
                             <button type="button" class="language-tab active" data-lang="feat-en">
                                 <i class="fas fa-globe me-1"></i> English
                             </button>
@@ -291,7 +297,7 @@
                     <input type="hidden" id="edit_feature_id" name="feature_id">
                     <div class="modal-body">
                         <!-- Language Tabs -->
-                        <div class="language-tabs mb-3">
+                        <div class="language-tabs admin-lang-tabs mb-0">
                             <button type="button" class="language-tab active" data-lang="edit-feat-en">
                                 <i class="fas fa-globe me-1"></i> English
                             </button>
@@ -370,7 +376,7 @@
                 </div>
                 <div class="modal-body">
                     <!-- Language Tabs -->
-                    <div class="language-tabs mb-3">
+                    <div class="language-tabs admin-lang-tabs mb-0">
                         <button type="button" class="language-tab active" data-lang="view-feat-en">
                             <i class="fas fa-globe me-1"></i> English
                         </button>

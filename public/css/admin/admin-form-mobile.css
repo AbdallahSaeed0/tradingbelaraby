@@ -157,19 +157,6 @@
         grid-column: 1 / -1;
     }
 
-    /* Multilingual tabs scroll */
-    .admin-form-page .multilingual-field .nav-tabs {
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        border-bottom: 1px solid var(--admin-border, #dee2e6);
-    }
-
-    .admin-form-page .multilingual-field .nav-link {
-        white-space: nowrap;
-        font-size: 0.82rem;
-        padding: 0.45rem 0.75rem;
-    }
-
     /* Section / lecture blocks */
     .admin-form-page .section-item,
     .admin-form-page .learning-objective,

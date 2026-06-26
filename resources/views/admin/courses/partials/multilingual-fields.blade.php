@@ -21,7 +21,7 @@
     </label>
 
     <!-- Language Tabs -->
-    <ul class="nav nav-tabs" id="{{ $fieldName }}Tabs" role="tablist">
+    <ul class="nav nav-tabs admin-lang-tabs" id="{{ $fieldName }}Tabs" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="{{ $fieldName }}-en-tab" data-bs-toggle="tab"
                 data-bs-target="#{{ $fieldName }}-en" type="button" role="tab">
@@ -37,7 +37,7 @@
     </ul>
 
     <!-- Tab Content -->
-    <div class="tab-content" id="{{ $fieldName }}TabContent">
+    <div class="tab-content admin-lang-tab-panel" id="{{ $fieldName }}TabContent">
         <!-- English Tab -->
         <div class="tab-pane fade show active" id="{{ $fieldName }}-en" role="tabpanel">
             @if ($type === 'textarea')
