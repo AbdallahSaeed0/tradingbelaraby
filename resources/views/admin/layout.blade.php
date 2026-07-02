@@ -439,26 +439,58 @@
         // Sidebar: icon-only collapse on desktop, offcanvas drawer on mobile
         (function () {
             var SIDEBAR_KEY = 'adminSidebarCollapsed';
-            var sidebar = document.getElementById('adminSidebar');
-            if (!sidebar) { return; }
+            var sidebar  = document.getElementById('adminSidebar');
+            var toggleBtn = document.getElementById('sidebarToggle');
+            if (!sidebar || !toggleBtn) { return; }
 
-            // Restore persisted collapse state on page load (no animation)
-            if (window.innerWidth >= 1200 && localStorage.getItem(SIDEBAR_KEY) === '1') {
+            function isDesktop() { return window.innerWidth >= 1200; }
+
+            // On desktop: strip Bootstrap's offcanvas attributes so it never
+            // injects the backdrop overlay. We handle the toggle ourselves.
+            function detachBootstrapOffcanvas() {
+                toggleBtn.removeAttribute('data-bs-toggle');
+                toggleBtn.removeAttribute('data-bs-target');
+                toggleBtn.removeAttribute('aria-controls');
+            }
+
+            // On mobile: restore the attributes so Bootstrap's drawer works normally.
+            function attachBootstrapOffcanvas() {
+                toggleBtn.setAttribute('data-bs-toggle', 'offcanvas');
+                toggleBtn.setAttribute('data-bs-target', '#adminSidebar');
+                toggleBtn.setAttribute('aria-controls', 'adminSidebar');
+            }
+
+            // Apply correct mode immediately
+            if (isDesktop()) {
+                detachBootstrapOffcanvas();
+            }
+
+            // Re-apply on resize (e.g. window dragged across breakpoint)
+            window.addEventListener('resize', function () {
+                if (isDesktop()) {
+                    detachBootstrapOffcanvas();
+                } else {
+                    attachBootstrapOffcanvas();
+                    // Remove collapsed state when going to mobile
+                    sidebar.classList.remove('sidebar-collapsed');
+                }
+            });
+
+            // Restore persisted collapse state on page load (without animating)
+            if (isDesktop() && localStorage.getItem(SIDEBAR_KEY) === '1') {
                 sidebar.style.transition = 'none';
                 sidebar.classList.add('sidebar-collapsed');
-                // Force reflow so transition is suppressed, then re-enable
-                void sidebar.offsetWidth;
+                void sidebar.offsetWidth; // force reflow
                 sidebar.style.transition = '';
             }
 
-            document.getElementById('sidebarToggle').addEventListener('click', function (e) {
-                if (window.innerWidth >= 1200) {
-                    // Prevent Bootstrap's offcanvas listener (and its backdrop) from firing
-                    e.stopPropagation();
+            // Click handler
+            toggleBtn.addEventListener('click', function () {
+                if (isDesktop()) {
                     var isNowCollapsed = sidebar.classList.toggle('sidebar-collapsed');
                     localStorage.setItem(SIDEBAR_KEY, isNowCollapsed ? '1' : '0');
                 }
-                // Below 1200px: let Bootstrap handle the offcanvas drawer + backdrop normally
+                // Mobile: Bootstrap handles it via its own listeners (attributes still present)
             });
         })();
 

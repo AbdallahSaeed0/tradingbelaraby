@@ -231,10 +231,10 @@
        COLLAPSED STATE
     ───────────────────────────────────────── */
     #adminSidebar.sidebar-collapsed {
-        width: 64px !important;
-        min-width: 64px !important;
-        max-width: 64px !important;
-        --bs-offcanvas-width: 64px !important;
+        width: 56px !important;
+        min-width: 56px !important;
+        max-width: 56px !important;
+        --bs-offcanvas-width: 56px !important;
     }
 
     /* Hide header title */
