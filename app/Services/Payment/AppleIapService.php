@@ -12,9 +12,18 @@ class AppleIapService
 
     private const SANDBOX_URL = 'https://sandbox.itunes.apple.com/verifyReceipt';
 
+    /** @var array<string, string> */
+    private const PRODUCT_ID_OVERRIDES = [
+        // Original ...course.32 was deleted in App Store Connect and cannot be recreated.
+        '32' => 'com.education.coursesApp.courses.32',
+    ];
+
     public function expectedProductIdForCourse(int|string $courseId): string
     {
-        return 'com.education.coursesApp.course.' . $courseId;
+        $courseId = (string) $courseId;
+
+        return self::PRODUCT_ID_OVERRIDES[$courseId]
+            ?? 'com.education.coursesApp.course.' . $courseId;
     }
 
     /**
