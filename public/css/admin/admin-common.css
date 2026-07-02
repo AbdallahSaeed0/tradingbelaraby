@@ -187,17 +187,27 @@
    ============================================================ */
 @media (min-width: 1200px) {
 
-    /* Width animates smoothly */
+    /* ── Transition base (always-on) ── */
     #adminSidebar {
+        overflow: hidden;
         transition: width 0.28s cubic-bezier(0.4, 0, 0.2, 1),
                     min-width 0.28s cubic-bezier(0.4, 0, 0.2, 1),
                     max-width 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-        overflow: hidden;
     }
 
-    /* Label + header text fade */
+    /* Header collapses smoothly */
+    #adminSidebar .offcanvas-header {
+        overflow: hidden;
+        max-height: 80px;
+        transition: max-height 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                    padding-top 0.28s ease,
+                    padding-bottom 0.28s ease,
+                    opacity 0.16s ease;
+    }
+
+    /* Nav-text fade */
     #adminSidebar .sidebar-nav-text {
-        max-width: 200px; /* concrete value required for max-width transition */
+        max-width: 200px;
         overflow: hidden;
         white-space: nowrap;
         opacity: 1;
@@ -214,12 +224,12 @@
                     opacity 0.16s ease;
     }
 
-    /* Badge fades out */
+    /* Badge fade */
     #adminSidebar .list-group-item .badge {
         transition: opacity 0.16s ease;
     }
 
-    /* Item layout transitions */
+    /* Item layout */
     #adminSidebar .list-group-item {
         transition: background-color 0.15s ease, color 0.15s ease,
                     border-color 0.15s ease,
@@ -227,11 +237,11 @@
                     gap 0.28s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* ─────────────────────────────────────────
+    /* ──────────────────────────────────────────
        COLLAPSED STATE
-       All selectors mirror the high-specificity
-       rules above so !important beats them.
-    ───────────────────────────────────────── */
+       Selectors match the high-specificity rules
+       at the top of this file so !important wins.
+    ────────────────────────────────────────── */
     #adminSidebar.sidebar-collapsed,
     #adminSidebar.offcanvas-sidebar-width.sidebar-collapsed,
     #adminSidebar.offcanvas-sidebar-width.offcanvas-start.sidebar-collapsed,
@@ -245,18 +255,20 @@
         --bs-offcanvas-width: 56px !important;
     }
 
-    /* Hide header title */
-    #adminSidebar.sidebar-collapsed .offcanvas-title {
-        max-width: 0;
+    /* Collapse the "Admin Panel" header completely */
+    #adminSidebar.sidebar-collapsed .offcanvas-header {
+        max-height: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
         opacity: 0;
     }
 
-    /* Centre every item and remove gap */
+    /* Centre every nav item, remove gap and horizontal padding */
     #adminSidebar.sidebar-collapsed .list-group-item {
-        justify-content: center;
-        padding-left: 0;
-        padding-right: 0;
-        gap: 0;
+        justify-content: center !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        gap: 0 !important;
     }
 
     /* Remove active left-border so icon stays perfectly centred */
@@ -265,37 +277,40 @@
         padding-inline-start: 0 !important;
     }
 
-    /* Collapse labels */
+    /* Collapse text labels */
     #adminSidebar.sidebar-collapsed .sidebar-nav-text {
         max-width: 0 !important;
-        opacity: 0;
-        flex: none;
+        opacity: 0 !important;
+        flex: 0 0 0 !important;
+        overflow: hidden !important;
     }
 
     /* Hide badges */
     #adminSidebar.sidebar-collapsed .list-group-item .badge {
-        opacity: 0;
+        opacity: 0 !important;
+        width: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
         pointer-events: none;
     }
 
-    /* Section headers → thin separator line */
+    /* Section-header dividers: slim line only */
     #adminSidebar.sidebar-collapsed .list-group-item.sidebar-section-header,
     #adminSidebar.sidebar-collapsed .list-group-item.bg-light.text-muted {
-        padding-top: 0.35rem !important;
-        padding-bottom: 0.35rem !important;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-        min-height: auto;
-        justify-content: center;
-        margin-top: 0.15rem;
+        padding: 0.3rem 0 !important;
+        min-height: 0 !important;
+        justify-content: center !important;
+        margin-top: 0.1rem;
     }
 
-    /* Icons: slightly larger, always centred */
+    /* Icons: fixed size, text-aligned centre */
     #adminSidebar.sidebar-collapsed .list-group-item .fa,
     #adminSidebar.sidebar-collapsed .list-group-item .fas,
     #adminSidebar.sidebar-collapsed .list-group-item .far {
-        font-size: 1.1rem;
-        width: 1.25rem;
-        text-align: center;
+        font-size: 1.05rem !important;
+        width: 1.25rem !important;
+        text-align: center !important;
+        flex-shrink: 0 !important;
+        margin: 0 !important;
     }
 }

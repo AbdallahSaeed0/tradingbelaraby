@@ -439,58 +439,94 @@
         // Sidebar: icon-only collapse on desktop, offcanvas drawer on mobile
         (function () {
             var SIDEBAR_KEY = 'adminSidebarCollapsed';
-            var sidebar  = document.getElementById('adminSidebar');
+            var sidebar   = document.getElementById('adminSidebar');
             var toggleBtn = document.getElementById('sidebarToggle');
             if (!sidebar || !toggleBtn) { return; }
 
             function isDesktop() { return window.innerWidth >= 1200; }
 
-            // On desktop: strip Bootstrap's offcanvas attributes so it never
-            // injects the backdrop overlay. We handle the toggle ourselves.
+            /* ── Bootstrap offcanvas attribute management ── */
             function detachBootstrapOffcanvas() {
                 toggleBtn.removeAttribute('data-bs-toggle');
                 toggleBtn.removeAttribute('data-bs-target');
                 toggleBtn.removeAttribute('aria-controls');
             }
-
-            // On mobile: restore the attributes so Bootstrap's drawer works normally.
             function attachBootstrapOffcanvas() {
                 toggleBtn.setAttribute('data-bs-toggle', 'offcanvas');
                 toggleBtn.setAttribute('data-bs-target', '#adminSidebar');
                 toggleBtn.setAttribute('aria-controls', 'adminSidebar');
             }
 
-            // Apply correct mode immediately
-            if (isDesktop()) {
-                detachBootstrapOffcanvas();
+            /* ── Bootstrap tooltip management ── */
+            function initTooltips() {
+                if (!window.bootstrap || !bootstrap.Tooltip) { return; }
+                sidebar.querySelectorAll('.list-group-item-action[title]').forEach(function (el) {
+                    // Dispose existing before re-creating to avoid duplicates
+                    var existing = bootstrap.Tooltip.getInstance(el);
+                    if (existing) { existing.dispose(); }
+                    bootstrap.Tooltip.getOrCreateInstance(el, {
+                        placement: 'right',
+                        trigger: 'hover',
+                        container: 'body',
+                        boundary: 'clippingParents'
+                    });
+                });
+            }
+            function destroyTooltips() {
+                if (!window.bootstrap || !bootstrap.Tooltip) { return; }
+                sidebar.querySelectorAll('.list-group-item-action').forEach(function (el) {
+                    var tt = bootstrap.Tooltip.getInstance(el);
+                    if (tt) { tt.dispose(); }
+                });
             }
 
-            // Re-apply on resize (e.g. window dragged across breakpoint)
+            /* ── Apply / remove collapsed state ── */
+            function collapse(animate) {
+                if (!animate) {
+                    sidebar.style.transition = 'none';
+                    void sidebar.offsetWidth;
+                }
+                sidebar.classList.add('sidebar-collapsed');
+                if (!animate) {
+                    void sidebar.offsetWidth;
+                    sidebar.style.transition = '';
+                }
+                // Tooltips become active only after the transition finishes
+                setTimeout(initTooltips, animate ? 300 : 0);
+            }
+            function expand() {
+                destroyTooltips();
+                sidebar.classList.remove('sidebar-collapsed');
+            }
+
+            /* ── Initial setup ── */
+            if (isDesktop()) {
+                detachBootstrapOffcanvas();
+                if (localStorage.getItem(SIDEBAR_KEY) === '1') {
+                    collapse(false); // no animation on page load
+                }
+            }
+
+            /* ── Resize handler ── */
             window.addEventListener('resize', function () {
                 if (isDesktop()) {
                     detachBootstrapOffcanvas();
                 } else {
                     attachBootstrapOffcanvas();
-                    // Remove collapsed state when going to mobile
-                    sidebar.classList.remove('sidebar-collapsed');
+                    expand(); // clear collapsed state on mobile
                 }
             });
 
-            // Restore persisted collapse state on page load (without animating)
-            if (isDesktop() && localStorage.getItem(SIDEBAR_KEY) === '1') {
-                sidebar.style.transition = 'none';
-                sidebar.classList.add('sidebar-collapsed');
-                void sidebar.offsetWidth; // force reflow
-                sidebar.style.transition = '';
-            }
-
-            // Click handler
+            /* ── Toggle button ── */
             toggleBtn.addEventListener('click', function () {
-                if (isDesktop()) {
-                    var isNowCollapsed = sidebar.classList.toggle('sidebar-collapsed');
-                    localStorage.setItem(SIDEBAR_KEY, isNowCollapsed ? '1' : '0');
+                if (!isDesktop()) { return; }
+                var willCollapse = !sidebar.classList.contains('sidebar-collapsed');
+                if (willCollapse) {
+                    collapse(true);
+                } else {
+                    expand();
                 }
-                // Mobile: Bootstrap handles it via its own listeners (attributes still present)
+                localStorage.setItem(SIDEBAR_KEY, willCollapse ? '1' : '0');
             });
         })();
 
