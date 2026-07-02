@@ -436,13 +436,31 @@
             "hideMethod": "fadeOut"
         };
 
-        // extra toggle to hide sidebar on xl+ when button clicked
-        document.getElementById('sidebarToggle').addEventListener('click', function() {
-            const sidebar = document.getElementById('adminSidebar');
-            if (window.innerWidth >= 1200) {
-                sidebar.classList.toggle('d-none');
+        // Sidebar: icon-only collapse on desktop, offcanvas drawer on mobile
+        (function () {
+            var SIDEBAR_KEY = 'adminSidebarCollapsed';
+            var sidebar = document.getElementById('adminSidebar');
+            if (!sidebar) { return; }
+
+            // Restore persisted collapse state on page load (no animation)
+            if (window.innerWidth >= 1200 && localStorage.getItem(SIDEBAR_KEY) === '1') {
+                sidebar.style.transition = 'none';
+                sidebar.classList.add('sidebar-collapsed');
+                // Force reflow so transition is suppressed, then re-enable
+                void sidebar.offsetWidth;
+                sidebar.style.transition = '';
             }
-        });
+
+            document.getElementById('sidebarToggle').addEventListener('click', function (e) {
+                if (window.innerWidth >= 1200) {
+                    // Prevent Bootstrap's offcanvas listener (and its backdrop) from firing
+                    e.stopPropagation();
+                    var isNowCollapsed = sidebar.classList.toggle('sidebar-collapsed');
+                    localStorage.setItem(SIDEBAR_KEY, isNowCollapsed ? '1' : '0');
+                }
+                // Below 1200px: let Bootstrap handle the offcanvas drawer + backdrop normally
+            });
+        })();
 
         // Mobile tables: add column labels for card layout
         function getAdminTableHeaderLabel(th) {
