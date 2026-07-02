@@ -6,351 +6,308 @@
 
 @section('content')
     <div class="container-fluid py-4 admin-dashboard">
-        <!-- Page Header -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="admin-dashboard-header d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2">
-                    <div class="min-w-0">
-                        <h1 class="h3 mb-0">{{ custom_trans('Dashboard', 'admin') }}</h1>
-                        <p class="text-muted mb-0">Welcome back! Here's what's happening with your platform.</p>
-                    </div>
-                    <div class="admin-dashboard-updated text-muted small">
-                        Last updated: {{ now()->format('M d, Y H:i', 'admin') }}
-                    </div>
+
+        {{-- ── Welcome Banner ── --}}
+        <div class="db-welcome-banner mb-4">
+            <div class="db-welcome-content">
+                <div>
+                    <h1 class="db-welcome-title">{{ custom_trans('Dashboard', 'admin') }}</h1>
+                    <p class="db-welcome-sub">Welcome back! Here's what's happening with your platform.</p>
+                </div>
+                <div class="db-welcome-meta">
+                    <span class="db-live-badge">
+                        <span class="db-live-dot"></span>{{ custom_trans('Live', 'admin') }}
+                    </span>
+                    <span class="db-updated-time">{{ now()->format('M d, Y H:i') }}</span>
                 </div>
             </div>
         </div>
 
-        <!-- Real-time Statistics Cards -->
+        {{-- ── Primary Stats Row ── --}}
+        <div class="row g-3 g-md-4 mb-4">
+
+            <div class="col-6 col-md-3">
+                <div class="db-stat-card db-stat-primary">
+                    <div class="db-stat-icon-wrap">
+                        <i class="fa fa-user-tie"></i>
+                    </div>
+                    <div class="db-stat-body">
+                        <span class="db-stat-label">{{ custom_trans('Admins', 'admin') }}</span>
+                        <span class="db-stat-value">{{ $stats['total_admins'] }}</span>
+                    </div>
+                    <div class="db-stat-accent"></div>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="db-stat-card db-stat-success">
+                    <div class="db-stat-icon-wrap">
+                        <i class="fa fa-book"></i>
+                    </div>
+                    <div class="db-stat-body">
+                        <span class="db-stat-label">{{ custom_trans('Courses', 'admin') }}</span>
+                        <span class="db-stat-value">{{ $stats['total_courses'] }}</span>
+                        <span class="db-stat-sub">{{ $stats['published_courses'] }} {{ custom_trans('published', 'admin') }}</span>
+                    </div>
+                    <div class="db-stat-accent"></div>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="db-stat-card db-stat-info">
+                    <div class="db-stat-icon-wrap">
+                        <i class="fa fa-newspaper"></i>
+                    </div>
+                    <div class="db-stat-body">
+                        <span class="db-stat-label">{{ custom_trans('Blogs', 'admin') }}</span>
+                        <span class="db-stat-value">{{ $stats['total_blogs'] }}</span>
+                        <span class="db-stat-sub">{{ $stats['published_blogs'] }} {{ custom_trans('published', 'admin') }}</span>
+                    </div>
+                    <div class="db-stat-accent"></div>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="db-stat-card db-stat-warning">
+                    <div class="db-stat-icon-wrap">
+                        <i class="fa fa-users"></i>
+                    </div>
+                    <div class="db-stat-body">
+                        <span class="db-stat-label">{{ custom_trans('Users', 'admin') }}</span>
+                        <span class="db-stat-value">{{ $stats['total_users'] }}</span>
+                    </div>
+                    <div class="db-stat-accent"></div>
+                </div>
+            </div>
+
+        </div>
+
+        {{-- ── Secondary Stats Row ── --}}
         <div class="row g-3 g-md-4 mb-4 mb-md-5">
-            <div class="col-6 col-md-3">
-                <div class="card shadow-sm border-0 h-100 admin-dashboard-stat-card">
-                    <div class="card-body d-flex align-items-center">
-                        <span
-                            class="icon-shape bg-primary d-inline-flex align-items-center justify-content-center rounded-2 me-3">
-                            <i class="fa fa-user-tie text-white"></i>
-                        </span>
-                        <div class="min-w-0">
-                            <h6 class="text-muted mb-0 text-truncate">{{ custom_trans('Admins', 'admin') }}</h6>
-                            <h4 class="fw-bold mb-0">{{ $stats['total_admins'] }}</h4>
-                        </div>
+
+            <div class="col-12 col-sm-4">
+                <div class="db-metric-card">
+                    <div class="db-metric-icon db-metric-secondary">
+                        <i class="fa fa-graduation-cap"></i>
+                    </div>
+                    <div class="db-metric-body">
+                        <span class="db-metric-value">{{ $stats['total_instructors'] }}</span>
+                        <span class="db-metric-label">{{ custom_trans('Active Instructors', 'admin') }}</span>
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-md-3">
-                <div class="card shadow-sm border-0 h-100 admin-dashboard-stat-card">
-                    <div class="card-body d-flex align-items-center">
-                        <span
-                            class="icon-shape bg-success d-inline-flex align-items-center justify-content-center rounded-2 me-3">
-                            <i class="fa fa-book text-white"></i>
-                        </span>
-                        <div class="min-w-0">
-                            <h6 class="text-muted mb-0 text-truncate">{{ custom_trans('Courses', 'admin') }}</h6>
-                            <h4 class="fw-bold mb-0">{{ $stats['total_courses'] }}</h4>
-                            <small class="text-success d-block text-truncate">{{ $stats['published_courses'] }} published</small>
-                        </div>
+
+            <div class="col-12 col-sm-4">
+                <div class="db-metric-card">
+                    <div class="db-metric-icon db-metric-amber">
+                        <i class="fa fa-chart-bar"></i>
+                    </div>
+                    <div class="db-metric-body">
+                        <span class="db-metric-value">{{ $stats['total_traders'] }}</span>
+                        <span class="db-metric-label">{{ custom_trans('Registered Traders', 'admin') }}</span>
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-md-3">
-                <div class="card shadow-sm border-0 h-100 admin-dashboard-stat-card">
-                    <div class="card-body d-flex align-items-center">
-                        <span
-                            class="icon-shape bg-info d-inline-flex align-items-center justify-content-center rounded-2 me-3">
-                            <i class="fa fa-newspaper text-white"></i>
-                        </span>
-                        <div class="min-w-0">
-                            <h6 class="text-muted mb-0 text-truncate">{{ custom_trans('Blogs', 'admin') }}</h6>
-                            <h4 class="fw-bold mb-0">{{ $stats['total_blogs'] }}</h4>
-                            <small class="text-info d-block text-truncate">{{ $stats['published_blogs'] }} published</small>
-                        </div>
+
+            <div class="col-12 col-sm-4">
+                <div class="db-metric-card">
+                    <div class="db-metric-icon db-metric-dark">
+                        <i class="fa fa-chart-line"></i>
+                    </div>
+                    <div class="db-metric-body">
+                        <span class="db-metric-value">{{ $stats['total_courses'] + $stats['total_blogs'] }}</span>
+                        <span class="db-metric-label">{{ custom_trans('Total Content', 'admin') }}</span>
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-md-3">
-                <div class="card shadow-sm border-0 h-100 admin-dashboard-stat-card">
-                    <div class="card-body d-flex align-items-center">
-                        <span
-                            class="icon-shape bg-warning d-inline-flex align-items-center justify-content-center rounded-2 me-3">
-                            <i class="fa fa-users text-white"></i>
-                        </span>
-                        <div class="min-w-0">
-                            <h6 class="text-muted mb-0 text-truncate">{{ custom_trans('Users', 'admin') }}</h6>
-                            <h4 class="fw-bold mb-0">{{ $stats['total_users'] }}</h4>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
         </div>
 
-        <!-- Additional Stats Row -->
-        <div class="row g-3 g-md-4 mb-4 mb-md-5">
-            <div class="col-12 col-sm-6 col-md-4">
-                <div class="card shadow-sm border-0 h-100 admin-dashboard-stat-card">
-                    <div class="card-body d-flex align-items-center">
-                        <span
-                            class="icon-shape bg-secondary d-inline-flex align-items-center justify-content-center rounded-2 me-3">
-                            <i class="fa fa-graduation-cap text-white"></i>
-                        </span>
-                        <div class="min-w-0">
-                            <h6 class="text-muted mb-0 text-truncate">{{ custom_trans('Active Instructors', 'admin') }}</h6>
-                            <h4 class="fw-bold mb-0">{{ $stats['total_instructors'] }}</h4>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-4">
-                <div class="card shadow-sm border-0 h-100 admin-dashboard-stat-card">
-                    <div class="card-body d-flex align-items-center">
-                        <span
-                            class="icon-shape bg-warning d-inline-flex align-items-center justify-content-center rounded-2 me-3">
-                            <i class="fa fa-chart-bar text-white"></i>
-                        </span>
-                        <div class="min-w-0">
-                            <h6 class="text-muted mb-0 text-truncate">{{ custom_trans('Registered Traders', 'admin') }}</h6>
-                            <h4 class="fw-bold mb-0">{{ $stats['total_traders'] }}</h4>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-4">
-                <div class="card shadow-sm border-0 h-100 admin-dashboard-stat-card">
-                    <div class="card-body d-flex align-items-center">
-                        <span
-                            class="icon-shape bg-dark d-inline-flex align-items-center justify-content-center rounded-2 me-3">
-                            <i class="fa fa-chart-line text-white"></i>
-                        </span>
-                        <div class="min-w-0">
-                            <h6 class="text-muted mb-0 text-truncate">{{ custom_trans('Total Content', 'admin') }}</h6>
-                            <h4 class="fw-bold mb-0">{{ $stats['total_courses'] + $stats['total_blogs'] }}</h4>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Latest Content Sections -->
+        {{-- ── Widget Cards Row ── --}}
         <div class="row g-3 g-md-4">
-            <!-- Latest Blogs -->
+
+            {{-- Latest Blogs --}}
             <div class="col-12 col-md-6 col-lg-3">
-                <div class="card shadow-sm h-100 admin-dashboard-widget">
-                    <div class="card-header bg-info text-white">
-                        <h5 class="mb-0 admin-dashboard-widget-title">
-                            <i class="fa fa-newspaper me-2"></i>{{ custom_trans('Latest Blogs', 'admin') }}
-                        </h5>
+                <div class="db-widget">
+                    <div class="db-widget-header db-widget-info">
+                        <i class="fa fa-newspaper"></i>
+                        <span>{{ custom_trans('Latest Blogs', 'admin') }}</span>
                     </div>
-                    <div class="card-body p-0">
+                    <div class="db-widget-body">
                         @if ($latestBlogs->count() > 0)
-                            <div class="list-group list-group-flush">
-                                @foreach ($latestBlogs as $blog)
-                                    <div class="list-group-item">
-                                        <div class="d-flex align-items-start admin-dashboard-list-item">
-                                            @if ($blog->image)
-                                                <img src="{{ $blog->image_url }}" alt="{{ $blog->title }}"
-                                                    class="rounded me-3 item-image-sm flex-shrink-0">
-                                            @else
-                                                <div
-                                                    class="bg-light rounded me-3 d-flex align-items-center justify-content-center item-placeholder-sm flex-shrink-0">
-                                                    <i class="fa fa-newspaper text-muted"></i>
-                                                </div>
-                                            @endif
-                                            <div class="flex-grow-1 min-w-0">
-                                                <h6 class="mb-1 text-truncate">{{ Str::limit($blog->title, 40) }}</h6>
-                                                <small class="text-muted admin-dashboard-item-meta">
-                                                    <span class="admin-dashboard-meta-part">
-                                                        <i
-                                                            class="fa fa-calendar me-1"></i>{{ $blog->created_at->format('M d, Y', 'admin') }}
-                                                    </span>
-                                                    @if ($blog->category)
-                                                        <span class="admin-dashboard-meta-part">
-                                                            <i
-                                                                class="fa fa-folder me-1"></i>{{ \App\Helpers\TranslationHelper::getLocalizedContent($blog->category->name, $blog->category->name_ar) }}
-                                                        </span>
-                                                    @endif
-                                                </small>
+                            @foreach ($latestBlogs as $blog)
+                                <div class="db-list-item">
+                                    <div class="db-list-thumb">
+                                        @if ($blog->image)
+                                            <img src="{{ $blog->image_url }}" alt="{{ $blog->title }}">
+                                        @else
+                                            <div class="db-list-thumb-placeholder">
+                                                <i class="fa fa-newspaper"></i>
                                             </div>
-                                        </div>
+                                        @endif
                                     </div>
-                                @endforeach
-                            </div>
+                                    <div class="db-list-info">
+                                        <span class="db-list-title">{{ Str::limit($blog->title, 38) }}</span>
+                                        <span class="db-list-meta">
+                                            <i class="fa fa-calendar-alt"></i>
+                                            {{ $blog->created_at->format('M d, Y') }}
+                                            @if ($blog->category)
+                                                &nbsp;·&nbsp;
+                                                {{ \App\Helpers\TranslationHelper::getLocalizedContent($blog->category->name, $blog->category->name_ar) }}
+                                            @endif
+                                        </span>
+                                    </div>
+                                </div>
+                            @endforeach
                         @else
-                            <div class="text-center py-4">
-                                <i class="fa fa-newspaper fa-3x text-muted mb-3"></i>
-                                <p class="text-muted">{{ custom_trans('No blogs found', 'admin') }}</p>
+                            <div class="db-widget-empty">
+                                <i class="fa fa-newspaper"></i>
+                                <span>{{ custom_trans('No blogs found', 'admin') }}</span>
                             </div>
                         @endif
                     </div>
-                    <div class="card-footer text-center">
-                        <a href="{{ route('admin.blogs.index') }}" class="btn btn-outline-info btn-sm admin-dashboard-footer-btn">
+                    <div class="db-widget-footer">
+                        <a href="{{ route('admin.blogs.index') }}" class="db-widget-link db-link-info">
                             {{ custom_trans('View All Blogs', 'admin') }} <i class="fa fa-arrow-right ms-1"></i>
                         </a>
                     </div>
                 </div>
             </div>
 
-            <!-- Latest Courses -->
+            {{-- Latest Courses --}}
             <div class="col-12 col-md-6 col-lg-3">
-                <div class="card shadow-sm h-100 admin-dashboard-widget">
-                    <div class="card-header bg-success text-white">
-                        <h5 class="mb-0 admin-dashboard-widget-title">
-                            <i class="fa fa-book me-2"></i>{{ custom_trans('Latest Courses', 'admin') }}
-                        </h5>
+                <div class="db-widget">
+                    <div class="db-widget-header db-widget-success">
+                        <i class="fa fa-book"></i>
+                        <span>{{ custom_trans('Latest Courses', 'admin') }}</span>
                     </div>
-                    <div class="card-body p-0">
+                    <div class="db-widget-body">
                         @if ($latestCourses->count() > 0)
-                            <div class="list-group list-group-flush">
-                                @foreach ($latestCourses as $course)
-                                    <div class="list-group-item">
-                                        <div class="d-flex align-items-start admin-dashboard-list-item">
-                                            @if ($course->image)
-                                                <img src="{{ $course->image_url }}" alt="{{ $course->name }}"
-                                                    class="rounded me-3 item-image-sm flex-shrink-0">
-                                            @else
-                                                <div
-                                                    class="bg-light rounded me-3 d-flex align-items-center justify-content-center item-placeholder-sm flex-shrink-0">
-                                                    <i class="fa fa-book text-muted"></i>
-                                                </div>
-                                            @endif
-                                            <div class="flex-grow-1 min-w-0">
-                                                <h6 class="mb-1 text-truncate">{{ Str::limit($course->name, 40) }}</h6>
-                                                <small class="text-muted admin-dashboard-item-meta">
-                                                    <span class="admin-dashboard-meta-part">
-                                                        <i
-                                                            class="fa fa-calendar me-1"></i>{{ $course->created_at->format('M d, Y', 'admin') }}
-                                                    </span>
-                                                    @if ($course->category)
-                                                        <span class="admin-dashboard-meta-part">
-                                                            <i class="fa fa-folder me-1"></i>{{ $course->category->name }}
-                                                        </span>
-                                                    @endif
-                                                </small>
-                                                <div class="mt-1">
-                                                    <span
-                                                        class="badge bg-{{ $course->status === 'published' ? 'success' : 'warning' }}">
-                                                        {{ ucfirst($course->status) }}
-                                                    </span>
-                                                </div>
+                            @foreach ($latestCourses as $course)
+                                <div class="db-list-item">
+                                    <div class="db-list-thumb">
+                                        @if ($course->image)
+                                            <img src="{{ $course->image_url }}" alt="{{ $course->name }}">
+                                        @else
+                                            <div class="db-list-thumb-placeholder">
+                                                <i class="fa fa-book"></i>
                                             </div>
-                                        </div>
+                                        @endif
                                     </div>
-                                @endforeach
-                            </div>
+                                    <div class="db-list-info">
+                                        <span class="db-list-title">{{ Str::limit($course->name, 38) }}</span>
+                                        <span class="db-list-meta">
+                                            <i class="fa fa-calendar-alt"></i>
+                                            {{ $course->created_at->format('M d, Y') }}
+                                        </span>
+                                        <span class="db-status-badge db-badge-{{ $course->status === 'published' ? 'success' : 'warning' }}">
+                                            {{ ucfirst($course->status) }}
+                                        </span>
+                                    </div>
+                                </div>
+                            @endforeach
                         @else
-                            <div class="text-center py-4">
-                                <i class="fa fa-book fa-3x text-muted mb-3"></i>
-                                <p class="text-muted">{{ custom_trans('No courses found', 'admin') }}</p>
+                            <div class="db-widget-empty">
+                                <i class="fa fa-book"></i>
+                                <span>{{ custom_trans('No courses found', 'admin') }}</span>
                             </div>
                         @endif
                     </div>
-                    <div class="card-footer text-center">
-                        <a href="{{ route('admin.courses.index') }}" class="btn btn-outline-success btn-sm admin-dashboard-footer-btn">
+                    <div class="db-widget-footer">
+                        <a href="{{ route('admin.courses.index') }}" class="db-widget-link db-link-success">
                             {{ custom_trans('View All Courses', 'admin') }} <i class="fa fa-arrow-right ms-1"></i>
                         </a>
                     </div>
                 </div>
             </div>
 
-            <!-- Latest Instructors -->
+            {{-- Latest Instructors --}}
             <div class="col-12 col-md-6 col-lg-3">
-                <div class="card shadow-sm h-100 admin-dashboard-widget">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0 admin-dashboard-widget-title">
-                            <i class="fa fa-graduation-cap me-2"></i>{{ custom_trans('Latest Instructors', 'admin') }}
-                        </h5>
+                <div class="db-widget">
+                    <div class="db-widget-header db-widget-primary">
+                        <i class="fa fa-graduation-cap"></i>
+                        <span>{{ custom_trans('Latest Instructors', 'admin') }}</span>
                     </div>
-                    <div class="card-body p-0">
+                    <div class="db-widget-body">
                         @if ($latestInstructors->count() > 0)
-                            <div class="list-group list-group-flush">
-                                @foreach ($latestInstructors as $instructor)
-                                    <div class="list-group-item">
-                                        <div class="d-flex align-items-start admin-dashboard-list-item">
-                                            <img src="{{ $instructor->avatar_url }}" alt="{{ $instructor->name }}"
-                                                class="rounded-circle me-3 user-avatar-md flex-shrink-0">
-                                            <div class="flex-grow-1 min-w-0">
-                                                <h6 class="mb-1 text-truncate">{{ $instructor->name }}</h6>
-                                                <small class="text-muted admin-dashboard-item-meta">
-                                                    <span class="admin-dashboard-meta-part">
-                                                        <i
-                                                            class="fa fa-calendar me-1"></i>{{ $instructor->created_at->format('M d, Y', 'admin') }}
-                                                    </span>
-                                                </small>
-                                                <div class="mt-1">
-                                                    <span
-                                                        class="badge bg-{{ $instructor->is_active ? 'success' : 'danger' }}">
-                                                        {{ $instructor->is_active ? custom_trans('Active', 'admin') : custom_trans('Inactive', 'admin') }}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
+                            @foreach ($latestInstructors as $instructor)
+                                <div class="db-list-item">
+                                    <div class="db-list-thumb">
+                                        <img src="{{ $instructor->avatar_url }}" alt="{{ $instructor->name }}" class="db-avatar-circle">
                                     </div>
-                                @endforeach
-                            </div>
+                                    <div class="db-list-info">
+                                        <span class="db-list-title">{{ $instructor->name }}</span>
+                                        <span class="db-list-meta">
+                                            <i class="fa fa-calendar-alt"></i>
+                                            {{ $instructor->created_at->format('M d, Y') }}
+                                        </span>
+                                        <span class="db-status-badge db-badge-{{ $instructor->is_active ? 'success' : 'danger' }}">
+                                            {{ $instructor->is_active ? custom_trans('Active', 'admin') : custom_trans('Inactive', 'admin') }}
+                                        </span>
+                                    </div>
+                                </div>
+                            @endforeach
                         @else
-                            <div class="text-center py-4">
-                                <i class="fa fa-graduation-cap fa-3x text-muted mb-3"></i>
-                                <p class="text-muted">{{ custom_trans('No instructors found', 'admin') }}</p>
+                            <div class="db-widget-empty">
+                                <i class="fa fa-graduation-cap"></i>
+                                <span>{{ custom_trans('No instructors found', 'admin') }}</span>
                             </div>
                         @endif
                     </div>
-                    <div class="card-footer text-center">
-                        <a href="{{ route('admin.admins.index') }}" class="btn btn-outline-primary btn-sm admin-dashboard-footer-btn">
+                    <div class="db-widget-footer">
+                        <a href="{{ route('admin.admins.index') }}" class="db-widget-link db-link-primary">
                             {{ custom_trans('View All Instructors', 'admin') }} <i class="fa fa-arrow-right ms-1"></i>
                         </a>
                     </div>
                 </div>
             </div>
 
-            <!-- Latest Traders -->
+            {{-- Latest Traders --}}
             <div class="col-12 col-md-6 col-lg-3">
-                <div class="card shadow-sm h-100 admin-dashboard-widget">
-                    <div class="card-header bg-warning text-dark">
-                        <h5 class="mb-0 admin-dashboard-widget-title">
-                            <i class="fa fa-chart-bar me-2"></i>{{ custom_trans('Latest Traders', 'admin') }}
-                        </h5>
+                <div class="db-widget">
+                    <div class="db-widget-header db-widget-warning">
+                        <i class="fa fa-chart-bar"></i>
+                        <span>{{ custom_trans('Latest Traders', 'admin') }}</span>
                     </div>
-                    <div class="card-body p-0">
+                    <div class="db-widget-body">
                         @if ($latestTraders->count() > 0)
-                            <div class="list-group list-group-flush">
-                                @foreach ($latestTraders as $trader)
-                                    <div class="list-group-item">
-                                        <div class="d-flex align-items-start admin-dashboard-list-item">
-                                            <div
-                                                class="bg-warning rounded-circle me-3 d-flex align-items-center justify-content-center user-avatar-placeholder flex-shrink-0">
-                                                <i class="fa fa-user text-white"></i>
-                                            </div>
-                                            <div class="flex-grow-1 min-w-0">
-                                                <h6 class="mb-1 text-truncate">{{ $trader->name }}</h6>
-                                                <small class="text-muted admin-dashboard-item-meta">
-                                                    <span class="admin-dashboard-meta-part">
-                                                        <i
-                                                            class="fa fa-calendar me-1"></i>{{ $trader->created_at->format('M d, Y', 'admin') }}
-                                                    </span>
-                                                </small>
-                                                <div class="mt-1 d-flex flex-wrap gap-1">
-                                                    <span class="badge bg-info">{{ ucfirst($trader->sex) }}</span>
-                                                    @if ($trader->trading_community)
-                                                        <span class="badge bg-secondary">{{ $trader->trading_community }}</span>
-                                                    @endif
-                                                </div>
-                                            </div>
+                            @foreach ($latestTraders as $trader)
+                                <div class="db-list-item">
+                                    <div class="db-list-thumb">
+                                        <div class="db-list-thumb-placeholder db-thumb-warning">
+                                            <i class="fa fa-user"></i>
                                         </div>
                                     </div>
-                                @endforeach
-                            </div>
+                                    <div class="db-list-info">
+                                        <span class="db-list-title">{{ $trader->name }}</span>
+                                        <span class="db-list-meta">
+                                            <i class="fa fa-calendar-alt"></i>
+                                            {{ $trader->created_at->format('M d, Y') }}
+                                        </span>
+                                        <div class="db-badge-group">
+                                            <span class="db-status-badge db-badge-info">{{ ucfirst($trader->sex) }}</span>
+                                            @if ($trader->trading_community)
+                                                <span class="db-status-badge db-badge-secondary">{{ $trader->trading_community }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
                         @else
-                            <div class="text-center py-4">
-                                <i class="fa fa-chart-bar fa-3x text-muted mb-3"></i>
-                                <p class="text-muted">{{ custom_trans('No traders found', 'admin') }}</p>
+                            <div class="db-widget-empty">
+                                <i class="fa fa-chart-bar"></i>
+                                <span>{{ custom_trans('No traders found', 'admin') }}</span>
                             </div>
                         @endif
                     </div>
-                    <div class="card-footer text-center">
-                        <a href="{{ route('admin.traders.index') }}" class="btn btn-outline-warning btn-sm admin-dashboard-footer-btn">
+                    <div class="db-widget-footer">
+                        <a href="{{ route('admin.traders.index') }}" class="db-widget-link db-link-warning">
                             {{ custom_trans('View All Traders', 'admin') }} <i class="fa fa-arrow-right ms-1"></i>
                         </a>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 @endsection
