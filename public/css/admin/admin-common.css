@@ -229,8 +229,16 @@
 
     /* ─────────────────────────────────────────
        COLLAPSED STATE
+       All selectors mirror the high-specificity
+       rules above so !important beats them.
     ───────────────────────────────────────── */
-    #adminSidebar.sidebar-collapsed {
+    #adminSidebar.sidebar-collapsed,
+    #adminSidebar.offcanvas-sidebar-width.sidebar-collapsed,
+    #adminSidebar.offcanvas-sidebar-width.offcanvas-start.sidebar-collapsed,
+    #adminSidebar.offcanvas-sidebar-width.offcanvas-xl-show.sidebar-collapsed,
+    #adminSidebar.offcanvas-sidebar-width.offcanvas-start.offcanvas-xl-show.sidebar-collapsed,
+    #adminSidebar.offcanvas-sidebar-width.offcanvas-xl-show.offcanvas-start.bg-white.sidebar-collapsed,
+    #adminSidebar.offcanvas-xl-show.offcanvas-sidebar-width.sidebar-collapsed {
         width: 56px !important;
         min-width: 56px !important;
         max-width: 56px !important;
