@@ -143,9 +143,23 @@
     main .admin-lang-tab-panel .ck.ck-toolbar,
     main .admin-settings-tab-content .ck.ck-toolbar,
     main .language-content.active .ck.ck-toolbar,
-    main .multilingual-field .ck.ck-toolbar {
-        flex-wrap: wrap;
+    main .multilingual-field .ck.ck-toolbar,
+    main .ck.ck-toolbar {
+        flex-wrap: wrap !important;
+        height: auto !important;
+        min-height: auto !important;
+        row-gap: 0.2rem;
         border-radius: 0.5rem 0.5rem 0 0 !important;
+    }
+
+    main .admin-lang-tab-panel .ck.ck-toolbar .ck-toolbar__items,
+    main .admin-settings-tab-content .ck.ck-toolbar .ck-toolbar__items,
+    main .language-content.active .ck.ck-toolbar .ck-toolbar__items,
+    main .multilingual-field .ck.ck-toolbar .ck-toolbar__items,
+    main .ck.ck-toolbar .ck-toolbar__items {
+        flex-wrap: wrap !important;
+        width: 100%;
+        row-gap: 0.15rem;
     }
 
     main .admin-lang-tab-panel .ck.ck-editor__main > .ck-editor__editable,

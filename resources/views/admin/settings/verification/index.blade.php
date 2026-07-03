@@ -57,37 +57,52 @@
                                 {{ custom_trans('Select which method new users must use to verify their account after registration.', 'admin') }}
                             </p>
 
-                            <div class="mb-3">
-                                <div class="form-check method-card p-3 border rounded mb-2 {{ $settings->method === 'whatsapp' ? 'border-success bg-success bg-opacity-10' : '' }}">
+                            <div class="verification-method-list mb-3">
+                                <div class="verification-method-option {{ $settings->method === 'whatsapp' ? 'is-selected is-selected--whatsapp' : '' }}">
                                     <input class="form-check-input" type="radio" name="method" id="method_whatsapp"
                                         value="whatsapp" {{ $settings->method === 'whatsapp' ? 'checked' : '' }}>
-                                    <label class="form-check-label w-100" for="method_whatsapp">
-                                        <strong><i class="fab fa-whatsapp text-success me-1"></i> WhatsApp OTP</strong>
-                                        <div class="text-muted small mt-1">
-                                            Send a 6-digit code to the user's WhatsApp number. Phone number is required at registration.
-                                        </div>
+                                    <label class="verification-method-label" for="method_whatsapp">
+                                        <span class="verification-method-icon verification-method-icon--whatsapp" aria-hidden="true">
+                                            <i class="fab fa-whatsapp"></i>
+                                        </span>
+                                        <span class="verification-method-content">
+                                            <strong class="verification-method-title">WhatsApp OTP</strong>
+                                            <span class="verification-method-desc">
+                                                Send a 6-digit code to the user's WhatsApp number. Phone number is required at registration.
+                                            </span>
+                                        </span>
                                     </label>
                                 </div>
 
-                                <div class="form-check method-card p-3 border rounded mb-2 {{ $settings->method === 'email' ? 'border-primary bg-primary bg-opacity-10' : '' }}">
+                                <div class="verification-method-option {{ $settings->method === 'email' ? 'is-selected is-selected--email' : '' }}">
                                     <input class="form-check-input" type="radio" name="method" id="method_email"
                                         value="email" {{ $settings->method === 'email' ? 'checked' : '' }}>
-                                    <label class="form-check-label w-100" for="method_email">
-                                        <strong><i class="fas fa-envelope text-primary me-1"></i> Email Link</strong>
-                                        <div class="text-muted small mt-1">
-                                            Send a verification link to the user's email. Phone number is optional at registration.
-                                        </div>
+                                    <label class="verification-method-label" for="method_email">
+                                        <span class="verification-method-icon verification-method-icon--email" aria-hidden="true">
+                                            <i class="fas fa-envelope"></i>
+                                        </span>
+                                        <span class="verification-method-content">
+                                            <strong class="verification-method-title">Email Link</strong>
+                                            <span class="verification-method-desc">
+                                                Send a verification link to the user's email. Phone number is optional at registration.
+                                            </span>
+                                        </span>
                                     </label>
                                 </div>
 
-                                <div class="form-check method-card p-3 border rounded mb-2 {{ $settings->method === 'both' ? 'border-warning bg-warning bg-opacity-10' : '' }}">
+                                <div class="verification-method-option {{ $settings->method === 'both' ? 'is-selected is-selected--both' : '' }}">
                                     <input class="form-check-input" type="radio" name="method" id="method_both"
                                         value="both" {{ $settings->method === 'both' ? 'checked' : '' }}>
-                                    <label class="form-check-label w-100" for="method_both">
-                                        <strong><i class="fas fa-layer-group text-warning me-1"></i> Both (WhatsApp + Email)</strong>
-                                        <div class="text-muted small mt-1">
-                                            Send both a WhatsApp OTP and an email link. The user is verified as soon as they complete <em>either one</em>. Phone number is required.
-                                        </div>
+                                    <label class="verification-method-label" for="method_both">
+                                        <span class="verification-method-icon verification-method-icon--both" aria-hidden="true">
+                                            <i class="fas fa-layer-group"></i>
+                                        </span>
+                                        <span class="verification-method-content">
+                                            <strong class="verification-method-title">Both (WhatsApp + Email)</strong>
+                                            <span class="verification-method-desc">
+                                                Send both a WhatsApp OTP and an email link. The user is verified as soon as they complete <em>either one</em>. Phone number is required.
+                                            </span>
+                                        </span>
                                     </label>
                                 </div>
                             </div>
@@ -166,9 +181,9 @@
                                 </div>
                             </div>
 
-                            <div class="alert alert-light border small py-2 mt-1">
-                                <strong>Quick setup guide:</strong>
-                                <ol class="mb-0 ps-3 mt-1">
+                            <div class="verification-setup-guide">
+                                <strong class="verification-setup-guide__title">Quick setup guide</strong>
+                                <ol class="verification-setup-guide__steps mb-0">
                                     <li>Go to <a href="https://developers.facebook.com" target="_blank" rel="noopener">developers.facebook.com</a> → your app → WhatsApp → API Setup</li>
                                     <li>Copy the <strong>Phone Number ID</strong></li>
                                     <li>In <a href="https://business.facebook.com" target="_blank" rel="noopener">business.facebook.com</a> → System Users → Generate Token (with <code>whatsapp_business_messaging</code> scope)</li>
@@ -195,19 +210,20 @@
 
 @push('scripts')
 <script>
-    // Highlight selected card and show/hide WhatsApp note
+    // Highlight selected verification method card
     document.querySelectorAll('input[name="method"]').forEach(function (radio) {
         radio.addEventListener('change', function () {
-            document.querySelectorAll('.method-card').forEach(function (card) {
-                card.classList.remove('border-success', 'bg-success', 'border-primary', 'bg-primary', 'border-warning', 'bg-warning', 'bg-opacity-10');
+            document.querySelectorAll('.verification-method-option').forEach(function (card) {
+                card.classList.remove('is-selected', 'is-selected--whatsapp', 'is-selected--email', 'is-selected--both');
             });
-            const card = this.closest('.method-card');
+            const card = this.closest('.verification-method-option');
+            card.classList.add('is-selected');
             if (this.value === 'whatsapp') {
-                card.classList.add('border-success', 'bg-success', 'bg-opacity-10');
+                card.classList.add('is-selected--whatsapp');
             } else if (this.value === 'email') {
-                card.classList.add('border-primary', 'bg-primary', 'bg-opacity-10');
+                card.classList.add('is-selected--email');
             } else {
-                card.classList.add('border-warning', 'bg-warning', 'bg-opacity-10');
+                card.classList.add('is-selected--both');
             }
             const note = document.getElementById('whatsapp-note');
             note.classList.toggle('d-none', this.value === 'email');

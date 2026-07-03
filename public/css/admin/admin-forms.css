@@ -10,6 +10,89 @@
     border-radius: 4px;
 }
 
+/* CKEditor — mobile: wrap toolbar so all buttons stay visible */
+@media (max-width: 991.98px) {
+    main .ck.ck-editor,
+    .ck.ck-editor {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    /* Parent cards must not clip a multi-row toolbar */
+    main .card:has(.ck-editor),
+    main .content-card:has(.ck-editor),
+    main .main-content-card:has(.ck-editor),
+    main .admin-lang-tab-panel:has(.ck-editor),
+    main .admin-settings-tab-content:has(.ck-editor),
+    main .language-content:has(.ck-editor),
+    main .multilingual-field:has(.ck-editor) {
+        overflow: visible !important;
+    }
+
+    main .ck.ck-editor__top,
+    main .ck.ck-sticky-panel,
+    main .ck.ck-sticky-panel__content,
+    .ck.ck-editor__top,
+    .ck.ck-sticky-panel,
+    .ck.ck-sticky-panel__content {
+        overflow: visible !important;
+    }
+
+    main .ck.ck-toolbar,
+    .ck.ck-toolbar {
+        flex-wrap: wrap !important;
+        height: auto !important;
+        min-height: auto !important;
+        row-gap: 0.2rem;
+        padding: 0.35rem 0.4rem !important;
+        border-radius: 0.5rem 0.5rem 0 0 !important;
+    }
+
+    main .ck.ck-toolbar .ck-toolbar__items,
+    .ck.ck-toolbar .ck-toolbar__items {
+        flex-wrap: wrap !important;
+        width: 100%;
+        row-gap: 0.15rem;
+    }
+
+    main .ck.ck-toolbar .ck-toolbar__separator:last-child,
+    .ck.ck-toolbar .ck-toolbar__separator:last-child {
+        display: none;
+    }
+
+    main .ck-editor__editable,
+    .ck-editor__editable {
+        min-height: 180px;
+    }
+
+    main .ck.ck-dropdown .ck-dropdown__panel,
+    .ck.ck-dropdown .ck-dropdown__panel {
+        max-width: min(100vw - 2rem, 320px);
+    }
+}
+
+@media (max-width: 575.98px) {
+    main .ck.ck-toolbar .ck-button,
+    .ck.ck-toolbar .ck-button {
+        min-width: 1.85rem;
+        padding-left: 0.35rem !important;
+        padding-right: 0.35rem !important;
+    }
+
+    main .ck.ck-toolbar .ck-dropdown .ck-button,
+    .ck.ck-toolbar .ck-dropdown .ck-button {
+        padding-left: 0.45rem !important;
+        padding-right: 0.45rem !important;
+    }
+
+    main .ck.ck-toolbar .ck-dropdown .ck-button .ck-button__label,
+    .ck.ck-toolbar .ck-dropdown .ck-button .ck-button__label {
+        max-width: 5.5rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
 /* Form Controls */
 .form-control,
 .form-select {
