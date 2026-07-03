@@ -340,11 +340,27 @@
         flex: 0 0 auto;
     }
 
+    body.admin-settings-page .admin-settings-mobile-toolbar .admin-settings-mobile-toolbar__save,
     body.admin-settings-page .admin-settings-mobile-toolbar .btn-primary,
     body.admin-settings-page .admin-settings-mobile-toolbar .btn-warning,
     body.admin-settings-page .admin-settings-mobile-toolbar .btn-success {
         flex: 1 1 auto;
         font-weight: 600;
+    }
+
+    body.admin-settings-page .admin-settings-mobile-toolbar .admin-settings-scroll-top {
+        flex: 0 0 auto;
+        width: 2.35rem;
+        height: 2.35rem;
+        padding: 0;
+        margin-left: auto;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    body.admin-settings-page .admin-settings-mobile-toolbar .admin-settings-scroll-top i {
+        font-size: 0.95rem;
     }
 
     /* Sub-page shell */

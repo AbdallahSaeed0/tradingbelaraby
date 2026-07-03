@@ -826,8 +826,8 @@
                 return;
             }
 
-            var pageForms = Array.from(document.querySelectorAll('.container-fluid form')).filter(function(form) {
-                if (form.closest('.modal')) {
+            var pageForms = Array.from(document.querySelectorAll('main form, main .container-fluid form')).filter(function(form) {
+                if (form.closest('.modal, .admin-top-navbar, nav.navbar, .navbar, .dropdown-menu')) {
                     return false;
                 }
                 if (form.dataset.settingsMobileToolbar === 'skip') {
@@ -887,40 +887,24 @@
                 var saveBtn = document.createElement('button');
                 saveBtn.type = 'submit';
                 saveBtn.setAttribute('form', form.id);
-                saveBtn.className = 'btn btn-primary btn-sm';
+                saveBtn.className = 'btn btn-primary btn-sm admin-settings-mobile-toolbar__save';
                 saveBtn.innerHTML = '<i class="fa fa-save me-1"></i>' + label;
                 toolbar.appendChild(saveBtn);
-            } else {
-                var titleBox = document.querySelector('.page-title-box');
-                var headerAction = titleBox
-                    ? titleBox.querySelector('.btn-primary, .btn-warning, .btn-success')
-                    : null;
-
-                if (headerAction) {
-                    var actionWrap = headerAction.closest('.float-end, .admin-settings-header-actions');
-                    if (!actionWrap) {
-                        actionWrap = headerAction.parentElement;
-                    }
-                    if (actionWrap && titleBox.contains(actionWrap)) {
-                        actionWrap.classList.add('admin-settings-header-actions');
-                    }
-
-                    if (headerAction.hasAttribute('data-bs-toggle') && headerAction.getAttribute('data-bs-target')) {
-                        var clone = headerAction.cloneNode(true);
-                        clone.classList.add('btn-sm');
-                        toolbar.appendChild(clone);
-                    } else if (headerAction.tagName === 'A') {
-                        var linkClone = headerAction.cloneNode(true);
-                        linkClone.classList.add('btn-sm');
-                        toolbar.appendChild(linkClone);
-                    }
-                }
             }
 
-            if (toolbar.children.length > 1) {
-                document.body.appendChild(toolbar);
-                document.body.classList.add('settings-has-mobile-toolbar');
-            }
+            var topBtn = document.createElement('button');
+            topBtn.type = 'button';
+            topBtn.className = 'btn btn-outline-secondary btn-sm admin-settings-scroll-top';
+            topBtn.setAttribute('aria-label', 'Scroll to top');
+            topBtn.setAttribute('title', 'Scroll to top');
+            topBtn.innerHTML = '<i class="fa fa-arrow-up"></i>';
+            topBtn.addEventListener('click', function() {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+            toolbar.appendChild(topBtn);
+
+            document.body.appendChild(toolbar);
+            document.body.classList.add('settings-has-mobile-toolbar');
         }
 
         window.initAdminSettingsMobile = initAdminSettingsMobile;
