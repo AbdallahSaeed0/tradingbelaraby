@@ -183,6 +183,150 @@
 }
 
 /* ============================================================
+   Enhanced Pagination
+   ============================================================ */
+
+.admin-pagination-nav {
+    padding: 0.75rem 0 0.25rem;
+}
+
+/* ── Summary text ── */
+.admin-pg-summary {
+    font-size: 0.82rem;
+    color: var(--admin-text-muted);
+    margin: 0;
+    letter-spacing: 0.01em;
+}
+.admin-pg-highlight {
+    font-weight: 600;
+    color: var(--admin-text);
+}
+
+/* ── Page list ── */
+.admin-pg-list {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* ── Page item ── */
+.admin-pg-item { display: flex; }
+
+/* ── Page link ── */
+.admin-pg-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2rem;
+    height: 2rem;
+    padding: 0 0.45rem;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--admin-text);
+    background: var(--admin-card-bg);
+    border: 1px solid var(--admin-border);
+    text-decoration: none;
+    transition: background 0.15s ease, color 0.15s ease,
+                border-color 0.15s ease, transform 0.12s ease,
+                box-shadow 0.15s ease;
+    cursor: pointer;
+    user-select: none;
+}
+
+.admin-pg-link:hover {
+    background: var(--admin-active-bg);
+    color: var(--admin-active-text);
+    border-color: var(--admin-active-text);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(37, 99, 235, 0.18);
+}
+
+/* Nav arrows (< >) */
+.admin-pg-link--nav {
+    font-size: 0.72rem;
+    color: var(--admin-text-muted);
+}
+.admin-pg-link--nav:hover {
+    color: var(--admin-active-text);
+}
+
+/* Active page */
+.admin-pg-item--active .admin-pg-link {
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    color: #fff !important;
+    border-color: transparent;
+    box-shadow: 0 3px 10px rgba(37, 99, 235, 0.35);
+    font-weight: 600;
+    transform: none;
+    cursor: default;
+}
+.admin-pg-item--active .admin-pg-link:hover {
+    transform: none;
+    box-shadow: 0 3px 10px rgba(37, 99, 235, 0.35);
+}
+
+/* Disabled */
+.admin-pg-item--disabled .admin-pg-link {
+    opacity: 0.38;
+    cursor: not-allowed;
+    pointer-events: none;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Ellipsis dots */
+.admin-pg-item--dots .admin-pg-link {
+    border-color: transparent;
+    background: transparent;
+    color: var(--admin-text-muted);
+    cursor: default;
+    pointer-events: none;
+    letter-spacing: 0.05em;
+}
+
+/* ── Mobile buttons ── */
+.admin-pg-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.9rem;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--admin-text);
+    background: var(--admin-card-bg);
+    border: 1px solid var(--admin-border);
+    text-decoration: none;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.admin-pg-btn:hover {
+    background: var(--admin-active-bg);
+    color: var(--admin-active-text);
+    border-color: var(--admin-active-text);
+}
+.admin-pg-btn--disabled {
+    opacity: 0.38;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* ── Dark mode ── */
+[data-theme="dark"] .admin-pg-link {
+    box-shadow: none;
+}
+[data-theme="dark"] .admin-pg-link:hover {
+    box-shadow: 0 3px 8px rgba(59, 130, 246, 0.25);
+}
+[data-theme="dark"] .admin-pg-item--active .admin-pg-link {
+    background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+    box-shadow: 0 3px 10px rgba(59, 130, 246, 0.3);
+}
+
+/* ============================================================
    Sidebar: Smooth Icon-Only Collapse (desktop ≥ 1200px)
    ============================================================ */
 @media (min-width: 1200px) {

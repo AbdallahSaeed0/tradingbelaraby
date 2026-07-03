@@ -119,6 +119,7 @@
     padding: 1.25rem 1.1rem 1.1rem;
     display: flex;
     align-items: center;
+    height: 100%;
     gap: 1rem;
     position: relative;
     overflow: hidden;
