@@ -209,8 +209,8 @@
 
     body.admin-settings-page .admin-settings-active-panel .form-switch {
         flex: 0 0 auto;
-        padding-left: 2.5em;
-        min-height: 1.5rem;
+        padding-left: 0;
+        min-height: auto;
     }
 
     body.admin-settings-page .admin-settings-active-panel .form-check-input {
