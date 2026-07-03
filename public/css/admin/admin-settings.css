@@ -86,37 +86,78 @@
     font-weight: 600;
     color: var(--text, var(--admin-text)) !important;
     margin-bottom: 0.5rem;
+    text-align: center;
 }
 
 .card.settings-card .card-text {
     font-size: 0.875rem;
-    line-height: 1.5;
+    line-height: 1.55;
     color: var(--muted, var(--admin-text-muted)) !important;
     margin-bottom: 1rem;
     flex: 0 0 auto;
+    text-align: center;
 }
 
 .card.settings-card .features-list {
     flex: 1;
     margin: 0 0 1rem 0;
     min-height: 4rem;
+    width: 100%;
+    align-self: stretch;
+    text-align: left;
+    background: var(--surface-2, var(--admin-dropdown-hover));
+    border: 1px solid var(--admin-border-light, var(--admin-border));
+    border-radius: 10px;
+    padding: 0.75rem 0.85rem;
+}
+
+/* Replace Bootstrap row/cols with an even 2-column grid */
+.card.settings-card .features-list > .row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+    margin: 0;
+    --bs-gutter-x: 0;
+    --bs-gutter-y: 0;
+}
+
+@media (max-width: 1199.98px) {
+    .card.settings-card .features-list > .row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.45rem 0.85rem;
+    }
+}
+
+.card.settings-card .features-list > .row > [class*="col-"] {
+    padding: 0;
+    width: auto;
+    max-width: none;
+    flex: none;
 }
 
 .card.settings-card .feature-item {
-    padding: 0.25rem 0;
-    font-size: 0.8125rem;
+    padding: 0.2rem 0;
+    font-size: 0.78rem;
+    line-height: 1.35;
     color: var(--muted, var(--admin-text-muted)) !important;
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    align-items: flex-start;
+    gap: 0.45rem;
+    min-height: 1.75rem;
 }
 
 .card.settings-card .feature-item i {
     width: 1rem;
+    min-width: 1rem;
+    margin: 0.1rem 0 0 !important;
     text-align: center;
     flex-shrink: 0;
-    color: var(--primary, var(--admin-active-text));
     opacity: 0.9;
+}
+
+.card.settings-card .feature-item span {
+    flex: 1;
+    min-width: 0;
 }
 
 /* Unified CTA: primary button, same baseline across cards */
