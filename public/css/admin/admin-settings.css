@@ -114,18 +114,11 @@
 /* Replace Bootstrap row/cols with an even 2-column grid */
 .card.settings-card .features-list > .row {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.4rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.45rem 0.85rem;
     margin: 0;
     --bs-gutter-x: 0;
     --bs-gutter-y: 0;
-}
-
-@media (max-width: 1199.98px) {
-    .card.settings-card .features-list > .row {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 0.45rem 0.85rem;
-    }
 }
 
 .card.settings-card .features-list > .row > [class*="col-"] {
