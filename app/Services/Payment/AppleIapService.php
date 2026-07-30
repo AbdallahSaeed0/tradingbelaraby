@@ -98,7 +98,9 @@ class AppleIapService
                 'status' => $httpResponse->status(),
                 'body' => $httpResponse->body(),
             ]);
-            throw new RuntimeException('Unable to contact App Store verification service.');
+            throw new RuntimeException(
+                'Unable to contact App Store verification service. HTTP ' . $httpResponse->status() . ': ' . $httpResponse->body()
+            );
         }
 
         $signedTransactionInfo = $httpResponse->json('signedTransactionInfo');
