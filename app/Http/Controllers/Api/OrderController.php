@@ -96,7 +96,7 @@ class OrderController extends Controller
                     Log::warning('Apple IAP verification failed: ' . $e->getMessage());
                     return response()->json([
                         'success' => false,
-                        'message' => 'App Store purchase verification failed.',
+                        'message' => 'TESTMARKER123 verification failed.',
                     ], 402);
                 }
             }
