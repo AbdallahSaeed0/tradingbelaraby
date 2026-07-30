@@ -98,9 +98,15 @@ class AppleIapService
                 'status' => $httpResponse->status(),
                 'body' => $httpResponse->body(),
             ]);
+            $jwtParts = explode('.', $jwt);
+            $jwtHeader = $jwtParts[0] ?? '';
+            $jwtPayload = isset($jwtParts[1]) ? base64_decode(strtr($jwtParts[1], '-_', '+/')) : '';
+            $wwwAuth = $httpResponse->header('WWW-Authenticate');
             throw new RuntimeException(
                 'Unable to contact App Store verification service. HTTP ' . $httpResponse->status() . ': ' . $httpResponse->body()
-                . ' | server_time=' . date('Y-m-d H:i:s T')
+                . ' | www-auth=' . $wwwAuth
+                . ' | jwt_header=' . base64_decode(strtr($jwtHeader, '-_', '+/'))
+                . ' | jwt_payload=' . $jwtPayload
             );
         }
 
