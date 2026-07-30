@@ -100,6 +100,7 @@ class AppleIapService
             ]);
             throw new RuntimeException(
                 'Unable to contact App Store verification service. HTTP ' . $httpResponse->status() . ': ' . $httpResponse->body()
+                . ' | server_time=' . date('Y-m-d H:i:s T')
             );
         }
 
