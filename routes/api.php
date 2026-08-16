@@ -27,6 +27,10 @@ use App\Http\Controllers\Api\ForgotPasswordController;
 
 Route::post('/tabby/webhook', [TabbyController::class, 'webhook'])->name('api.tabby.webhook');
 
+// WhatsApp Cloud API webhook (Meta verification handshake + event delivery)
+Route::get('/whatsapp/webhook', [App\Http\Controllers\WhatsAppWebhookController::class, 'verify'])->name('api.whatsapp.webhook.verify');
+Route::post('/whatsapp/webhook', [App\Http\Controllers\WhatsAppWebhookController::class, 'handle'])->name('api.whatsapp.webhook.handle');
+
 // Auth API Routes
 Route::get('/auth/config', [AuthController::class, 'config'])->name('api.auth.config');
 Route::post('/auth/register', [AuthController::class, 'register'])->name('api.auth.register');

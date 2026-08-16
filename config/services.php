@@ -78,6 +78,7 @@ return [
         'phone_number_id' => env('META_WHATSAPP_PHONE_NUMBER_ID'),
         'otp_template'    => env('META_WHATSAPP_OTP_TEMPLATE', 'otp_verification'),
         'api_version'     => env('META_WHATSAPP_API_VERSION', 'v21.0'),
+        'verify_token'    => env('META_WHATSAPP_VERIFY_TOKEN'),
     ],
 
 ];
