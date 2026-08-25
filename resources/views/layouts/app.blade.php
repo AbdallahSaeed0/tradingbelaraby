@@ -793,12 +793,12 @@
                                  alt="Get it on Google Play" style="max-width: 150px; height: auto;">
                         </a>
                     </div>
-                    <!-- PayPal Payment Method -->
+                    {{-- <!-- PayPal Payment Method -->
                     <div class="mt-3">
                         <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg"
                              alt="PayPal" width="111" height="69"
                              style="max-width: 120px; height: auto; background: white; padding: 5px; border-radius: 4px;">
-                    </div>
+                    </div> --}}
                 </div>
                 <!-- Links -->
                 <div class="col-6 col-sm-6 col-md-2 mb-4 mb-md-0">
