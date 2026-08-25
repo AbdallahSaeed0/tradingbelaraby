@@ -16,7 +16,7 @@ class BlogsController extends Controller
 {
     public function index(Request $request)
     {
-        $search = $request->q;
+        $search = $request->search;
         $category = $request->category;
         $status = $request->status;
         $per = $request->per_page ?? 15;
@@ -24,7 +24,9 @@ class BlogsController extends Controller
         $blogs = Blog::when($search, function($query) use ($search) {
                 $query->where('title', 'like', "%{$search}%")
                       ->orWhere('description', 'like', "%{$search}%")
-                      ->orWhere('author', 'like', "%{$search}%");
+                      ->orWhereHas('author', function($q) use ($search) {
+                          $q->where('name', 'like', "%{$search}%");
+                      });
             })
             ->when($category, function($query) use ($category) {
                 $query->where('category_id', $category);
@@ -44,7 +46,7 @@ class BlogsController extends Controller
 
     public function data(Request $request)
     {
-        $search = $request->q;
+        $search = $request->search;
         $category = $request->category;
         $status = $request->status;
         $per = $request->per_page ?? 15;
@@ -52,7 +54,9 @@ class BlogsController extends Controller
         $blogs = Blog::when($search, function($query) use ($search) {
                 $query->where('title', 'like', "%{$search}%")
                       ->orWhere('description', 'like', "%{$search}%")
-                      ->orWhere('author', 'like', "%{$search}%");
+                      ->orWhereHas('author', function($q) use ($search) {
+                          $q->where('name', 'like', "%{$search}%");
+                      });
             })
             ->when($category, function($query) use ($category) {
                 $query->where('category_id', $category);

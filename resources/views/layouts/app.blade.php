@@ -778,6 +778,14 @@
                             @endif
                         </div>
                     @endif
+                    <!-- Download Our App -->
+                    <div class="mt-3">
+                        <p class="text-white-50 small mb-2">{{ custom_trans('Download our app', 'front') }}</p>
+                        <a href="https://play.google.com/store/apps/details?id=com.tradingbelaraby.courses" target="_blank" rel="noopener">
+                            <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+                                 alt="Get it on Google Play" style="max-width: 150px; height: auto;">
+                        </a>
+                    </div>
                     <!-- PayPal Payment Method -->
                     <div class="mt-3">
                         <p class="text-white-50 small mb-2">{{ custom_trans('We Accept', 'front') }}:</p>

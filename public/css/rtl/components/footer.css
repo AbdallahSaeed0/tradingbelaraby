@@ -118,7 +118,7 @@
   padding: 1rem 1rem !important;
 }
 .footer-logo img {
-  height: 28px;
+  height: 52px;
   margin-left: 10px;
   width: auto;
 }
@@ -174,7 +174,7 @@
     justify-content: center;
   }
   .footer-logo img {
-    height: 24px;
+    height: 44px;
     margin-left: 0;
     margin-bottom: 0.5rem;
   }
@@ -246,7 +246,7 @@
     font-size: 0.8rem;
   }
   .footer-logo img {
-    height: 22px;
+    height: 38px;
   }
   .footer-copyright {
     font-size: 0.75rem;
@@ -275,7 +275,7 @@
     padding: 0.5rem 0.5rem !important;
   }
   .footer-logo img {
-    height: 20px;
+    height: 32px;
   }
   .footer-copyright {
     font-size: 0.7rem;
