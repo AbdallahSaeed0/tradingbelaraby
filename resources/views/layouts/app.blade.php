@@ -738,6 +738,13 @@
             <div class="row text-white pb-4">
                 <!-- About Us + Social -->
                 <div class="col-6 col-sm-6 col-md-3 mb-4 mb-md-0">
+                    <div class="footer-logo mb-3">
+                        <a href="{{ route('home') }}" class="footer-logo-link">
+                            <img src="{{ $mainContentSettings ? $mainContentSettings->logo_url : asset('images/default-logo.svg') }}"
+                                alt="{{ $mainContentSettings ? $mainContentSettings->logo_alt_text : 'Site Logo' }}"
+                                class="footer-logo-img">
+                        </a>
+                    </div>
                     <h4 class="footer-title mb-2">{{ custom_trans('about_us', 'front') }}</h4>
                     <div class="footer-title-underline mb-3"></div>
                     @php
@@ -788,7 +795,6 @@
                     </div>
                     <!-- PayPal Payment Method -->
                     <div class="mt-3">
-                        <p class="text-white-50 small mb-2">{{ custom_trans('We Accept', 'front') }}:</p>
                         <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg"
                              alt="PayPal" width="111" height="69"
                              style="max-width: 120px; height: auto; background: white; padding: 5px; border-radius: 4px;">
@@ -919,13 +925,6 @@
         </div>
         <!-- Copyright & Back to Top -->
         <div class="footer-bottom-bar d-flex justify-content-between align-items-center px-3 px-md-5 py-3">
-            <div class="footer-logo d-flex align-items-center">
-                <a href="{{ route('home') }}" class="footer-logo-link">
-                    <img src="{{ $mainContentSettings ? $mainContentSettings->logo_url : asset('images/default-logo.svg') }}"
-                        alt="{{ $mainContentSettings ? $mainContentSettings->logo_alt_text : 'Site Logo' }}"
-                        class="footer-logo-img" width="180" height="50">
-                </a>
-            </div>
             <div class="footer-copyright text-center flex-grow-1">Copyright © {{ date('Y') }} Tadawul Bel Araby.
             </div>
             <button id="backToTopBtn" class="btn btn-light btn-lg rounded-circle shadow-sm"><i
