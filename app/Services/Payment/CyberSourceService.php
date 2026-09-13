@@ -55,6 +55,9 @@ class CyberSourceService
             'country' => 'US',
             'locale' => app()->getLocale() === 'ar' ? 'ar_SA' : 'en_US',
             'data' => [
+                'clientReferenceInformation' => [
+                    'code' => $order->order_number,
+                ],
                 'orderInformation' => [
                     'amountDetails' => [
                         'totalAmount' => $this->usdAmountForOrder($order),
