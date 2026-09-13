@@ -552,6 +552,15 @@ class CheckoutController extends Controller
 
         try {
             $decoded = $cyberSource->decodeUnverifiedJwtPayload($request->input('result'));
+
+            // TEMP: log the full decoded result payload so we can see its real
+            // claim names instead of guessing.
+            Log::info('CyberSource Result JWT Decoded Payload', [
+                'order_id' => $order->id,
+                'raw_result' => $request->input('result'),
+                'decoded' => $decoded,
+            ]);
+
             $jti = $decoded['jti'] ?? null;
 
             if (!$jti) {
