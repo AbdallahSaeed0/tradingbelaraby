@@ -195,6 +195,22 @@
                                         </div>
                                     </div>
                                 @elseif($hasPaid)
+                                    <!-- Credit / Debit Card -->
+                                    <div class="payment-option-card p-4 border rounded-3 position-relative"
+                                        onclick="selectPayment(this, 'visa')">
+                                        <input type="radio" name="payment_method" value="visa" id="visa_payment"
+                                            class="position-absolute top-0 end-0 m-3">
+                                        <div class="payment-icon mb-3">
+                                            <i class="fas fa-credit-card fa-3x text-success"></i>
+                                        </div>
+                                        <h5 class="fw-bold mb-2">{{ custom_trans('Credit / Debit Card', 'front') }}</h5>
+                                        <p class="text-muted mb-0 small">
+                                            {{ custom_trans('Pay securely with Visa, Mastercard or Amex', 'front') }}</p>
+                                        <div class="selected-badge position-absolute top-0 start-0 m-2 d-none">
+                                            <i class="fas fa-check-circle text-success"></i>
+                                        </div>
+                                    </div>
+
                                     <!-- PayPal -->
                                     <div class="payment-option-card selected p-4 border rounded-3 position-relative"
                                         onclick="selectPayment(this, 'paypal')">
