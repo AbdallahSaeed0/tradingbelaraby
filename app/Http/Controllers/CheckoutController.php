@@ -561,25 +561,46 @@ class CheckoutController extends Controller
                 'decoded' => $decoded,
             ]);
 
-            $jti = $decoded['jti'] ?? null;
-
-            if (!$jti) {
-                throw new \Exception('jti claim missing from result payload.');
+            // The client-supplied JWT is never trusted to say "yes" on its own,
+            // but its declared outcome is enough to fail fast on a decline —
+            // no need to call CyberSource again just to hear "no" a second time.
+            $quickOutcome = $decoded['details']['outcome'] ?? $decoded['details']['status'] ?? null;
+            if ($quickOutcome !== null && !in_array($quickOutcome, ['AUTHORIZED', 'COMPLETED', 'PENDING'])) {
+                Log::warning('CyberSource Payment Declined (client-reported)', [
+                    'order_id' => $order->id,
+                    'outcome' => $quickOutcome,
+                    'message' => $decoded['details']['message'] ?? null,
+                    'reason' => $decoded['details']['errorInformation']['reason'] ?? null,
+                ]);
+                return response()->json([
+                    'success' => false,
+                    'message' => $decoded['details']['message'] ?? 'Payment was not approved.',
+                ], 422);
             }
 
-            // Never trust the client-supplied JWT contents for the outcome —
-            // re-fetch the authoritative record from CyberSource directly.
-            $payment = $cyberSource->getPaymentDetails($jti);
+            // metadata.ttJti is the transient token's jti — the id the
+            // Unified-Checkout-scoped lookup endpoint expects.
+            $ttJti = $decoded['metadata']['ttJti'] ?? null;
+
+            if (!$ttJti) {
+                throw new \Exception('ttJti claim missing from result payload.');
+            }
+
+            // Never trust the client-supplied JWT contents alone to approve a
+            // payment — re-fetch the authoritative record from CyberSource.
+            $payment = $cyberSource->getPaymentDetails($ttJti);
 
             // TEMP: log the full raw response so we can see its real shape and
             // replace this guesswork with exact field paths once confirmed.
             Log::info('CyberSource Payment Details Raw Response', [
                 'order_id' => $order->id,
-                'jti' => $jti,
+                'tt_jti' => $ttJti,
                 'payment' => $payment,
             ]);
 
             $status = $payment['status']
+                ?? $payment['details']['status']
+                ?? $payment['details']['outcome']
                 ?? $payment['applicationInformation']['status']
                 ?? $payment['paymentInformation']['status']
                 ?? null;
@@ -591,7 +612,7 @@ class CheckoutController extends Controller
             if (empty($payment)) {
                 Log::error('CyberSource Payment Details Empty Response', [
                     'order_id' => $order->id,
-                    'jti' => $jti,
+                    'tt_jti' => $ttJti,
                 ]);
                 return response()->json(['success' => false, 'message' => 'Payment was not approved.'], 422);
             }
@@ -599,7 +620,7 @@ class CheckoutController extends Controller
             if ($status !== null && !in_array($status, ['AUTHORIZED', 'PENDING', 'PARTIAL_AUTHORIZED', 'COMPLETED'])) {
                 Log::warning('CyberSource Payment Not Authorized', [
                     'order_id' => $order->id,
-                    'jti' => $jti,
+                    'tt_jti' => $ttJti,
                     'status' => $status,
                 ]);
                 return response()->json(['success' => false, 'message' => 'Payment was not approved.'], 422);
@@ -608,14 +629,14 @@ class CheckoutController extends Controller
             if ($paidAmount !== null && bccomp((string) $paidAmount, $expectedAmount, 2) !== 0) {
                 Log::error('CyberSource Payment Amount Mismatch', [
                     'order_id' => $order->id,
-                    'jti' => $jti,
+                    'tt_jti' => $ttJti,
                     'paid' => $paidAmount,
                     'expected' => $expectedAmount,
                 ]);
                 return response()->json(['success' => false, 'message' => 'Payment amount mismatch.'], 422);
             }
 
-            $paymentId = $jti;
+            $paymentId = $decoded['details']['id'] ?? $ttJti;
 
             DB::beginTransaction();
 
