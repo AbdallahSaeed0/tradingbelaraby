@@ -25,46 +25,13 @@
                         <h4 class="fw-bold mb-4">{{ custom_trans('credit_card_payment', 'front') }}</h4>
 
                         <div class="payment-form">
-                            <div class="alert alert-info">
-                                <i class="fas fa-info-circle me-2"></i>
-                                {{ custom_trans('payment_placeholder_message', 'front') }}
+                            <div id="payment-error" class="alert alert-danger d-none"></div>
+                            <div id="payment-loading" class="alert alert-info">
+                                <i class="fas fa-spinner fa-spin me-2"></i>
+                                {{ custom_trans('loading_payment_form', 'front') }}
                             </div>
 
-                            <form id="paymentForm">
-                                <div class="mb-3">
-                                    <label for="card_number" class="form-label">{{ custom_trans('card_number', 'front') }} *</label>
-                                    <input type="text" class="form-control card-input" id="card_number"
-                                        placeholder="1234 5678 9012 3456" required>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="expiry_date" class="form-label">{{ custom_trans('expiry_date', 'front') }}
-                                            *</label>
-                                        <input type="text" class="form-control card-input" id="expiry_date"
-                                            placeholder="MM/YY" required>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="cvv" class="form-label">{{ custom_trans('cvv', 'front') }} *</label>
-                                        <input type="text" class="form-control card-input" id="cvv"
-                                            placeholder="123" required>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="card_holder" class="form-label">{{ custom_trans('card_holder_name', 'front') }}
-                                        *</label>
-                                    <input type="text" class="form-control card-input" id="card_holder"
-                                        placeholder="{{ custom_trans('card_holder_placeholder', 'front') }}" required>
-                                </div>
-
-                                <div class="d-grid">
-                                    <button type="submit" class="btn btn-pay">
-                                        <i class="fas fa-lock me-2"></i>
-                                        {{ custom_trans('pay_now', 'front') }} ₹{{ number_format($order->total, 2) }}
-                                    </button>
-                                </div>
-                            </form>
+                            <div id="payment-buttons"></div>
 
                             <div class="text-center mt-4">
                                 <small class="text-muted">
@@ -131,51 +98,59 @@
 @endsection
 
 @push('scripts')
+    <script src="{{ config('cybersource.base_url') }}/uc/v1/assets/{{ config('cybersource.client_version') }}/UnifiedCheckout.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const paymentForm = document.getElementById('paymentForm');
+        document.addEventListener('DOMContentLoaded', async function () {
+            const sessionJWT = @json($captureContext);
+            const completeUrl = '{{ route('checkout.payment.complete', $order->id) }}';
+            const successUrl = '{{ route('checkout.success', $order->id) }}';
+            const csrfToken = '{{ csrf_token() }}';
 
-            paymentForm.addEventListener('submit', function(e) {
-                e.preventDefault();
+            const loadingEl = document.getElementById('payment-loading');
+            const errorEl = document.getElementById('payment-error');
 
-                // Show loading state
-                const submitBtn = this.querySelector('button[type="submit"]');
-                const originalText = submitBtn.innerHTML;
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+            function showError(message) {
+                errorEl.textContent = message;
+                errorEl.classList.remove('d-none');
+                loadingEl.classList.add('d-none');
+            }
 
-                // Simulate payment processing
-                setTimeout(() => {
-                    // For now, just redirect to success page
-                    // In a real implementation, you would integrate with a payment gateway
-                    window.location.href = '{{ route('checkout.success', $order->id) }}';
-                }, 2000);
-            });
+            let client, checkout;
+            try {
+                client = await VAS.UnifiedCheckout(sessionJWT);
+                checkout = await client.createCheckout();
 
-            // Format card number input
-            const cardNumber = document.getElementById('card_number');
-            cardNumber.addEventListener('input', function(e) {
-                let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-                let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
-                e.target.value = formattedValue;
-            });
+                loadingEl.classList.add('d-none');
 
-            // Format expiry date input
-            const expiryDate = document.getElementById('expiry_date');
-            expiryDate.addEventListener('input', function(e) {
-                let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-                if (value.length >= 2) {
-                    value = value.substring(0, 2) + '/' + value.substring(2, 4);
+                const result = await checkout.mount('#payment-buttons');
+
+                loadingEl.classList.remove('d-none');
+                loadingEl.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>{{ custom_trans('confirming_payment', 'front') }}';
+
+                const response = await fetch(completeUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({ result }),
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    window.location.href = data.redirect || successUrl;
+                } else {
+                    showError(data.message || '{{ custom_trans('payment_failed_message', 'front') }}');
                 }
-                e.target.value = value;
-            });
-
-            // Format CVV input
-            const cvv = document.getElementById('cvv');
-            cvv.addEventListener('input', function(e) {
-                let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-                e.target.value = value.substring(0, 4);
-            });
+            } catch (error) {
+                console.error('Unified Checkout error:', error);
+                showError(error?.message || '{{ custom_trans('payment_load_error', 'front') }}');
+            } finally {
+                if (checkout) checkout.destroy();
+                if (client) client.destroy();
+            }
         });
     </script>
 @endpush

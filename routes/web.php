@@ -294,8 +294,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/checkout/apply-coupon', [CheckoutController::class, 'applyCoupon'])->name('checkout.apply-coupon');
     Route::post('/checkout/remove-coupon', [CheckoutController::class, 'removeCoupon'])->name('checkout.remove-coupon');
     Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
-    Route::get('/checkout/payment', [CheckoutController::class, 'payment'])->name('checkout.payment');
-    Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
+    Route::get('/checkout/payment/{order}', [CheckoutController::class, 'payment'])->name('checkout.payment');
+    Route::post('/checkout/payment/{order}/complete', [CheckoutController::class, 'completePayment'])->name('checkout.payment.complete');
+    Route::get('/checkout/success/{order}', [CheckoutController::class, 'success'])->name('checkout.success');
     Route::get('/checkout/bank-transfer-pending/{order}', [CheckoutController::class, 'bankTransferPending'])->name('checkout.bank-transfer-pending');
 
     // Tabby Payment Routes

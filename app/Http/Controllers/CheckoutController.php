@@ -13,6 +13,7 @@ use App\Models\PaymentSettings;
 use App\Notifications\CourseEnrollmentNotification;
 use App\Services\Payment\TabbyService;
 use App\Services\Payment\PayPalService;
+use App\Services\Payment\CyberSourceService;
 use App\Support\CheckoutPricing;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -253,7 +254,7 @@ class CheckoutController extends Controller
 
                     // Enroll user in all courses in the bundle
                     $enrollmentStatus = 'active';
-                    if (in_array($request->payment_method, ['paypal', 'bank_transfer'])) {
+                    if (in_array($request->payment_method, ['paypal', 'bank_transfer', 'visa'])) {
                         $enrollmentStatus = 'pending';
                     }
 
@@ -302,7 +303,7 @@ class CheckoutController extends Controller
                 ]);
 
                     $enrollmentStatus = 'active';
-                    if (in_array($request->payment_method, ['paypal', 'bank_transfer'])) {
+                    if (in_array($request->payment_method, ['paypal', 'bank_transfer', 'visa'])) {
                         $enrollmentStatus = 'pending';
                     }
 
@@ -509,15 +510,109 @@ class CheckoutController extends Controller
     }
 
     /**
-     * Display payment page (placeholder for Visa payment)
+     * Display the CyberSource Unified Checkout card payment page.
      */
-    public function payment(Order $order)
+    public function payment(Order $order, CyberSourceService $cyberSource)
     {
         if ($order->user_id !== Auth::id()) {
             abort(403);
         }
 
-        return view('checkout.payment', compact('order'));
+        if ($order->status !== 'pending') {
+            return redirect()->route('checkout.success', $order->id);
+        }
+
+        try {
+            $captureContext = $cyberSource->generateCaptureContext($order);
+        } catch (\Exception $e) {
+            Log::error('CyberSource Capture Context Error: ' . $e->getMessage(), ['order_id' => $order->id]);
+            return redirect()->route('checkout.index')
+                ->with('error', 'Unable to start the payment session. Please try again.');
+        }
+
+        return view('checkout.payment', compact('order', 'captureContext'));
+    }
+
+    /**
+     * Confirm a Unified Checkout payment result and finalize the order.
+     */
+    public function completePayment(Request $request, Order $order, CyberSourceService $cyberSource)
+    {
+        if ($order->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $request->validate([
+            'result' => 'required|string',
+        ]);
+
+        if ($order->status !== 'pending') {
+            return response()->json(['success' => true, 'redirect' => route('checkout.success', $order->id)]);
+        }
+
+        try {
+            $decoded = $cyberSource->decodeUnverifiedJwtPayload($request->input('result'));
+            $paymentId = $decoded['id']
+                ?? $decoded['paymentInformation']['id']
+                ?? $decoded['processorInformation']['transactionId']
+                ?? null;
+
+            if (!$paymentId) {
+                throw new \Exception('Payment id missing from result payload.');
+            }
+
+            // Never trust the client-supplied JWT contents for the outcome —
+            // re-fetch the transaction from CyberSource directly.
+            $payment = $cyberSource->getPayment($paymentId);
+            $status = $payment['status'] ?? 'UNKNOWN';
+            $paidAmount = $payment['orderInformation']['amountDetails']['totalAmount'] ?? null;
+            $expectedAmount = $cyberSource->usdAmountForOrder($order);
+
+            if (!in_array($status, ['AUTHORIZED', 'PENDING', 'PARTIAL_AUTHORIZED']) ) {
+                Log::warning('CyberSource Payment Not Authorized', [
+                    'order_id' => $order->id,
+                    'payment_id' => $paymentId,
+                    'status' => $status,
+                ]);
+                return response()->json(['success' => false, 'message' => 'Payment was not approved.'], 422);
+            }
+
+            if ($paidAmount !== null && bccomp((string) $paidAmount, $expectedAmount, 2) !== 0) {
+                Log::error('CyberSource Payment Amount Mismatch', [
+                    'order_id' => $order->id,
+                    'payment_id' => $paymentId,
+                    'paid' => $paidAmount,
+                    'expected' => $expectedAmount,
+                ]);
+                return response()->json(['success' => false, 'message' => 'Payment amount mismatch.'], 422);
+            }
+
+            DB::beginTransaction();
+
+            $order->update([
+                'status' => 'completed',
+                'payment_gateway_id' => $paymentId,
+            ]);
+
+            $courseIds = $order->getCourseIds();
+            $order->user->enrollments()
+                ->whereIn('course_id', $courseIds)
+                ->where('status', 'pending')
+                ->update([
+                    'status' => 'active',
+                    'enrolled_at' => now(),
+                ]);
+
+            $order->user->cartItems()->delete();
+
+            DB::commit();
+
+            return response()->json(['success' => true, 'redirect' => route('checkout.success', $order->id)]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('CyberSource Complete Payment Error: ' . $e->getMessage(), ['order_id' => $order->id]);
+            return response()->json(['success' => false, 'message' => 'Unable to confirm payment. Please try again.'], 500);
+        }
     }
 
     /**
