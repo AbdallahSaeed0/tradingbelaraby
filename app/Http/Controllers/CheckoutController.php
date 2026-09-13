@@ -561,14 +561,19 @@ class CheckoutController extends Controller
                 'decoded' => $decoded,
             ]);
 
-            // The client-supplied JWT is never trusted to say "yes" on its own,
-            // but its declared outcome is enough to fail fast on a decline —
-            // no need to call CyberSource again just to hear "no" a second time.
-            $quickOutcome = $decoded['details']['outcome'] ?? $decoded['details']['status'] ?? null;
-            if ($quickOutcome !== null && !in_array($quickOutcome, ['AUTHORIZED', 'COMPLETED', 'PENDING'])) {
-                Log::warning('CyberSource Payment Declined (client-reported)', [
+            // getPaymentDetails() (/flex/v2/payment-details/{ttJti}) only ever
+            // returns what was captured (masked card, billing) — it carries no
+            // approval status field at all. So the outcome must come from the
+            // signed result JWT's own "details.outcome"/"details.status" claim.
+            // We fail CLOSED here: an explicit good outcome is required to
+            // approve; anything missing or unrecognized is treated as a decline.
+            $outcome = $decoded['details']['outcome'] ?? $decoded['details']['status'] ?? null;
+            $goodOutcomes = ['AUTHORIZED', 'APPROVED', 'COMPLETED', 'COMPLETE', 'SUCCESS'];
+
+            if ($outcome === null || !in_array($outcome, $goodOutcomes, true)) {
+                Log::warning('CyberSource Payment Not Approved', [
                     'order_id' => $order->id,
-                    'outcome' => $quickOutcome,
+                    'outcome' => $outcome,
                     'message' => $decoded['details']['message'] ?? null,
                     'reason' => $decoded['details']['errorInformation']['reason'] ?? null,
                 ]);
@@ -579,52 +584,33 @@ class CheckoutController extends Controller
             }
 
             // metadata.ttJti is the transient token's jti — the id the
-            // Unified-Checkout-scoped lookup endpoint expects.
+            // Unified-Checkout-scoped lookup endpoint expects. Used here only
+            // to corroborate the token is real and the amount matches; it is
+            // never the source of the approval decision itself (see above).
             $ttJti = $decoded['metadata']['ttJti'] ?? null;
 
             if (!$ttJti) {
                 throw new \Exception('ttJti claim missing from result payload.');
             }
 
-            // Never trust the client-supplied JWT contents alone to approve a
-            // payment — re-fetch the authoritative record from CyberSource.
             $payment = $cyberSource->getPaymentDetails($ttJti);
 
-            // TEMP: log the full raw response so we can see its real shape and
-            // replace this guesswork with exact field paths once confirmed.
             Log::info('CyberSource Payment Details Raw Response', [
                 'order_id' => $order->id,
                 'tt_jti' => $ttJti,
                 'payment' => $payment,
             ]);
 
-            $status = $payment['status']
-                ?? $payment['details']['status']
-                ?? $payment['details']['outcome']
-                ?? $payment['applicationInformation']['status']
-                ?? $payment['paymentInformation']['status']
-                ?? null;
-            $paidAmount = $payment['orderInformation']['amountDetails']['totalAmount']
-                ?? $payment['amountDetails']['totalAmount']
-                ?? null;
-            $expectedAmount = $cyberSource->usdAmountForOrder($order);
-
             if (empty($payment)) {
                 Log::error('CyberSource Payment Details Empty Response', [
                     'order_id' => $order->id,
                     'tt_jti' => $ttJti,
                 ]);
-                return response()->json(['success' => false, 'message' => 'Payment was not approved.'], 422);
+                return response()->json(['success' => false, 'message' => 'Payment could not be confirmed.'], 422);
             }
 
-            if ($status !== null && !in_array($status, ['AUTHORIZED', 'PENDING', 'PARTIAL_AUTHORIZED', 'COMPLETED'])) {
-                Log::warning('CyberSource Payment Not Authorized', [
-                    'order_id' => $order->id,
-                    'tt_jti' => $ttJti,
-                    'status' => $status,
-                ]);
-                return response()->json(['success' => false, 'message' => 'Payment was not approved.'], 422);
-            }
+            $paidAmount = $payment['orderInformation']['amountDetails']['totalAmount'] ?? null;
+            $expectedAmount = $cyberSource->usdAmountForOrder($order);
 
             if ($paidAmount !== null && bccomp((string) $paidAmount, $expectedAmount, 2) !== 0) {
                 Log::error('CyberSource Payment Amount Mismatch', [
