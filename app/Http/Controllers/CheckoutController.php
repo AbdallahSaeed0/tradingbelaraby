@@ -564,7 +564,7 @@ class CheckoutController extends Controller
             // Never trust the client-supplied JWT contents for the outcome —
             // re-fetch the transaction from CyberSource directly.
             $payment = $cyberSource->getPayment($paymentId);
-            $status = $payment['status'] ?? 'UNKNOWN';
+            $status = $payment['applicationInformation']['status'] ?? $payment['status'] ?? 'UNKNOWN';
             $paidAmount = $payment['orderInformation']['amountDetails']['totalAmount'] ?? null;
             $expectedAmount = $cyberSource->usdAmountForOrder($order);
 

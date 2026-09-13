@@ -69,12 +69,12 @@ class CyberSourceService
     }
 
     /**
-     * Fetch a payment's authoritative status directly from CyberSource.
+     * Fetch a transaction's authoritative status directly from CyberSource.
      * Never trust the client-supplied result JWT alone — always re-confirm here.
      */
     public function getPayment(string $paymentId): array
     {
-        $resourcePath = '/pts/v2/payments/' . $paymentId;
+        $resourcePath = '/tss/v2/transactions/' . $paymentId;
         $headers = $this->auth->headers('GET', $this->host, $resourcePath);
         $headers['Accept'] = 'application/json;charset=utf-8';
 
