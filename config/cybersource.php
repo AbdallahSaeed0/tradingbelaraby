@@ -30,7 +30,11 @@ return [
     | Unified Checkout
     |--------------------------------------------------------------------------
     */
-    'client_version' => env('CYBERSOURCE_CLIENT_VERSION', '1.0.0'),
+    // Capture context "clientVersion" field — must be "1.x", e.g. "1.7". Not the SDK asset version below.
+    'client_version' => env('CYBERSOURCE_CLIENT_VERSION', '1.7'),
+
+    // Version segment of the JS SDK asset URL: /uc/v1/assets/{sdk_asset_version}/UnifiedCheckout.js
+    'sdk_asset_version' => env('CYBERSOURCE_SDK_ASSET_VERSION', '1.0.0'),
 
     // Every origin that will host the Unified Checkout JS SDK.
     'target_origins' => array_values(array_filter(array_map(

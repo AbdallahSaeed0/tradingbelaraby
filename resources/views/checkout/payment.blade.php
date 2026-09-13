@@ -98,7 +98,7 @@
 @endsection
 
 @push('scripts')
-    <script src="{{ config('cybersource.base_url') }}/uc/v1/assets/{{ config('cybersource.client_version') }}/UnifiedCheckout.js"></script>
+    <script src="{{ config('cybersource.base_url') }}/uc/v1/assets/{{ config('cybersource.sdk_asset_version') }}/UnifiedCheckout.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async function () {
             const sessionJWT = @json($captureContext);
