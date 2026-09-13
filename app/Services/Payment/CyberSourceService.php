@@ -69,12 +69,16 @@ class CyberSourceService
     }
 
     /**
-     * Fetch a transaction's authoritative status directly from CyberSource.
-     * Never trust the client-supplied result JWT alone — always re-confirm here.
+     * Fetch the authoritative, server-side record of what Unified Checkout
+     * captured for a given transient token, keyed by the token's `jti` claim.
+     * Never trust the client-supplied result JWT contents alone — always
+     * re-confirm here. This is the Unified-Checkout-scoped lookup endpoint
+     * (as opposed to the general Payments API / Transaction Search products,
+     * which this merchant account is not provisioned for).
      */
-    public function getPayment(string $paymentId): array
+    public function getPaymentDetails(string $jti): array
     {
-        $resourcePath = '/tss/v2/transactions/' . $paymentId;
+        $resourcePath = '/flex/v2/payment-details/' . $jti;
         $headers = $this->auth->headers('GET', $this->host, $resourcePath);
         $headers['Accept'] = 'application/json;charset=utf-8';
 
@@ -84,18 +88,18 @@ class CyberSourceService
             return json_decode((string) $response->getBody(), true) ?? [];
         } catch (RequestException $e) {
             $errorBody = $e->getResponse() ? (string) $e->getResponse()->getBody() : $e->getMessage();
-            Log::error('CyberSource Get Payment Error', [
-                'payment_id' => $paymentId,
+            Log::error('CyberSource Get Payment Details Error', [
+                'jti' => $jti,
                 'error' => $errorBody,
             ]);
-            throw new Exception('Failed to fetch CyberSource payment status: ' . $errorBody);
+            throw new Exception('Failed to fetch CyberSource payment details: ' . $errorBody);
         }
     }
 
     /**
      * Decode the JWT payload without verifying its signature. Only safe to use
-     * to pull out a pointer (the payment id) — the actual status must always
-     * come from getPayment(), never from this decoded payload.
+     * to pull out a pointer (the `jti` claim) — the actual status must always
+     * come from getPaymentDetails(), never from this decoded payload.
      */
     public function decodeUnverifiedJwtPayload(string $jwt): array
     {
@@ -111,7 +115,7 @@ class CyberSourceService
 
     protected function post(string $resourcePath, array $payload): string
     {
-        $body = json_encode($payload);
+        $body = json_encode(empty($payload) ? new \stdClass() : $payload);
         $headers = $this->auth->headers('POST', $this->host, $resourcePath, $body);
         $headers['Content-Type'] = 'application/json;charset=utf-8';
         $headers['Accept'] = 'application/json;charset=utf-8';

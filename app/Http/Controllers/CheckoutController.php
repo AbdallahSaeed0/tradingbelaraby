@@ -552,26 +552,45 @@ class CheckoutController extends Controller
 
         try {
             $decoded = $cyberSource->decodeUnverifiedJwtPayload($request->input('result'));
-            $paymentId = $decoded['id']
-                ?? $decoded['paymentInformation']['id']
-                ?? $decoded['processorInformation']['transactionId']
-                ?? null;
+            $jti = $decoded['jti'] ?? null;
 
-            if (!$paymentId) {
-                throw new \Exception('Payment id missing from result payload.');
+            if (!$jti) {
+                throw new \Exception('jti claim missing from result payload.');
             }
 
             // Never trust the client-supplied JWT contents for the outcome —
-            // re-fetch the transaction from CyberSource directly.
-            $payment = $cyberSource->getPayment($paymentId);
-            $status = $payment['applicationInformation']['status'] ?? $payment['status'] ?? 'UNKNOWN';
-            $paidAmount = $payment['orderInformation']['amountDetails']['totalAmount'] ?? null;
+            // re-fetch the authoritative record from CyberSource directly.
+            $payment = $cyberSource->getPaymentDetails($jti);
+
+            // TEMP: log the full raw response so we can see its real shape and
+            // replace this guesswork with exact field paths once confirmed.
+            Log::info('CyberSource Payment Details Raw Response', [
+                'order_id' => $order->id,
+                'jti' => $jti,
+                'payment' => $payment,
+            ]);
+
+            $status = $payment['status']
+                ?? $payment['applicationInformation']['status']
+                ?? $payment['paymentInformation']['status']
+                ?? null;
+            $paidAmount = $payment['orderInformation']['amountDetails']['totalAmount']
+                ?? $payment['amountDetails']['totalAmount']
+                ?? null;
             $expectedAmount = $cyberSource->usdAmountForOrder($order);
 
-            if (!in_array($status, ['AUTHORIZED', 'PENDING', 'PARTIAL_AUTHORIZED']) ) {
+            if (empty($payment)) {
+                Log::error('CyberSource Payment Details Empty Response', [
+                    'order_id' => $order->id,
+                    'jti' => $jti,
+                ]);
+                return response()->json(['success' => false, 'message' => 'Payment was not approved.'], 422);
+            }
+
+            if ($status !== null && !in_array($status, ['AUTHORIZED', 'PENDING', 'PARTIAL_AUTHORIZED', 'COMPLETED'])) {
                 Log::warning('CyberSource Payment Not Authorized', [
                     'order_id' => $order->id,
-                    'payment_id' => $paymentId,
+                    'jti' => $jti,
                     'status' => $status,
                 ]);
                 return response()->json(['success' => false, 'message' => 'Payment was not approved.'], 422);
@@ -580,12 +599,14 @@ class CheckoutController extends Controller
             if ($paidAmount !== null && bccomp((string) $paidAmount, $expectedAmount, 2) !== 0) {
                 Log::error('CyberSource Payment Amount Mismatch', [
                     'order_id' => $order->id,
-                    'payment_id' => $paymentId,
+                    'jti' => $jti,
                     'paid' => $paidAmount,
                     'expected' => $expectedAmount,
                 ]);
                 return response()->json(['success' => false, 'message' => 'Payment amount mismatch.'], 422);
             }
+
+            $paymentId = $jti;
 
             DB::beginTransaction();
 

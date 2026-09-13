@@ -31,7 +31,8 @@
                                 {{ custom_trans('loading_payment_form', 'front') }}
                             </div>
 
-                            <div id="payment-buttons"></div>
+                            <div id="payment-buttons" class="mb-4"></div>
+                            <div id="payment-form"></div>
 
                             <div class="text-center mt-4">
                                 <small class="text-muted">
@@ -122,7 +123,10 @@
 
                 loadingEl.classList.add('d-none');
 
-                const result = await checkout.mount('#payment-buttons');
+                const result = await checkout.mount({
+                    paymentSelection: '#payment-buttons',
+                    paymentScreen: '#payment-form'
+                });
 
                 loadingEl.classList.remove('d-none');
                 loadingEl.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>{{ custom_trans('confirming_payment', 'front') }}';
