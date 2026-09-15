@@ -60,7 +60,7 @@ return [
         'iap_shared_secret' => env('APPLE_IAP_SHARED_SECRET'),
         'iap_key_id' => env('APPLE_IAP_KEY_ID'),
         'iap_issuer_id' => env('APPLE_IAP_ISSUER_ID'),
-        'iap_private_key_path' => env('APPLE_IAP_PRIVATE_KEY_PATH', storage_path('app/apple/SubscriptionKey_UUGN979Z74.p8')),
+        'iap_private_key_path' => env('APPLE_IAP_PRIVATE_KEY_PATH', storage_path('app/apple/SubscriptionKey_' . env('APPLE_IAP_KEY_ID') . '.p8')),
         'iap_bundle_id' => env('APPLE_IAP_BUNDLE_ID', 'com.education.coursesApp'),
     ],
 
