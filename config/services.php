@@ -70,7 +70,12 @@ return [
     */
     'google_play' => [
         'package_name' => env('GOOGLE_PLAY_PACKAGE_NAME', 'com.education.coursesApp'),
-        'service_account_path' => env('GOOGLE_PLAY_SERVICE_ACCOUNT_PATH', storage_path('app/google/play-service-account.json')),
+        // Relative env values are anchored to base_path() so this resolves the same
+        // whether it's read from `php artisan` (cwd = app root) or a web request
+        // (cwd = public/, since that's the actual document root on this server).
+        'service_account_path' => ($p = env('GOOGLE_PLAY_SERVICE_ACCOUNT_PATH'))
+            ? (str_starts_with($p, '/') || preg_match('#^[A-Za-z]:[\\\\/]#', $p) ? $p : base_path($p))
+            : storage_path('app/google/play-service-account.json'),
         'default_currency' => env('GOOGLE_PLAY_DEFAULT_CURRENCY', 'SAR'),
         'product_id_prefix' => env('GOOGLE_PLAY_PRODUCT_ID_PREFIX', 'course_'),
     ],
