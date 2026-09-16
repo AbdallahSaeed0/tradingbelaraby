@@ -150,6 +150,12 @@ class GooglePlayService
             'productId' => $productId,
             'listings' => [
                 [
+                    // Play Console's default store listing language is Arabic — a listing for it is required.
+                    'languageCode' => 'ar',
+                    'title' => $this->truncate($course->name_ar ?: $course->name ?: ('Course #' . $course->id), 55),
+                    'description' => $this->truncate(strip_tags((string) ($course->description_ar ?: $course->description)) ?: $course->name_ar ?: $course->name, 200),
+                ],
+                [
                     'languageCode' => 'en-US',
                     'title' => $this->truncate($course->name ?: ('Course #' . $course->id), 55),
                     'description' => $this->truncate(strip_tags((string) $course->description) ?: $course->name, 200),
