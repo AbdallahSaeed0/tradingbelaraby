@@ -60,7 +60,10 @@ class GooglePlayService
         }
 
         $packageName = $this->packageName();
-        $url = self::API_BASE . rawurlencode($packageName) . '/purchases/products/' . rawurlencode($productId) . '/tokens/' . rawurlencode($purchaseToken);
+        // purchases.products.get (v1) is retired for apps on the one-time products model —
+        // verification now goes through productsv2, which is keyed by token only (no productId
+        // in the path) and returns string enums instead of the old integer codes.
+        $url = self::API_BASE . rawurlencode($packageName) . '/purchases/productsv2/tokens/' . rawurlencode($purchaseToken);
 
         $response = Http::withToken($this->getAccessToken())
             ->timeout(20)
@@ -76,8 +79,13 @@ class GooglePlayService
 
         $data = $response->json();
 
-        // purchaseState: 0 = purchased, 1 = cancelled, 2 = pending
-        if ((int) ($data['purchaseState'] ?? 1) !== 0) {
+        $purchasedProductId = (string) ($data['productLineItem'][0]['productId'] ?? '');
+        if ($purchasedProductId !== $productId) {
+            throw new RuntimeException('Google Play purchase line item does not match expected product.');
+        }
+
+        $purchaseState = $data['purchaseStateContext']['purchaseState'] ?? null;
+        if ($purchaseState !== 'PURCHASED') {
             throw new RuntimeException('Google Play purchase is not in a completed state.');
         }
 
@@ -86,7 +94,7 @@ class GooglePlayService
             throw new RuntimeException('Google Play purchase is missing an order ID.');
         }
 
-        if ((int) ($data['acknowledgementState'] ?? 0) === 0) {
+        if (($data['acknowledgementState'] ?? null) !== 'ACKNOWLEDGEMENT_STATE_ACKNOWLEDGED') {
             $this->acknowledgePurchase($productId, $purchaseToken);
         }
 
