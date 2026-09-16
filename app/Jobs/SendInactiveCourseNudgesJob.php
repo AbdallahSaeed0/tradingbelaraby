@@ -24,6 +24,9 @@ class SendInactiveCourseNudgesJob implements ShouldQueue
     {
         $cutoff = Carbon::now()->subDays(7);
         $enrollments = CourseEnrollment::where('status', 'active')
+            // Only nudge once the enrollment itself is old enough — otherwise a fresh
+            // purchase with last_accessed_at still null gets treated as "inactive for 7 days".
+            ->where('enrolled_at', '<', $cutoff)
             ->where(function ($q) use ($cutoff) {
                 $q->whereNull('last_accessed_at')
                     ->orWhere('last_accessed_at', '<', $cutoff);

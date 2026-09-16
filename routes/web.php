@@ -1,6 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+// TEMPORARY — remove after use. Forces PHP-FPM to drop its cached bytecode of
+// bootstrap/cache/config.php so a fresh `config:cache` actually takes effect.
+Route::get('/internal/reset-opcache-9f3a2b7c', function () {
+    if (function_exists('opcache_reset') && opcache_reset()) {
+        return 'OPcache reset: ok';
+    }
+    return 'OPcache not available or reset failed';
+});
 use Illuminate\Http\Request;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AuthController;
