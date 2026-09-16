@@ -12,6 +12,7 @@ use App\Models\Coupon;
 use App\Support\CheckoutPricing;
 use App\Services\Payment\PayPalService;
 use App\Services\Payment\AppleIapService;
+use App\Services\Payment\GooglePlayService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -24,10 +25,10 @@ class OrderController extends Controller
     /**
      * Create a new order
      */
-    public function store(Request $request, PayPalService $paypalService, AppleIapService $appleIapService): JsonResponse
+    public function store(Request $request, PayPalService $paypalService, AppleIapService $appleIapService, GooglePlayService $googlePlayService): JsonResponse
     {
         $user = Auth::user();
-        
+
         if (!$user) {
             return response()->json([
                 'success' => false,
@@ -38,11 +39,13 @@ class OrderController extends Controller
         $request->validate([
             'course_ids'            => 'required|array|min:1',
             'course_ids.*'          => 'exists:courses,id',
-            'payment_method'        => 'required|in:visa,free,cash_on_delivery,paypal,bank_transfer,apple_iap',
+            'payment_method'        => 'required|in:visa,free,cash_on_delivery,paypal,bank_transfer,apple_iap,google_play',
             'coupon_code'           => 'nullable|string|max:50',
             'transaction_reference' => 'nullable|string|max:255',
             'apple_receipt'         => 'required_if:payment_method,apple_iap|string',
             'apple_transaction_id'  => 'required_if:payment_method,apple_iap|string|max:255',
+            'google_product_id'     => 'required_if:payment_method,google_play|string|max:255',
+            'google_purchase_token' => 'required_if:payment_method,google_play|string',
         ]);
 
         DB::beginTransaction();
@@ -101,13 +104,57 @@ class OrderController extends Controller
                 }
             }
 
+            if ($request->payment_method === 'google_play') {
+                if ($courses->count() !== 1) {
+                    DB::rollBack();
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Google Play purchases must be completed one course at a time.',
+                    ], 422);
+                }
+
+                $course = $courses->first();
+                if ($course->is_free || (float) $course->price <= 0) {
+                    DB::rollBack();
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'This course does not require Google Play purchase.',
+                    ], 422);
+                }
+
+                $existingOrder = Order::where('payment_gateway_id', $request->google_purchase_token)->first();
+                if ($existingOrder) {
+                    DB::rollBack();
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Order already processed.',
+                        'data' => new OrderResource($existingOrder->load('items')),
+                    ], 200);
+                }
+
+                try {
+                    $googlePlayService->verifyPurchase(
+                        (string) $request->google_product_id,
+                        (string) $request->google_purchase_token,
+                        $googlePlayService->expectedProductIdForCourse($course->id),
+                    );
+                } catch (\Throwable $e) {
+                    DB::rollBack();
+                    Log::warning('Google Play verification failed: ' . $e->getMessage());
+                    return response()->json([
+                        'success' => false,
+                        'message' => $e->getMessage(),
+                    ], 402);
+                }
+            }
+
             // Calculate subtotal
             $subtotal = $courses->sum('price');
             $discountAmount = 0;
             $couponId = null;
 
-            // Apply coupon if provided (not for App Store purchases)
-            if ($request->coupon_code && $request->payment_method !== 'apple_iap') {
+            // Apply coupon if provided (not for App Store / Google Play purchases, which have fixed catalog prices)
+            if ($request->coupon_code && !in_array($request->payment_method, ['apple_iap', 'google_play'])) {
                 $coupon = Coupon::where('code', strtoupper($request->coupon_code))->first();
                 if ($coupon && $coupon->isValidForUser($user)) {
                     $discountAmount = $coupon->calculateDiscount($subtotal);
@@ -134,13 +181,15 @@ class OrderController extends Controller
 
             $initialStatus = match ($request->payment_method) {
                 'cash_on_delivery' => 'pending',
-                'apple_iap' => 'completed',
+                'apple_iap', 'google_play' => 'completed',
                 default => $total == 0 ? 'completed' : 'pending',
             };
 
-            $paymentGatewayId = $request->payment_method === 'apple_iap'
-                ? (string) $request->apple_transaction_id
-                : null;
+            $paymentGatewayId = match ($request->payment_method) {
+                'apple_iap' => (string) $request->apple_transaction_id,
+                'google_play' => (string) $request->google_purchase_token,
+                default => null,
+            };
 
             // Generate order number
             $orderNumber = 'ORD-' . strtoupper(Str::random(8)) . '-' . now()->format('Ymd');
@@ -219,8 +268,8 @@ class OrderController extends Controller
                 }
             }
 
-            // If cash-on-delivery, bank_transfer, apple_iap, or free (not PayPal), create enrollments
-            if (in_array($request->payment_method, ['cash_on_delivery', 'bank_transfer', 'apple_iap']) || $total == 0) {
+            // If cash-on-delivery, bank_transfer, apple_iap, google_play, or free (not PayPal), create enrollments
+            if (in_array($request->payment_method, ['cash_on_delivery', 'bank_transfer', 'apple_iap', 'google_play']) || $total == 0) {
                 foreach ($courses as $course) {
                     $existingEnrollment = CourseEnrollment::where('user_id', $user->id)
                         ->where('course_id', $course->id)
@@ -234,9 +283,11 @@ class OrderController extends Controller
                                 ? $request->transaction_reference
                                 : ($request->payment_method === 'apple_iap'
                                     ? (string) $request->apple_transaction_id
-                                    : $order->order_number),
-                            'status'             => in_array($request->payment_method, ['apple_iap']) || $total == 0 ? 'active' : 'pending',
-                            'enrolled_at'        => in_array($request->payment_method, ['apple_iap']) || $total == 0 ? now() : null,
+                                    : ($request->payment_method === 'google_play'
+                                        ? (string) $request->google_purchase_token
+                                        : $order->order_number)),
+                            'status'             => in_array($request->payment_method, ['apple_iap', 'google_play']) || $total == 0 ? 'active' : 'pending',
+                            'enrolled_at'        => in_array($request->payment_method, ['apple_iap', 'google_play']) || $total == 0 ? now() : null,
                             'progress_percentage'=> 0,
                             'payment_method'     => $request->payment_method,
                             'amount_paid'        => $paidByCourse['course_' . $course->id] ?? $course->price,
@@ -244,13 +295,15 @@ class OrderController extends Controller
                                 ? 'Bank transfer reference: ' . ($request->transaction_reference ?? 'Not provided')
                                 : ($request->payment_method === 'apple_iap'
                                     ? 'Verified App Store purchase'
-                                    : null),
+                                    : ($request->payment_method === 'google_play'
+                                        ? 'Verified Google Play purchase'
+                                        : null)),
                         ]);
                     }
                 }
             }
 
-            if ($total == 0 || $request->payment_method === 'apple_iap') {
+            if ($total == 0 || in_array($request->payment_method, ['apple_iap', 'google_play'])) {
                 $order->update(['status' => 'completed']);
             }
 
@@ -260,15 +313,14 @@ class OrderController extends Controller
                 'success' => true,
                 'message' => $total == 0
                     ? 'Order created and enrollment completed successfully'
-                    : ($request->payment_method === 'apple_iap'
-                        ? 'App Store purchase completed successfully.'
-                        : ($request->payment_method === 'paypal'
-                        ? 'Complete your payment in the browser.'
-                        : ($request->payment_method === 'cash_on_delivery'
-                            ? 'Order created. Enrollment will be activated after payment confirmation.'
-                            : ($request->payment_method === 'bank_transfer'
-                                ? 'Your order has been received. Enrollment will be activated once your bank transfer is confirmed by the admin.'
-                                : 'Order created successfully')))),
+                    : match ($request->payment_method) {
+                        'apple_iap' => 'App Store purchase completed successfully.',
+                        'google_play' => 'Google Play purchase completed successfully.',
+                        'paypal' => 'Complete your payment in the browser.',
+                        'cash_on_delivery' => 'Order created. Enrollment will be activated after payment confirmation.',
+                        'bank_transfer' => 'Your order has been received. Enrollment will be activated once your bank transfer is confirmed by the admin.',
+                        default => 'Order created successfully',
+                    },
                 'data' => new OrderResource($order->load('items')),
             ];
             if ($approvalUrl !== null) {

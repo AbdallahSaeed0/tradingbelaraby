@@ -64,6 +64,17 @@ return [
         'iap_bundle_id' => env('APPLE_IAP_BUNDLE_ID', 'com.education.coursesApp'),
     ],
 
+    /*
+    | Google Play Billing: purchase verification (Android app) and automatic
+    | in-app product provisioning for paid courses via the Android Publisher API.
+    */
+    'google_play' => [
+        'package_name' => env('GOOGLE_PLAY_PACKAGE_NAME', 'com.education.coursesApp'),
+        'service_account_path' => env('GOOGLE_PLAY_SERVICE_ACCOUNT_PATH', storage_path('app/google/play-service-account.json')),
+        'default_currency' => env('GOOGLE_PLAY_DEFAULT_CURRENCY', 'SAR'),
+        'product_id_prefix' => env('GOOGLE_PLAY_PRODUCT_ID_PREFIX', 'course_'),
+    ],
+
     'fcm' => [
         'server_key' => env('FCM_SERVER_KEY'),
     ],

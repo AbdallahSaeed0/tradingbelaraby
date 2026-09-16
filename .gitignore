@@ -7,6 +7,7 @@
 /storage/*.key
 /storage/app/firebase-credentials.json
 /storage/app/apple/*.p8
+/storage/app/google/*.json
 /vendor
 .env
 .env.backup

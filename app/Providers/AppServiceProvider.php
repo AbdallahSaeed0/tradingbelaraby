@@ -8,12 +8,14 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Pagination\Paginator;
 use SocialiteProviders\Manager\SocialiteWasCalled;
 use Illuminate\Validation\Rules\Password;
+use App\Models\Course;
 use App\Models\CourseCategory;
 use App\Models\CourseSection;
 use App\Models\CourseLecture;
 use App\Models\Homework;
 use App\Models\Quiz;
 use App\Models\LiveClass;
+use App\Observers\CourseObserver;
 use App\Observers\CourseSectionObserver;
 use App\Observers\CourseLectureObserver;
 use App\Observers\HomeworkObserver;
@@ -43,6 +45,7 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
+        Course::observe(CourseObserver::class);
         CourseSection::observe(CourseSectionObserver::class);
         CourseLecture::observe(CourseLectureObserver::class);
         Homework::observe(HomeworkObserver::class);
