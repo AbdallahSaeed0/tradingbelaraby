@@ -115,8 +115,12 @@ class GooglePlayService
         }
     }
 
+    private const DEFAULT_PURCHASE_OPTION_ID = 'default';
+
     /**
-     * Create (or update the price/listing of) the Play in-app product for a course.
+     * Create (or update the price/listing of) the Play in-app product for a course,
+     * using the current "one-time products" model (the legacy inappproducts API
+     * returns 403 "Please migrate to the new publishing API" for new integrations).
      * Safe to call repeatedly — used for both new courses and price/name edits.
      */
     public function syncProduct(Course $course): void
@@ -128,37 +132,53 @@ class GooglePlayService
         $productId = $this->expectedProductIdForCourse($course->id);
         $packageName = $this->packageName();
         $currency = config('services.google_play.default_currency', 'SAR');
+        $accessToken = $this->getAccessToken();
+
+        $conversion = $this->convertRegionPrices($accessToken, $packageName, (float) $course->price, $currency);
+
+        $regionalConfigs = [];
+        foreach ($conversion['convertedRegionPrices'] ?? [] as $regionCode => $regionPrice) {
+            $regionalConfigs[] = [
+                'regionCode' => $regionCode,
+                'price' => $regionPrice['price'],
+                'availability' => 'AVAILABLE',
+            ];
+        }
 
         $payload = [
             'packageName' => $packageName,
-            'sku' => $productId,
-            'status' => 'active',
-            'purchaseType' => 'managedUser',
-            'defaultPrice' => [
-                'priceMicros' => (string) (int) round(((float) $course->price) * 1_000_000),
-                'currency' => $currency,
-            ],
+            'productId' => $productId,
             'listings' => [
-                'en-US' => [
+                [
+                    'languageCode' => 'en-US',
                     'title' => $this->truncate($course->name ?: ('Course #' . $course->id), 55),
                     'description' => $this->truncate(strip_tags((string) $course->description) ?: $course->name, 200),
                 ],
             ],
-            'defaultLanguage' => 'en-US',
+            'purchaseOptions' => [
+                [
+                    'purchaseOptionId' => self::DEFAULT_PURCHASE_OPTION_ID,
+                    'regionalPricingAndAvailabilityConfigs' => $regionalConfigs,
+                    'newRegionsConfig' => [
+                        'usdPrice' => $conversion['convertedOtherRegionsPrice']['usdPrice'] ?? null,
+                        'eurPrice' => $conversion['convertedOtherRegionsPrice']['eurPrice'] ?? null,
+                        'availability' => 'AVAILABLE',
+                    ],
+                    'buyOption' => (object) [],
+                ],
+            ],
         ];
 
-        $url = self::API_BASE . rawurlencode($packageName) . '/inappproducts/' . rawurlencode($productId);
+        $regionsVersion = $conversion['regionVersion']['version'] ?? null;
 
-        $accessToken = $this->getAccessToken();
+        $url = self::API_BASE . rawurlencode($packageName) . '/onetimeproducts/' . rawurlencode($productId)
+            . '?' . http_build_query([
+                'updateMask' => 'listings,purchaseOptions',
+                'allowMissing' => 'true',
+                'regionsVersion.version' => $regionsVersion,
+            ]);
 
-        // Try update first; fall back to insert if the product doesn't exist yet.
-        $response = Http::withToken($accessToken)->timeout(20)->put($url, $payload);
-
-        if ($response->status() === 404) {
-            $response = Http::withToken($accessToken)
-                ->timeout(20)
-                ->post(self::API_BASE . rawurlencode($packageName) . '/inappproducts', $payload);
-        }
+        $response = Http::withToken($accessToken)->timeout(20)->patch($url, $payload);
 
         if (! $response->successful()) {
             Log::error('Google Play product sync failed', [
@@ -170,7 +190,72 @@ class GooglePlayService
             throw new RuntimeException('Failed to sync Google Play product: ' . $response->body());
         }
 
+        $this->activatePurchaseOption($accessToken, $packageName, $productId);
+
         Log::info('Google Play product synced', ['course_id' => $course->id, 'product_id' => $productId]);
+    }
+
+    /**
+     * @return array{convertedRegionPrices: array<string, array{regionCode: string, price: array}>, convertedOtherRegionsPrice: array{usdPrice: array, eurPrice: array}, regionVersion: array{version: string}}
+     */
+    private function convertRegionPrices(string $accessToken, string $packageName, float $amount, string $currency): array
+    {
+        $url = self::API_BASE . rawurlencode($packageName) . '/pricing:convertRegionPrices';
+
+        $response = Http::withToken($accessToken)->timeout(20)->post($url, [
+            'price' => $this->toMoney($amount, $currency),
+        ]);
+
+        if (! $response->successful()) {
+            Log::error('Google Play price conversion failed', [
+                'status' => $response->status(),
+                'body' => $response->body(),
+            ]);
+            throw new RuntimeException('Failed to convert Google Play regional prices: ' . $response->body());
+        }
+
+        return $response->json();
+    }
+
+    private function activatePurchaseOption(string $accessToken, string $packageName, string $productId): void
+    {
+        $url = self::API_BASE . rawurlencode($packageName) . '/onetimeproducts/' . rawurlencode($productId) . '/purchaseOptions:batchUpdateStates';
+
+        $response = Http::withToken($accessToken)->timeout(20)->post($url, [
+            'requests' => [
+                [
+                    'activatePurchaseOptionRequest' => [
+                        'packageName' => $packageName,
+                        'productId' => $productId,
+                        'purchaseOptionId' => self::DEFAULT_PURCHASE_OPTION_ID,
+                    ],
+                ],
+            ],
+        ]);
+
+        if (! $response->successful()) {
+            // Not fatal — the product exists as a draft and can be activated manually if this fails.
+            Log::warning('Google Play purchase option activation failed', [
+                'product_id' => $productId,
+                'status' => $response->status(),
+                'body' => $response->body(),
+            ]);
+        }
+    }
+
+    /**
+     * @return array{currencyCode: string, units: string, nanos: int}
+     */
+    private function toMoney(float $amount, string $currency): array
+    {
+        $units = (int) floor($amount);
+        $nanos = (int) round(($amount - $units) * 1_000_000_000);
+
+        return [
+            'currencyCode' => $currency,
+            'units' => (string) $units,
+            'nanos' => $nanos,
+        ];
     }
 
     public function isConfigured(): bool
