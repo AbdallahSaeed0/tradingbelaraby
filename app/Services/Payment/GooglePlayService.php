@@ -225,7 +225,10 @@ class GooglePlayService
 
     private function activatePurchaseOption(string $accessToken, string $packageName, string $productId): void
     {
-        $url = self::API_BASE . rawurlencode($packageName) . '/onetimeproducts/' . rawurlencode($productId) . '/purchaseOptions:batchUpdateStates';
+        // Note: unlike onetimeproducts.patch (lowercase path segment), this endpoint
+        // is only registered under the camelCase "oneTimeProducts" path per Google's
+        // own API discovery document — using lowercase here 404s.
+        $url = self::API_BASE . rawurlencode($packageName) . '/oneTimeProducts/' . rawurlencode($productId) . '/purchaseOptions:batchUpdateStates';
 
         $response = Http::withToken($accessToken)->timeout(20)->post($url, [
             'requests' => [
@@ -240,12 +243,12 @@ class GooglePlayService
         ]);
 
         if (! $response->successful()) {
-            // Not fatal — the product exists as a draft and can be activated manually if this fails.
-            Log::warning('Google Play purchase option activation failed', [
+            Log::error('Google Play purchase option activation failed', [
                 'product_id' => $productId,
                 'status' => $response->status(),
                 'body' => $response->body(),
             ]);
+            throw new RuntimeException('Failed to activate Google Play purchase option: ' . $response->body());
         }
     }
 
