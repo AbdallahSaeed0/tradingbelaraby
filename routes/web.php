@@ -1,32 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-// TEMPORARY — remove after use. Forces PHP-FPM to drop its cached bytecode of
-// bootstrap/cache/config.php so a fresh `config:cache` actually takes effect.
-Route::get('/internal/reset-opcache-9f3a2b7c', function () {
-    if (function_exists('opcache_reset') && opcache_reset()) {
-        return 'OPcache reset: ok';
-    }
-    return 'OPcache not available or reset failed';
-});
-// TEMPORARY diagnostic — remove after use.
-Route::get('/internal/gp-diag-9f3a2b7c', function () {
-    $path = config('services.google_play.service_account_path');
-    return response()->json([
-        'cwd' => getcwd(),
-        'base_path' => base_path(),
-        'storage_path' => storage_path(),
-        'configured_path' => $path,
-        'is_absolute' => $path ? (str_starts_with($path, '/') || preg_match('#^[A-Za-z]:[\\\\/]#', $path)) : null,
-        'realpath' => $path ? realpath($path) : null,
-        'is_file' => $path ? is_file($path) : null,
-        'file_exists' => $path ? file_exists($path) : null,
-        'is_readable' => $path ? @is_readable($path) : null,
-        'env_raw' => env('GOOGLE_PLAY_SERVICE_ACCOUNT_PATH'),
-        'php_user' => function_exists('posix_getpwuid') ? (posix_getpwuid(posix_geteuid())['name'] ?? null) : get_current_user(),
-        'open_basedir' => ini_get('open_basedir'),
-    ]);
-});
 use Illuminate\Http\Request;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AuthController;
@@ -59,6 +33,9 @@ Route::post('/coming-soon/subscribe', [ComingSoonController::class, 'subscribe']
 
 // PayPal Webhook (public endpoint - must be excluded from CSRF)
 Route::post('/webhook/paypal', [App\Http\Controllers\PayPalWebhookController::class, 'handleWebhook'])->name('webhook.paypal');
+
+// Google Play RTDN Webhook (public endpoint - must be excluded from CSRF)
+Route::post('/webhook/google-play', [App\Http\Controllers\GooglePlayWebhookController::class, 'handle'])->name('webhook.google-play');
 
 // Apple Universal Links & app deep-link bridge (public, no auth)
 Route::get('/.well-known/apple-app-site-association', [UniversalLinkController::class, 'appleAppSiteAssociation'])

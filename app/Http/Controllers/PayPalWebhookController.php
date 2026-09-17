@@ -266,12 +266,21 @@ class PayPalWebhookController extends Controller
 
         Log::warning('PayPal Payment Refunded', ['order_id' => $order->id]);
 
-        // Update order status
-        $order->update(['status' => 'refunded']);
+        if ($order->status === 'cancelled') {
+            Log::info('PayPal Webhook: order already cancelled', ['order_id' => $order->id]);
+            return;
+        }
 
-        // Optionally, you might want to deactivate enrollments or handle refunds differently
-        // For now, we'll just log it
-        Log::info('PayPal Refund Processed', ['order_id' => $order->id]);
+        // 'refunded' is not a valid orders.status enum value — use 'cancelled' and
+        // revoke the access that was granted when the order originally completed.
+        $order->update(['status' => 'cancelled']);
+
+        $order->user->enrollments()
+            ->whereIn('course_id', $order->items->pluck('course_id'))
+            ->where('status', 'active')
+            ->update(['status' => 'cancelled']);
+
+        Log::info('PayPal Refund Processed: order and enrollments cancelled', ['order_id' => $order->id]);
     }
 }
 

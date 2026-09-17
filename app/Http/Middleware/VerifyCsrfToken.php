@@ -13,6 +13,7 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         'webhook/paypal',
+        'webhook/google-play',
         '.well-known/apple-app-site-association',
         'app/enrollment-success',
     ];

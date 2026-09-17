@@ -58,11 +58,29 @@ class CyberSourceService
                 'clientReferenceInformation' => [
                     'code' => $order->order_number,
                 ],
+                'completeMandate' => [
+                    'consumerAuthentication' => '3DS',
+                ],
                 'orderInformation' => [
                     'amountDetails' => [
                         'totalAmount' => $this->usdAmountForOrder($order),
                         'currency' => config('cybersource.currency', 'USD'),
                     ],
+                    // Pre-fill from the checkout form's own billing data instead
+                    // of relying on the widget to collect it again — this is
+                    // what was missing (an empty billTo.country) when SAFEGUARDS
+                    // declined every transaction.
+                    'billTo' => array_filter([
+                        'firstName' => $order->billing_first_name,
+                        'lastName' => $order->billing_last_name,
+                        'email' => $order->billing_email,
+                        'phoneNumber' => $order->billing_phone,
+                        'address1' => $order->billing_address,
+                        'locality' => $order->billing_city,
+                        'administrativeArea' => $order->billing_state,
+                        'postalCode' => $order->billing_postal_code,
+                        'country' => $order->billing_country,
+                    ]),
                 ],
             ],
         ];

@@ -78,6 +78,9 @@ return [
             : storage_path('app/google/play-service-account.json'),
         'default_currency' => env('GOOGLE_PLAY_DEFAULT_CURRENCY', 'SAR'),
         'product_id_prefix' => env('GOOGLE_PLAY_PRODUCT_ID_PREFIX', 'course_'),
+        // Full public URL of the RTDN webhook below — must exactly match the audience
+        // configured on the Pub/Sub push subscription that delivers notifications to it.
+        'rtdn_audience' => env('GOOGLE_PLAY_RTDN_AUDIENCE', env('APP_URL') . '/webhook/google-play'),
     ],
 
     'fcm' => [
