@@ -54,12 +54,12 @@ class CyberSourceService
             'allowedPaymentTypes' => ['PANENTRY'],
             'country' => 'US',
             'locale' => app()->getLocale() === 'ar' ? 'ar_SA' : 'en_US',
+            'completeMandate' => [
+                'consumerAuthentication' => '3DS',
+            ],
             'data' => [
                 'clientReferenceInformation' => [
                     'code' => $order->order_number,
-                ],
-                'completeMandate' => [
-                    'consumerAuthentication' => '3DS',
                 ],
                 'orderInformation' => [
                     'amountDetails' => [
