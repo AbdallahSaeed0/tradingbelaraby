@@ -3,6 +3,7 @@
 namespace App\Services\Payment;
 
 use App\Models\Order;
+use App\Exceptions\PayPalInstrumentDeclinedException;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
 use Exception;
@@ -204,6 +205,20 @@ class PayPalService
             ]);
 
             return $responseData;
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
+            $body = $e->getResponse() ? json_decode($e->getResponse()->getBody()->getContents(), true) : null;
+            $issue = $body['details'][0]['issue'] ?? null;
+
+            Log::error('PayPal Capture Order Error: ' . $e->getMessage(), [
+                'paypal_order_id' => $paypalOrderId,
+                'issue' => $issue,
+            ]);
+
+            if ($issue === 'INSTRUMENT_DECLINED') {
+                throw new PayPalInstrumentDeclinedException('The payment instrument was declined by PayPal.');
+            }
+
+            throw new Exception('Failed to capture PayPal order: ' . $e->getMessage());
         } catch (Exception $e) {
             Log::error('PayPal Capture Order Error: ' . $e->getMessage(), [
                 'paypal_order_id' => $paypalOrderId,

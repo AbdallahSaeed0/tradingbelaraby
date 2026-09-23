@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Course;
 use App\Models\CartItem;
+use App\Exceptions\PayPalInstrumentDeclinedException;
 use App\Notifications\CourseEnrollmentNotification;
 use App\Services\Payment\PayPalService;
 use Illuminate\Http\Request;
@@ -103,7 +104,7 @@ class PayPalController extends Controller
                 // Activate all pending enrollments for this order
                 $user = $order->user;
                 $courseIds = $order->items->pluck('course_id')->filter()->toArray();
-                
+
                 if (!empty($courseIds)) {
                     $enrollments = $user->enrollments()
                         ->whereIn('course_id', $courseIds)
@@ -154,6 +155,15 @@ class PayPalController extends Controller
                 return redirect()->route('checkout.success', $order->id)
                     ->with('success', 'Payment completed successfully!');
 
+            } catch (PayPalInstrumentDeclinedException $e) {
+                DB::rollBack();
+                Log::warning('PayPal Capture: Instrument declined', [
+                    'order_id' => $orderId,
+                    'paypal_order_id' => $paypalOrderId,
+                ]);
+
+                return redirect()->route('checkout.index')
+                    ->with('error', 'Your card was declined by PayPal. Please choose a different payment method or card.');
             } catch (\Exception $e) {
                 DB::rollBack();
                 Log::error('PayPal Capture Error: ' . $e->getMessage(), [
