@@ -136,9 +136,6 @@ class PayPalService
                         ],
                     ],
                     'items' => $paypalItems,
-                    'payee' => [
-                        'email_address' => $customer['email'],
-                    ],
                 ],
             ],
             'application_context' => [
