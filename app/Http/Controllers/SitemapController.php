@@ -25,6 +25,7 @@ class SitemapController extends Controller
             ->add(Url::create(url(route('contact')))->setPriority(0.5)->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY))
             ->add(Url::create(url(route('about-us')))->setPriority(0.5)->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY))
             ->add(Url::create(url(route('academy-policy')))->setPriority(0.4)->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY))
+            ->add(Url::create(url(route('privacy-policy')))->setPriority(0.4)->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY))
             ->add(Url::create(url(route('instructor.index')))->setPriority(0.8)->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY));
 
         Course::published()->get()->each(function (Course $course) use ($sitemap) {

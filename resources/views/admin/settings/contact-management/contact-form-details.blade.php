@@ -274,7 +274,7 @@
                 const newStatus = $('#status').val();
 
                 $.ajax({
-                    url: `{{ url('admin/settings/contact-management/contact-forms', 'admin') }}/${currentSubscriberId}/status`,
+                    url: `{{ url('admin/settings/contact-management/contact-forms') }}/${currentSubscriberId}/status`,
                     type: 'POST',
                     data: {
                         _token: '{{ csrf_token() }}',
@@ -302,7 +302,7 @@
                 const notes = $('#adminNotes').val();
 
                 $.ajax({
-                    url: `{{ url('admin/settings/contact-management/contact-forms', 'admin') }}/${currentSubscriberId}/notes`,
+                    url: `{{ url('admin/settings/contact-management/contact-forms') }}/${currentSubscriberId}/notes`,
                     type: 'POST',
                     data: {
                         _token: '{{ csrf_token() }}',
@@ -340,7 +340,7 @@
             $(document).on('click', '#confirmDeleteBtn', function() {
 
                 $.ajax({
-                    url: `{{ url('admin/settings/contact-management/contact-forms', 'admin') }}/${currentSubscriberId}`,
+                    url: `{{ url('admin/settings/contact-management/contact-forms') }}/${currentSubscriberId}`,
                     type: 'DELETE',
                     data: {
                         _token: '{{ csrf_token() }}'
@@ -364,7 +364,6 @@
                             '{{ custom_trans('An error occurred while deleting the submission.', 'admin') }}');
                     }
                 });
-                }
             });
         });
     </script>

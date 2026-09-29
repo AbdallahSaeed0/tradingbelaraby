@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Course;
 use App\Models\CartItem;
-use App\Exceptions\PayPalInstrumentDeclinedException;
 use App\Notifications\CourseEnrollmentNotification;
 use App\Services\Payment\PayPalService;
 use Illuminate\Http\Request;
@@ -105,6 +104,8 @@ class PayPalController extends Controller
                 $user = $order->user;
                 $courseIds = $order->items->pluck('course_id')->filter()->toArray();
 
+                $enrollmentsToNotify = collect();
+
                 if (!empty($courseIds)) {
                     $enrollments = $user->enrollments()
                         ->whereIn('course_id', $courseIds)
@@ -117,21 +118,7 @@ class PayPalController extends Controller
                             'enrolled_at' => now(),
                         ]);
 
-                        // Send enrollment notification
-                        try {
-                            $course = Course::find($enrollment->course_id);
-                            if ($course) {
-                                $language = Session::get('frontend_locale', config('app.locale'));
-                                $language = in_array($language, ['ar', 'en']) ? $language : 'en';
-                                $user->notify(new CourseEnrollmentNotification($course, $order, $language));
-                            }
-                        } catch (\Exception $e) {
-                            Log::error('Failed to send enrollment notification', [
-                                'user_id' => $user->id,
-                                'course_id' => $enrollment->course_id,
-                                'error' => $e->getMessage(),
-                            ]);
-                        }
+                        $enrollmentsToNotify->push($enrollment);
                     }
 
                     Log::info('PayPal Payment Success: Enrollments activated', [
@@ -145,6 +132,26 @@ class PayPalController extends Controller
 
                 DB::commit();
 
+                // Only notify the user once the transaction has actually been committed —
+                // sending the email before commit risks telling the customer their course
+                // was added when a later failure rolled everything back.
+                foreach ($enrollmentsToNotify as $enrollment) {
+                    try {
+                        $course = Course::find($enrollment->course_id);
+                        if ($course) {
+                            $language = Session::get('frontend_locale', config('app.locale'));
+                            $language = in_array($language, ['ar', 'en']) ? $language : 'en';
+                            $user->notify(new CourseEnrollmentNotification($course, $order, $language));
+                        }
+                    } catch (\Exception $e) {
+                        Log::error('Failed to send enrollment notification', [
+                            'user_id' => $user->id,
+                            'course_id' => $enrollment->course_id,
+                            'error' => $e->getMessage(),
+                        ]);
+                    }
+                }
+
                 // Clear session
                 session()->forget('paypal_order_id');
 
@@ -155,15 +162,6 @@ class PayPalController extends Controller
                 return redirect()->route('checkout.success', $order->id)
                     ->with('success', 'Payment completed successfully!');
 
-            } catch (PayPalInstrumentDeclinedException $e) {
-                DB::rollBack();
-                Log::warning('PayPal Capture: Instrument declined', [
-                    'order_id' => $orderId,
-                    'paypal_order_id' => $paypalOrderId,
-                ]);
-
-                return redirect()->route('checkout.index')
-                    ->with('error', 'Your card was declined by PayPal. Please choose a different payment method or card.');
             } catch (\Exception $e) {
                 DB::rollBack();
                 Log::error('PayPal Capture Error: ' . $e->getMessage(), [

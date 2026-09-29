@@ -2,7 +2,9 @@
 
 @php
     $currentLang = app()->getLocale();
-    $pageTitle = $currentLang == 'ar' ? 'سياسة الخصوصية' : 'Privacy Policy';
+    $pageTitle = $currentLang == 'ar'
+        ? ($privacyPolicy->title_ar ?? 'سياسة الخصوصية')
+        : ($privacyPolicy->title ?? 'Privacy Policy');
 @endphp
 @section('title', $pageTitle . ' - ' . (\App\Models\MainContentSettings::getActive()?->site_name ?? 'Site Name'))
 
@@ -23,22 +25,36 @@
         </div>
     </section>
 
-    <!-- Privacy Policy Content (stub - add full content via Admin > Terms & Conditions with slug privacy-policy) -->
+    <!-- Privacy Policy Content (managed from Admin > Settings > Privacy Policy; stub shown when none is active) -->
     <section class="terms-content-section py-5 bg-white">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-10">
                     <div class="card border-0 shadow-sm">
                         <div class="card-body p-4 p-md-5">
-                            @if ($currentLang == 'ar')
+                            @if (isset($privacyPolicy))
+                                <div class="terms-content">
+                                    @if ($currentLang == 'ar')
+                                        <div dir="rtl" class="text-end">
+                                            <h2 class="mb-4">{{ $privacyPolicy->title_ar }}</h2>
+                                            {!! $privacyPolicy->description_ar !!}
+                                        </div>
+                                    @else
+                                        <div>
+                                            <h2 class="mb-4">{{ $privacyPolicy->title }}</h2>
+                                            {!! $privacyPolicy->description !!}
+                                        </div>
+                                    @endif
+                                </div>
+                            @elseif ($currentLang == 'ar')
                                 <div dir="rtl" class="text-end">
                                     <h2 class="mb-4">سياسة الخصوصية</h2>
-                                    <p>أكاديمية تداول بالعربي تحترم خصوصيتك. تستخدم هذه المنصة بياناتك وفق سياسة الخصوصية المعمول بها. للإدارة الكاملة لمحتوى هذه الصفحة، أضف صفحة بسلوك «privacy-policy» من إعدادات الشروط والأحكام في لوحة التحكم.</p>
+                                    <p>أكاديمية تداول بالعربي تحترم خصوصيتك. تستخدم هذه المنصة بياناتك وفق سياسة الخصوصية المعمول بها.</p>
                                 </div>
                             @else
                                 <div>
                                     <h2 class="mb-4">Privacy Policy</h2>
-                                    <p>Tadawul Bel Araby Academy respects your privacy. This platform uses your data in accordance with our privacy policy. To manage this page content fully, add a page with slug «privacy-policy» from Terms & Conditions settings in the admin panel.</p>
+                                    <p>Tadawul Bel Araby Academy respects your privacy. This platform uses your data in accordance with our privacy policy.</p>
                                 </div>
                             @endif
                         </div>
@@ -48,3 +64,13 @@
         </div>
     </section>
 @endsection
+
+@if (\App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl')
+    @push('rtl-styles')
+        <link rel="stylesheet" href="{{ asset('css/rtl/pages/terms-conditions.css') }}">
+    @endpush
+@else
+    @push('styles')
+        <link rel="stylesheet" href="{{ asset('css/pages/terms-conditions.css') }}">
+    @endpush
+@endif

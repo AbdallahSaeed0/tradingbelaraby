@@ -147,6 +147,13 @@ class PageController extends Controller
      */
     public function privacyPolicy()
     {
+        $privacyPolicy = \App\Models\PrivacyPolicy::getActive();
+
+        if ($privacyPolicy) {
+            return view('pages.privacy-policy', compact('privacyPolicy'));
+        }
+
+        // Legacy fallback: a Terms & Conditions record with slug "privacy-policy"
         $termsConditions = \App\Models\TermsConditions::where('slug', 'privacy-policy')
             ->where('is_active', true)
             ->first();

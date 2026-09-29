@@ -819,6 +819,7 @@
                         @php
                             $termsPage = \App\Models\TermsConditions::where('is_active', true)->first();
                             $academyPolicyPage = \App\Models\AcademyPolicy::where('is_active', true)->first();
+                            $privacyPolicyPage = \App\Models\PrivacyPolicy::getActive();
                         @endphp
                         @if ($termsPage)
                             <li><a
@@ -827,6 +828,9 @@
                         @endif
                         @if ($academyPolicyPage)
                             <li><a href="{{ route('academy-policy') }}">{{ custom_trans('academy_policy', 'front') }}</a></li>
+                        @endif
+                        @if ($privacyPolicyPage)
+                            <li><a href="{{ route('privacy-policy') }}">{{ get_current_language_code() === 'ar' ? $privacyPolicyPage->title_ar : $privacyPolicyPage->title }}</a></li>
                         @endif
                     </ul>
                 </div>
@@ -925,7 +929,8 @@
         </div>
         <!-- Copyright & Back to Top -->
         <div class="footer-bottom-bar d-flex justify-content-between align-items-center px-3 px-md-5 py-3">
-            <div class="footer-copyright text-center flex-grow-1">Copyright © {{ date('Y') }} Tadawul Bel Araby.
+            <div class="footer-copyright text-center flex-grow-1">
+                {{ $mainContentSettings?->getLocalizedFooterCopyright() ?? 'Copyright © ' . date('Y') . ' Tadawul Bel Araby.' }}
             </div>
             <button id="backToTopBtn" class="btn btn-light btn-lg rounded-circle shadow-sm"><i
                     class="fa fa-arrow-up"></i></button>

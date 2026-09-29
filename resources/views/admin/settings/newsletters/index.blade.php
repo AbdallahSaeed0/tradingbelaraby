@@ -495,7 +495,7 @@
                 const $btn = $(this);
 
                 $.ajax({
-                    url: `{{ url('admin/settings/newsletters', 'admin') }}/${subscriberId}/status`,
+                    url: `{{ url('admin/settings/newsletters') }}/${subscriberId}/status`,
                     type: 'POST',
                     data: {
                         _token: '{{ csrf_token() }}'
@@ -573,7 +573,7 @@
                 if (!currentSubscriberId) return;
 
                 $.ajax({
-                    url: `{{ url('admin/settings/newsletters', 'admin') }}/${currentSubscriberId}`,
+                    url: `{{ url('admin/settings/newsletters') }}/${currentSubscriberId}`,
                     type: 'DELETE',
                     data: {
                         _token: '{{ csrf_token() }}'

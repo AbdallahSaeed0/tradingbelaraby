@@ -623,6 +623,10 @@ Route::resource('quizzes.questions', App\Http\Controllers\Admin\QuizQuestionMana
     Route::put('/settings/terms-conditions', [App\Http\Controllers\Admin\TermsConditionsController::class, 'update'])->name('settings.terms-conditions.update');
     Route::post('/settings/terms-conditions/generate-slug', [App\Http\Controllers\Admin\TermsConditionsController::class, 'generateSlug'])->name('settings.terms-conditions.generate-slug');
 
+    // Privacy Policy Management
+    Route::get('/settings/privacy-policy', [App\Http\Controllers\Admin\PrivacyPolicyController::class, 'index'])->name('settings.privacy-policy.index');
+    Route::put('/settings/privacy-policy', [App\Http\Controllers\Admin\PrivacyPolicyController::class, 'update'])->name('settings.privacy-policy.update');
+
     // About Us Management
     Route::get('/settings/about-us', [App\Http\Controllers\Admin\AboutUsController::class, 'index'])->name('settings.about-us.index');
     Route::put('/settings/about-us', [App\Http\Controllers\Admin\AboutUsController::class, 'update'])->name('settings.about-us.update');

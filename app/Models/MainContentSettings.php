@@ -18,6 +18,8 @@ class MainContentSettings extends Model
         'site_keywords',
         'site_author',
         'favicon',
+        'footer_copyright',
+        'footer_copyright_ar',
         'is_active',
         'coming_soon_enabled'
     ];
@@ -71,6 +73,18 @@ class MainContentSettings extends Model
             return $this->favicon;
         }
         return asset('storage/' . $this->favicon);
+    }
+
+    /**
+     * Get the footer copyright text for the current language, with {year} replaced
+     */
+    public function getLocalizedFooterCopyright()
+    {
+        $text = get_current_language_code() === 'ar' && $this->footer_copyright_ar
+            ? $this->footer_copyright_ar
+            : $this->footer_copyright;
+
+        return $text ? str_replace('{year}', date('Y'), $text) : null;
     }
 
     /**

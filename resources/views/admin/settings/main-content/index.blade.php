@@ -212,6 +212,51 @@
                                 </div>
                             </div>
 
+                            <!-- Footer Settings -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <h6 class="border-bottom pb-2 mb-3 mt-2">
+                                        <i class="fas fa-shoe-prints me-2"></i>Footer
+                                    </h6>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="footer_copyright" class="form-label">Copyright Text (English) <span
+                                                class="text-muted small">(Optional)</span></label>
+                                        <input type="text"
+                                            class="form-control @error('footer_copyright') is-invalid @enderror"
+                                            id="footer_copyright" name="footer_copyright"
+                                            value="{{ old('footer_copyright', $settings->footer_copyright) }}"
+                                            placeholder="Copyright © {year} Tadawul Bel Araby.">
+                                        @error('footer_copyright')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="footer_copyright_ar" class="form-label">Copyright Text (Arabic) <span
+                                                class="text-muted small">(Optional)</span></label>
+                                        <input type="text" dir="rtl"
+                                            class="form-control @error('footer_copyright_ar') is-invalid @enderror"
+                                            id="footer_copyright_ar" name="footer_copyright_ar"
+                                            value="{{ old('footer_copyright_ar', $settings->footer_copyright_ar) }}"
+                                            placeholder="جميع الحقوق محفوظة © {year} تداول بالعربي">
+                                        @error('footer_copyright_ar')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="alert alert-info small">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        Use <code>{year}</code> to insert the current year automatically. If the Arabic
+                                        text is empty, the English text is used. If both are empty, the default copyright
+                                        text is shown.
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- Submit Button -->
                             <div class="row">
                                 <div class="col-12">
@@ -544,7 +589,7 @@
                         console.error('Error:', error);
                         alert('An error occurred while removing the logo.');
                     });
-            }
+            });
         }
 
         function removeFavicon() {

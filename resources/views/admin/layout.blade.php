@@ -846,7 +846,8 @@
                 || document.getElementById('contactSettingsForm')
                 || document.getElementById('termsConditionsForm')
                 || document.getElementById('aboutUsForm')
-                || document.getElementById('academyPolicyForm');
+                || document.getElementById('academyPolicyForm')
+                || document.getElementById('privacyPolicyForm');
 
             if (primaryForm) {
                 pageForms = [primaryForm];

@@ -269,7 +269,7 @@
 
                 $('#confirmStatusToggle').off('click').on('click', function() {
                     $.ajax({
-                        url: `{{ url('admin/settings/newsletters', 'admin') }}/${currentSubscriberId}/status`,
+                        url: `{{ url('admin/settings/newsletters') }}/${currentSubscriberId}/status`,
                         type: 'POST',
                         data: {
                             _token: '{{ csrf_token() }}',
@@ -310,7 +310,7 @@
 
                 $('#confirmDelete').off('click').on('click', function() {
                     $.ajax({
-                        url: `{{ url('admin/settings/newsletters', 'admin') }}/${currentSubscriberId}`,
+                        url: `{{ url('admin/settings/newsletters') }}/${currentSubscriberId}`,
                         type: 'DELETE',
                         data: {
                             _token: '{{ csrf_token() }}'

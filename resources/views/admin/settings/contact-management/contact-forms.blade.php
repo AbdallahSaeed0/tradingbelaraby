@@ -427,6 +427,9 @@
                             '{{ custom_trans('An error occurred while processing the request.', 'admin') }}');
                     }
                 });
+                }
+
+                performBulkDelete();
             });
 
             // Individual delete
@@ -438,7 +441,7 @@
                 }
 
                 $.ajax({
-                    url: `{{ url('admin/settings/contact-management/contact-forms', 'admin') }}/${id}`,
+                    url: `{{ url('admin/settings/contact-management/contact-forms') }}/${id}`,
                     type: 'DELETE',
                     data: {
                         _token: '{{ csrf_token() }}'
@@ -461,7 +464,6 @@
                             '{{ custom_trans('An error occurred while deleting the submission.', 'admin') }}');
                     }
                 });
-                }
             });
 
             // Toggle status
@@ -472,7 +474,7 @@
                     'new');
 
                 $.ajax({
-                    url: `{{ url('admin/settings/contact-management/contact-forms', 'admin') }}/${id}/status`,
+                    url: `{{ url('admin/settings/contact-management/contact-forms') }}/${id}/status`,
                     type: 'POST',
                     data: {
                         _token: '{{ csrf_token() }}',

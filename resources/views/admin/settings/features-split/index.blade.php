@@ -655,7 +655,7 @@
                     '<i class="fas fa-spinner fa-spin me-2"></i>{{ custom_trans('Updating...', 'admin') }}');
 
                 $.ajax({
-                    url: `{{ url('admin/settings/features-split/feature', 'admin') }}/${featureId}`,
+                    url: `{{ url('admin/settings/features-split/feature') }}/${featureId}`,
                     type: 'POST',
                     data: formData,
                     processData: false,
@@ -706,7 +706,7 @@
                 if (!currentFeatureId) return;
 
                 $.ajax({
-                    url: `{{ url('admin/settings/features-split/feature', 'admin') }}/${currentFeatureId}`,
+                    url: `{{ url('admin/settings/features-split/feature') }}/${currentFeatureId}`,
                     type: 'DELETE',
                     data: {
                         _token: '{{ csrf_token() }}'
@@ -730,7 +730,7 @@
                 const isActive = $(this).is(':checked');
 
                 $.ajax({
-                    url: `{{ url('admin/settings/features-split/feature', 'admin') }}/${featureId}/toggle-status`,
+                    url: `{{ url('admin/settings/features-split/feature') }}/${featureId}/toggle-status`,
                     type: 'POST',
                     data: {
                         _token: '{{ csrf_token() }}'
@@ -774,30 +774,38 @@
                     return;
                 }
 
+                function runBulkAction() {
+                    $.ajax({
+                        url: '{{ route('admin.settings.features-split.features.bulk-action') }}',
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            action: action,
+                            features: selectedFeatures
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                toastr.success(response.message);
+                                location.reload();
+                            }
+                        },
+                        error: function() {
+                            toastr.error('{{ custom_trans('An error occurred. Please try again.', 'admin') }}');
+                        }
+                    });
+                }
+
                 if (action === 'delete') {
                     $('#deleteConfirmMessage').text('{{ custom_trans('Are you sure you want to delete the selected features? This action cannot be undone.', 'admin') }}');
                     $('#deleteConfirmModal').modal('show');
                     $('#confirmDeleteBtn').off('click.bulkDelete').on('click.bulkDelete', function() {
                         $('#deleteConfirmModal').modal('hide');
                         $('#confirmDeleteBtn').off('click.bulkDelete');
-                $.ajax({
-                    url: '{{ route('admin.settings.features-split.features.bulk-action') }}',
-                    type: 'POST',
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        action: action,
-                        features: selectedFeatures
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            toastr.success(response.message);
-                            location.reload();
-                        }
-                    },
-                    error: function() {
-                        toastr.error('{{ custom_trans('An error occurred. Please try again.', 'admin') }}');
-                    }
-                });
+                        runBulkAction();
+                    });
+                } else {
+                    runBulkAction();
+                }
             });
 
             // Drag and drop reordering

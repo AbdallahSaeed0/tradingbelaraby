@@ -679,6 +679,50 @@
                 </div>
             </div>
 
+            <!-- Privacy Policy Management -->
+            <div class="settings-card-wrapper">
+                <div class="card settings-card">
+                    <div class="card-body text-center p-4">
+                        <div class="settings-icon mb-4">
+                            <div class="icon-wrapper">
+                                <i class="fas fa-user-shield fa-4x text-secondary"></i>
+                            </div>
+                        </div>
+                        <h3 class="card-title mb-3">{{ custom_trans('Privacy Policy', 'admin') }}</h3>
+                        <p class="card-text text-muted mb-4">
+                            {{ custom_trans('Manage your website\'s privacy policy page with bilingual support for English and Arabic.', 'admin') }}
+                        </p>
+                        <div class="features-list mb-4">
+                            <div class="row text-start">
+                                <div class="col-md-6">
+                                    <div class="feature-item">
+                                        <i class="fas fa-language text-primary me-2"></i>
+                                        <span>{{ custom_trans('Bilingual Content', 'admin') }}</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-edit text-info me-2"></i>
+                                        <span>{{ custom_trans('Rich Text Editor', 'admin') }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="feature-item">
+                                        <i class="fas fa-link text-warning me-2"></i>
+                                        <span>{{ custom_trans('Footer Link', 'admin') }}</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-toggle-on text-success me-2"></i>
+                                        <span>{{ custom_trans('Active/Inactive', 'admin') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="{{ route('admin.settings.privacy-policy.index') }}" class="btn btn-primary settings-card-cta">
+                            <i class="fas fa-user-shield me-2"></i>{{ custom_trans('Manage Privacy Policy', 'admin') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+
             <!-- About Us Management -->
             <div class="settings-card-wrapper">
                 <div class="card settings-card">

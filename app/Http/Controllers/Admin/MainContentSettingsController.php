@@ -42,6 +42,8 @@ class MainContentSettingsController extends Controller
             'site_description' => 'nullable|string|max:500',
             'site_keywords' => 'nullable|string|max:500',
             'site_author' => 'nullable|string|max:255',
+            'footer_copyright' => 'nullable|string|max:255',
+            'footer_copyright_ar' => 'nullable|string|max:255',
         ], [
             'favicon.image' => 'The favicon must be an image file.',
             'favicon.mimes' => 'The favicon must be a file of type: ico, png, jpg.',
