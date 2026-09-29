@@ -819,7 +819,7 @@
                         @php
                             $termsPage = \App\Models\TermsConditions::where('is_active', true)->first();
                             $academyPolicyPage = \App\Models\AcademyPolicy::where('is_active', true)->first();
-                            $privacyPolicyPage = \App\Models\PrivacyPolicy::getActive();
+                            $privacyPolicyPage = \App\Models\PrivacyPolicy::first();
                         @endphp
                         @if ($termsPage)
                             <li><a
@@ -829,8 +829,15 @@
                         @if ($academyPolicyPage)
                             <li><a href="{{ route('academy-policy') }}">{{ custom_trans('academy_policy', 'front') }}</a></li>
                         @endif
-                        @if ($privacyPolicyPage)
-                            <li><a href="{{ route('privacy-policy') }}">{{ get_current_language_code() === 'ar' ? $privacyPolicyPage->title_ar : $privacyPolicyPage->title }}</a></li>
+                        {{-- Always linked (the page falls back to a default text); hidden only when disabled in the dashboard --}}
+                        @if (!$privacyPolicyPage || $privacyPolicyPage->is_active)
+                            <li><a href="{{ route('privacy-policy') }}">
+                                @if (get_current_language_code() === 'ar')
+                                    {{ $privacyPolicyPage->title_ar ?? 'سياسة الخصوصية' }}
+                                @else
+                                    {{ $privacyPolicyPage->title ?? 'Privacy Policy' }}
+                                @endif
+                            </a></li>
                         @endif
                     </ul>
                 </div>
