@@ -8,7 +8,9 @@ use Illuminate\Console\Command;
 
 class SyncAppStoreProducts extends Command
 {
-    protected $signature = 'app-store:sync-products {--course= : Only sync this course ID}';
+    protected $signature = 'app-store:sync-products
+        {--course= : Only sync this course ID}
+        {--dry-run : Show what would change without writing anything to App Store Connect}';
 
     protected $description = 'Create missing App Store In-App Purchases (and sync prices) for all published, paid courses';
 
@@ -20,19 +22,24 @@ class SyncAppStoreProducts extends Command
             return self::FAILURE;
         }
 
+        $dryRun = (bool) $this->option('dry-run');
+
         $courses = Course::where('status', 'published')
             ->where('is_free', false)
             ->where('price', '>', 0)
             ->when($this->option('course'), fn ($q, $id) => $q->whereKey($id))
             ->get();
 
-        $this->info("Syncing {$courses->count()} course(s) to App Store Connect...");
+        $this->info(($dryRun ? '[DRY RUN — nothing will be changed] ' : '') . "Syncing {$courses->count()} course(s) to App Store Connect...");
 
         $failures = 0;
         foreach ($courses as $course) {
             try {
-                $result = $appStoreConnectService->syncProduct($course);
-                $this->line("  ✓ Course #{$course->id} ({$result}): {$course->name}");
+                $steps = $appStoreConnectService->syncProduct($course, $dryRun);
+                $this->line("  ✓ Course #{$course->id}: {$course->name}");
+                foreach ($steps as $step) {
+                    $this->line("      - {$step}");
+                }
             } catch (\Throwable $e) {
                 $failures++;
                 $this->error("  ✗ Course #{$course->id}: {$e->getMessage()}");

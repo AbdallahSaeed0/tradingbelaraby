@@ -35,41 +35,157 @@ class AppStoreConnectService
     }
 
     /**
-     * Create the IAP for a course if it doesn't exist yet, otherwise keep its price in sync.
-     * Safe to call repeatedly.
+     * Create the IAP for a course if needed, fill in any missing metadata, and keep its price in sync.
+     * Safe to call repeatedly — a product left half-configured by an earlier failure gets completed.
+     * Existing names/descriptions are never edited, since that forces re-review of an approved IAP.
+     * With $dryRun, nothing is written to App Store Connect; the planned steps are returned instead.
      *
-     * @return string 'created' | 'updated'
+     * @return list<string> human-readable steps performed (or planned)
      */
-    public function syncProduct(Course $course): string
+    public function syncProduct(Course $course, bool $dryRun = false): array
     {
         if (! $this->isConfigured()) {
             throw new RuntimeException('App Store Connect API is not configured (APPLE_ASC_KEY_ID / key file).');
         }
 
+        $steps = [];
         $productId = $this->appleIapService->expectedProductIdForCourse($course->id);
         $appId = $this->appId();
+        $existing = $this->findInAppPurchase($appId, $productId);
 
-        $existingId = $this->findInAppPurchaseId($appId, $productId);
-        if ($existingId !== null) {
-            // Name/description edits on an approved IAP require re-review, so only the price is synced.
-            $this->setPrice($existingId, (float) $course->price);
-            Log::info('App Store IAP price synced', ['course_id' => $course->id, 'product_id' => $productId]);
-
-            return 'updated';
+        if ($existing === null) {
+            $steps[] = "create product {$productId} (reference name \"Course {$course->id}\")";
+            $iapId = $dryRun ? null : $this->createInAppPurchase($appId, $course, $productId);
+            $state = 'MISSING_METADATA';
+        } else {
+            $iapId = $existing['id'];
+            $state = $existing['attributes']['state'] ?? 'UNKNOWN';
+            $steps[] = "product {$productId} exists (state {$state})";
         }
 
-        $iapId = $this->createInAppPurchase($appId, $course, $productId);
-        $this->createLocalizations($iapId, $course);
-        $this->setPrice($iapId, (float) $course->price);
-        $this->setAvailability($iapId);
-
-        if ($this->uploadReviewScreenshot($iapId)) {
-            $this->submitForReview($iapId, $productId);
+        $existingLocales = $iapId ? $this->existingLocales($iapId) : [];
+        foreach ($this->localizations($course) as $locale => [$name, $description]) {
+            if (in_array($locale, $existingLocales, true)) {
+                continue;
+            }
+            $steps[] = "add {$locale} name \"{$name}\" / description \"{$description}\"";
+            if (! $dryRun) {
+                $this->createLocalization($iapId, $locale, $name, $description);
+            }
         }
 
-        Log::info('App Store IAP created', ['course_id' => $course->id, 'product_id' => $productId]);
+        $territory = config('services.apple.asc_base_territory', 'SAU');
+        [$pricePointId, $applePrice] = $this->closestPricePoint($iapId ?? $this->anyInAppPurchaseId($appId), $territory, (float) $course->price);
+        $steps[] = "set price {$applePrice} ({$territory} base, course price {$course->price})";
+        if (! $dryRun) {
+            $this->setPrice($iapId, $territory, $pricePointId);
+        }
 
-        return 'created';
+        if (! $iapId || ! $this->hasAvailability($iapId)) {
+            $steps[] = 'make available in all territories';
+            if (! $dryRun) {
+                $this->setAvailability($iapId);
+            }
+        }
+
+        $hasScreenshot = $iapId && $this->hasCompleteScreenshot($iapId, $dryRun);
+        if (! $hasScreenshot) {
+            $path = config('services.apple.asc_review_screenshot_path');
+            if ($path && is_file($path)) {
+                [$width, $height] = getimagesize($path) ?: [0, 0];
+                $steps[] = 'upload review screenshot ' . basename($path) . " ({$width}x{$height})";
+                $hasScreenshot = $dryRun || $this->uploadReviewScreenshot($iapId, $path);
+            } else {
+                $steps[] = "WARNING: no review screenshot at {$path}; add one in App Store Connect";
+            }
+        }
+
+        if (! $hasScreenshot || ! in_array($state, ['MISSING_METADATA', 'READY_TO_SUBMIT'], true)) {
+            // Nothing to submit (already in review/approved, or still missing the screenshot).
+        } elseif (! $this->appIsLive($appId)) {
+            $steps[] = 'not submitted: app has no released version yet — include this IAP with the app version submission';
+        } else {
+            $steps[] = 'submit for review';
+            if (! $dryRun) {
+                $this->submitForReview($iapId, $productId);
+            }
+        }
+
+        if (! $dryRun) {
+            Log::info('App Store IAP synced', ['course_id' => $course->id, 'product_id' => $productId, 'steps' => $steps]);
+        }
+
+        return $steps;
+    }
+
+    /**
+     * Apple only accepts a standalone IAP submission once the app has a released version;
+     * before that, IAPs must be submitted together with an app version.
+     */
+    private function appIsLive(string $appId): bool
+    {
+        $states = collect($this->request('get', "/v1/apps/{$appId}/appStoreVersions", [
+            'fields[appStoreVersions]' => 'appStoreState',
+            'limit' => 200,
+        ])->json('data', []))->pluck('attributes.appStoreState');
+
+        return $states->contains(fn ($s) => in_array($s, ['READY_FOR_SALE', 'REPLACED_WITH_NEW_VERSION'], true));
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function existingLocales(string $iapId): array
+    {
+        return collect($this->request('get', "/v2/inAppPurchases/{$iapId}/inAppPurchaseLocalizations")->json('data', []))
+            ->pluck('attributes.locale')->all();
+    }
+
+    private function hasAvailability(string $iapId): bool
+    {
+        $response = Http::withToken($this->authToken())->acceptJson()->timeout(30)
+            ->get(self::API_BASE . "/v2/inAppPurchases/{$iapId}/inAppPurchaseAvailability");
+
+        if ($response->status() === 404) {
+            return false;
+        }
+
+        if (! $response->successful()) {
+            throw new RuntimeException("App Store Connect API get availability failed (HTTP {$response->status()})");
+        }
+
+        return ! empty($response->json('data'));
+    }
+
+    /**
+     * A screenshot whose upload never completed is deleted (unless dry-run) so it can be re-uploaded.
+     */
+    private function hasCompleteScreenshot(string $iapId, bool $dryRun): bool
+    {
+        $screenshot = $this->request('get', "/v2/inAppPurchases/{$iapId}/appStoreReviewScreenshot")->json('data');
+        if (empty($screenshot)) {
+            return false;
+        }
+
+        if (($screenshot['attributes']['assetDeliveryState']['state'] ?? null) === 'COMPLETE') {
+            return true;
+        }
+
+        if (! $dryRun) {
+            $this->request('delete', "/v1/inAppPurchaseAppStoreReviewScreenshots/{$screenshot['id']}");
+        }
+
+        return false;
+    }
+
+    private function anyInAppPurchaseId(string $appId): string
+    {
+        $id = $this->request('get', "/v1/apps/{$appId}/inAppPurchasesV2", ['limit' => 1])->json('data.0.id');
+        if (! $id) {
+            throw new RuntimeException('Dry run needs at least one existing IAP to look up price points.');
+        }
+
+        return $id;
     }
 
     private function appId(): string
@@ -88,10 +204,13 @@ class AppStoreConnectService
         });
     }
 
-    private function findInAppPurchaseId(string $appId, string $productId): ?string
+    /**
+     * @return array{id: string, attributes: array}|null
+     */
+    private function findInAppPurchase(string $appId, string $productId): ?array
     {
         return $this->request('get', "/v1/apps/{$appId}/inAppPurchasesV2", ['filter[productId]' => $productId])
-            ->json('data.0.id');
+            ->json('data.0');
     }
 
     private function createInAppPurchase(string $appId, Course $course, string $productId): string
@@ -116,38 +235,53 @@ class AppStoreConnectService
         return $response->json('data.id');
     }
 
-    private function createLocalizations(string $iapId, Course $course): void
+    /**
+     * Arabic is always added; English only when the course has a Latin-script name to show.
+     *
+     * @return array<string, array{0: string, 1: string}> locale => [name (≤30), description (≤45)]
+     */
+    private function localizations(Course $course): array
     {
-        $locales = [
+        $candidates = [
             'ar-SA' => [$course->name_ar ?: $course->name, $course->description_ar ?: $course->description],
-            'en-US' => [$course->name ?: $course->name_ar, $course->description ?: $course->description_ar],
+            'en-US' => [$course->name, $course->description],
         ];
 
-        foreach ($locales as $locale => [$name, $description]) {
+        $result = [];
+        foreach ($candidates as $locale => [$name, $description]) {
             $name = $this->truncate((string) $name, 30);
-            $description = $this->truncate(strip_tags((string) $description) ?: $name, 45);
+            if ($name === '' || ($locale === 'en-US' && ! preg_match('/[A-Za-z]/', $name))) {
+                continue;
+            }
 
-            $this->request('post', '/v1/inAppPurchaseLocalizations', [
-                'data' => [
-                    'type' => 'inAppPurchaseLocalizations',
-                    'attributes' => [
-                        'locale' => $locale,
-                        'name' => $name,
-                        'description' => $description,
-                    ],
-                    'relationships' => [
-                        'inAppPurchaseV2' => ['data' => ['type' => 'inAppPurchases', 'id' => $iapId]],
-                    ],
-                ],
-            ]);
+            $plain = html_entity_decode(strip_tags((string) $description), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            $description = $this->truncate($plain, 45) ?: $name;
+
+            $result[$locale] = [$name, $description];
         }
+
+        return $result;
     }
 
-    private function setPrice(string $iapId, float $price): void
+    private function createLocalization(string $iapId, string $locale, string $name, string $description): void
     {
-        $territory = config('services.apple.asc_base_territory', 'SAU');
-        $pricePointId = $this->closestPricePointId($iapId, $territory, $price);
+        $this->request('post', '/v1/inAppPurchaseLocalizations', [
+            'data' => [
+                'type' => 'inAppPurchaseLocalizations',
+                'attributes' => [
+                    'locale' => $locale,
+                    'name' => $name,
+                    'description' => $description,
+                ],
+                'relationships' => [
+                    'inAppPurchaseV2' => ['data' => ['type' => 'inAppPurchases', 'id' => $iapId]],
+                ],
+            ],
+        ]);
+    }
 
+    private function setPrice(string $iapId, string $territory, string $pricePointId): void
+    {
         $this->request('post', '/v1/inAppPurchasePriceSchedules', [
             'data' => [
                 'type' => 'inAppPurchasePriceSchedules',
@@ -172,22 +306,32 @@ class AppStoreConnectService
 
     /**
      * Apple only allows fixed price points, so pick the one nearest to the course price.
+     *
+     * @return array{0: string, 1: float} [price point ID, Apple customer price]
      */
-    private function closestPricePointId(string $iapId, string $territory, float $price): string
+    private function closestPricePoint(string $iapId, string $territory, float $price): array
     {
         $bestId = null;
+        $bestPrice = 0.0;
         $bestDiff = PHP_FLOAT_MAX;
         $path = "/v2/inAppPurchases/{$iapId}/pricePoints";
         $query = ['filter[territory]' => $territory, 'limit' => 200];
+        $pages = 0;
 
         while ($path !== null) {
+            if (++$pages > 20) {
+                throw new RuntimeException('Too many price point pages from App Store Connect.');
+            }
+
             $response = $this->request('get', $path, $query);
 
             foreach ($response->json('data', []) as $point) {
-                $diff = abs((float) ($point['attributes']['customerPrice'] ?? 0) - $price);
+                $pointPrice = (float) ($point['attributes']['customerPrice'] ?? 0);
+                $diff = abs($pointPrice - $price);
                 if ($diff < $bestDiff) {
                     $bestDiff = $diff;
                     $bestId = $point['id'];
+                    $bestPrice = $pointPrice;
                 }
             }
 
@@ -200,7 +344,7 @@ class AppStoreConnectService
             throw new RuntimeException("No App Store price points found for territory {$territory}.");
         }
 
-        return $bestId;
+        return [$bestId, $bestPrice];
     }
 
     private function setAvailability(string $iapId): void
@@ -226,20 +370,9 @@ class AppStoreConnectService
 
     /**
      * Apple requires a review screenshot before an IAP can be submitted.
-     * Returns false (and leaves the product as "Missing Metadata") if none is configured.
      */
-    private function uploadReviewScreenshot(string $iapId): bool
+    private function uploadReviewScreenshot(string $iapId, string $path): bool
     {
-        $path = config('services.apple.asc_review_screenshot_path');
-        if (! $path || ! is_file($path)) {
-            Log::warning('App Store IAP created without review screenshot; add one in App Store Connect and submit it manually.', [
-                'iap_id' => $iapId,
-                'expected_path' => $path,
-            ]);
-
-            return false;
-        }
-
         $bytes = file_get_contents($path);
 
         $reservation = $this->request('post', '/v1/inAppPurchaseAppStoreReviewScreenshots', [
@@ -303,9 +436,13 @@ class AppStoreConnectService
     {
         $client = Http::withToken($this->authToken())->acceptJson()->timeout(30);
 
-        $response = $method === 'get'
-            ? $client->get(self::API_BASE . $path, $data)
-            : $client->{$method}(self::API_BASE . $path, $data);
+        // Passing an empty query array to get() would wipe the query string already in $path
+        // (e.g. the cursor in a "links.next" pagination URL), so only pass it when non-empty.
+        $response = match (true) {
+            $method === 'get' && $data === [] => $client->get(self::API_BASE . $path),
+            $method === 'get' => $client->get(self::API_BASE . $path, $data),
+            default => $client->{$method}(self::API_BASE . $path, $data),
+        };
 
         if (! $response->successful()) {
             Log::error('App Store Connect API request failed', [
@@ -341,17 +478,20 @@ class AppStoreConnectService
      */
     private function truncate(string $value, int $length): string
     {
+        // Apple rejects emoji and other symbol characters in IAP names/descriptions.
+        $value = preg_replace('/[\p{So}\p{Sk}\p{Cs}\p{Co}\p{Cn}\x{FE0F}\x{FE0E}\x{200D}\x{20E3}]/u', '', $value);
+        $value = strtr($value, ['“' => '"', '”' => '"', '‘' => "'", '’' => "'"]);
         $value = trim(preg_replace('/\s+/u', ' ', $value));
 
         if ($this->appleLength($value) <= $length) {
             return $value;
         }
 
-        while ($value !== '' && $this->appleLength($value . '…') > $length) {
+        while ($value !== '' && $this->appleLength($value . '...') > $length) {
             $value = mb_substr($value, 0, -1);
         }
 
-        return rtrim($value) . '…';
+        return rtrim($value) . '...';
     }
 
     private function appleLength(string $value): int
