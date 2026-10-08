@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Jobs\SyncAppStoreProductJob;
 use App\Jobs\SyncGooglePlayProductJob;
 use App\Models\Course;
 
@@ -28,5 +29,6 @@ class CourseObserver
         }
 
         SyncGooglePlayProductJob::dispatch($course->id);
+        SyncAppStoreProductJob::dispatchAfterResponse($course->id);
     }
 }

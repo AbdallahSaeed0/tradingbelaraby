@@ -62,6 +62,12 @@ return [
         'iap_issuer_id' => env('APPLE_IAP_ISSUER_ID'),
         'iap_private_key_path' => env('APPLE_IAP_PRIVATE_KEY_PATH', storage_path('app/apple/SubscriptionKey_' . env('APPLE_IAP_KEY_ID') . '.p8')),
         'iap_bundle_id' => env('APPLE_IAP_BUNDLE_ID', 'com.education.coursesApp'),
+        // App Store Connect API key (Team key, App Manager role) used to create IAP products.
+        'asc_key_id' => env('APPLE_ASC_KEY_ID'),
+        'asc_private_key_path' => env('APPLE_ASC_PRIVATE_KEY_PATH', storage_path('app/apple/AuthKey_' . env('APPLE_ASC_KEY_ID') . '.p8')),
+        // Course prices are stored in SAR, so Saudi Arabia is the base price territory.
+        'asc_base_territory' => env('APPLE_ASC_BASE_TERRITORY', 'SAU'),
+        'asc_review_screenshot_path' => env('APPLE_ASC_REVIEW_SCREENSHOT_PATH', storage_path('app/apple/iap-review-screenshot.png')),
     ],
 
     /*
