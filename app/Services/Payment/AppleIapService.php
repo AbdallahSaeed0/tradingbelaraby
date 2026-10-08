@@ -89,25 +89,20 @@ class AppleIapService
             ->timeout(20)
             ->get($baseUrl . $transactionId);
 
-        if ($httpResponse->status() === 404) {
+        $status = $httpResponse->status();
+
+        // Production returns 401 for apps not yet released on the App Store; fall back to sandbox.
+        if ($status === 404 || ($status === 401 && $baseUrl === self::PRODUCTION_URL)) {
             return null;
         }
 
         if (! $httpResponse->successful()) {
             Log::warning('App Store Server API request failed', [
-                'status' => $httpResponse->status(),
+                'url' => $baseUrl,
+                'status' => $status,
                 'body' => $httpResponse->body(),
             ]);
-            $jwtParts = explode('.', $jwt);
-            $jwtHeader = $jwtParts[0] ?? '';
-            $jwtPayload = isset($jwtParts[1]) ? base64_decode(strtr($jwtParts[1], '-_', '+/')) : '';
-            $wwwAuth = $httpResponse->header('WWW-Authenticate');
-            throw new RuntimeException(
-                'Unable to contact App Store verification service. HTTP ' . $httpResponse->status() . ': ' . $httpResponse->body()
-                . ' | www-auth=' . $wwwAuth
-                . ' | jwt_header=' . base64_decode(strtr($jwtHeader, '-_', '+/'))
-                . ' | jwt_payload=' . $jwtPayload
-            );
+            throw new RuntimeException('Unable to contact App Store verification service. HTTP ' . $status);
         }
 
         $signedTransactionInfo = $httpResponse->json('signedTransactionInfo');
