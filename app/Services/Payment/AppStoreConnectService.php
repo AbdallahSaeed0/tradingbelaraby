@@ -100,7 +100,7 @@ class AppStoreConnectService
             'data' => [
                 'type' => 'inAppPurchases',
                 'attributes' => [
-                    'name' => $this->truncate("Course {$course->id} - " . ($course->name ?: $course->name_ar), 64),
+                    'name' => "Course {$course->id}",
                     'productId' => $productId,
                     'inAppPurchaseType' => 'NON_CONSUMABLE',
                     'familySharable' => false,
@@ -336,10 +336,26 @@ class AppStoreConnectService
         });
     }
 
+    /**
+     * Apple counts length in UTF-16 code units, so emoji count as 2 characters.
+     */
     private function truncate(string $value, int $length): string
     {
         $value = trim(preg_replace('/\s+/u', ' ', $value));
 
-        return mb_strlen($value) > $length ? mb_substr($value, 0, $length - 1) . '…' : $value;
+        if ($this->appleLength($value) <= $length) {
+            return $value;
+        }
+
+        while ($value !== '' && $this->appleLength($value . '…') > $length) {
+            $value = mb_substr($value, 0, -1);
+        }
+
+        return rtrim($value) . '…';
+    }
+
+    private function appleLength(string $value): int
+    {
+        return intdiv(strlen(mb_convert_encoding($value, 'UTF-16LE', 'UTF-8')), 2);
     }
 }
