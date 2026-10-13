@@ -65,6 +65,10 @@ class NbeService
                 'merchant' => [
                     'name' => config('nbe.merchant_name'),
                 ],
+                // Billing address is already collected on our checkout page.
+                'displayControl' => [
+                    'billingAddress' => 'HIDE',
+                ],
             ],
             'order' => [
                 'id' => $order->order_number,
