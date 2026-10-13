@@ -302,6 +302,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/checkout/success/{order}', [CheckoutController::class, 'success'])->name('checkout.success');
     Route::get('/checkout/bank-transfer-pending/{order}', [CheckoutController::class, 'bankTransferPending'])->name('checkout.bank-transfer-pending');
 
+    // NBE (Mastercard Hosted Checkout) Payment Routes
+    Route::get('/nbe/pay/{order}', [App\Http\Controllers\NbeController::class, 'pay'])->name('nbe.pay');
+    Route::get('/nbe/return/{order}', [App\Http\Controllers\NbeController::class, 'return'])->name('nbe.return');
+    Route::get('/nbe/cancel/{order}', [App\Http\Controllers\NbeController::class, 'cancel'])->name('nbe.cancel');
+
     // Tabby Payment Routes
     Route::get('/tabby/success', [App\Http\Controllers\TabbyController::class, 'success'])->name('tabby.success');
     Route::get('/tabby/cancel', [App\Http\Controllers\TabbyController::class, 'cancel'])->name('tabby.cancel');

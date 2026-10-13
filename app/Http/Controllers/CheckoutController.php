@@ -485,9 +485,9 @@ class CheckoutController extends Controller
                 }
 
             } else {
-                // For Visa payment, redirect to payment gateway (placeholder)
+                // Card payment: NBE Hosted Checkout when enabled, otherwise CyberSource.
                 // Note: Cart will be cleared after successful payment confirmation
-                return redirect()->route('checkout.payment', $order->id);
+                return redirect()->route(config('nbe.enabled') ? 'nbe.pay' : 'checkout.payment', $order->id);
             }
 
         } catch (\Exception $e) {
