@@ -227,6 +227,25 @@ class EnrollmentsController extends Controller
     }
 
     /**
+     * Remove a student from a course (deletes the enrollment, revoking access)
+     */
+    public function destroy(CourseEnrollment $enrollment)
+    {
+        $studentName = $enrollment->user->name ?? 'Student';
+
+        $enrollment->delete();
+
+        if (request()->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => $studentName . ' was removed from the course'
+            ]);
+        }
+
+        return back()->with('success', $studentName . ' was removed from the course');
+    }
+
+    /**
      * Get enrollment analytics
      */
     public function analytics()

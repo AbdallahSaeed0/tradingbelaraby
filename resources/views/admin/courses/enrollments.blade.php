@@ -265,6 +265,10 @@
                                             <button class="btn btn-outline-warning" title="Send Message">
                                                 <i class="fa fa-envelope"></i>
                                             </button>
+                                            <button type="button" class="btn btn-outline-danger" title="Remove from Course"
+                                                onclick="removeEnrollment('{{ route('admin.enrollments.destroy', $enrollment) }}', @js($enrollment->user->name))">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -367,6 +371,10 @@
                                         <button class="btn btn-sm btn-outline-warning">
                                             <i class="fa fa-envelope me-1"></i>Message
                                         </button>
+                                        <button type="button" class="btn btn-sm btn-outline-danger"
+                                            onclick="removeEnrollment('{{ route('admin.enrollments.destroy', $enrollment) }}', @js($enrollment->user->name))">
+                                            <i class="fa fa-trash me-1"></i>Remove
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -394,11 +402,26 @@
                 </div>
             </div>
         </div>
+
+        <form id="removeEnrollmentForm" method="POST" class="d-none">
+            @csrf
+            @method('DELETE')
+        </form>
     </div>
 @endsection
 
 @push('scripts')
     <script>
+        function removeEnrollment(url, studentName) {
+            if (!confirm('Remove ' + studentName + ' from this course? They will lose access to it immediately.')) {
+                return;
+            }
+
+            const form = document.getElementById('removeEnrollmentForm');
+            form.action = url;
+            form.submit();
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             // View toggle functionality
             const gridViewBtn = document.getElementById('gridView');
