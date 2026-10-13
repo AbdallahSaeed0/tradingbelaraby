@@ -131,6 +131,16 @@
         function nbeCancelCallback() {
             window.location.href = @json(route('nbe.cancel', $order->id));
         }
+
+        // checkout.js keeps "resume" state in sessionStorage across 3DS
+        // redirects. Leftovers from an earlier embedded attempt make it try
+        // to resume into a container that no longer exists (and reuse an old
+        // session id), so start every page load from a clean slate.
+        try {
+            ['HostedCheckout_sessionId', 'HostedCheckout_embedContainer',
+             'HostedCheckout_merchantState', 'HostedCheckout_showLightboxFunc']
+                .forEach(function (key) { sessionStorage.removeItem(key); });
+        } catch (e) {}
     </script>
     <script src="{{ $scriptUrl }}"
             data-error="nbeErrorCallback"
