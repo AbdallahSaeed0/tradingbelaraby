@@ -119,7 +119,8 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="phone" class="form-label">{{ custom_trans('phone', 'front') }} *</label>
-                                    <input type="tel" class="form-control" id="phone" name="phone" required>
+                                    <input type="tel" class="form-control" id="phone" name="phone"
+                                        value="{{ old('phone', $user->phone) }}" required>
                                 </div>
                             </div>
                             <div class="mb-3">
@@ -196,34 +197,35 @@
                                     </div>
                                 @elseif($hasPaid)
                                     <!-- PayPal -->
-                                    <div class="payment-option-card selected p-4 border rounded-3 position-relative"
+                                    @php $cardIsDefault = config('nbe.enabled'); @endphp
+                                    <div class="payment-option-card {{ $cardIsDefault ? '' : 'selected' }} p-4 border rounded-3 position-relative"
                                         onclick="selectPayment(this, 'paypal')">
                                         <input type="radio" name="payment_method" value="paypal" id="paypal_payment"
-                                            checked class="position-absolute top-0 end-0 m-3">
+                                            @checked(!$cardIsDefault) class="position-absolute top-0 end-0 m-3">
                                         <div class="payment-icon mb-3">
                                             <i class="fab fa-paypal fa-3x text-primary"></i>
                                         </div>
                                         <h5 class="fw-bold mb-2">PayPal</h5>
                                         <p class="text-muted mb-0 small">
                                             {{ custom_trans('Pay securely with your PayPal account', 'front') }}</p>
-                                        <div class="selected-badge position-absolute top-0 start-0 m-2">
+                                        <div class="selected-badge position-absolute top-0 start-0 m-2 {{ $cardIsDefault ? 'd-none' : '' }}">
                                             <i class="fas fa-check-circle text-success"></i>
                                         </div>
                                     </div>
 
                                     {{-- Credit / Debit Card via NBE (only when NBE_ENABLED=true) --}}
                                     @if (config('nbe.enabled'))
-                                        <div class="payment-option-card p-4 border rounded-3 position-relative"
+                                        <div class="payment-option-card selected p-4 border rounded-3 position-relative"
                                             onclick="selectPayment(this, 'visa')">
                                             <input type="radio" name="payment_method" value="visa" id="visa_payment"
-                                                class="position-absolute top-0 end-0 m-3">
+                                                checked class="position-absolute top-0 end-0 m-3">
                                             <div class="payment-icon mb-3">
                                                 <i class="fas fa-credit-card fa-3x text-success"></i>
                                             </div>
                                             <h5 class="fw-bold mb-2">{{ custom_trans('Credit / Debit Card', 'front') }}</h5>
                                             <p class="text-muted mb-0 small">
                                                 {{ custom_trans('Pay securely with Visa or Mastercard', 'front') }}</p>
-                                            <div class="selected-badge position-absolute top-0 start-0 m-2 d-none">
+                                            <div class="selected-badge position-absolute top-0 start-0 m-2">
                                                 <i class="fas fa-check-circle text-success"></i>
                                             </div>
                                         </div>
