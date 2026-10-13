@@ -28,14 +28,17 @@
                             </div>
                         </div>
 
-                        <div id="payment-error" class="alert alert-danger d-none m-3 mb-0"></div>
+                        <div class="p-4">
+                            <div id="payment-error" class="alert alert-danger d-none"></div>
 
-                        <div id="payment-loading" class="nbe-loading">
-                            <div class="spinner-border text-success" role="status"></div>
-                            <span>{{ custom_trans('loading_payment_form', 'front') }}</span>
+                            <p class="text-muted mb-4">{{ custom_trans('nbe_redirect_note', 'front') }}</p>
+
+                            <button type="button" id="nbe-pay-btn" class="btn btn-success btn-lg w-100" onclick="nbePay()">
+                                <i class="fas fa-lock me-2"></i>
+                                {{ custom_trans('nbe_pay_now', 'front') }}
+                                <span dir="ltr">{{ number_format((float) $chargeAmount, 2) }} {{ $chargeCurrency }}</span>
+                            </button>
                         </div>
-
-                        <div id="embed-target" class="nbe-embed"></div>
 
                         <div class="nbe-trust">
                             <span><i class="fas fa-lock"></i> {{ custom_trans('nbe_ssl_encrypted', 'front') }}</span>
@@ -103,8 +106,6 @@
         .nbe-icon { width: 44px; height: 44px; border-radius: 10px; background: #e8f5ee; color: #198754; display: inline-flex; align-items: center; justify-content: center; font-size: 1.2rem; }
         .nbe-brands i { font-size: 2rem; color: #1a1f71; margin-inline-start: 6px; }
         .nbe-brands .fa-cc-mastercard { color: #eb001b; }
-        .nbe-loading { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 60px 20px; color: #6c757d; }
-        .nbe-embed { padding: 8px 12px; min-height: 40px; }
         .nbe-trust { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 22px; padding: 14px 18px; background: #fafbfc; border-top: 1px solid #eef0f3; font-size: .85rem; color: #6c757d; }
         .nbe-trust i { color: #198754; margin-inline-end: 4px; }
         .nbe-items li { padding: 8px 0; border-bottom: 1px dashed #e6e9ee; font-size: .92rem; }
@@ -119,7 +120,6 @@
             const errorEl = document.getElementById('payment-error');
             errorEl.textContent = message;
             errorEl.classList.remove('d-none');
-            document.getElementById('payment-loading').classList.add('d-none');
         }
 
         // Referenced by name from the checkout.min.js data-* attributes below.
@@ -136,23 +136,24 @@
             data-error="nbeErrorCallback"
             data-cancel="nbeCancelCallback"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        Checkout.configure({
+            session: { id: @json($sessionId) }
+        });
+
+        // Full-page redirect to NBE's hosted payment page. 3DS, retries and
+        // failures all happen there; the payer comes back via returnUrl
+        // (paid) or cancelUrl (Back link).
+        function nbePay() {
+            const btn = document.getElementById('nbe-pay-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>' + @json(custom_trans('nbe_redirecting', 'front'));
+
             try {
-                Checkout.configure({
-                    session: { id: @json($sessionId) }
-                });
-
-                Checkout.showEmbeddedPage('#embed-target');
-
-                // Hide the spinner once the gateway has injected its form.
-                const target = document.getElementById('embed-target');
-                new MutationObserver(function (_, observer) {
-                    document.getElementById('payment-loading').classList.add('d-none');
-                    observer.disconnect();
-                }).observe(target, { childList: true, subtree: true });
+                Checkout.showPaymentPage();
             } catch (error) {
+                btn.disabled = false;
                 nbeErrorCallback(error);
             }
-        });
+        }
     </script>
 @endpush

@@ -77,6 +77,21 @@ class NbePaymentTranslationsSeeder extends Seeder
                 'en' => 'Unable to load the payment form. Please refresh the page and try again.',
                 'ar' => 'تعذّر تحميل نموذج الدفع. يرجى تحديث الصفحة والمحاولة مرة أخرى.',
             ],
+            [
+                'key' => 'nbe_redirect_note',
+                'en' => 'You will be taken to the National Bank of Egypt secure payment page to enter your card details and complete verification.',
+                'ar' => 'سيتم تحويلك إلى صفحة الدفع الآمنة الخاصة بالبنك الأهلي المصري لإدخال بيانات بطاقتك وإتمام التحقق.',
+            ],
+            [
+                'key' => 'nbe_pay_now',
+                'en' => 'Pay now',
+                'ar' => 'ادفع الآن',
+            ],
+            [
+                'key' => 'nbe_redirecting',
+                'en' => 'Redirecting to the secure payment page...',
+                'ar' => 'جاري التحويل إلى صفحة الدفع الآمنة...',
+            ],
         ];
 
         foreach ($translations as $translation) {
