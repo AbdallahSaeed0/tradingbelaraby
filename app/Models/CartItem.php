@@ -14,6 +14,7 @@ class CartItem extends Model
         'user_id',
         'course_id',
         'bundle_id',
+        'subscription_plan_id',
     ];
 
     /**
@@ -41,6 +42,36 @@ class CartItem extends Model
     }
 
     /**
+     * Subscription plan chosen for this course (null = lifetime purchase)
+     */
+    public function subscriptionPlan(): BelongsTo
+    {
+        return $this->belongsTo(CourseSubscriptionPlan::class, 'subscription_plan_id');
+    }
+
+    public function isSubscription(): bool
+    {
+        return !$this->isBundle() && $this->subscription_plan_id !== null;
+    }
+
+    /**
+     * True when the student already has (or had) a subscription to this course,
+     * so this item adds more time at the plan's renewal price.
+     */
+    public function isRenewal(): bool
+    {
+        if (!$this->isSubscription()) {
+            return false;
+        }
+
+        return CourseEnrollment::where('user_id', $this->user_id)
+            ->where('course_id', $this->course_id)
+            ->whereIn('status', ['active', 'completed', 'expired'])
+            ->subscription()
+            ->exists();
+    }
+
+    /**
      * Check if this cart item is for a bundle
      */
     public function isBundle(): bool
@@ -55,6 +86,9 @@ class CartItem extends Model
     {
         if ($this->isBundle()) {
             return $this->bundle ? $this->bundle->price : 0;
+        }
+        if ($this->isSubscription()) {
+            return $this->subscriptionPlan ? $this->subscriptionPlan->priceFor($this->isRenewal()) : 0;
         }
         return $this->course ? $this->course->price : 0;
     }

@@ -30,7 +30,7 @@
 
         <!-- Course Price -->
         <div class="position-absolute top-0 end-0 m-3">
-            @if ($course->is_free || ($course->price ?? 0) <= 0)
+            @if ($course->is_free || (($course->price ?? 0) <= 0 && $course->offersLifetime()))
                 <span class="badge bg-success fs-6">{{ custom_trans('free', 'front') }}</span>
             @else
                 <span class="badge bg-info text-white fs-6">{{ $course->formatted_price }}</span>
@@ -121,6 +121,11 @@
                     <a href="{{ route('courses.learn', $course->id) }}" class="btn btn-success flex-fill">
                         <i class="fa fa-graduation-cap me-1"></i>{{ custom_trans('go_to_course', 'front') }}
                     </a>
+                @elseif (!$course->offersLifetime())
+                    {{-- Subscription-only: student picks a period on the course page --}}
+                    <a href="{{ route('courses.show', $course) }}" class="btn btn-orange flex-fill">
+                        <i class="fa fa-graduation-cap me-1"></i>{{ custom_trans('enroll_now', 'front') }}
+                    </a>
                 @else
                     <button class="btn btn-orange flex-fill enroll-btn"
                         data-course-id="{{ $course->id }}"
@@ -129,7 +134,7 @@
                     </button>
                 @endif
             @else
-                @if ($course->price > 0)
+                @if ($course->price > 0 || !$course->offersLifetime())
                     <a href="{{ route('login') }}" class="btn btn-orange flex-fill">
                         <i class="fa fa-graduation-cap me-1"></i>{{ custom_trans('enroll_now', 'front') }}
                     </a>

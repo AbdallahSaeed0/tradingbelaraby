@@ -372,6 +372,7 @@
                                                     @else
                                                         <h6 class="fw-bold mb-1 small">
                                                             {{ Str::limit($item->course->localized_name, 40) }}</h6>
+                                                        @include('partials.cart.plan-label', ['item' => $item])
                                                         <small class="text-muted d-block mb-2">
                                                             <i class="fas fa-user me-1"></i>
                                                             {{ $item->course->instructorNamesLabel() ?: custom_trans('Unknown Instructor', 'front') }}

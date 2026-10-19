@@ -56,7 +56,9 @@
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item d-flex align-items-center justify-content-between">
                                 <span class="fs-5 text-orange fw-bold">
-                                    @if ($course->price > 0)
+                                    @if (!$course->offersLifetime())
+                                        {{ $course->formatted_price }}
+                                    @elseif ($course->price > 0)
                                         {{ number_format($course->price, 2) }} SAR
                                         @if ($course->original_price > $course->price)
                                             <span
@@ -106,6 +108,13 @@
                                 @if (auth()->user()->hasCourseAccess($course->id))
                                     <a href="{{ route('courses.learn', $course->id) }}"
                                         class="btn btn-orange w-100 fw-bold mb-3">{{ custom_trans('go_to_course', 'front') }}</a>
+                                    @if ($userEnrollment && $userEnrollment->isSubscription() && $course->offersSubscription())
+                                        @include('courses.partials.pricing-options', ['course' => $course, 'context' => 'm-ext'])
+                                        <button class="btn btn-outline-secondary w-100 fw-bold mb-3 detail-enroll-btn"
+                                            data-course-id="{{ $course->id }}" data-enroll-type="paid">
+                                            <i class="fas fa-plus-circle me-2"></i>{{ custom_trans('Extend access', 'front') }}
+                                        </button>
+                                    @endif
                                 @elseif (auth()->user()->hasPendingEnrollment($course->id))
                                     <button class="btn btn-secondary w-100 fw-bold mb-3" disabled>
                                         <i class="fas fa-clock me-2"></i>{{ custom_trans('Pending Confirmation', 'front') }}
@@ -114,7 +123,8 @@
                                         {{ custom_trans('Your enrollment will be pending until our team verifies your transfer.', 'front') }}
                                     </p>
                                 @else
-                                    @if ($course->price > 0)
+                                    @include('courses.partials.pricing-options', ['course' => $course, 'context' => 'm'])
+                                    @if ($course->requiresPayment())
                                         <button class="btn btn-orange w-100 fw-bold mb-3 detail-enroll-btn"
                                             data-course-id="{{ $course->id }}" data-enroll-type="paid">
                                             <i
@@ -436,7 +446,9 @@
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item d-flex align-items-center justify-content-between">
                                 <span class="fs-5 text-orange fw-bold">
-                                    @if ($course->price > 0)
+                                    @if (!$course->offersLifetime())
+                                        {{ $course->formatted_price }}
+                                    @elseif ($course->price > 0)
                                         {{ number_format($course->price, 2) }} SAR
                                         @if ($course->original_price > $course->price)
                                             <span class="fs-6 text-decoration-line-through text-muted ms-2">{{ number_format($course->original_price, 2) }} SAR</span>
@@ -473,8 +485,16 @@
                                 @if (auth()->user()->hasCourseAccess($course->id))
                                     <a href="{{ route('courses.learn', $course->id) }}"
                                         class="btn btn-orange w-100 fw-bold mb-2">{{ custom_trans('go_to_course', 'front') }}</a>
+                                    @if ($userEnrollment && $userEnrollment->isSubscription() && $course->offersSubscription())
+                                        @include('courses.partials.pricing-options', ['course' => $course, 'context' => 'd-ext'])
+                                        <button class="btn btn-outline-secondary w-100 fw-bold mb-2 detail-enroll-btn"
+                                            data-course-id="{{ $course->id }}" data-enroll-type="paid">
+                                            <i class="fas fa-plus-circle me-2"></i>{{ custom_trans('Extend access', 'front') }}
+                                        </button>
+                                    @endif
                                 @else
-                                    @if ($course->price > 0)
+                                    @include('courses.partials.pricing-options', ['course' => $course, 'context' => 'd'])
+                                    @if ($course->requiresPayment())
                                         <button class="btn btn-orange w-100 fw-bold mb-2 detail-enroll-btn"
                                             data-course-id="{{ $course->id }}" data-enroll-type="paid">
                                             <i class="fas fa-graduation-cap me-2"></i>{{ custom_trans('enroll_now', 'front') }}
@@ -581,7 +601,9 @@
         <div class="course-detail-mobile-enroll-bar-inner container">
             <div class="d-flex align-items-center justify-content-between gap-3 w-100">
                 <div class="course-detail-mobile-enroll-price text-white fw-bold">
-                    @if ($course->price > 0)
+                    @if (!$course->offersLifetime())
+                        {{ $course->formatted_price }}
+                    @elseif ($course->price > 0)
                         {{ number_format($course->price, 2) }} SAR
                         @if ($course->original_price > $course->price)
                             <span class="text-white-50 text-decoration-line-through ms-1 small">{{ number_format($course->original_price, 2) }} SAR</span>
@@ -598,7 +620,7 @@
                             </a>
                         @else
                             <button type="button" class="btn btn-light btn-sm fw-bold detail-enroll-btn"
-                                data-course-id="{{ $course->id }}" data-enroll-type="{{ $course->price > 0 ? 'paid' : 'free' }}">
+                                data-course-id="{{ $course->id }}" data-enroll-type="{{ $course->requiresPayment() ? 'paid' : 'free' }}">
                                 <i class="fas fa-graduation-cap me-1"></i>{{ custom_trans('enroll_now', 'front') }}
                             </button>
                         @endif
@@ -925,6 +947,14 @@
                 });
             }
 
+            // Keep the pricing option groups (mobile box / desktop sidebar) in sync
+            document.addEventListener('change', function(e) {
+                if (!e.target.matches('input[data-pricing-option]')) return;
+                document.querySelectorAll('input[data-pricing-option]').forEach(input => {
+                    input.checked = input.value === e.target.value;
+                });
+            });
+
             // Enroll button logic (paid -> cart + modal, free -> direct enroll) - detail page only (delegated for multiple buttons)
             document.addEventListener('click', async function(e) {
                 const enrollBtn = e.target.closest('.detail-enroll-btn');
@@ -981,6 +1011,9 @@
                     try {
                         console.log('Adding paid course to cart, course ID:', courseId);
 
+                        // Chosen pricing option: plan id, or "" for lifetime
+                        const pricingOption = document.querySelector('input[data-pricing-option]:checked');
+
                         const response = await fetch('{{ route('cart.add', $course->id) }}', {
                             method: 'POST',
                             headers: {
@@ -988,7 +1021,7 @@
                                 'Accept': 'application/json',
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
                             },
-                            body: JSON.stringify({}),
+                            body: JSON.stringify({ plan_id: pricingOption ? pricingOption.value : '' }),
                         });
 
                         console.log('Cart add response status:', response.status);

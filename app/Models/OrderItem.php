@@ -14,7 +14,17 @@ class OrderItem extends Model
         'order_id',
         'course_id',
         'bundle_id',
+        'subscription_plan_id',
+        'duration_months',
+        'is_renewal',
+        'access_applied_at',
         'price',
+    ];
+
+    protected $casts = [
+        'duration_months' => 'integer',
+        'is_renewal' => 'boolean',
+        'access_applied_at' => 'datetime',
     ];
 
     /**
@@ -39,6 +49,16 @@ class OrderItem extends Model
     public function bundle(): BelongsTo
     {
         return $this->belongsTo(Bundle::class);
+    }
+
+    public function subscriptionPlan(): BelongsTo
+    {
+        return $this->belongsTo(CourseSubscriptionPlan::class, 'subscription_plan_id');
+    }
+
+    public function isSubscription(): bool
+    {
+        return $this->course_id !== null && $this->duration_months !== null;
     }
 
     /**

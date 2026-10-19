@@ -81,6 +81,7 @@ class OrdersController extends Controller
                 ]);
 
             $order->update(['status' => 'completed']);
+            $order->applyEnrollmentAccess();
         });
 
         return back()->with('success', 'Order confirmed and enrollments activated successfully.');
@@ -130,8 +131,10 @@ class OrdersController extends Controller
     {
         $courseIds = $order->getCourseIds();
 
+        // Only enrollments created by this order; an extension/upgrade order must not remove the existing enrollment
         return CourseEnrollment::where('user_id', $order->user_id)
-            ->whereIn('course_id', $courseIds);
+            ->whereIn('course_id', $courseIds)
+            ->whereIn('transaction_id', array_filter([$order->order_number, $order->payment_gateway_id]));
     }
 
     private function couponIdsForOrder(Order $order): array

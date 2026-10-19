@@ -97,6 +97,45 @@ class Order extends Model
         return array_values(array_unique($courseIds));
     }
 
+    /**
+     * Apply what was paid for to the student's enrollments: lifetime access, or
+     * subscription months (stacked on top of any remaining time). Each item is
+     * applied once, so calling this again (webhook + redirect) is safe.
+     * Call it after the order is paid and its pending enrollments are activated.
+     */
+    public function applyEnrollmentAccess(): void
+    {
+        $this->loadMissing(['orderItems.bundle.courses']);
+
+        foreach ($this->orderItems as $item) {
+            if ($item->access_applied_at) {
+                continue;
+            }
+
+            $courseIds = $item->course_id
+                ? [$item->course_id]
+                : ($item->bundle ? $item->bundle->courses->pluck('id')->all() : []);
+
+            foreach ($courseIds as $courseId) {
+                $enrollment = CourseEnrollment::where('user_id', $this->user_id)
+                    ->where('course_id', $courseId)
+                    ->first();
+
+                if (!$enrollment) {
+                    continue;
+                }
+
+                if ($item->isSubscription()) {
+                    $enrollment->extendSubscription($item->duration_months, $item->subscription_plan_id);
+                } else {
+                    $enrollment->grantLifetime();
+                }
+            }
+
+            $item->update(['access_applied_at' => now()]);
+        }
+    }
+
     public function getTransactionReferenceAttribute(): ?string
     {
         if ($this->payment_method === 'bank_transfer') {

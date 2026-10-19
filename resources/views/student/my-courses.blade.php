@@ -151,7 +151,8 @@
                         $progress = (int) ($enrollment->progress_percentage ?? 0);
                         $levelKey = strtolower($course->level ?? 'beginner');
                         $levelLabel = $levelLabels[$levelKey] ?? custom_trans('Beginner', 'front');
-                        $statusClass = $enrollment->status === 'pending'
+                        $subscriptionExpired = $enrollment->isSubscription() && $enrollment->status !== 'pending' && $enrollment->isExpired();
+                        $statusClass = $enrollment->status === 'pending' || $subscriptionExpired
                             ? 'pending'
                             : ($enrollment->status === 'completed' ? 'completed' : 'progress');
                     @endphp
@@ -169,6 +170,8 @@
                                 <span class="my-course-card__status my-course-card__status--{{ $statusClass }}">
                                     @if ($enrollment->status === 'pending')
                                         {{ custom_trans('Pending Confirmation', 'front') }}
+                                    @elseif ($subscriptionExpired)
+                                        {{ custom_trans('Expired', 'front') }}
                                     @elseif ($enrollment->status === 'completed')
                                         {{ custom_trans('Completed', 'front') }}
                                     @else
@@ -229,6 +232,17 @@
                                     </div>
                                 </div>
 
+                                @if ($enrollment->isSubscription() && $enrollment->expires_at && $enrollment->status !== 'pending')
+                                    <div class="small mb-2 {{ $subscriptionExpired ? 'text-danger' : 'text-muted' }}">
+                                        <i class="fas fa-calendar-alt me-1"></i>
+                                        {{ $subscriptionExpired ? custom_trans('Access expired on', 'front') : custom_trans('Access until', 'front') }}
+                                        {{ $enrollment->expires_at->format('Y-m-d') }}
+                                        <a href="{{ route('courses.show', $course) }}" class="ms-1">
+                                            {{ $subscriptionExpired ? custom_trans('Renew', 'front') : custom_trans('Extend', 'front') }}
+                                        </a>
+                                    </div>
+                                @endif
+
                                 <div class="my-course-card__stats">
                                     <div class="my-course-card__stat">
                                         <span class="my-course-card__stat-label">{{ custom_trans('Duration', 'front') }}</span>
@@ -276,6 +290,11 @@
                                         <a href="{{ route('courses.learn', $course->id) }}"
                                             class="my-course-card__btn my-course-card__btn--primary">
                                             <i class="fas fa-play"></i>{{ custom_trans('Continue', 'front') }}
+                                        </a>
+                                    @elseif ($subscriptionExpired)
+                                        <a href="{{ route('courses.show', $course) }}"
+                                            class="my-course-card__btn my-course-card__btn--primary">
+                                            <i class="fas fa-redo"></i>{{ custom_trans('Renew', 'front') }}
                                         </a>
                                     @else
                                         <span class="my-course-card__btn my-course-card__btn--disabled">

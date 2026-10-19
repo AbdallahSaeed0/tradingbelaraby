@@ -191,6 +191,9 @@ class PayPalWebhookController extends Controller
             }
         }
 
+        // Apply lifetime access / subscription time (incl. extensions of existing subscriptions)
+        $order->applyEnrollmentAccess();
+
         Log::info('PayPal Payment Completed Successfully', [
             'order_id' => $order->id,
             'enrollments_activated' => $enrollments->count(),

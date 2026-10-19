@@ -110,6 +110,8 @@ class NbeController extends Controller
                     'enrolled_at' => now(),
                 ]);
 
+            $order->applyEnrollmentAccess();
+
             $order->user->cartItems()->delete();
 
             DB::commit();

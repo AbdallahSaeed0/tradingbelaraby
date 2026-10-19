@@ -26,6 +26,8 @@ class Course extends Model
         'duration',
         'price',
         'original_price',
+        'allow_lifetime',
+        'allow_subscription',
         'certificate_template',
         'certificate_text',
         'certificate_text_ar',
@@ -89,6 +91,8 @@ class Course extends Model
         'show_in_live_meeting' => 'boolean',
         'show_in_recent_courses' => 'boolean',
         'is_free' => 'boolean',
+        'allow_lifetime' => 'boolean',
+        'allow_subscription' => 'boolean',
         'enable_certificate' => 'boolean',
         'structured_data' => 'array',
         'structured_data_ar' => 'array',
@@ -257,6 +261,62 @@ class Course extends Model
     public function publishedLectures(): HasMany
     {
         return $this->hasMany(CourseLecture::class)->where('is_published', true);
+    }
+
+    /**
+     * Subscription plans (3 / 6 / 12 months ...) for the course
+     */
+    public function subscriptionPlans(): HasMany
+    {
+        return $this->hasMany(CourseSubscriptionPlan::class)->orderBy('duration_months');
+    }
+
+    /**
+     * Active subscription plans offered to students
+     */
+    public function activeSubscriptionPlans(): HasMany
+    {
+        return $this->subscriptionPlans()->where('is_active', true);
+    }
+
+    /**
+     * Whether the course can be bought with a one-time "forever" price.
+     */
+    public function offersLifetime(): bool
+    {
+        return $this->allow_lifetime !== false;
+    }
+
+    /**
+     * Whether the course can be bought as a time-limited subscription.
+     */
+    public function offersSubscription(): bool
+    {
+        return (bool) $this->allow_subscription && $this->activeSubscriptionPlans->isNotEmpty();
+    }
+
+    /**
+     * Whether enrolling requires going through cart/checkout.
+     */
+    public function requiresPayment(): bool
+    {
+        return $this->offersSubscription() || !$this->offersLifetime() || $this->price > 0;
+    }
+
+    /**
+     * Lowest price a new student can pay (lifetime or cheapest plan).
+     */
+    public function getStartingPriceAttribute(): float
+    {
+        $prices = [];
+        if ($this->offersLifetime()) {
+            $prices[] = (float) $this->price;
+        }
+        if ($this->offersSubscription()) {
+            $prices[] = (float) $this->activeSubscriptionPlans->min('price');
+        }
+
+        return $prices ? min($prices) : (float) $this->price;
     }
 
     /**
@@ -492,6 +552,9 @@ class Course extends Model
             return 'Free';
         }
         $currency = config('app.currency', 'SAR');
+        if (!$this->offersLifetime()) {
+            return custom_trans('From', 'front') . ' ' . number_format($this->starting_price, 2) . ' ' . $currency;
+        }
         return number_format($this->price, 2) . ' ' . $currency;
     }
 
@@ -540,7 +603,7 @@ class Course extends Model
      */
     public function getIsDiscountedAttribute(): bool
     {
-        return $this->original_price && $this->original_price > $this->price;
+        return $this->offersLifetime() && $this->original_price && $this->original_price > $this->price;
     }
 
     /**

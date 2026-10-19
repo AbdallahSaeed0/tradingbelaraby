@@ -161,7 +161,7 @@ class Coupon extends Model
     {
         if ($this->scope === 'all_courses') {
             $subtotal = $cartItems->sum(function($item) {
-                return $item->course ? $item->course->price : 0;
+                return $item->course ? $item->getPrice() : 0;
             });
             return $this->calculateDiscount($subtotal);
         }
@@ -170,7 +170,7 @@ class Coupon extends Model
         $coursePrice = 0;
         foreach ($cartItems as $item) {
             if ($item->course_id === $this->course_id && $item->course) {
-                $coursePrice = $item->course->price;
+                $coursePrice = $item->getPrice();
                 break;
             }
         }

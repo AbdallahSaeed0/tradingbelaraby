@@ -163,6 +163,14 @@ class CoursesController extends Controller
             'instructor_ids.*' => 'required|exists:admins,id',
             'original_price' => 'nullable|numeric|min:0',
             'price' => 'nullable|numeric|min:0',
+            'allow_lifetime' => 'nullable|boolean',
+            'allow_subscription' => 'nullable|boolean',
+            'plans' => 'nullable|array',
+            'plans.*.id' => 'nullable|integer',
+            'plans.*.duration_months' => 'nullable|integer|min:1|max:120|distinct',
+            'plans.*.price' => 'nullable|numeric|min:0',
+            'plans.*.renewal_price' => 'nullable|numeric|min:0',
+            'plans.*.is_active' => 'nullable|boolean',
             'duration' => 'nullable|string',
             'status' => 'required|in:draft,published,archived',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -226,6 +234,9 @@ class CoursesController extends Controller
             $data['enable_certificate'] = false;
         }
 
+        $plans = $this->validatedSubscriptionPlans($request);
+        unset($data['plans']);
+
         // If course is free, set price to 0
         if ($request->has('is_free') && $request->is_free) {
             $data['price'] = 0;
@@ -275,6 +286,7 @@ class CoursesController extends Controller
 
         // Create course
         $course = Course::create($data);
+        $this->syncSubscriptionPlans($course, $plans);
 
         // Sync instructors (many-to-many relationship)
         if (!empty($data['instructor_ids'])) {
@@ -402,6 +414,14 @@ class CoursesController extends Controller
             'instructor_ids.*' => 'required|exists:admins,id',
             'original_price' => 'nullable|numeric|min:0',
             'price' => 'nullable|numeric|min:0',
+            'allow_lifetime' => 'nullable|boolean',
+            'allow_subscription' => 'nullable|boolean',
+            'plans' => 'nullable|array',
+            'plans.*.id' => 'nullable|integer',
+            'plans.*.duration_months' => 'nullable|integer|min:1|max:120|distinct',
+            'plans.*.price' => 'nullable|numeric|min:0',
+            'plans.*.renewal_price' => 'nullable|numeric|min:0',
+            'plans.*.is_active' => 'nullable|boolean',
             'duration' => 'nullable|string',
             'status' => 'required|in:draft,published,archived',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -488,6 +508,9 @@ class CoursesController extends Controller
             $data['enable_certificate'] = (bool) $request->enable_certificate;
         }
 
+        $plans = $this->validatedSubscriptionPlans($request);
+        unset($data['plans']);
+
         // If course is free, set price to 0
         if ($request->has('is_free') && $request->is_free) {
             $data['price'] = 0;
@@ -555,6 +578,7 @@ class CoursesController extends Controller
 
         // Update course
         $course->update($data);
+        $this->syncSubscriptionPlans($course, $plans);
 
         // Sync instructors (many-to-many relationship)
         if (!empty($request->instructor_ids)) {
@@ -1133,6 +1157,76 @@ class CoursesController extends Controller
 
         return redirect()->route('admin.courses.index')
             ->with('success', "Successfully updated status for {$updated} courses.");
+    }
+
+    /**
+     * Validate the pricing-mode toggles and return the filled-in subscription plan rows from the course form.
+     */
+    private function validatedSubscriptionPlans(Request $request): array
+    {
+        $plans = collect($request->input('plans', []))
+            ->filter(fn ($row) => isset($row['duration_months'], $row['price'])
+                && $row['duration_months'] !== '' && $row['price'] !== '')
+            ->map(fn ($row) => [
+                'id' => !empty($row['id']) ? (int) $row['id'] : null,
+                'duration_months' => (int) $row['duration_months'],
+                'price' => (float) $row['price'],
+                'renewal_price' => isset($row['renewal_price']) && $row['renewal_price'] !== ''
+                    ? (float) $row['renewal_price'] : null,
+                'is_active' => !empty($row['is_active']),
+            ])
+            ->values()
+            ->all();
+
+        $allowLifetime = $request->boolean('allow_lifetime', true);
+        $allowSubscription = $request->boolean('allow_subscription');
+
+        if (!$allowLifetime && !$allowSubscription && !$request->boolean('is_free')) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'allow_lifetime' => 'Enable at least one pricing option (buy forever or subscription).',
+            ]);
+        }
+
+        if ($allowSubscription && !collect($plans)->contains('is_active', true)) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'plans' => 'Add at least one active subscription plan with a duration and price.',
+            ]);
+        }
+
+        return $plans;
+    }
+
+    /**
+     * Create / update / delete the course's subscription plans to match the form.
+     */
+    private function syncSubscriptionPlans(Course $course, array $plans): void
+    {
+        $course->update([
+            'allow_lifetime' => request()->boolean('allow_lifetime', true),
+            'allow_subscription' => request()->boolean('allow_subscription'),
+        ]);
+
+        $keptIds = [];
+        foreach ($plans as $row) {
+            $plan = ($row['id'] ? $course->subscriptionPlans()->find($row['id']) : null)
+                ?? $course->subscriptionPlans()->firstOrNew(['duration_months' => $row['duration_months']]);
+
+            $plan->fill([
+                'duration_months' => $row['duration_months'],
+                'price' => $row['price'],
+                'renewal_price' => $row['renewal_price'],
+                'is_active' => $row['is_active'],
+            ])->save();
+
+            $keptIds[] = $plan->id;
+        }
+
+        $removed = $course->subscriptionPlans()->whereNotIn('id', $keptIds)->pluck('id');
+        if ($removed->isNotEmpty()) {
+            // Drop cart lines for removed plans so they don't silently turn into lifetime purchases
+            \App\Models\CartItem::whereIn('subscription_plan_id', $removed)->delete();
+            $course->subscriptionPlans()->whereIn('id', $removed)->delete();
+        }
     }
 
     public function updateStatus(Request $request, Course $course)

@@ -23,7 +23,7 @@ class CartController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $cartItems = $user->cartItems()->with('course.category', 'course.instructor', 'course.instructors', 'bundle.courses')->get();
+        $cartItems = $user->cartItems()->with('course.category', 'course.instructor', 'course.instructors', 'bundle.courses', 'subscriptionPlan')->get();
 
         $total = $cartItems->sum(function ($item) {
             return $item->getPrice();
@@ -56,23 +56,75 @@ class CartController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->hasInCart($course)) {
+        // plan_id = subscription period; empty = buy forever (lifetime)
+        $planId = $request->input('plan_id') ?: null;
+        $plan = null;
+
+        if ($planId) {
+            $plan = $course->offersSubscription()
+                ? $course->activeSubscriptionPlans->firstWhere('id', (int) $planId)
+                : null;
+
+            if (!$plan) {
+                return response()->json([
+                    'success' => false,
+                    'message' => custom_trans('This subscription plan is not available', 'front'),
+                ]);
+            }
+        } elseif (!$course->offersLifetime()) {
             return response()->json([
                 'success' => false,
-                'message' => custom_trans('Course is already in your cart', 'front'),
+                'message' => custom_trans('Please choose a subscription period', 'front'),
             ]);
         }
 
-        if ($user->blocksCoursePurchase($course->id)) {
+        $enrollment = $user->enrollments()->where('course_id', $course->id)->first();
+
+        if ($enrollment && $enrollment->status === 'pending') {
+            return response()->json([
+                'success' => false,
+                'message' => custom_trans('Your enrollment in this course is pending confirmation', 'front'),
+            ]);
+        }
+
+        // Already owns the course forever: nothing left to buy
+        if ($enrollment && $enrollment->isLifetime() && $enrollment->grantsAccess()) {
             return response()->json([
                 'success' => false,
                 'message' => custom_trans('You are already enrolled in this course', 'front'),
             ]);
         }
 
+        // Existing subscribers may extend (plan) or upgrade to lifetime; anything else that blocks purchase stops here
+        $isSubscriber = $enrollment && $enrollment->isSubscription();
+        if (!$isSubscriber && $user->blocksCoursePurchase($course->id)) {
+            return response()->json([
+                'success' => false,
+                'message' => custom_trans('You are already enrolled in this course', 'front'),
+            ]);
+        }
+
+        $existing = $user->cartItems()->where('course_id', $course->id)->first();
+        if ($existing) {
+            if ((int) $existing->subscription_plan_id === (int) optional($plan)->id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => custom_trans('Course is already in your cart', 'front'),
+                ]);
+            }
+
+            $existing->update(['subscription_plan_id' => optional($plan)->id]);
+
+            return response()->json([
+                'success' => true,
+                'message' => custom_trans('Cart updated successfully', 'front'),
+            ]);
+        }
+
         CartItem::create([
-            'user_id'   => $user->id,
-            'course_id' => $course->id,
+            'user_id'              => $user->id,
+            'course_id'            => $course->id,
+            'subscription_plan_id' => optional($plan)->id,
         ]);
 
         return response()->json([

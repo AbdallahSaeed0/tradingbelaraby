@@ -120,6 +120,11 @@ class StudentController extends Controller
             ->firstOrFail();
 
         if (!$enrollment->grantsAccess()) {
+            if ($enrollment->isSubscription() && $enrollment->isExpired()) {
+                return redirect()->route('courses.show', $enrollment->course_id)
+                    ->with('error', custom_trans('Your subscription to this course has expired. Renew it to continue learning.', 'front'));
+            }
+
             return redirect()->route('student.my-courses')
                 ->with('error', 'Your enrollment is pending payment confirmation. You will get access once it is approved.');
         }

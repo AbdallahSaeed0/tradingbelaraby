@@ -34,7 +34,7 @@ class CheckoutController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $cartItems = $user->cartItems()->with('course.instructor', 'course.instructors', 'bundle.courses')->get();
+        $cartItems = $user->cartItems()->with('course.instructor', 'course.instructors', 'bundle.courses', 'subscriptionPlan')->get();
 
         if ($cartItems->isEmpty()) {
             return redirect()->route('cart.index')->with('error', 'Your cart is empty');
@@ -162,7 +162,7 @@ class CheckoutController extends Controller
         ]);
 
         $user = Auth::user();
-        $cartItems = $user->cartItems()->with('course', 'bundle.courses')->get();
+        $cartItems = $user->cartItems()->with('course', 'bundle.courses', 'subscriptionPlan')->get();
 
         if ($cartItems->isEmpty()) {
             return redirect()->route('cart.index')->with('error', 'Your cart is empty');
@@ -188,7 +188,7 @@ class CheckoutController extends Controller
 
         // Check if all courses are free
         $allFree = $cartItems->every(function($item) {
-            return $item->course->price == 0;
+            return $item->getPrice() == 0;
         });
 
         // Validate payment method
@@ -259,7 +259,9 @@ class CheckoutController extends Controller
                     }
 
                     foreach ($cartItem->bundle->courses as $course) {
-                        if ($user->enrollments()->where('course_id', $course->id)->blockingPurchase()->exists()) {
+                        // Keep existing enrollments (and their progress); lifetime is applied after payment
+                        if ($user->enrollments()->where('course_id', $course->id)
+                            ->whereIn('status', ['active', 'completed', 'expired', 'pending'])->exists()) {
                             continue;
                         }
 
@@ -294,51 +296,65 @@ class CheckoutController extends Controller
                     }
                 } else {
                     $coursePaid = $paidByLine['course_' . $cartItem->course_id] ?? $cartItem->getPrice();
+                    $plan = $cartItem->isSubscription() ? $cartItem->subscriptionPlan : null;
 
                     // Handle individual course
-                OrderItem::create([
-                    'order_id' => $order->id,
-                    'course_id' => $cartItem->course_id,
-                    'price' => $coursePaid,
-                ]);
+                    OrderItem::create([
+                        'order_id' => $order->id,
+                        'course_id' => $cartItem->course_id,
+                        'subscription_plan_id' => $plan?->id,
+                        'duration_months' => $plan?->duration_months,
+                        'is_renewal' => $cartItem->isRenewal(),
+                        'price' => $coursePaid,
+                    ]);
+
+                    // Existing enrollment (extending a subscription or upgrading to lifetime): leave it and its
+                    // progress untouched; the paid time/lifetime is applied once the payment is confirmed.
+                    $existingEnrollment = $user->enrollments()->where('course_id', $cartItem->course_id)->first();
+                    if ($existingEnrollment && in_array($existingEnrollment->status, ['active', 'completed', 'expired'], true)) {
+                        continue;
+                    }
 
                     $enrollmentStatus = 'active';
                     if (in_array($request->payment_method, ['paypal', 'bank_transfer', 'visa'])) {
                         $enrollmentStatus = 'pending';
                     }
 
-                $enrollment = $user->enrollments()->updateOrCreate(
-                    ['course_id' => $cartItem->course_id],
-                    [
-                        'status'              => $enrollmentStatus,
-                        'enrolled_at'         => $enrollmentStatus === 'active' ? now() : null,
-                        'progress_percentage' => 0,
-                        'payment_method'      => $request->payment_method,
-                        'transaction_id'      => $request->payment_method === 'bank_transfer' && $request->transaction_reference
-                            ? $request->transaction_reference
-                            : $order->order_number,
-                        'notes'               => $request->payment_method === 'bank_transfer'
-                            ? 'Bank transfer reference: ' . ($request->transaction_reference ?? 'Not provided')
-                            : null,
-                        'amount_paid'         => $coursePaid,
-                    ]
-                );
+                    $enrollment = $user->enrollments()->updateOrCreate(
+                        ['course_id' => $cartItem->course_id],
+                        [
+                            'status'               => $enrollmentStatus,
+                            'access_type'          => $plan ? 'subscription' : 'lifetime',
+                            'subscription_plan_id' => $plan?->id,
+                            'expires_at'           => null,
+                            'enrolled_at'          => $enrollmentStatus === 'active' ? now() : null,
+                            'progress_percentage'  => 0,
+                            'payment_method'       => $request->payment_method,
+                            'transaction_id'       => $request->payment_method === 'bank_transfer' && $request->transaction_reference
+                                ? $request->transaction_reference
+                                : $order->order_number,
+                            'notes'                => $request->payment_method === 'bank_transfer'
+                                ? 'Bank transfer reference: ' . ($request->transaction_reference ?? 'Not provided')
+                                : null,
+                            'amount_paid'          => $coursePaid,
+                        ]
+                    );
 
-                // Send enrollment notification email
-                try {
-                    $course = Course::find($cartItem->course_id);
-                    if ($course) {
-                        $language = Session::get('frontend_locale', config('app.locale'));
-                        $language = in_array($language, ['ar', 'en']) ? $language : 'en';
-                        $user->notify(new CourseEnrollmentNotification($course, $order, $language));
+                    // Send enrollment notification email
+                    try {
+                        $course = Course::find($cartItem->course_id);
+                        if ($course) {
+                            $language = Session::get('frontend_locale', config('app.locale'));
+                            $language = in_array($language, ['ar', 'en']) ? $language : 'en';
+                            $user->notify(new CourseEnrollmentNotification($course, $order, $language));
+                        }
+                    } catch (\Exception $e) {
+                        Log::error('Failed to send enrollment notification', [
+                            'user_id' => $user->id,
+                            'course_id' => $cartItem->course_id,
+                            'error' => $e->getMessage()
+                        ]);
                     }
-                } catch (\Exception $e) {
-                    Log::error('Failed to send enrollment notification', [
-                        'user_id' => $user->id,
-                        'course_id' => $cartItem->course_id,
-                        'error' => $e->getMessage()
-                    ]);
-                }
                 }
             }
 
@@ -355,6 +371,10 @@ class CheckoutController extends Controller
 
                 // Clear coupon from session
                 session()->forget('applied_coupon');
+            }
+
+            if ($request->payment_method === 'free') {
+                $order->applyEnrollmentAccess();
             }
 
             DB::commit();
@@ -639,6 +659,8 @@ class CheckoutController extends Controller
                     'status' => 'active',
                     'enrolled_at' => now(),
                 ]);
+
+            $order->applyEnrollmentAccess();
 
             $order->user->cartItems()->delete();
 

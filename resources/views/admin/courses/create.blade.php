@@ -480,6 +480,7 @@
                                     <span id="discount_preview_text"></span>
                                 </div>
                             </div>
+                            @include('admin.courses.partials.pricing-plans', ['course' => null])
                             <div class="col-md-12 mb-3">
                                 <label for="preview_video_url" class="form-label">Preview Video URL
                                     (YouTube/Vimeo)</label>

@@ -13,6 +13,8 @@ class CourseEnrollment extends Model
         'course_id',
         'user_id',
         'status',
+        'access_type',
+        'subscription_plan_id',
         'enrolled_at',
         'completed_at',
         'expires_at',
@@ -58,6 +60,14 @@ class CourseEnrollment extends Model
     }
 
     /**
+     * Subscription plan this enrollment was last bought/extended with
+     */
+    public function subscriptionPlan(): BelongsTo
+    {
+        return $this->belongsTo(CourseSubscriptionPlan::class, 'subscription_plan_id');
+    }
+
+    /**
      * Get the lecture completions for this enrollment
      */
     public function lectureCompletions()
@@ -71,15 +81,78 @@ class CourseEnrollment extends Model
      */
     public function scopeAccessible($query)
     {
-        return $query->whereIn('status', ['active', 'completed']);
+        return $query->whereIn('status', ['active', 'completed'])
+            ->where(function ($q) {
+                $q->whereNull('expires_at')->orWhere('expires_at', '>', now());
+            });
     }
 
     /**
      * Enrollments that block re-purchase (including pending payment).
+     * An expired subscription does not block: the student can renew it.
      */
     public function scopeBlockingPurchase($query)
     {
-        return $query->whereIn('status', ['active', 'completed', 'pending']);
+        return $query->where(function ($q) {
+            $q->where('status', 'pending')
+                ->orWhere(function ($q) {
+                    $q->accessible();
+                });
+        });
+    }
+
+    /**
+     * Subscription enrollments (time-limited access)
+     */
+    public function scopeSubscription($query)
+    {
+        return $query->where('access_type', 'subscription');
+    }
+
+    public function isSubscription(): bool
+    {
+        return $this->access_type === 'subscription';
+    }
+
+    public function isLifetime(): bool
+    {
+        return !$this->isSubscription();
+    }
+
+    /**
+     * Add paid subscription time. Extends from the current expiry while still active,
+     * otherwise from now (expired subscription or brand-new one).
+     */
+    public function extendSubscription(int $months, ?int $planId = null): void
+    {
+        if ($this->isLifetime() && $this->grantsAccess()) {
+            return; // lifetime access never expires; nothing to extend
+        }
+
+        $base = $this->expires_at && $this->expires_at->isFuture() ? $this->expires_at->copy() : now();
+
+        $this->access_type = 'subscription';
+        $this->subscription_plan_id = $planId ?? $this->subscription_plan_id;
+        $this->expires_at = $base->addMonthsNoOverflow($months);
+        if (in_array($this->status, ['pending', 'expired', 'cancelled'], true)) {
+            $this->status = 'active';
+            $this->enrolled_at = $this->enrolled_at ?? now();
+        }
+        $this->save();
+    }
+
+    /**
+     * Convert to permanent ("buy forever") access.
+     */
+    public function grantLifetime(): void
+    {
+        $this->access_type = 'lifetime';
+        $this->expires_at = null;
+        if (in_array($this->status, ['pending', 'expired', 'cancelled'], true)) {
+            $this->status = 'active';
+            $this->enrolled_at = $this->enrolled_at ?? now();
+        }
+        $this->save();
     }
 
     /**

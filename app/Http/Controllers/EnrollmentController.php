@@ -53,7 +53,7 @@ class EnrollmentController extends Controller
         }
 
         // Prevent direct enrollment for paid courses - they must go through checkout/cart
-        if (!$course->is_free && $course->price > 0) {
+        if (!$course->is_free && $course->requiresPayment()) {
             $message = custom_trans('This is a paid course. Please add it to your cart and complete checkout.', 'front');
 
             if ($request->expectsJson()) {

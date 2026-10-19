@@ -127,6 +127,9 @@ class PayPalController extends Controller
                     ]);
                 }
 
+                // Apply lifetime access / subscription time (incl. extensions of existing subscriptions)
+                $order->applyEnrollmentAccess();
+
                 // Clear cart after successful payment
                 $user->cartItems()->delete();
 
