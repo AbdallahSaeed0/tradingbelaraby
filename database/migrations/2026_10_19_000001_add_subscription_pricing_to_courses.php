@@ -8,47 +8,70 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
+     * Every step is guarded so the migration can be re-run after a partial failure
+     * (MySQL DDL is not transactional), and new columns are appended rather than
+     * positioned after columns that may not exist on every environment.
      */
     public function up(): void
     {
         // Pricing modes on the course: lifetime ("buy forever" using courses.price) and/or time-limited subscription
         Schema::table('courses', function (Blueprint $table) {
-            $table->boolean('allow_lifetime')->default(true)->after('original_price');
-            $table->boolean('allow_subscription')->default(false)->after('allow_lifetime');
+            if (!Schema::hasColumn('courses', 'allow_lifetime')) {
+                $table->boolean('allow_lifetime')->default(true);
+            }
+            if (!Schema::hasColumn('courses', 'allow_subscription')) {
+                $table->boolean('allow_subscription')->default(false);
+            }
         });
 
         // Subscription plans per course (e.g. 3, 6, 12 months)
-        Schema::create('course_subscription_plans', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('course_id')->constrained()->onDelete('cascade');
-            $table->unsignedSmallInteger('duration_months');
-            $table->decimal('price', 10, 2);
-            // Price an existing subscriber pays to add this period to their access (null = same as price)
-            $table->decimal('renewal_price', 10, 2)->nullable();
-            $table->boolean('is_active')->default(true);
-            $table->timestamps();
+        if (!Schema::hasTable('course_subscription_plans')) {
+            Schema::create('course_subscription_plans', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('course_id')->constrained()->onDelete('cascade');
+                $table->unsignedSmallInteger('duration_months');
+                $table->decimal('price', 10, 2);
+                // Price an existing subscriber pays to add this period to their access (null = same as price)
+                $table->decimal('renewal_price', 10, 2)->nullable();
+                $table->boolean('is_active')->default(true);
+                $table->timestamps();
 
-            $table->unique(['course_id', 'duration_months']);
-        });
+                $table->unique(['course_id', 'duration_months']);
+            });
+        }
 
-        Schema::table('cart_items', function (Blueprint $table) {
-            $table->foreignId('subscription_plan_id')->nullable()->after('bundle_id')
-                ->constrained('course_subscription_plans')->nullOnDelete();
-        });
+        if (!Schema::hasColumn('cart_items', 'subscription_plan_id')) {
+            Schema::table('cart_items', function (Blueprint $table) {
+                $table->foreignId('subscription_plan_id')->nullable()
+                    ->constrained('course_subscription_plans')->nullOnDelete();
+            });
+        }
 
         Schema::table('order_items', function (Blueprint $table) {
-            $table->foreignId('subscription_plan_id')->nullable()->after('bundle_id')
-                ->constrained('course_subscription_plans')->nullOnDelete();
-            $table->unsignedSmallInteger('duration_months')->nullable()->after('subscription_plan_id');
-            $table->boolean('is_renewal')->default(false)->after('duration_months');
-            // Set once the paid access (lifetime or extra months) has been applied to the enrollment
-            $table->timestamp('access_applied_at')->nullable()->after('is_renewal');
+            if (!Schema::hasColumn('order_items', 'subscription_plan_id')) {
+                $table->foreignId('subscription_plan_id')->nullable()
+                    ->constrained('course_subscription_plans')->nullOnDelete();
+            }
+            if (!Schema::hasColumn('order_items', 'duration_months')) {
+                $table->unsignedSmallInteger('duration_months')->nullable();
+            }
+            if (!Schema::hasColumn('order_items', 'is_renewal')) {
+                $table->boolean('is_renewal')->default(false);
+            }
+            if (!Schema::hasColumn('order_items', 'access_applied_at')) {
+                // Set once the paid access (lifetime or extra months) has been applied to the enrollment
+                $table->timestamp('access_applied_at')->nullable();
+            }
         });
 
         Schema::table('course_enrollments', function (Blueprint $table) {
-            $table->string('access_type', 20)->default('lifetime')->after('status');
-            $table->foreignId('subscription_plan_id')->nullable()->after('access_type')
-                ->constrained('course_subscription_plans')->nullOnDelete();
+            if (!Schema::hasColumn('course_enrollments', 'access_type')) {
+                $table->string('access_type', 20)->default('lifetime');
+            }
+            if (!Schema::hasColumn('course_enrollments', 'subscription_plan_id')) {
+                $table->foreignId('subscription_plan_id')->nullable()
+                    ->constrained('course_subscription_plans')->nullOnDelete();
+            }
         });
     }
 
@@ -57,24 +80,44 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('course_enrollments', function (Blueprint $table) {
-            $table->dropConstrainedForeignId('subscription_plan_id');
-            $table->dropColumn('access_type');
-        });
+        if (Schema::hasColumn('course_enrollments', 'subscription_plan_id')) {
+            Schema::table('course_enrollments', function (Blueprint $table) {
+                $table->dropConstrainedForeignId('subscription_plan_id');
+            });
+        }
+        if (Schema::hasColumn('course_enrollments', 'access_type')) {
+            Schema::table('course_enrollments', function (Blueprint $table) {
+                $table->dropColumn('access_type');
+            });
+        }
 
-        Schema::table('order_items', function (Blueprint $table) {
-            $table->dropConstrainedForeignId('subscription_plan_id');
-            $table->dropColumn(['duration_months', 'is_renewal', 'access_applied_at']);
-        });
+        if (Schema::hasColumn('order_items', 'subscription_plan_id')) {
+            Schema::table('order_items', function (Blueprint $table) {
+                $table->dropConstrainedForeignId('subscription_plan_id');
+            });
+        }
+        foreach (['duration_months', 'is_renewal', 'access_applied_at'] as $column) {
+            if (Schema::hasColumn('order_items', $column)) {
+                Schema::table('order_items', function (Blueprint $table) use ($column) {
+                    $table->dropColumn($column);
+                });
+            }
+        }
 
-        Schema::table('cart_items', function (Blueprint $table) {
-            $table->dropConstrainedForeignId('subscription_plan_id');
-        });
+        if (Schema::hasColumn('cart_items', 'subscription_plan_id')) {
+            Schema::table('cart_items', function (Blueprint $table) {
+                $table->dropConstrainedForeignId('subscription_plan_id');
+            });
+        }
 
         Schema::dropIfExists('course_subscription_plans');
 
-        Schema::table('courses', function (Blueprint $table) {
-            $table->dropColumn(['allow_lifetime', 'allow_subscription']);
-        });
+        foreach (['allow_lifetime', 'allow_subscription'] as $column) {
+            if (Schema::hasColumn('courses', $column)) {
+                Schema::table('courses', function (Blueprint $table) use ($column) {
+                    $table->dropColumn($column);
+                });
+            }
+        }
     }
 };
