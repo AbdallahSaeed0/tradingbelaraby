@@ -790,7 +790,7 @@
             let CityApi;
 
             try {
-                const csc = await import('https://cdn.jsdelivr.net/npm/country-state-city@3.1.0/lib/esm/index.js');
+                const csc = await import('https://cdn.jsdelivr.net/npm/country-state-city@3.1.0/+esm');
                 StateApi = csc.State;
                 CityApi = csc.City;
             } catch (error) {
