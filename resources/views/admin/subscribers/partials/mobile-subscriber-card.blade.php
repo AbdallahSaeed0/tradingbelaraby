@@ -28,7 +28,7 @@
     'checkboxValue' => $subscriber->id,
     'checkboxLabel' => 'Select ' . $subscriber->name,
     'heroUrl' => route('admin.subscribers.show', $subscriber),
-    'placeholder' => strtoupper(substr($subscriber->name, 0, 1)),
+    'iconClass' => 'fa-user',
     'title' => $subscriber->name,
     'subtitle' => $subscriber->email,
     'chips' => $chips,

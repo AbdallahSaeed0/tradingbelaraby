@@ -12,40 +12,47 @@ class BlogCategoryController extends Controller
 {
     public function index(Request $request)
     {
-        $search = $request->q;
-        $per = $request->per_page ?? 15;
+        $search = trim((string) $request->input('search', $request->input('q', '')));
+        $per = (int) ($request->per_page ?? 15);
 
-        $categories = BlogCategory::when($search, function($query) use ($search) {
-                $query->where('name', 'like', "%{$search}%")
-                      ->orWhere('description', 'like', "%{$search}%");
-            })
-            ->withCount(['blogs', 'publishedBlogs'])
-            ->ordered()
-            ->paginate($per)
-            ->withQueryString();
+        $categories = $this->filteredCategories($request, $search, $per);
 
         return view('admin.blog-categories.index', compact('categories', 'search', 'per'));
     }
 
     public function data(Request $request)
     {
-        $search = $request->q;
-        $per = $request->per_page ?? 15;
+        $search = trim((string) $request->input('search', $request->input('q', '')));
+        $per = (int) ($request->per_page ?? 15);
 
-        $categories = BlogCategory::when($search, function($query) use ($search) {
-                $query->where('name', 'like', "%{$search}%")
-                      ->orWhere('description', 'like', "%{$search}%");
-            })
-            ->withCount(['blogs', 'publishedBlogs'])
-            ->ordered()
-            ->paginate($per)
-            ->withQueryString();
+        $categories = $this->filteredCategories($request, $search, $per);
 
         if ($request->ajax()) {
             return view('admin.blog-categories.partials.table', compact('categories'))->render();
         }
 
         abort(404);
+    }
+
+    private function filteredCategories(Request $request, string $search, int $per)
+    {
+        return BlogCategory::query()
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('name_ar', 'like', "%{$search}%")
+                        ->orWhere('description', 'like', "%{$search}%");
+                });
+            })
+            ->when(in_array($request->status, ['active', 'inactive'], true), function ($query) use ($request) {
+                $query->where('status', $request->status);
+            })
+            ->when($request->blogs === 'with_blogs', fn ($query) => $query->has('blogs'))
+            ->when($request->blogs === 'without_blogs', fn ($query) => $query->doesntHave('blogs'))
+            ->withCount(['blogs', 'publishedBlogs'])
+            ->ordered()
+            ->paginate($per > 0 ? $per : 15)
+            ->withQueryString();
     }
 
     public function create()

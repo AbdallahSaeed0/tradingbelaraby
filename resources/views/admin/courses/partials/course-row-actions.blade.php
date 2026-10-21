@@ -13,7 +13,7 @@
     </a>
     <div class="dropdown d-inline">
         <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
-            data-bs-toggle="dropdown" data-bs-popper-config='{"strategy":"fixed"}' aria-label="More actions">
+            data-bs-toggle="dropdown" aria-label="More actions">
             <i class="fa fa-ellipsis-v"></i>
         </button>
         <ul class="dropdown-menu dropdown-menu-end">

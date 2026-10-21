@@ -195,12 +195,6 @@
                     <i class="fa fa-language"></i>
                     <span class="sidebar-nav-text">Translations</span>
                 </a>
-                <a href="{{ route('admin.debug-translations') }}"
-                    class="list-group-item list-group-item-action {{ request()->routeIs('admin.debug-translations') ? 'active' : '' }}"
-                    title="Debug Translations">
-                    <i class="fa fa-bug"></i>
-                    <span class="sidebar-nav-text">Debug Translations</span>
-                </a>
             @endif
 
             <!-- Notifications Section -->

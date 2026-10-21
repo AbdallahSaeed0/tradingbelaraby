@@ -39,13 +39,16 @@
 
     <{{ $heroTag }} @if ($heroUrl) href="{{ $heroUrl }}" @endif class="admin-mobile-card__hero">
         @if ($imageUrl)
-            <img src="{{ $imageUrl }}" alt="{{ $title }}" class="admin-mobile-card__thumb">
-        @elseif ($iconClass)
-            <div class="admin-mobile-card__thumb admin-mobile-card__thumb--icon">
+            {{-- Swap in the fallback below if the image fails to load --}}
+            <img src="{{ $imageUrl }}" alt="{{ $title }}" class="admin-mobile-card__thumb"
+                onerror="this.nextElementSibling.classList.remove('d-none'); this.remove();">
+        @endif
+        @if ($iconClass)
+            <div class="admin-mobile-card__thumb admin-mobile-card__thumb--icon {{ $imageUrl ? 'd-none' : '' }}">
                 <i class="fa {{ $iconClass }}"></i>
             </div>
         @else
-            <div class="admin-mobile-card__thumb admin-mobile-card__thumb--placeholder">{{ $placeholder }}</div>
+            <div class="admin-mobile-card__thumb admin-mobile-card__thumb--placeholder {{ $imageUrl ? 'd-none' : '' }}">{{ $placeholder }}</div>
         @endif
         <div class="admin-mobile-card__copy">
             <h3 class="admin-mobile-card__title">{{ $title }}</h3>

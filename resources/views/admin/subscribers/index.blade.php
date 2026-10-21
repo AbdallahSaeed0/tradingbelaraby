@@ -145,9 +145,8 @@
                                     </td>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <div
-                                                class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2">
-                                                {{ strtoupper(substr($subscriber->name, 0, 1)) }}
+                                            <div class="user-avatar me-2">
+                                                <i class="fa fa-user"></i>
                                             </div>
                                             <div>
                                                 <div class="fw-bold">{{ $subscriber->name }}</div>

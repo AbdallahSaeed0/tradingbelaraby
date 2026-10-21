@@ -404,29 +404,6 @@
 
 @push('styles')
     <style>
-        .user-avatar {
-            position: relative;
-            width: 40px;
-            height: 40px;
-            flex-shrink: 0;
-            border-radius: 50%;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--admin-border, #dee2e6);
-            color: var(--admin-text-muted, #6c757d);
-            font-size: 1.1rem;
-        }
-
-        .user-avatar img {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
         .enrollment-progress {
             min-width: 140px;
             max-width: 200px;

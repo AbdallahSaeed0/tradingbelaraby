@@ -47,7 +47,7 @@
     'statusHtml' => $statusHtml,
     'heroUrl' => route('admin.courses.show', $enrollment->course),
     'imageUrl' => $avatarUrl,
-    'placeholder' => strtoupper(substr($enrollment->user->name, 0, 2)),
+    'iconClass' => 'fa-user',
     'title' => $enrollment->user->name,
     'subtitle' => $enrollment->user->email,
     'chips' => $chips,

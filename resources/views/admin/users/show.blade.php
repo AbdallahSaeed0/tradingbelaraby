@@ -18,9 +18,14 @@
                 <div class="card shadow-sm" id="detail-section-info">
                     <div class="card-header fw-semibold">Profile</div>
                     <div class="card-body admin-detail-grid">
-                        <div class="text-center mb-4">
-                            <img src="{{ $user->avatar ? asset('storage/' . $user->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&size=100&background=007bff&color=fff' }}"
-                                class="rounded-circle" width="100" height="100" alt="avatar">
+                        <div class="d-flex justify-content-center mb-4">
+                            <div class="user-avatar user-avatar--lg">
+                                <i class="fa fa-user"></i>
+                                @if ($user->avatar)
+                                    <img src="{{ asset('storage/' . $user->avatar) }}" alt="{{ $user->name }}"
+                                        onerror="this.remove()">
+                                @endif
+                            </div>
                         </div>
                         <div class="row mb-0">
                             <div class="col-md-6 admin-detail-field">

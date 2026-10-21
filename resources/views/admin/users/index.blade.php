@@ -141,7 +141,7 @@
                                 <th>Verified</th>
                                 <th>Enrollments</th>
                                 <th>Joined</th>
-                                <th width="120">Actions</th>
+                                <th width="170">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -155,15 +155,13 @@
                                     </td>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            @if ($user->avatar)
-                                                <img src="{{ asset('storage/' . $user->avatar) }}" alt="User"
-                                                    class="user-avatar me-3">
-                                            @else
-                                                <div
-                                                    class="user-avatar me-3 bg-primary text-white d-flex align-items-center justify-content-center">
-                                                    {{ strtoupper(substr($user->name, 0, 2)) }}
-                                                </div>
-                                            @endif
+                                            <div class="user-avatar me-3">
+                                                <i class="fa fa-user"></i>
+                                                @if ($user->avatar)
+                                                    <img src="{{ asset('storage/' . $user->avatar) }}"
+                                                        alt="{{ $user->name }}" onerror="this.remove()">
+                                                @endif
+                                            </div>
                                             <div>
                                                 <h6 class="mb-0">{{ $user->name }}</h6>
                                                 <small class="text-muted">ID: {{ $user->id }}</small>
@@ -204,25 +202,25 @@
                                         <small class="text-muted d-block">{{ $user->created_at->diffForHumans() }}</small>
                                     </td>
                                     <td>
-                                        <div class="btn-group btn-group-sm">
+                                        <div class="table-icon-actions">
                                             <a href="{{ route('admin.users.show', $user) }}"
-                                                class="btn btn-outline-primary" title="View">
+                                                class="btn btn-sm btn-outline-primary" title="View">
                                                 <i class="fa fa-eye"></i>
                                             </a>
                                             <a href="{{ route('admin.users.enrollments-report', $user) }}"
-                                                class="btn btn-outline-success" title="Enrollments Report">
+                                                class="btn btn-sm btn-outline-success" title="Enrollments Report">
                                                 <i class="fa fa-chart-bar"></i>
                                             </a>
                                             <a href="{{ route('admin.users.edit', $user) }}"
-                                                class="btn btn-outline-secondary" title="Edit">
+                                                class="btn btn-sm btn-outline-info" title="Edit">
                                                 <i class="fa fa-edit"></i>
                                             </a>
-                                            <div class="dropdown d-inline">
-                                                <button class="btn btn-outline-secondary dropdown-toggle" type="button"
-                                                    data-bs-toggle="dropdown">
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-secondary" type="button"
+                                                    data-bs-toggle="dropdown" aria-label="More actions" title="More actions">
                                                     <i class="fa fa-ellipsis-v"></i>
                                                 </button>
-                                                <ul class="dropdown-menu">
+                                                <ul class="dropdown-menu dropdown-menu-end">
                                                     @if($user->email_verified_at)
                                                         <li>
                                                             <button type="button" class="dropdown-item" onclick="unverifyUser({{ $user->id }})">

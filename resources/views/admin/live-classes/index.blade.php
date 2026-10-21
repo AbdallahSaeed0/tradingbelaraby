@@ -23,6 +23,47 @@
             color: #d0d3d8 !important;
             opacity: 1 !important;
         }
+
+        .live-classes-table td {
+            vertical-align: middle;
+        }
+
+        .live-classes-table .col-name {
+            min-width: 240px;
+            width: 26%;
+        }
+
+        .live-classes-table .col-course {
+            width: 20%;
+        }
+
+        .live-classes-table .col-actions {
+            width: 160px;
+        }
+
+        .live-classes-table .live-class-name {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.35;
+        }
+
+        .live-classes-table .live-class-desc {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .live-classes-table .live-class-course {
+            display: inline-block;
+            max-width: 100%;
+            white-space: normal;
+            text-align: start;
+            line-height: 1.35;
+            font-weight: 500;
+        }
     </style>
     <script>
         // Direct fix for search input
@@ -212,7 +253,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive d-none d-lg-block admin-table-no-mobile-cards">
-                            <table class="table table-hover table-striped">
+                            <table class="table table-hover table-striped live-classes-table">
                                 <thead>
                                     <tr>
                                         <th width="50">
@@ -220,14 +261,14 @@
                                                 <input class="form-check-input" type="checkbox" id="selectAll">
                                             </div>
                                         </th>
-                                        <th>Name</th>
-                                        <th>Course</th>
+                                        <th class="col-name">Name</th>
+                                        <th class="col-course">Course</th>
                                         <th>Instructor</th>
-                                        <th>Scheduled At</th>
+                                        <th class="text-nowrap">Scheduled At</th>
                                         <th>Duration</th>
                                         <th>Status</th>
                                         <th>Participants</th>
-                                        <th>Actions</th>
+                                        <th class="col-actions">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -248,18 +289,18 @@
                                                     <div class="me-3">
                                                         <i class="fa fa-video text-primary fa-lg"></i>
                                                     </div>
-                                                    <div>
-                                                        <h6 class="mb-0">{{ $liveClass->name }}</h6>
+                                                    <div class="min-w-0">
+                                                        <h6 class="mb-0 live-class-name" title="{{ $liveClass->name }}">{{ $liveClass->name }}</h6>
                                                         @if ($liveClass->description)
-                                                            <small
-                                                                class="text-muted">{{ Str::limit($liveClass->description, 50) }}</small>
+                                                            <small class="text-muted live-class-desc"
+                                                                title="{{ strip_tags($liveClass->description) }}">{{ Str::limit(strip_tags($liveClass->description), 120) }}</small>
                                                         @endif
                                                     </div>
                                                 </div>
                                             </td>
                                             <td>
-                                                <span
-                                                    class="badge bg-light text-dark">{{ $liveClass->course->name }}</span>
+                                                <span class="badge bg-primary live-class-course"
+                                                    title="{{ $liveClass->course->name }}">{{ $liveClass->course->name }}</span>
                                             </td>
                                             <td>{{ $liveClass->instructor->name }}</td>
                                             <td>
@@ -297,7 +338,7 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <div class="live-class-actions">
+                                                <div class="table-icon-actions">
                                                     <a href="{{ route('admin.live-classes.edit', $liveClass) }}"
                                                         class="btn btn-outline-primary btn-sm" title="Edit">
                                                         <i class="fa fa-edit"></i>

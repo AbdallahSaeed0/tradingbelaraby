@@ -30,7 +30,7 @@
     'statusHtml' => $statusHtml,
     'heroUrl' => route('admin.users.show', $user),
     'imageUrl' => $avatarUrl,
-    'placeholder' => strtoupper(substr($user->name, 0, 2)),
+    'iconClass' => 'fa-user',
     'title' => $user->name,
     'subtitle' => 'ID: ' . $user->id,
     'chips' => $chips,

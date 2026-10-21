@@ -414,7 +414,9 @@ Route::resource('quizzes.questions', App\Http\Controllers\Admin\QuizQuestionMana
     // Blogs analytics route must be before resource route to avoid route conflict
     Route::get('/blogs/analytics', [App\Http\Controllers\Admin\BlogsController::class, 'analytics'])->name('blogs.analytics')->middleware('admin.permission:view_analytics');
     Route::resource('blogs', App\Http\Controllers\Admin\BlogsController::class)->middleware('admin.permission:manage_blogs');
-    Route::resource('blog-categories', App\Http\Controllers\Admin\BlogCategoryController::class)->parameters(['blog-categories' => 'category'])->middleware('admin.permission:manage_blogs');
+    // Blog categories analytics route must be before resource route to avoid route conflict
+    Route::get('/blog-categories/analytics', [App\Http\Controllers\Admin\BlogCategoryController::class, 'analytics'])->name('blog-categories.analytics')->middleware('admin.permission:view_analytics');
+    Route::resource('blog-categories',App\Http\Controllers\Admin\BlogCategoryController::class)->parameters(['blog-categories' => 'category'])->middleware('admin.permission:manage_blogs');
     Route::get('/subscribers/export', [App\Http\Controllers\Admin\SubscriberController::class, 'export'])->name('subscribers.export')->middleware('admin.permission:manage_users');
     Route::post('/subscribers/bulk-delete', [App\Http\Controllers\Admin\SubscriberController::class, 'bulkDelete'])->name('subscribers.bulk-delete')->middleware('admin.permission:manage_users');
     Route::resource('subscribers', App\Http\Controllers\Admin\SubscriberController::class)->only(['index', 'show', 'destroy'])->middleware('admin.permission:manage_users');
@@ -500,7 +502,6 @@ Route::resource('quizzes.questions', App\Http\Controllers\Admin\QuizQuestionMana
     Route::post('/users/{user}/unverify', [App\Http\Controllers\Admin\UsersController::class, 'unverify'])->name('users.unverify');
     Route::post('/users/{user}/resend-verification', [App\Http\Controllers\Admin\UsersController::class, 'resendVerification'])->name('users.resend-verification');
     Route::get('/users/{user}/enrollments-report', [App\Http\Controllers\Admin\UsersController::class, 'enrollmentsReport'])->name('users.enrollments-report')->middleware('admin.permission:manage_users');
-    Route::get('/blog-categories/analytics', [App\Http\Controllers\Admin\BlogCategoryController::class, 'analytics'])->name('blog-categories.analytics')->middleware('admin.permission:view_analytics');
     Route::post('/blog-categories/{category}/toggle-status', [App\Http\Controllers\Admin\BlogCategoryController::class, 'toggleStatus'])->name('blog-categories.toggle_status');
     Route::post('/blog-categories/{category}/update-status', [App\Http\Controllers\Admin\BlogCategoryController::class, 'updateStatus'])->name('blog-categories.update_status');
     Route::post('/blog-categories/bulk-delete', [App\Http\Controllers\Admin\BlogCategoryController::class, 'bulkDelete'])->name('blog-categories.bulk_delete');
@@ -656,9 +657,4 @@ Route::resource('quizzes.questions', App\Http\Controllers\Admin\QuizQuestionMana
     Route::delete('/settings/slider/{slider}', [App\Http\Controllers\Admin\SettingsController::class, 'destroySlider'])->name('settings.slider.destroy');
     Route::post('/settings/slider/{slider}/toggle-status', [App\Http\Controllers\Admin\SettingsController::class, 'toggleSliderStatus'])->name('settings.slider.toggle-status');
     Route::post('/settings/slider/order', [App\Http\Controllers\Admin\SettingsController::class, 'updateSliderOrder'])->name('settings.slider.order');
-
-    // Debug route for translations (remove in production)
-    Route::get('/debug-translations', function () {
-        return view('admin.debug-translations');
-    })->name('debug-translations');
 });

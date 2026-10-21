@@ -24,7 +24,7 @@
             </td>
             <td>
                 <div class="dropdown">
-                    <button class="btn btn-sm btn-light border dropdown-toggle" data-bs-toggle="dropdown">Actions</button>
+                    <button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-cog me-1"></i>Actions</button>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="{{ route('admin.admins.edit', $admin) }}"><i
                                     class="fa fa-edit me-2"></i>Edit</a></li>

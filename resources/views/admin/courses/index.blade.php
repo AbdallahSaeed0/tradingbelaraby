@@ -171,7 +171,7 @@
         <!-- Courses Table (desktop) -->
         <div class="card" id="listViewContainer">
             <div class="card-body">
-                <div class="table-responsive d-none d-lg-block admin-table-no-mobile-cards">
+                <div class="table-responsive d-none d-lg-block admin-table-no-mobile-cards courses-admin-table-wrap">
                     <table class="table table-hover table-striped courses-admin-table">
                         <thead>
                             <tr>
@@ -435,7 +435,12 @@
                 vertical-align: middle;
             }
 
-            /* Let the row actions dropdown escape the cell */
+            /* Let the row actions dropdown escape the cell and the table wrapper
+               (the fixed-layout table never needs horizontal scrolling here) */
+            .courses-admin-table-wrap {
+                overflow: visible;
+            }
+
             .courses-admin-table td.col-actions {
                 overflow: visible;
             }

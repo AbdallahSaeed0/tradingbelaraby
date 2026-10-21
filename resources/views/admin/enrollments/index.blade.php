@@ -233,15 +233,13 @@
                                     </td>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            @if ($enrollment->user->avatar)
-                                                <img src="{{ asset('storage/' . $enrollment->user->avatar) }}"
-                                                    alt="{{ $enrollment->user->name }}" class="user-avatar me-3">
-                                            @else
-                                                <div
-                                                    class="user-avatar me-3 bg-primary text-white d-flex align-items-center justify-content-center">
-                                                    {{ strtoupper(substr($enrollment->user->name, 0, 2)) }}
-                                                </div>
-                                            @endif
+                                            <div class="user-avatar me-3">
+                                                <i class="fa fa-user"></i>
+                                                @if ($enrollment->user->avatar)
+                                                    <img src="{{ asset('storage/' . $enrollment->user->avatar) }}"
+                                                        alt="{{ $enrollment->user->name }}" onerror="this.remove()">
+                                                @endif
+                                            </div>
                                             <div>
                                                 <h6 class="mb-0">{{ $enrollment->user->name }}</h6>
                                                 <small class="text-muted">{{ $enrollment->user->email }}</small>

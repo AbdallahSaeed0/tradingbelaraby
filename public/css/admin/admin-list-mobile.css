@@ -582,7 +582,8 @@
 }
 
 @media (min-width: 992px) {
-    body.admin-detail-page .admin-detail-page-header {
+    /* Course detail has its own hero with back/edit actions */
+    body.admin-course-detail-page .admin-detail-page-header {
         display: none !important;
     }
 
