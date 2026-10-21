@@ -36,9 +36,6 @@ class EnsureEmailIsVerifiedForAuthUsers
         'live-classes.unregister',
         'live-classes.join',
         'tabby.*',
-        'paypal.success',
-        'paypal.cancel',
-        'paypal.failure',
         'bundles.index',
         'bundles.show',
     ];

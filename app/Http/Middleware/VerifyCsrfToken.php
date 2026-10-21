@@ -12,7 +12,6 @@ class VerifyCsrfToken extends Middleware
      * @var array<int, string>
      */
     protected $except = [
-        'webhook/paypal',
         'webhook/google-play',
         '.well-known/apple-app-site-association',
         'app/enrollment-success',

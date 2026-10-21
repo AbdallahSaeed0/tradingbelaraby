@@ -435,6 +435,11 @@
                 vertical-align: middle;
             }
 
+            /* Let the row actions dropdown escape the cell */
+            .courses-admin-table td.col-actions {
+                overflow: visible;
+            }
+
             .courses-admin-table .col-course {
                 width: 28%;
             }

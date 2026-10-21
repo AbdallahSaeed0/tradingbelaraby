@@ -197,16 +197,14 @@
                                 <tr>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            @if ($enrollment->user->avatar)
-                                                <img src="{{ asset('storage/' . $enrollment->user->avatar) }}"
-                                                    alt="{{ $enrollment->user->name }}" class="user-avatar me-3">
-                                            @else
-                                                <div
-                                                    class="user-avatar me-3 bg-primary text-white d-flex align-items-center justify-content-center">
-                                                    {{ strtoupper(substr($enrollment->user->name, 0, 2)) }}
-                                                </div>
-                                            @endif
-                                            <div>
+                                            <div class="user-avatar me-3">
+                                                <i class="fa fa-user"></i>
+                                                @if ($enrollment->user->avatar)
+                                                    <img src="{{ asset('storage/' . $enrollment->user->avatar) }}"
+                                                        alt="{{ $enrollment->user->name }}" onerror="this.remove()">
+                                                @endif
+                                            </div>
+                                            <div class="min-w-0">
                                                 <h6 class="mb-0">{{ $enrollment->user->name }}</h6>
                                                 <small class="text-muted">{{ $enrollment->user->email }}</small>
                                             </div>
@@ -218,18 +216,17 @@
                                             class="text-muted d-block">{{ $enrollment->created_at->diffForHumans() }}</small>
                                     </td>
                                     <td>
-                                        <div class="d-flex align-items-center">
-                                            <div class="progress-circle bg-light me-2"
-                                                style="background: conic-gradient(#007bff {{ $enrollment->progress_percentage }}%, #e9ecef 0deg);">
-                                                <span
-                                                    class="bg-white rounded-circle d-flex align-items-center justify-content-center w-50 h-50">
-                                                    {{ round($enrollment->progress_percentage) }}%
-                                                </span>
-                                            </div>
-                                            <div>
-                                                <small
-                                                    class="text-muted">{{ $enrollment->lessons_completed }}/{{ $enrollment->total_lessons }}
+                                        @php $progress = min(100, max(0, round($enrollment->progress_percentage))); @endphp
+                                        <div class="enrollment-progress">
+                                            <div class="d-flex justify-content-between align-items-baseline mb-1">
+                                                <span class="fw-semibold small">{{ $progress }}%</span>
+                                                <small class="text-muted">{{ $enrollment->lessons_completed }}/{{ $enrollment->total_lessons }}
                                                     lessons</small>
+                                            </div>
+                                            <div class="progress" role="progressbar" aria-valuenow="{{ $progress }}"
+                                                aria-valuemin="0" aria-valuemax="100">
+                                                <div class="progress-bar {{ $progress >= 100 ? 'bg-success' : '' }}"
+                                                    style="width: {{ $progress }}%"></div>
                                             </div>
                                         </div>
                                     </td>
@@ -256,15 +253,15 @@
                                     </td>
                                     <td>
                                         <div class="btn-group btn-group-sm">
-                                            <a href="#" class="btn btn-outline-primary" title="View Details">
+                                            <a href="{{ route('admin.users.show', $enrollment->user) }}" class="btn btn-outline-primary" title="View Details">
                                                 <i class="fa fa-eye"></i>
                                             </a>
-                                            <a href="#" class="btn btn-outline-info" title="Progress Report">
+                                            <a href="{{ route('admin.users.enrollments-report', $enrollment->user) }}" class="btn btn-outline-info" title="Progress Report">
                                                 <i class="fa fa-chart-bar"></i>
                                             </a>
-                                            <button class="btn btn-outline-warning" title="Send Message">
+                                            <a href="mailto:{{ $enrollment->user->email }}" class="btn btn-outline-warning" title="Send Message">
                                                 <i class="fa fa-envelope"></i>
-                                            </button>
+                                            </a>
                                             <button type="button" class="btn btn-outline-danger" title="Remove from Course"
                                                 onclick="removeEnrollment('{{ route('admin.enrollments.destroy', $enrollment) }}', @js($enrollment->user->name))">
                                                 <i class="fa fa-trash"></i>
@@ -310,15 +307,13 @@
                             <div class="card enrollment-card h-100">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center mb-3">
-                                        @if ($enrollment->user->avatar)
-                                            <img src="{{ asset('storage/' . $enrollment->user->avatar) }}"
-                                                alt="{{ $enrollment->user->name }}" class="user-avatar me-3">
-                                        @else
-                                            <div
-                                                class="user-avatar me-3 bg-primary text-white d-flex align-items-center justify-content-center">
-                                                {{ strtoupper(substr($enrollment->user->name, 0, 2)) }}
-                                            </div>
-                                        @endif
+                                        <div class="user-avatar me-3">
+                                            <i class="fa fa-user"></i>
+                                            @if ($enrollment->user->avatar)
+                                                <img src="{{ asset('storage/' . $enrollment->user->avatar) }}"
+                                                    alt="{{ $enrollment->user->name }}" onerror="this.remove()">
+                                            @endif
+                                        </div>
                                         <div>
                                             <h6 class="mb-0">{{ $enrollment->user->name }}</h6>
                                             <small class="text-muted">{{ $enrollment->user->email }}</small>
@@ -326,12 +321,9 @@
                                     </div>
 
                                     <div class="text-center mb-3">
-                                        <div class="progress-circle mx-auto mb-2"
-                                            style="background: conic-gradient(#007bff {{ $enrollment->progress_percentage }}%, #e9ecef 0deg);">
-                                            <span
-                                                class="bg-white rounded-circle d-flex align-items-center justify-content-center w-50 h-50">
-                                                {{ round($enrollment->progress_percentage) }}%
-                                            </span>
+                                        @php $progress = min(100, max(0, round($enrollment->progress_percentage))); @endphp
+                                        <div class="progress-circle mx-auto mb-2" style="--progress: {{ $progress }}%;">
+                                            <span>{{ $progress }}%</span>
                                         </div>
                                         <small
                                             class="text-muted">{{ $enrollment->lessons_completed }}/{{ $enrollment->total_lessons }}
@@ -362,15 +354,15 @@
                                     </div>
 
                                     <div class="d-flex justify-content-between">
-                                        <a href="#" class="btn btn-sm btn-outline-primary">
+                                        <a href="{{ route('admin.users.show', $enrollment->user) }}" class="btn btn-sm btn-outline-primary">
                                             <i class="fa fa-eye me-1"></i>Details
                                         </a>
-                                        <a href="#" class="btn btn-sm btn-outline-info">
+                                        <a href="{{ route('admin.users.enrollments-report', $enrollment->user) }}" class="btn btn-sm btn-outline-info">
                                             <i class="fa fa-chart-bar me-1"></i>Progress
                                         </a>
-                                        <button class="btn btn-sm btn-outline-warning">
+                                        <a href="mailto:{{ $enrollment->user->email }}" class="btn btn-sm btn-outline-warning">
                                             <i class="fa fa-envelope me-1"></i>Message
-                                        </button>
+                                        </a>
                                         <button type="button" class="btn btn-sm btn-outline-danger"
                                             onclick="removeEnrollment('{{ route('admin.enrollments.destroy', $enrollment) }}', @js($enrollment->user->name))">
                                             <i class="fa fa-trash me-1"></i>Remove
@@ -409,6 +401,66 @@
         </form>
     </div>
 @endsection
+
+@push('styles')
+    <style>
+        .user-avatar {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--admin-border, #dee2e6);
+            color: var(--admin-text-muted, #6c757d);
+            font-size: 1.1rem;
+        }
+
+        .user-avatar img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .enrollment-progress {
+            min-width: 140px;
+            max-width: 200px;
+        }
+
+        .enrollment-progress .progress {
+            height: 6px;
+            background: var(--admin-border, #e9ecef);
+        }
+
+        .progress-circle {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: conic-gradient(#0d6efd var(--progress, 0%), var(--admin-border, #e9ecef) 0);
+        }
+
+        .progress-circle span {
+            width: 78%;
+            height: 78%;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            background: var(--admin-card-bg, #fff);
+            color: var(--admin-text, #212529);
+        }
+    </style>
+@endpush
 
 @push('scripts')
     <script>

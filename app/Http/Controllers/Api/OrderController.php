@@ -10,7 +10,6 @@ use App\Models\OrderItem;
 use App\Models\CourseEnrollment;
 use App\Models\Coupon;
 use App\Support\CheckoutPricing;
-use App\Services\Payment\PayPalService;
 use App\Services\Payment\AppleIapService;
 use App\Services\Payment\GooglePlayService;
 use Illuminate\Http\Request;
@@ -25,7 +24,7 @@ class OrderController extends Controller
     /**
      * Create a new order
      */
-    public function store(Request $request, PayPalService $paypalService, AppleIapService $appleIapService, GooglePlayService $googlePlayService): JsonResponse
+    public function store(Request $request, AppleIapService $appleIapService, GooglePlayService $googlePlayService): JsonResponse
     {
         $user = Auth::user();
 
@@ -39,7 +38,7 @@ class OrderController extends Controller
         $request->validate([
             'course_ids'            => 'required|array|min:1',
             'course_ids.*'          => 'exists:courses,id',
-            'payment_method'        => 'required|in:visa,free,cash_on_delivery,paypal,bank_transfer,apple_iap,google_play',
+            'payment_method'        => 'required|in:visa,free,cash_on_delivery,bank_transfer,apple_iap,google_play',
             'coupon_code'           => 'nullable|string|max:50',
             'transaction_reference' => 'nullable|string|max:255',
             'apple_receipt'         => 'required_if:payment_method,apple_iap|string',
@@ -171,14 +170,6 @@ class OrderController extends Controller
                 $subtotal = 0;
             }
 
-            // PayPal not valid for free-only orders
-            if ($request->payment_method === 'paypal' && $total <= 0) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'PayPal is only for paid orders.',
-                ], 400);
-            }
-
             $initialStatus = match ($request->payment_method) {
                 'cash_on_delivery' => 'pending',
                 'apple_iap', 'google_play' => 'completed',
@@ -233,42 +224,7 @@ class OrderController extends Controller
                 ]);
             }
 
-            $approvalUrl = null;
-
-            // PayPal: create PayPal order and return approval URL for mobile to open
-            if ($request->payment_method === 'paypal' && $total > 0) {
-                $items = $courses->map(fn($course) => [
-                    'id' => $course->id,
-                    'title' => $course->name,
-                    'description' => 'Course: ' . $course->name,
-                    'quantity' => 1,
-                    'unit_price' => $course->price,
-                ])->toArray();
-                $customer = [
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'phone' => $user->phone ?? '',
-                ];
-                try {
-                    $paypalOrder = $paypalService->createOrder($order, $items, $customer);
-                    $order->update(['payment_gateway_id' => $paypalOrder['id'] ?? null]);
-                    foreach ($paypalOrder['links'] ?? [] as $link) {
-                        if (($link['rel'] ?? '') === 'approve') {
-                            $approvalUrl = $link['href'];
-                            break;
-                        }
-                    }
-                } catch (\Exception $e) {
-                    DB::rollBack();
-                    Log::error('PayPal API order create failed: ' . $e->getMessage());
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Unable to start PayPal payment: ' . $e->getMessage(),
-                    ], 502);
-                }
-            }
-
-            // If cash-on-delivery, bank_transfer, apple_iap, google_play, or free (not PayPal), create enrollments
+            // If cash-on-delivery, bank_transfer, apple_iap, google_play, or free, create enrollments
             if (in_array($request->payment_method, ['cash_on_delivery', 'bank_transfer', 'apple_iap', 'google_play']) || $total == 0) {
                 foreach ($courses as $course) {
                     $existingEnrollment = CourseEnrollment::where('user_id', $user->id)
@@ -316,16 +272,12 @@ class OrderController extends Controller
                     : match ($request->payment_method) {
                         'apple_iap' => 'App Store purchase completed successfully.',
                         'google_play' => 'Google Play purchase completed successfully.',
-                        'paypal' => 'Complete your payment in the browser.',
                         'cash_on_delivery' => 'Order created. Enrollment will be activated after payment confirmation.',
                         'bank_transfer' => 'Your order has been received. Enrollment will be activated once your bank transfer is confirmed by the admin.',
                         default => 'Order created successfully',
                     },
                 'data' => new OrderResource($order->load('items')),
             ];
-            if ($approvalUrl !== null) {
-                $response['approval_url'] = $approvalUrl;
-            }
 
             return response()->json($response, 201);
 

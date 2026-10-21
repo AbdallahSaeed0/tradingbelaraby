@@ -31,9 +31,6 @@ use App\Http\Controllers\DemoUxController;
 Route::get('/coming-soon', [ComingSoonController::class, 'index'])->name('coming-soon');
 Route::post('/coming-soon/subscribe', [ComingSoonController::class, 'subscribe'])->name('coming-soon.subscribe');
 
-// PayPal Webhook (public endpoint - must be excluded from CSRF)
-Route::post('/webhook/paypal', [App\Http\Controllers\PayPalWebhookController::class, 'handleWebhook'])->name('webhook.paypal');
-
 // Google Play RTDN Webhook (public endpoint - must be excluded from CSRF)
 Route::post('/webhook/google-play', [App\Http\Controllers\GooglePlayWebhookController::class, 'handle'])->name('webhook.google-play');
 
@@ -311,11 +308,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/tabby/success', [App\Http\Controllers\TabbyController::class, 'success'])->name('tabby.success');
     Route::get('/tabby/cancel', [App\Http\Controllers\TabbyController::class, 'cancel'])->name('tabby.cancel');
     Route::get('/tabby/failure', [App\Http\Controllers\TabbyController::class, 'failure'])->name('tabby.failure');
-
-    // PayPal Payment Routes
-    Route::get('/paypal/success', [App\Http\Controllers\PayPalController::class, 'success'])->name('paypal.success');
-    Route::get('/paypal/cancel', [App\Http\Controllers\PayPalController::class, 'cancel'])->name('paypal.cancel');
-    Route::get('/paypal/failure', [App\Http\Controllers\PayPalController::class, 'failure'])->name('paypal.failure');
 
     // Purchase routes
     Route::get('/purchases', [PurchaseController::class, 'history'])->name('purchases.history');

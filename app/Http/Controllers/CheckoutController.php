@@ -12,7 +12,6 @@ use App\Models\CouponUsage;
 use App\Models\PaymentSettings;
 use App\Notifications\CourseEnrollmentNotification;
 use App\Services\Payment\TabbyService;
-use App\Services\Payment\PayPalService;
 use App\Services\Payment\CyberSourceService;
 use App\Support\CheckoutPricing;
 use Illuminate\Http\Request;
@@ -145,7 +144,7 @@ class CheckoutController extends Controller
     /**
      * Process the checkout
      */
-    public function process(Request $request, TabbyService $tabbyService, PayPalService $paypalService)
+    public function process(Request $request, TabbyService $tabbyService)
     {
         $request->validate([
             'first_name'            => 'required|string|max:255',
@@ -157,7 +156,7 @@ class CheckoutController extends Controller
             'state'                 => 'nullable|string|max:255',
             'postal_code'           => 'nullable|string|max:20',
             'country'               => 'nullable|string|max:255',
-            'payment_method'        => 'required|in:visa,free,paypal,bank_transfer',
+            'payment_method'        => 'required|in:visa,free,bank_transfer',
             'transaction_reference' => 'nullable|string|max:255',
         ]);
 
@@ -196,7 +195,7 @@ class CheckoutController extends Controller
             return back()->withErrors(['payment_method' => 'Free enrollment is only available for free courses']);
         }
 
-        if (in_array($request->payment_method, ['visa', 'paypal']) && $allFree) {
+        if ($request->payment_method === 'visa' && $allFree) {
             return back()->withErrors(['payment_method' => 'Free courses do not require payment']);
         }
 
@@ -254,7 +253,7 @@ class CheckoutController extends Controller
 
                     // Enroll user in all courses in the bundle
                     $enrollmentStatus = 'active';
-                    if (in_array($request->payment_method, ['paypal', 'bank_transfer', 'visa'])) {
+                    if (in_array($request->payment_method, ['bank_transfer', 'visa'])) {
                         $enrollmentStatus = 'pending';
                     }
 
@@ -316,7 +315,7 @@ class CheckoutController extends Controller
                     }
 
                     $enrollmentStatus = 'active';
-                    if (in_array($request->payment_method, ['paypal', 'bank_transfer', 'visa'])) {
+                    if (in_array($request->payment_method, ['bank_transfer', 'visa'])) {
                         $enrollmentStatus = 'pending';
                     }
 
@@ -437,74 +436,7 @@ class CheckoutController extends Controller
                 }
 
             } */
-            elseif ($request->payment_method === 'paypal') {
-                // Prepare data for PayPal
-                $items = $cartItems->map(function ($item) {
-                    if ($item->isBundle()) {
-                        return [
-                            'id' => $item->bundle_id,
-                            'title' => $item->bundle->title,
-                            'description' => 'Bundle: ' . $item->bundle->title,
-                            'quantity' => 1,
-                            'unit_price' => $item->bundle->price,
-                        ];
-                    } else {
-                        return [
-                            'id' => $item->course_id,
-                            'title' => $item->course->name,
-                            'description' => 'Course: ' . $item->course->name,
-                            'quantity' => 1,
-                            'unit_price' => $item->course->price,
-                        ];
-                    }
-                })->toArray();
-
-                $customer = [
-                    'name' => $request->first_name . ' ' . $request->last_name,
-                    'phone' => $request->phone,
-                    'email' => $request->email,
-                ];
-
-                try {
-                    $paypalOrder = $paypalService->createOrder($order, $items, $customer);
-
-                    // Extract approval URL
-                    $approvalUrl = null;
-                    foreach ($paypalOrder['links'] ?? [] as $link) {
-                        if ($link['rel'] === 'approve') {
-                            $approvalUrl = $link['href'];
-                            break;
-                        }
-                    }
-
-                    if (!$approvalUrl) {
-                        throw new \Exception('PayPal approval URL not found in response.');
-                    }
-
-                    // Store order ID in session for later verification
-                    session(['paypal_order_id' => $order->id]);
-
-                    // Store PayPal order ID in database
-                    $order->update(['payment_gateway_id' => $paypalOrder['id']]);
-
-                    if ($request->query('utm_source') === 'app' || $request->query('return_app') === '1') {
-                        $request->session()->put('return_to_app', true);
-                    }
-
-                    return redirect()->away($approvalUrl);
-
-                } catch (\Exception $e) {
-                    DB::rollBack();
-                    // Log error and redirect back
-                    Log::error('PayPal Checkout Error: ' . $e->getMessage(), [
-                        'order_id' => $order->id ?? null,
-                        'user_id' => $user->id,
-                        'trace' => $e->getTraceAsString()
-                    ]);
-                    return redirect()->route('cart.index')->with('error', 'Unable to initiate PayPal payment: ' . $e->getMessage());
-                }
-
-            } else {
+            else {
                 // Card payment: NBE Hosted Checkout when enabled, otherwise CyberSource.
                 // Note: Cart will be cleared after successful payment confirmation
                 return redirect()->route(config('nbe.enabled') ? 'nbe.pay' : 'checkout.payment', $order->id);
