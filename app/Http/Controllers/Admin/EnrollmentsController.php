@@ -88,6 +88,10 @@ class EnrollmentsController extends Controller
             $perPage = 15;
         }
 
+        // addSelect() with raw expressions does not add "table.*" by itself
+        if (is_null($query->getQuery()->columns)) {
+            $query->select('course_enrollments.*');
+        }
         $query->addSelect([
             DB::raw("({$totalSql}) as live_total"),
             DB::raw("({$doneSql}) as live_completed"),
@@ -277,9 +281,11 @@ class EnrollmentsController extends Controller
     {
         [, , $percentSql] = $this->liveProgressSql();
 
-        return round((float) CourseEnrollment::query()
-            ->selectRaw("AVG({$percentSql}) as avg_progress")
-            ->value('avg_progress'), 1);
+        // Per-row percent in a derived table first: MySQL (ONLY_FULL_GROUP_BY) rejects
+        // correlated subqueries on outer columns directly inside an aggregate.
+        $perEnrollment = CourseEnrollment::query()->selectRaw("({$percentSql}) as live_percent");
+
+        return round((float) DB::query()->fromSub($perEnrollment, 'live_progress')->avg('live_percent'), 1);
     }
 
     /**
