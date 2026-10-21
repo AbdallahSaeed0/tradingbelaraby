@@ -1,4 +1,4 @@
-<div class="action-buttons admin-course-actions">
+<div class="table-icon-actions admin-course-actions">
     <a href="{{ route('admin.courses.show', $course) }}"
         class="btn btn-sm btn-outline-primary" title="View">
         <i class="fa fa-eye"></i>
@@ -11,9 +11,9 @@
         class="btn btn-sm btn-outline-info" title="Analytics">
         <i class="fa fa-chart-bar"></i>
     </a>
-    <div class="dropdown d-inline">
-        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
-            data-bs-toggle="dropdown" aria-label="More actions">
+    <div class="dropdown">
+        <button class="btn btn-sm btn-outline-secondary" type="button"
+            data-bs-toggle="dropdown" aria-label="More actions" title="More actions">
             <i class="fa fa-ellipsis-v"></i>
         </button>
         <ul class="dropdown-menu dropdown-menu-end">

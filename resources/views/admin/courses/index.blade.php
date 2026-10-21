@@ -12,7 +12,26 @@
                         <h1 class="h3 mb-0">Course Management</h1>
                         <p class="text-muted">Manage courses, sections, and lectures</p>
                     </div>
-                    <div>
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                        <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#importModal">
+                            <i class="fa fa-upload me-1"></i>Import
+                        </button>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                                data-bs-toggle="dropdown">
+                                <i class="fa fa-download me-1"></i>Export
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item"
+                                        href="{{ route('admin.courses.export', ['format' => 'csv']) }}">
+                                        <i class="fa fa-file-csv me-2"></i>CSV
+                                    </a></li>
+                                <li><a class="dropdown-item"
+                                        href="{{ route('admin.courses.export', ['format' => 'excel']) }}">
+                                        <i class="fa fa-file-excel me-2"></i>Excel
+                                    </a></li>
+                            </ul>
+                        </div>
                         <a href="{{ route('admin.courses.create') }}" class="btn btn-primary">
                             <i class="fa fa-plus me-2"></i>Add New Course
                         </a>
@@ -136,38 +155,6 @@
             </div>
         </div>
 
-        <!-- View Toggle and Actions -->
-        <div class="card mb-4">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="d-flex align-items-center">
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <button class="btn btn-sm btn-outline-success me-2" data-bs-toggle="modal"
-                            data-bs-target="#importModal">
-                            <i class="fa fa-upload me-1"></i>Import
-                        </button>
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
-                                data-bs-toggle="dropdown">
-                                <i class="fa fa-download me-1"></i>Export
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item"
-                                        href="{{ route('admin.courses.export', ['format' => 'csv']) }}">
-                                        <i class="fa fa-file-csv me-2"></i>CSV
-                                    </a></li>
-                                <li><a class="dropdown-item"
-                                        href="{{ route('admin.courses.export', ['format' => 'excel']) }}">
-                                        <i class="fa fa-file-excel me-2"></i>Excel
-                                    </a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Courses Table (desktop) -->
         <div class="card" id="listViewContainer">
             <div class="card-body">
@@ -187,7 +174,7 @@
                                 <th class="col-students" data-label="Students">Students</th>
                                 <th class="col-status" data-label="Status">Status</th>
                                 <th class="col-created" data-label="Created">Created</th>
-                                <th class="col-actions" width="150" data-label="Actions">Actions</th>
+                                <th class="col-actions" data-label="Actions">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -446,7 +433,11 @@
             }
 
             .courses-admin-table .col-course {
-                width: 28%;
+                width: 25%;
+            }
+
+            .courses-admin-table .col-actions {
+                width: 170px;
             }
 
             .courses-admin-table .col-category {

@@ -404,16 +404,6 @@
 
 @push('styles')
     <style>
-        .enrollment-progress {
-            min-width: 140px;
-            max-width: 200px;
-        }
-
-        .enrollment-progress .progress {
-            height: 6px;
-            background: var(--admin-border, #e9ecef);
-        }
-
         .progress-circle {
             width: 72px;
             height: 72px;

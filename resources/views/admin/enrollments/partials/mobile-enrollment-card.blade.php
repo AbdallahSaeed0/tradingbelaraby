@@ -15,17 +15,17 @@
 
     $chips = [
         '<span class="badge bg-primary">' . e($enrollment->course->name) . '</span>',
-        '<span class="badge bg-light text-dark">' . round($enrollment->progress_percentage) . '% progress</span>',
+        '<span class="badge bg-light text-dark">' . ($enrollment->live_percent ?? 0) . '% progress</span>',
     ];
 
     $stats = [
-        ['icon' => 'fa-book', 'text' => $enrollment->completed_lectures . '/' . $enrollment->total_lectures . ' lectures'],
+        ['icon' => 'fa-book', 'text' => ($enrollment->live_completed ?? 0) . '/' . ($enrollment->live_total ?? 0) . ' lectures'],
         ['icon' => 'fa-user', 'text' => e($instructorNames)],
     ];
 
-    if ($enrollment->last_activity) {
+    if ($enrollment->live_last_activity ?? null) {
         $footerPrimary = $enrollment->created_at->format('M d, Y');
-        $footerSecondary = 'Active ' . $enrollment->last_activity->diffForHumans();
+        $footerSecondary = 'Active ' . $enrollment->live_last_activity->diffForHumans();
     } else {
         $footerPrimary = $enrollment->created_at->format('M d, Y');
         $footerSecondary = $enrollment->created_at->diffForHumans();
@@ -33,10 +33,10 @@
 
     $avatarUrl = $enrollment->user->avatar ? asset('storage/' . $enrollment->user->avatar) : null;
 
-    $actionsHtml = '<a href="' . route('admin.courses.enrollments', $enrollment->course) . '" class="btn btn-sm btn-outline-info" title="View Course Enrollments"><i class="fa fa-eye"></i></a>'
+    $actionsHtml = '<a href="' . route('admin.enrollments.show', $enrollment) . '" class="btn btn-sm btn-outline-success" title="View Progress"><i class="fa fa-chart-bar"></i></a>'
+        . '<a href="' . route('admin.courses.enrollments', $enrollment->course) . '" class="btn btn-sm btn-outline-info" title="View Course Enrollments"><i class="fa fa-users"></i></a>'
         . '<a href="' . route('admin.courses.show', $enrollment->course) . '" class="btn btn-sm btn-outline-primary" title="View Course"><i class="fa fa-book"></i></a>'
-        . '<button type="button" onclick="sendMessage(' . $enrollment->user_id . ')" class="btn btn-sm btn-outline-warning" title="Send Message"><i class="fa fa-envelope"></i></button>'
-        . '<button type="button" onclick="viewProgress(' . $enrollment->id . ')" class="btn btn-sm btn-outline-success" title="View Progress"><i class="fa fa-chart-bar"></i></button>';
+        . '<a href="mailto:' . e($enrollment->user->email) . '" class="btn btn-sm btn-outline-warning" title="Email Student"><i class="fa fa-envelope"></i></a>';
 @endphp
 
 @include('admin.partials.mobile-data-card', [
@@ -45,7 +45,7 @@
     'checkboxValue' => $enrollment->id,
     'checkboxLabel' => 'Select ' . $enrollment->user->name,
     'statusHtml' => $statusHtml,
-    'heroUrl' => route('admin.courses.show', $enrollment->course),
+    'heroUrl' => route('admin.enrollments.show', $enrollment),
     'imageUrl' => $avatarUrl,
     'iconClass' => 'fa-user',
     'title' => $enrollment->user->name,

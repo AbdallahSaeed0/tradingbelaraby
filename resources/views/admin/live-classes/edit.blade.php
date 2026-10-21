@@ -392,6 +392,11 @@
         </div>
     </div>
 
+    @include('admin.partials.ckeditor', [
+        'selectors' => ['#description', '#instructions'],
+        'rtlSelectors' => ['#description_ar', '#instructions_ar'],
+    ])
+
     @push('scripts')
         <script>
             let materialIndex = {{ $liveClass->materials ? count($liveClass->materials) : 0 }};

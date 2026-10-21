@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\CourseEnrollment;
 use App\Models\Course;
+use App\Models\CourseLecture;
+use App\Models\LectureCompletion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -41,26 +43,28 @@ class EnrollmentsController extends Controller
             $query->where('status', $request->status);
         }
 
-        // Apply progress filter
+        [$totalSql, $doneSql, $percentSql] = $this->liveProgressSql();
+
+        // Apply progress filter (on live lecture progress)
         if ($request->filled('progress')) {
             $progressRange = explode('-', $request->progress);
             if (count($progressRange) == 2) {
                 $min = (int)$progressRange[0];
                 $max = (int)$progressRange[1];
-                $query->whereBetween('progress_percentage', [$min, $max]);
+                $query->whereRaw("({$percentSql}) BETWEEN ? AND ?", [$min, $max]);
             }
         }
 
         // Apply sorting
         switch ($request->get('sort', 'latest')) {
             case 'oldest':
-                $query->orderBy('created_at', 'asc');
+                $query->orderBy('course_enrollments.created_at', 'asc');
                 break;
             case 'progress_high':
-                $query->orderBy('progress_percentage', 'desc');
+                $query->orderByRaw("({$percentSql}) DESC")->orderBy('course_enrollments.created_at', 'desc');
                 break;
             case 'progress_low':
-                $query->orderBy('progress_percentage', 'asc');
+                $query->orderByRaw("({$percentSql}) ASC")->orderBy('course_enrollments.created_at', 'desc');
                 break;
             case 'name':
                 $query->join('users', 'course_enrollments.user_id', '=', 'users.id')
@@ -84,7 +88,13 @@ class EnrollmentsController extends Controller
             $perPage = 15;
         }
 
+        $query->addSelect([
+            DB::raw("({$totalSql}) as live_total"),
+            DB::raw("({$doneSql}) as live_completed"),
+        ]);
+
         $enrollments = $query->paginate($perPage)->appends($request->query());
+        $this->attachLiveProgress($enrollments->getCollection());
 
         // Calculate stats
         $stats = [
@@ -92,7 +102,7 @@ class EnrollmentsController extends Controller
             'completed_enrollments' => CourseEnrollment::where('status', 'completed')->count(),
             'in_progress_enrollments' => CourseEnrollment::where('status', 'enrolled')->count(),
             'cancelled_enrollments' => CourseEnrollment::where('status', 'cancelled')->count(),
-            'average_progress' => round(CourseEnrollment::avg('progress_percentage'), 1),
+            'average_progress' => $this->averageLiveProgress(),
             'active_courses' => Course::where('status', 'published')->count(),
         ];
 
@@ -193,9 +203,113 @@ class EnrollmentsController extends Controller
      */
     public function show(CourseEnrollment $enrollment)
     {
-        $enrollment->load(['user', 'course.instructor', 'course.sections.lectures']);
+        $enrollment->load([
+            'user',
+            'course.instructor',
+            'course.instructors',
+            'course.sections' => fn ($q) => $q->where('is_published', true),
+            'course.sections.publishedLectures',
+        ]);
 
-        return view('admin.enrollments.show', compact('enrollment'));
+        $completions = LectureCompletion::where('user_id', $enrollment->user_id)
+            ->where('course_id', $enrollment->course_id)
+            ->get()
+            ->keyBy('lecture_id');
+
+        $sections = $enrollment->course->sections->map(function ($section) use ($completions) {
+            $lectures = $section->publishedLectures->map(fn ($lecture) => [
+                'lecture' => $lecture,
+                'completion' => $completions->get($lecture->id),
+            ]);
+            $done = $lectures->filter(fn ($row) => $row['completion']?->is_completed)->count();
+
+            return [
+                'section' => $section,
+                'lectures' => $lectures,
+                'done' => $done,
+                'total' => $lectures->count(),
+            ];
+        })->filter(fn ($row) => $row['total'] > 0)->values();
+
+        $totalLectures = $sections->sum('total');
+        $completedLectures = $sections->sum('done');
+        $lastActivity = collect([
+            $enrollment->last_accessed_at,
+            $completions->max('last_accessed_at'),
+            $completions->max('completed_at'),
+        ])->filter()->max();
+
+        $progress = [
+            'total' => $totalLectures,
+            'completed' => $completedLectures,
+            'percent' => $totalLectures > 0 ? (int) round($completedLectures / $totalLectures * 100) : 0,
+            'watch_seconds' => (int) $completions->sum('watch_time_seconds'),
+            'last_activity' => $lastActivity ? \Illuminate\Support\Carbon::parse($lastActivity) : null,
+        ];
+
+        return view('admin.enrollments.show', compact('enrollment', 'sections', 'progress'));
+    }
+
+    /**
+     * SQL for live lecture progress of a course_enrollments row.
+     * The stored progress columns on enrollments are not kept in sync, so the
+     * admin list, filter, sort and stats use these instead. Counts only published
+     * lectures in published sections, matching the enrollment detail page.
+     *
+     * @return array{0: string, 1: string, 2: string} [total, completed, percent]
+     */
+    private function liveProgressSql(): array
+    {
+        $publishedLectures = 'FROM course_lectures cl
+            JOIN course_sections cs ON cs.id = cl.section_id AND cs.is_published = 1
+            WHERE cl.course_id = course_enrollments.course_id AND cl.is_published = 1';
+
+        $total = "SELECT COUNT(*) {$publishedLectures}";
+        $done = "SELECT COUNT(*) {$publishedLectures}
+            AND EXISTS (SELECT 1 FROM lecture_completions lc
+                WHERE lc.lecture_id = cl.id AND lc.user_id = course_enrollments.user_id AND lc.is_completed = 1)";
+        $percent = "CASE WHEN ({$total}) = 0 THEN 0 ELSE ROUND(({$done}) * 100 / ({$total})) END";
+
+        return [$total, $done, $percent];
+    }
+
+    private function averageLiveProgress(): float
+    {
+        [, , $percentSql] = $this->liveProgressSql();
+
+        return round((float) CourseEnrollment::query()
+            ->selectRaw("AVG({$percentSql}) as avg_progress")
+            ->value('avg_progress'), 1);
+    }
+
+    /**
+     * Fill in percent and last activity for a page of enrollments whose
+     * live_total / live_completed were selected by the index query.
+     */
+    private function attachLiveProgress($enrollments): void
+    {
+        if ($enrollments->isEmpty()) {
+            return;
+        }
+
+        $lastActivity = LectureCompletion::whereIn('course_id', $enrollments->pluck('course_id')->unique())
+            ->whereIn('user_id', $enrollments->pluck('user_id')->unique())
+            ->selectRaw('user_id, course_id, MAX(updated_at) as last_at')
+            ->groupBy('user_id', 'course_id')
+            ->get()
+            ->keyBy(fn ($row) => $row->user_id . '-' . $row->course_id);
+
+        foreach ($enrollments as $enrollment) {
+            $total = (int) $enrollment->live_total;
+            $completed = (int) $enrollment->live_completed;
+            $row = $lastActivity->get($enrollment->user_id . '-' . $enrollment->course_id);
+            $lastAt = collect([$enrollment->last_accessed_at, $row->last_at ?? null])->filter()->max();
+
+            $enrollment->live_total = $total;
+            $enrollment->live_completed = $completed;
+            $enrollment->live_percent = $total > 0 ? (int) round($completed / $total * 100) : 0;
+            $enrollment->live_last_activity = $lastAt ? \Illuminate\Support\Carbon::parse($lastAt) : null;
+        }
     }
 
     /**
@@ -268,7 +382,7 @@ class EnrollmentsController extends Controller
                 'in_progress' => CourseEnrollment::where('status', 'enrolled')->count(),
                 'cancelled' => CourseEnrollment::where('status', 'cancelled')->count(),
             ],
-            'average_progress' => round(CourseEnrollment::avg('progress_percentage'), 1),
+            'average_progress' => $this->averageLiveProgress(),
         ];
 
         return response()->json($analytics);

@@ -266,20 +266,18 @@
                                         <small class="text-muted">{{ $enrollment->created_at->diffForHumans() }}</small>
                                     </td>
                                     <td>
-                                        <div class="d-flex align-items-center">
-                                            <div class="progress-circle bg-light me-2"
-                                                style="background: conic-gradient(#007bff {{ $enrollment->progress_percentage }}%, #e9ecef 0deg);">
-                                                <span
-                                                    class="bg-white rounded-circle d-flex align-items-center justify-content-center w-50 h-50">
-                                                    {{ round($enrollment->progress_percentage) }}%
-                                                </span>
+                                        <a href="{{ route('admin.enrollments.show', $enrollment) }}"
+                                            class="enrollment-progress d-block text-reset text-decoration-none" title="View progress details">
+                                            <div class="d-flex justify-content-between align-items-baseline mb-1">
+                                                <span class="fw-semibold small">{{ $enrollment->live_percent }}%</span>
+                                                <small class="text-muted text-nowrap">{{ $enrollment->live_completed }}/{{ $enrollment->live_total }} lectures</small>
                                             </div>
-                                            <div>
-                                                <small
-                                                    class="text-muted">{{ $enrollment->completed_lectures }}/{{ $enrollment->total_lectures }}
-                                                    lectures</small>
+                                            <div class="progress" role="progressbar" aria-valuenow="{{ $enrollment->live_percent }}"
+                                                aria-valuemin="0" aria-valuemax="100">
+                                                <div class="progress-bar {{ $enrollment->live_percent >= 100 ? 'bg-success' : '' }}"
+                                                    style="width: {{ $enrollment->live_percent }}%"></div>
                                             </div>
-                                        </div>
+                                        </a>
                                     </td>
                                     <td>
                                         @php
@@ -303,32 +301,32 @@
                                             ], '{{ route('admin.enrollments.update_status', $enrollment->id) }}')">{{ ucfirst($enrollment->status) }}</span>
                                     </td>
                                     <td>
-                                        @if ($enrollment->last_activity)
-                                            <div>{{ $enrollment->last_activity->format('M d, Y') }}</div>
+                                        @if ($enrollment->live_last_activity)
+                                            <div>{{ $enrollment->live_last_activity->format('M d, Y') }}</div>
                                             <small
-                                                class="text-muted">{{ $enrollment->last_activity->diffForHumans() }}</small>
+                                                class="text-muted">{{ $enrollment->live_last_activity->diffForHumans() }}</small>
                                         @else
                                             <span class="text-muted">No activity</span>
                                         @endif
                                     </td>
-                                    <td>
-                                        <div class="enrollment-actions">
+                                    <td class="table-icon-actions-cell">
+                                        <div class="table-icon-actions">
+                                            <a href="{{ route('admin.enrollments.show', $enrollment) }}"
+                                                class="btn btn-sm btn-outline-success" title="View Progress">
+                                                <i class="fa fa-chart-bar"></i>
+                                            </a>
                                             <a href="{{ route('admin.courses.enrollments', $enrollment->course) }}"
-                                                class="btn btn-outline-info btn-sm" title="View Course Enrollments">
-                                                <i class="fa fa-eye"></i>
+                                                class="btn btn-sm btn-outline-info" title="View Course Enrollments">
+                                                <i class="fa fa-users"></i>
                                             </a>
                                             <a href="{{ route('admin.courses.show', $enrollment->course) }}"
-                                                class="btn btn-outline-primary btn-sm" title="View Course">
+                                                class="btn btn-sm btn-outline-primary" title="View Course">
                                                 <i class="fa fa-book"></i>
                                             </a>
-                                            <button onclick="sendMessage({{ $enrollment->user_id }})"
-                                                class="btn btn-outline-warning btn-sm" title="Send Message">
+                                            <a href="mailto:{{ $enrollment->user->email }}"
+                                                class="btn btn-sm btn-outline-warning" title="Email Student">
                                                 <i class="fa fa-envelope"></i>
-                                            </button>
-                                            <button onclick="viewProgress({{ $enrollment->id }})"
-                                                class="btn btn-outline-success btn-sm" title="View Progress">
-                                                <i class="fa fa-chart-bar"></i>
-                                            </button>
+                                            </a>
                                         </div>
                                     </td>
                                 </tr>
@@ -619,18 +617,6 @@
             // Refresh stats
             function refreshStats() {
                 location.reload();
-            }
-
-            // Send message to student
-            function sendMessage(userId) {
-                // TODO: Implement messaging functionality
-                alert('Messaging functionality will be implemented soon!');
-            }
-
-            // View detailed progress
-            function viewProgress(enrollmentId) {
-                // TODO: Implement detailed progress view
-                alert('Detailed progress view will be implemented soon!');
             }
         </script>
         @include('admin.partials.status-modal')

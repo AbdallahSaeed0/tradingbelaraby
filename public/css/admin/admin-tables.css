@@ -320,3 +320,19 @@
     justify-content: center;
     border-radius: 0.4rem;
 }
+
+/* Compact progress: "42%  7/34 lectures" over a thin bar */
+.enrollment-progress {
+    min-width: 140px;
+    max-width: 200px;
+}
+
+.enrollment-progress .progress {
+    height: 6px;
+    background: var(--admin-border, #e9ecef);
+}
+
+.table-icon-actions-cell {
+    white-space: nowrap;
+    width: 1%;
+}

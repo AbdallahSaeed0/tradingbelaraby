@@ -95,7 +95,7 @@
                                                         {{ ucfirst($liveClass->status) }}
                                                     </span>
                                                 </div>
-                                                <p class="text-muted mb-3" @if (\App\Helpers\TranslationHelper::getFrontendLanguage()->code === 'ar') dir="rtl" @endif>{{ $liveClass->localized_description ?? '' }}</p>
+                                                <div class="text-muted mb-3 live-class-description" @if (\App\Helpers\TranslationHelper::getFrontendLanguage()->code === 'ar') dir="rtl" @endif>{!! $liveClass->localized_description ?? '' !!}</div>
 
                                                 @if ($isRegistered)
                                                     <div class="alert alert-success mb-3">

@@ -39,7 +39,7 @@
     'iconClass' => 'fa-video',
     'placeholder' => strtoupper(substr($liveClass->name, 0, 2)),
     'title' => $liveClass->name,
-    'subtitle' => $liveClass->description ? Str::limit($liveClass->description, 50) : null,
+    'subtitle' => $liveClass->description ? Str::limit(strip_tags($liveClass->description), 50) : null,
     'chips' => $chips,
     'stats' => $stats,
     'footerPrimary' => $liveClass->scheduled_at->format('M d, Y'),
