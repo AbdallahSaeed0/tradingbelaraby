@@ -125,8 +125,8 @@
         <div class="card mb-4">
             <div class="card-body">
                 <form method="GET" action="{{ route('admin.enrollments.index') }}" id="filterForm">
-                    <div class="row g-3">
-                        <div class="col-md-3">
+                    <div class="row g-2 align-items-center">
+                        <div class="col-12 col-lg">
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fa fa-search"></i></span>
                                 <input type="text" class="form-control" name="search"
@@ -134,7 +134,7 @@
                                     value="{{ request('search') }}">
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-6 col-md-3 col-lg-2">
                             <select class="form-select" name="course" id="courseFilter">
                                 <option value="">All Courses</option>
                                 @foreach ($courses as $course)
@@ -145,18 +145,18 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-6 col-md-3 col-lg-2">
                             <select class="form-select" name="status" id="statusFilter">
                                 <option value="">All Status</option>
-                                <option value="enrolled" {{ request('status') == 'enrolled' ? 'selected' : '' }}>Enrolled
-                                </option>
+                                <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
+                                <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
                                 <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>
                                     Completed</option>
                                 <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>
                                     Cancelled</option>
                             </select>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-6 col-md-3 col-lg-2">
                             <select class="form-select" name="progress" id="progressFilter">
                                 <option value="">All Progress</option>
                                 <option value="0-25" {{ request('progress') == '0-25' ? 'selected' : '' }}>0-25%
@@ -169,7 +169,7 @@
                                 </option>
                             </select>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-6 col-md-3 col-lg-2">
                             <select class="form-select" name="sort" id="sortFilter">
                                 <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Latest</option>
                                 <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Oldest</option>
@@ -183,19 +183,15 @@
                                 </option>
                             </select>
                         </div>
-                        <div class="col-md-1">
+                        <div class="col-12 col-lg-auto">
                             <div class="d-flex gap-2">
-                                <button type="submit" class="btn btn-primary">
+                                <button type="submit" class="btn btn-primary text-nowrap">
                                     <i class="fa fa-search me-1"></i>Filter
                                 </button>
+                                <button type="button" class="btn btn-outline-secondary text-nowrap" id="clearFiltersBtn">
+                                    <i class="fa fa-refresh me-1"></i>Clear
+                                </button>
                             </div>
-                        </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-md-12">
-                            <button type="button" class="btn btn-outline-secondary" id="clearFiltersBtn">
-                                <i class="fa fa-refresh me-1"></i>Clear Filters
-                            </button>
                         </div>
                     </div>
                 </form>
