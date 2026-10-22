@@ -3,6 +3,11 @@
     AddOutputFilterByType DEFLATE text/html text/plain text/css text/javascript application/javascript application/json application/xml image/svg+xml
 </IfModule>
 
+# Resized images are linked directly from public/cache/img (see optimized_image_url)
+<IfModule mod_mime.c>
+    AddType image/webp .webp
+</IfModule>
+
 # Long-lived browser caching for static assets.
 # Layout CSS/JS are linked with ?v=<mtime> (versioned_asset), uploaded images use hashed filenames.
 <IfModule mod_expires.c>

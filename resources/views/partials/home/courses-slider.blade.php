@@ -1,13 +1,7 @@
 <!-- Our Courses Section - BEM, vanilla slider -->
-@if (\App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl')
-    @push('rtl-styles')
-        <link rel="stylesheet" href="{{ versioned_asset('css/rtl/components/home-courses-slider.css') }}">
-    @endpush
-@else
-    @push('styles')
-        <link rel="stylesheet" href="{{ versioned_asset('css/rtl/components/home-courses-slider.css') }}">
-    @endpush
-@endif
+@push('bundle-css')
+    css/rtl/components/home-courses-slider.css
+@endpush
 <section class="home-courses-slider home-courses-slider--white" id="ourCoursesSection" aria-labelledby="our-courses-heading" data-home-courses-slider>
     <div class="home-courses-slider__container">
         <header class="home-courses-slider__header">

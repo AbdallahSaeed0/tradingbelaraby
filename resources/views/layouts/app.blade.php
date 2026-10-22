@@ -29,8 +29,6 @@
     @stack('preload')
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11.2.10/swiper-bundle.min.css" />
     <!-- Non-critical CSS: loaded without blocking first paint -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
@@ -44,11 +42,12 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css">
     </noscript>
 
-    <!-- Language-specific Styles (served as one bundled file; see css_bundle_urls()) -->
+    <!-- Bootstrap 5.3.3 (local copy) + language-specific styles, served as one bundled file; see css_bundle_urls() -->
     @php
         $isRtlLayout = \App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl';
         $layoutCss = $isRtlLayout
             ? [
+                'css/vendors/bootstrap.min.css',
                 'css/rtl/components/footer.css',
                 'css/rtl/pages/categories.css',
                 'css/rtl/pages/course-sections.css',
@@ -69,6 +68,7 @@
                 'css/rtl/base/main.css',
             ]
             : [
+                'css/vendors/bootstrap.min.css',
                 'css/base/main.css',
                 'css/components/footer.css',
                 'css/pages/categories.css',
@@ -87,6 +87,17 @@
                 'css/components/forms.css',
                 'css/components/whatsapp-float.css',
             ];
+    @endphp
+    @php
+        // Pages add stylesheets to the bundle with @push('bundle-css') (one public path per line).
+        // A path listed again moves to the end, the same as a repeated <link> taking effect last.
+        foreach (preg_split('/\s+/', trim($__env->yieldPushContent('bundle-css'))) as $extraCss) {
+            if ($extraCss === '') {
+                continue;
+            }
+            $layoutCss = array_values(array_diff($layoutCss, [$extraCss]));
+            $layoutCss[] = $extraCss;
+        }
     @endphp
     @foreach (css_bundle_urls($layoutCss) as $cssUrl)
         <link rel="stylesheet" href="{{ $cssUrl }}">
@@ -196,7 +207,7 @@
                 @endphp
                 <div class="logo">
                     <a href="{{ route('home') }}" class="logo-link">
-                        <img src="{{ $mainContentSettings ? $mainContentSettings->logo_url : asset('images/default-logo.svg') }}"
+                        <img src="{{ optimized_image_or($mainContentSettings?->logo, $mainContentSettings ? $mainContentSettings->logo_url : asset('images/default-logo.svg'), 360) }}"
                             alt="{{ $mainContentSettings ? $mainContentSettings->logo_alt_text : 'Site Logo' }}"
                             class="logo-img" width="180" height="50">
                     </a>
@@ -528,7 +539,7 @@
             <div class="offcanvas-header">
                 <div class="d-flex align-items-center flex-grow-1">
                     <a href="{{ route('home') }}" class="mobile-offcanvas-logo me-3">
-                        <img src="{{ $mainContentSettings ? $mainContentSettings->logo_url : asset('images/default-logo.svg') }}"
+                        <img src="{{ optimized_image_or($mainContentSettings?->logo, $mainContentSettings ? $mainContentSettings->logo_url : asset('images/default-logo.svg'), 360) }}"
                             alt="{{ $mainContentSettings ? $mainContentSettings->logo_alt_text : 'Site Logo' }}"
                             class="mobile-offcanvas-logo-img" width="180" height="50">
                     </a>
@@ -745,7 +756,7 @@
                 <div class="col-6 col-sm-6 col-md-3 mb-4 mb-md-0">
                     <div class="footer-logo mb-3">
                         <a href="{{ route('home') }}" class="footer-logo-link">
-                            <img src="{{ $mainContentSettings ? $mainContentSettings->logo_url : asset('images/default-logo.svg') }}"
+                            <img src="{{ optimized_image_or($mainContentSettings?->logo, $mainContentSettings ? $mainContentSettings->logo_url : asset('images/default-logo.svg'), 360) }}"
                                 alt="{{ $mainContentSettings ? $mainContentSettings->logo_alt_text : 'Site Logo' }}"
                                 class="footer-logo-img">
                         </a>
@@ -794,7 +805,7 @@
                     <div class="mt-3">
                         <p class="text-white-50 small mb-2">{{ custom_trans('Download our app', 'front') }}</p>
                         <a href="https://play.google.com/store/apps/details?id=com.tradingbelaraby.courses" target="_blank" rel="noopener">
-                            <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+                            <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" loading="lazy" decoding="async"
                                  alt="Get it on Google Play" style="max-width: 150px; height: auto;">
                         </a>
                     </div>

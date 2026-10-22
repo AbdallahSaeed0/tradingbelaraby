@@ -105,6 +105,12 @@ if (!function_exists('optimized_image_url')) {
         if ($storagePath === null || $storagePath === '') {
             return '';
         }
+        // Once the optimizer has produced the WebP, link the file directly so Apache serves it
+        // (no PHP per image). Until then /img/opt generates it and negotiates the format.
+        $cachedWebp = \App\Http\Controllers\ImageOptimizerController::publicCachePath($storagePath, $width, $height, true);
+        if (is_file(public_path($cachedWebp))) {
+            return asset($cachedWebp);
+        }
         $params = ['path' => $storagePath, 'w' => $width];
         if ($height !== null) {
             $params['h'] = $height;
@@ -115,12 +121,13 @@ if (!function_exists('optimized_image_url')) {
 
 if (!function_exists('optimized_image_or')) {
     /**
-     * Optimized URL for a storage-relative image path, or the given fallback URL
-     * when the path is empty or already an absolute URL (which the optimizer cannot serve).
+     * Optimized URL for a storage-relative image path, or the given fallback URL when the
+     * path is empty, an absolute URL or an SVG (none of which the optimizer can serve).
      */
     function optimized_image_or(?string $storagePath, string $fallbackUrl, int $width, ?int $height = null): string
     {
-        if ($storagePath === null || $storagePath === '' || filter_var($storagePath, FILTER_VALIDATE_URL)) {
+        if ($storagePath === null || $storagePath === '' || filter_var($storagePath, FILTER_VALIDATE_URL)
+            || str_ends_with(strtolower($storagePath), '.svg')) {
             return $fallbackUrl;
         }
         return optimized_image_url($storagePath, $width, $height);
@@ -162,7 +169,8 @@ if (!function_exists('css_bundle_urls')) {
         $bundleFile = public_path($bundlePath);
 
         if (!is_file($bundleFile)) {
-            $css = '';
+            // @charset is only honoured as the first bytes of a stylesheet
+            $css = "@charset \"UTF-8\";\n";
             foreach ($paths as $path) {
                 $css .= "/* {$path} */\n" . css_bundle_read($path) . "\n";
             }
@@ -194,7 +202,7 @@ if (!function_exists('css_bundle_read')) {
             return '';
         }
         $seen[$path] = true;
-        $css = (string) file_get_contents($file);
+        $css = preg_replace('/@charset\s+["\'][^"\']*["\']\s*;/i', '', (string) file_get_contents($file));
         $baseDir = trim(dirname($path), '/.');
 
         $resolve = function (string $url) use ($baseDir): string {

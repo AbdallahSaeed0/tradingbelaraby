@@ -103,15 +103,9 @@
 
 @endsection
 
-@if (\App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl')
-    @push('rtl-styles')
-        <link rel="stylesheet" href="{{ versioned_asset('css/rtl/pages/home.css') }}">
-    @endpush
-@else
-    @push('styles')
-        <link rel="stylesheet" href="{{ versioned_asset('css/pages/home.css') }}">
-    @endpush
-@endif
+@push('bundle-css')
+    {{ \App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl' ? 'css/rtl/pages/home.css' : 'css/pages/home.css' }}
+@endpush
 
 @push('scripts')
     <script>

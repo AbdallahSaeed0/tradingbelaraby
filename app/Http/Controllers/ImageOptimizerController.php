@@ -69,6 +69,19 @@ class ImageOptimizerController extends Controller
         return $this->sendCachedFile($cacheFull, $wantsWebp);
     }
 
+    /**
+     * Public cache path (relative to public/) that __invoke() writes for the given request.
+     * Lets views link an already-generated file directly.
+     */
+    public static function publicCachePath(string $path, ?int $w, ?int $h, bool $webp, bool $sourcePng = false): string
+    {
+        $path = ltrim(str_replace(['\\', '..'], ['/', ''], $path), '/');
+        $w = $w ? min($w, self::MAX_DIMENSION) : null;
+        $h = $h ? min($h, self::MAX_DIMENSION) : null;
+
+        return (new self())->cachePath($path, $w, $h, $webp, $sourcePng);
+    }
+
     private function cachePath(string $path, ?int $w, ?int $h, bool $webp, bool $sourcePng = false): string
     {
         $suffix = $webp ? '-webp' : ($sourcePng ? '-png' : '-jpg');

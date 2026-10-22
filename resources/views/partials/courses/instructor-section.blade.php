@@ -7,15 +7,9 @@
 @endphp
 
 @if ($instructors->count() > 0)
-    @if (\App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl')
-        @push('rtl-styles')
-            <link rel="stylesheet" href="{{ versioned_asset('css/rtl/components/home-courses-slider.css') }}">
-        @endpush
-    @else
-        @push('styles')
-            <link rel="stylesheet" href="{{ versioned_asset('css/rtl/components/home-courses-slider.css') }}">
-        @endpush
-    @endif
+    @push('bundle-css')
+        css/rtl/components/home-courses-slider.css
+    @endpush
     <section class="home-courses-slider home-courses-slider--instructors" id="instructorSection" aria-labelledby="instructor-heading" data-home-courses-slider>
         <div class="home-courses-slider__container">
             <header class="home-courses-slider__header">
