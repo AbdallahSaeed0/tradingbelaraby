@@ -2626,7 +2626,7 @@ footer {
     left: 0;
     width: 20px;
     height: 20px;
-    content: '2';
+    content: '\2022';
     text-align: center;
     opacity: .25;
     color: black;
@@ -2904,4 +2904,12 @@ footer {
     .hero-content h1 {
         font-size: 36px;
     }
+}
+
+/* Homepage: skip layout/paint of off-screen sections until they are scrolled near.
+   Scoped with :has() to pages with the hero; no fixed/modal elements live inside these. */
+main:has(> section.hero) > section:not(.hero),
+body:has(main > section.hero) footer.footer-main > .container {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 600px;
 }

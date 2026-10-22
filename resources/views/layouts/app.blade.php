@@ -110,7 +110,8 @@
         {{-- Until the bundle applies, unstyled below-the-fold content must not widen the page --}}
         <script>document.documentElement.classList.add('css-loading')</script>
         <style>{!! $criticalCss !!}
-.css-loading main, .css-loading footer { overflow-x: hidden; overflow-x: clip; }</style>
+.css-loading main, .css-loading footer { overflow-x: hidden; overflow-x: clip; }
+main:has(> section.hero) > section:not(.hero), body:has(main > section.hero) footer.footer-main > .container { content-visibility: auto; contain-intrinsic-size: auto 600px; }</style>
         @foreach (css_bundle_urls($layoutCss) as $cssUrl)
             {{-- Once applied, a resize event lets sliders that measured with critical CSS only re-measure --}}
             <link rel="preload" href="{{ $cssUrl }}" as="style"

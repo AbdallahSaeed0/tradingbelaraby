@@ -207,23 +207,38 @@
                     startAutoplay();
                 }
 
-                // Autoplay only while the slider is on screen (saves layout/paint work)
-                var isOnScreen = !('IntersectionObserver' in window);
-                if (!isOnScreen) {
+                // Position and autoplay lazily, only while the slider is near the screen:
+                // measuring cards forces layout of sections the browser skips while off
+                // screen (content-visibility), and autoplay off screen is wasted work.
+                var isOnScreen = false;
+                var positioned = false;
+                function ensurePositioned() {
+                    if (!positioned) {
+                        positioned = true;
+                        jumpTo(n);
+                    }
+                }
+                if ('IntersectionObserver' in window) {
                     new IntersectionObserver(function (entries) {
                         isOnScreen = entries[0].isIntersecting;
-                        if (isOnScreen) startAutoplay(); else stopAutoplay();
-                    }).observe(wrap);
+                        if (isOnScreen) {
+                            ensurePositioned();
+                            startAutoplay();
+                        } else {
+                            stopAutoplay();
+                        }
+                    }, { rootMargin: '200px 0px' }).observe(wrap);
+                } else {
+                    isOnScreen = true;
+                    setTimeout(function () {
+                        ensurePositioned();
+                        startAutoplay();
+                    }, 30);
                 }
-
-                // Initialise position after layout
-                setTimeout(function () {
-                    jumpTo(n);
-                    startAutoplay();
-                }, 30);
 
                 // Re-anchor on resize (card width may change)
                 window.addEventListener('resize', function () {
+                    if (!positioned) return;
                     jumpTo(currentIdx);
                     resetAutoplay();
                 });
