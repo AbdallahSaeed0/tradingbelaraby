@@ -76,32 +76,26 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Add scroll animation for elements
-    const animateOnScroll = function () {
-        const elements = document.querySelectorAll('.feature-card, .course-card, .about-features .feature');
-
-        elements.forEach(element => {
-            const elementPosition = element.getBoundingClientRect().top;
-            const screenPosition = window.innerHeight;
-
-            if (elementPosition < screenPosition) {
-                element.style.opacity = '1';
-                element.style.transform = 'translateY(0)';
-            }
+    // Fade elements in as they enter the viewport. IntersectionObserver avoids
+    // reading layout (getBoundingClientRect) on every scroll event.
+    const animatedElements = document.querySelectorAll('.feature-card, .course-card, .about-features .feature');
+    if ('IntersectionObserver' in window) {
+        const revealObserver = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                    revealObserver.unobserve(entry.target);
+                }
+            });
         });
-    };
-
-    // Set initial styles for animation
-    document.querySelectorAll('.feature-card, .course-card, .about-features .feature').forEach(element => {
-        element.style.opacity = '0';
-        element.style.transform = 'translateY(20px)';
-        element.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-    });
-
-    // Listen for scroll events
-    window.addEventListener('scroll', animateOnScroll);
-    // Initial check for elements in view
-    animateOnScroll();
+        animatedElements.forEach(element => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(20px)';
+            element.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            revealObserver.observe(element);
+        });
+    }
 });
 
 document.addEventListener('DOMContentLoaded', function () {

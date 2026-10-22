@@ -247,6 +247,10 @@
          * Removes background from other slides to save memory and improve performance.
          * Uses activeIndex so it works correctly with Swiper loop (duplicated slides).
          */
+        // Until the page has loaded, only the visible slide's image is requested so the
+        // neighbours (invisible under the fade effect) don't compete with the LCP image.
+        var preloadNeighbours = false;
+
         function applyBgForVisibleSlides(swiper) {
             if (!swiper || !swiper.slides) return;
             var slides = swiper.slides;
@@ -259,7 +263,7 @@
                 var bgImage = slide.getAttribute && (
                     (isMobileViewport && slide.getAttribute('data-bg-image-mobile')) || slide.getAttribute('data-bg-image')
                 );
-                if (i === active || i === prevIdx || i === nextIdx) {
+                if (i === active || (preloadNeighbours && (i === prevIdx || i === nextIdx))) {
                     if (bgImage) {
                         slide.style.backgroundImage = "url('" + bgImage.replace(/'/g, "\\'") + "')";
                         slide.style.backgroundSize = 'cover';
@@ -314,6 +318,31 @@
                     applyBgForVisibleSlides(this);
                 },
             },
+        });
+
+        // Hold autoplay until the visitor interacts (or a fallback delay passes), so
+        // slide changes don't repaint the viewport and fetch images while the page loads.
+        if (heroSwiper.autoplay) {
+            heroSwiper.autoplay.stop();
+            var autoplayStarted = false;
+            var interactionEvents = ['pointerdown', 'touchstart', 'scroll', 'keydown', 'mousemove'];
+            var startHeroAutoplay = function() {
+                if (autoplayStarted) return;
+                autoplayStarted = true;
+                interactionEvents.forEach(function(evt) {
+                    window.removeEventListener(evt, startHeroAutoplay);
+                });
+                heroSwiper.autoplay.start();
+            };
+            interactionEvents.forEach(function(evt) {
+                window.addEventListener(evt, startHeroAutoplay, { passive: true, once: true });
+            });
+            setTimeout(startHeroAutoplay, 12000);
+        }
+
+        window.addEventListener('load', function() {
+            preloadNeighbours = true;
+            applyBgForVisibleSlides(heroSwiper);
         });
     });
 </script>

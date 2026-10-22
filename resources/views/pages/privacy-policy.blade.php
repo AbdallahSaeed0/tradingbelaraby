@@ -67,10 +67,10 @@
 
 @if (\App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl')
     @push('rtl-styles')
-        <link rel="stylesheet" href="{{ asset('css/rtl/pages/terms-conditions.css') }}">
+        <link rel="stylesheet" href="{{ versioned_asset('css/rtl/pages/terms-conditions.css') }}">
     @endpush
 @else
     @push('styles')
-        <link rel="stylesheet" href="{{ asset('css/pages/terms-conditions.css') }}">
+        <link rel="stylesheet" href="{{ versioned_asset('css/pages/terms-conditions.css') }}">
     @endpush
 @endif

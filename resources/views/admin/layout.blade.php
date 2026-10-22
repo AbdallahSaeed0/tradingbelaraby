@@ -14,41 +14,41 @@
     <link rel="stylesheet" href="{{ asset('admin/pages-ltr/admin.css') }}">
 
     <!-- Admin Styles - Base (always loaded) -->
-    <link rel="stylesheet" href="{{ asset('css/admin/admin-theme.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/admin/admin-common.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/admin/admin-responsive.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/admin/admin-dashboard.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/admin/admin-forms.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/admin/admin-tables.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/admin/admin-settings.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/admin/admin-analytics.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/admin/admin-content-management.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/admin/admin-quiz.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('css/admin/admin-theme.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('css/admin/admin-common.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('css/admin/admin-responsive.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('css/admin/admin-dashboard.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('css/admin/admin-forms.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('css/admin/admin-tables.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('css/admin/admin-settings.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('css/admin/admin-analytics.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('css/admin/admin-content-management.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('css/admin/admin-quiz.css') }}">
     
     <!-- Dark Mode Styles - Loaded conditionally -->
-    <link rel="stylesheet" href="{{ asset('css/admin/dark/admin-common-dark.css') }}" id="dark-common" media="none">
-    <link rel="stylesheet" href="{{ asset('css/admin/dark/admin-forms-dark.css') }}" id="dark-forms" media="none">
-    <link rel="stylesheet" href="{{ asset('css/admin/dark/admin-tables-dark.css') }}" id="dark-tables" media="none">
-    <link rel="stylesheet" href="{{ asset('css/admin/dark/admin-settings-dark.css') }}" id="dark-settings" media="none">
-    <link rel="stylesheet" href="{{ asset('css/admin/dark/admin-analytics-dark.css') }}" id="dark-analytics" media="none">
-    <link rel="stylesheet" href="{{ asset('css/admin/dark/admin-content-management-dark.css') }}" id="dark-content" media="none">
-    <link rel="stylesheet" href="{{ asset('css/admin/dark/admin-quiz-dark.css') }}" id="dark-quiz" media="none">
+    <link rel="stylesheet" href="{{ versioned_asset('css/admin/dark/admin-common-dark.css') }}" id="dark-common" media="none">
+    <link rel="stylesheet" href="{{ versioned_asset('css/admin/dark/admin-forms-dark.css') }}" id="dark-forms" media="none">
+    <link rel="stylesheet" href="{{ versioned_asset('css/admin/dark/admin-tables-dark.css') }}" id="dark-tables" media="none">
+    <link rel="stylesheet" href="{{ versioned_asset('css/admin/dark/admin-settings-dark.css') }}" id="dark-settings" media="none">
+    <link rel="stylesheet" href="{{ versioned_asset('css/admin/dark/admin-analytics-dark.css') }}" id="dark-analytics" media="none">
+    <link rel="stylesheet" href="{{ versioned_asset('css/admin/dark/admin-content-management-dark.css') }}" id="dark-content" media="none">
+    <link rel="stylesheet" href="{{ versioned_asset('css/admin/dark/admin-quiz-dark.css') }}" id="dark-quiz" media="none">
 
     <!-- Shared Component Styles -->
-    <link rel="stylesheet" href="{{ asset('css/components/cards.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/components/alerts.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/components/badges.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/layout/language-switcher.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/utilities-extended.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('css/components/cards.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('css/components/alerts.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('css/components/badges.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('css/layout/language-switcher.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('css/utilities-extended.css') }}">
 
     @stack('styles')
-    <link rel="stylesheet" href="{{ asset('css/admin/admin-tables-mobile.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/admin/admin-form-mobile.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/admin/admin-lang-tabs-mobile.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/admin/admin-settings-mobile.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/admin/admin-list-mobile.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('css/admin/admin-tables-mobile.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('css/admin/admin-form-mobile.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('css/admin/admin-lang-tabs-mobile.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('css/admin/admin-settings-mobile.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('css/admin/admin-list-mobile.css') }}">
     @if (request()->routeIs('admin.courses.show'))
-        <link rel="stylesheet" href="{{ asset('css/admin/admin-course-detail.css') }}">
+        <link rel="stylesheet" href="{{ versioned_asset('css/admin/admin-course-detail.css') }}">
     @endif
 </head>
 

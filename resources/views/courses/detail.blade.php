@@ -4,13 +4,13 @@
     (\App\Models\MainContentSettings::getActive()?->site_name ?? custom_trans('Site Name', 'front')))
 
     @push('styles')
-        <link rel="stylesheet" href="{{ asset('css/pages/course-detail.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/rtl/components/home-courses-slider.css') }}">
+        <link rel="stylesheet" href="{{ versioned_asset('css/pages/course-detail.css') }}">
+        <link rel="stylesheet" href="{{ versioned_asset('css/rtl/components/home-courses-slider.css') }}">
     @endpush
 
     @push('rtl-styles')
-        <link rel="stylesheet" href="{{ asset('css/rtl/pages/course-detail.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/rtl/components/home-courses-slider.css') }}">
+        <link rel="stylesheet" href="{{ versioned_asset('css/rtl/pages/course-detail.css') }}">
+        <link rel="stylesheet" href="{{ versioned_asset('css/rtl/components/home-courses-slider.css') }}">
     @endpush
 
 @section('content')

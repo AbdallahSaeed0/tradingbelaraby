@@ -76,10 +76,10 @@
 
 @if (\App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl')
     @push('rtl-styles')
-        <link rel="stylesheet" href="{{ asset('css/rtl/pages/about-us.css') }}">
+        <link rel="stylesheet" href="{{ versioned_asset('css/rtl/pages/about-us.css') }}">
     @endpush
 @else
     @push('styles')
-        <link rel="stylesheet" href="{{ asset('css/pages/about-us.css') }}">
+        <link rel="stylesheet" href="{{ versioned_asset('css/pages/about-us.css') }}">
     @endpush
 @endif

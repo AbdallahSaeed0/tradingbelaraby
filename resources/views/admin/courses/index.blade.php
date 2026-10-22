@@ -408,7 +408,7 @@
     </div>
 @endsection
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/admin/admin-courses-mobile.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('css/admin/admin-courses-mobile.css') }}">
     <style>
         @media (min-width: 992px) {
             .courses-admin-table {

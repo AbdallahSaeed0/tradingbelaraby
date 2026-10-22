@@ -3,11 +3,11 @@
 @section('title', 'All Courses')
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/pages/courses-listing.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('css/pages/courses-listing.css') }}">
 @endpush
 @if (\App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl')
     @push('rtl-styles')
-        <link rel="stylesheet" href="{{ asset('css/rtl/pages/courses-listing.css') }}">
+        <link rel="stylesheet" href="{{ versioned_asset('css/rtl/pages/courses-listing.css') }}">
     @endpush
 @endif
 

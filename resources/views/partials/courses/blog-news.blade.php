@@ -21,7 +21,8 @@
                         <div class="blog-card bg-white rounded-4 shadow-sm w-100 d-flex flex-column">
                             <div class="blog-img-wrap position-relative overflow-hidden rounded-top-4">
                                 <a href="{{ route('blog.show', $blog->slug) }}" class="d-block text-decoration-none">
-                                    <img src="{{ $blog->getLocalizedImageUrl() ?? asset('images/placeholder.jpg') }}"
+                                    @php $blogImagePath = get_current_language_code() === 'ar' && $blog->image_ar ? $blog->image_ar : $blog->image; @endphp
+                                    <img src="{{ optimized_image_or($blogImagePath, $blog->getLocalizedImageUrl() ?? asset('images/placeholder.jpg'), 800) }}"
                                         class="blog-img w-100" alt="{{ $blog->getLocalizedTitle() }}" loading="lazy" decoding="async">
                                 </a>
                                 <span class="badge blog-date-badge position-absolute top-0 start-0 m-3 px-3 py-2"><i

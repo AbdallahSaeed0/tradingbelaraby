@@ -307,24 +307,30 @@
 
         // Read More/Less functionality for testimonial text
         function initTestimonialReadMore() {
-            $('.testimonial-text-wrapper').each(function() {
+            const $wrappers = $('.testimonial-text-wrapper');
+
+            // Reset all texts first, then measure all of them, then write: interleaving
+            // class changes with scrollHeight reads forced a layout per testimonial.
+            $wrappers.find('.testimonial-text').removeClass('truncated');
+            const exceedsFourLines = $wrappers.map(function() {
+                const text = $(this).find('.testimonial-text')[0];
+                if (!text) return false;
+                const lineHeight = parseFloat(window.getComputedStyle(text).lineHeight);
+                return text.scrollHeight > lineHeight * 4; // 4 lines
+            }).get();
+
+            $wrappers.each(function(index) {
                 const $wrapper = $(this);
                 const $text = $wrapper.find('.testimonial-text');
                 const $btn = $wrapper.find('.btn-read-more');
                 const $readMoreText = $btn.find('.read-more-text');
                 const $readLessText = $btn.find('.read-less-text');
-                
-                // Remove any existing event handlers and reset state
+
+                // Remove any existing event handlers
                 $btn.off('click');
-                $text.removeClass('truncated');
-                
-                // Temporarily remove truncated class to measure full height
-                const originalHeight = $text[0].scrollHeight;
-                const lineHeight = parseFloat($text.css('line-height')) || parseFloat(window.getComputedStyle($text[0]).lineHeight);
-                const maxHeight = lineHeight * 4; // 4 lines
-                
+
                 // If text height exceeds 4 lines, enable read more
-                if (originalHeight > maxHeight) {
+                if (exceedsFourLines[index]) {
                     $text.addClass('truncated');
                     $btn.removeClass('d-none');
                     $readMoreText.removeClass('d-none');

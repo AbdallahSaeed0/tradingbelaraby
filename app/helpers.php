@@ -139,3 +139,97 @@ if (!function_exists('versioned_asset')) {
         return asset($path) . ($version ? '?v=' . $version : '');
     }
 }
+
+if (!function_exists('css_bundle_urls')) {
+    /**
+     * Concatenate public CSS files into one cached bundle (public/cache/css) so the layout
+     * needs a single stylesheet request instead of many. @import rules are inlined in place
+     * and relative url()s are rewritten, so the cascade is the same as linking the files
+     * one by one. The bundle name hashes paths + mtimes, so edits produce a new bundle.
+     * Falls back to individual versioned links if the bundle cannot be written.
+     *
+     * @param array<int, string> $paths Paths relative to public/ (e.g. css/rtl/layout.css)
+     * @return array<int, string> Stylesheet URLs to link, in order
+     */
+    function css_bundle_urls(array $paths): array
+    {
+        $signature = '';
+        foreach ($paths as $path) {
+            $file = public_path($path);
+            $signature .= $path . ':' . (is_file($file) ? filemtime($file) : 0) . ';';
+        }
+        $bundlePath = 'cache/css/bundle-' . md5($signature) . '.css';
+        $bundleFile = public_path($bundlePath);
+
+        if (!is_file($bundleFile)) {
+            $css = '';
+            foreach ($paths as $path) {
+                $css .= "/* {$path} */\n" . css_bundle_read($path) . "\n";
+            }
+            $dir = dirname($bundleFile);
+            if (!is_dir($dir)) {
+                @mkdir($dir, 0755, true);
+            }
+            $tmp = $bundleFile . '.' . uniqid('', true) . '.tmp';
+            if (@file_put_contents($tmp, $css) === false || !@rename($tmp, $bundleFile)) {
+                @unlink($tmp);
+                return array_map('versioned_asset', $paths);
+            }
+        }
+
+        return [asset($bundlePath)];
+    }
+}
+
+if (!function_exists('css_bundle_read')) {
+    /**
+     * Read one public CSS file for css_bundle_urls(): inline its local @imports
+     * and make relative url() references absolute from the site root.
+     */
+    function css_bundle_read(string $path, array $seen = []): string
+    {
+        $path = ltrim($path, '/');
+        $file = public_path($path);
+        if (isset($seen[$path]) || !is_file($file)) {
+            return '';
+        }
+        $seen[$path] = true;
+        $css = (string) file_get_contents($file);
+        $baseDir = trim(dirname($path), '/.');
+
+        $resolve = function (string $url) use ($baseDir): string {
+            if ($url === '' || $url[0] === '/' || $url[0] === '#' || preg_match('#^(data:|https?:|//)#i', $url)) {
+                return $url;
+            }
+            $parts = [];
+            foreach (explode('/', $baseDir . '/' . $url) as $segment) {
+                if ($segment === '..') {
+                    array_pop($parts);
+                } elseif ($segment !== '.' && $segment !== '') {
+                    $parts[] = $segment;
+                }
+            }
+            return '/' . implode('/', $parts);
+        };
+
+        // Inline local @import rules (remote ones are left untouched)
+        $css = preg_replace_callback(
+            '/@import\s+(?:url\(\s*)?["\']?([^"\')\s;]+)["\']?\s*\)?\s*;/i',
+            function ($m) use ($resolve, $seen) {
+                $target = $resolve($m[1]);
+                if (preg_match('#^(https?:|//)#i', $target)) {
+                    return $m[0];
+                }
+                return css_bundle_read(strtok($target, '?'), $seen);
+            },
+            $css
+        );
+
+        // Rewrite relative url() references so they still resolve from the bundle location
+        return preg_replace_callback(
+            '/url\(\s*(["\']?)([^"\')]+)\1\s*\)/i',
+            fn ($m) => 'url(' . $m[1] . $resolve(trim($m[2])) . $m[1] . ')',
+            $css
+        );
+    }
+}

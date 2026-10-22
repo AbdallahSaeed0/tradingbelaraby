@@ -63,7 +63,7 @@
                                                 $audioUrl = $testimonial->voice_playback_url;
                                             }
                                         @endphp
-                                        <audio controls class="testimonial-audio-player" preload="metadata">
+                                        <audio controls class="testimonial-audio-player" preload="none">
                                             <source src="{{ $audioUrl }}" type="audio/mpeg">
                                             <source src="{{ $audioUrl }}" type="audio/wav">
                                             <source src="{{ $audioUrl }}" type="audio/mp4">
@@ -72,7 +72,7 @@
                                         </audio>
                                     @else
                                         {{-- Regular audio file --}}
-                                        <audio controls class="testimonial-audio-player">
+                                        <audio controls class="testimonial-audio-player" preload="none">
                                             <source src="{{ $testimonial->voice_playback_url }}" type="audio/mpeg">
                                             <source src="{{ $testimonial->voice_playback_url }}" type="audio/wav">
                                             <source src="{{ $testimonial->voice_playback_url }}" type="audio/mp4">

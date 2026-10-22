@@ -9,11 +9,11 @@
 @if ($instructors->count() > 0)
     @if (\App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl')
         @push('rtl-styles')
-            <link rel="stylesheet" href="{{ asset('css/rtl/components/home-courses-slider.css') }}">
+            <link rel="stylesheet" href="{{ versioned_asset('css/rtl/components/home-courses-slider.css') }}">
         @endpush
     @else
         @push('styles')
-            <link rel="stylesheet" href="{{ asset('css/rtl/components/home-courses-slider.css') }}">
+            <link rel="stylesheet" href="{{ versioned_asset('css/rtl/components/home-courses-slider.css') }}">
         @endpush
     @endif
     <section class="home-courses-slider home-courses-slider--instructors" id="instructorSection" aria-labelledby="instructor-heading" data-home-courses-slider>
@@ -39,10 +39,10 @@
                             <article class="home-courses-slider__card">
                                 <div class="home-courses-slider__card-image-wrap">
                                     <a href="{{ route('instructor.show', $instructor->id) }}" class="home-courses-slider__card-image-link">
-                                        <img src="{{ $instructor->cover_url }}" class="home-courses-slider__card-image" alt="{{ $instructor->name }}" width="280" height="170" loading="lazy">
+                                        <img src="{{ optimized_image_or($instructor->cover, $instructor->cover_url, 560) }}" class="home-courses-slider__card-image" decoding="async" alt="{{ $instructor->name }}" width="280" height="170" loading="lazy">
                                     </a>
                                     <span class="home-courses-slider__badge home-courses-slider__badge--featured">{{ custom_trans('Instructor', 'front') }}</span>
-                                    <img src="{{ $instructor->avatar_url }}" class="home-courses-slider__card-avatar" alt="{{ $instructor->name }}" width="48" height="48">
+                                    <img src="{{ optimized_image_or($instructor->avatar, $instructor->avatar_url, 96) }}" class="home-courses-slider__card-avatar" alt="{{ $instructor->name }}" width="48" height="48" loading="lazy" decoding="async">
                                 </div>
                                 <div class="home-courses-slider__card-body">
                                     <h3 class="home-courses-slider__card-title">

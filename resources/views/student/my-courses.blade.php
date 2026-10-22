@@ -14,11 +14,11 @@
 
     @if ($isRtl)
         @push('rtl-styles')
-            <link rel="stylesheet" href="{{ asset('css/rtl/pages/my-courses.css') }}">
+            <link rel="stylesheet" href="{{ versioned_asset('css/rtl/pages/my-courses.css') }}">
         @endpush
     @else
         @push('styles')
-            <link rel="stylesheet" href="{{ asset('css/pages/my-courses.css') }}">
+            <link rel="stylesheet" href="{{ versioned_asset('css/pages/my-courses.css') }}">
         @endpush
     @endif
 

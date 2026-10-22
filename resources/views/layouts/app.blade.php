@@ -31,7 +31,7 @@
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11.2.10/swiper-bundle.min.css" />
     <!-- Non-critical CSS: loaded without blocking first paint -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" media="print" onload="this.media='all'">
@@ -44,7 +44,7 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css">
     </noscript>
 
-    <!-- Language-specific Styles (linked directly instead of via main.css @import chains so they download in parallel) -->
+    <!-- Language-specific Styles (served as one bundled file; see css_bundle_urls()) -->
     @php
         $isRtlLayout = \App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl';
         $layoutCss = $isRtlLayout
@@ -88,8 +88,8 @@
                 'css/components/whatsapp-float.css',
             ];
     @endphp
-    @foreach ($layoutCss as $cssPath)
-        <link rel="stylesheet" href="{{ versioned_asset($cssPath) }}">
+    @foreach (css_bundle_urls($layoutCss) as $cssUrl)
+        <link rel="stylesheet" href="{{ $cssUrl }}">
     @endforeach
 
     <!-- Page-specific RTL Styles -->
@@ -997,7 +997,7 @@
     </div>
 
     <script src="{{ versioned_asset('js/script.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11.2.10/swiper-bundle.min.js"></script>
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- jQuery (required for Slick and Toastr) -->
