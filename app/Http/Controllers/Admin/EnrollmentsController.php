@@ -347,6 +347,58 @@ class EnrollmentsController extends Controller
     }
 
     /**
+     * Update the status of several enrollments at once
+     */
+    public function bulkUpdateStatus(Request $request)
+    {
+        $data = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer|exists:course_enrollments,id',
+            'status' => 'required|in:active,completed,cancelled,pending',
+        ]);
+
+        $count = DB::transaction(function () use ($data) {
+            $enrollments = CourseEnrollment::whereIn('id', $data['ids'])->get();
+
+            foreach ($enrollments as $enrollment) {
+                $updateData = ['status' => $data['status']];
+
+                // Same rule as single update: activating sets enrolled_at if missing
+                if ($data['status'] === 'active' && !$enrollment->enrolled_at) {
+                    $updateData['enrolled_at'] = now();
+                }
+
+                $enrollment->update($updateData);
+            }
+
+            return $enrollments->count();
+        });
+
+        return back()->with('success', $count . ' ' . \Illuminate\Support\Str::plural('enrollment', $count) . ' set to ' . ucfirst($data['status']));
+    }
+
+    /**
+     * Delete several enrollments at once (revokes those students' access)
+     */
+    public function bulkDestroy(Request $request)
+    {
+        $data = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer|exists:course_enrollments,id',
+        ]);
+
+        $count = DB::transaction(function () use ($data) {
+            $enrollments = CourseEnrollment::whereIn('id', $data['ids'])->get();
+            // Delete one by one so model events run, same as the single delete
+            $enrollments->each->delete();
+
+            return $enrollments->count();
+        });
+
+        return back()->with('success', $count . ' ' . \Illuminate\Support\Str::plural('enrollment', $count) . ' deleted');
+    }
+
+    /**
      * Remove a student from a course (deletes the enrollment, revoking access)
      */
     public function destroy(CourseEnrollment $enrollment)

@@ -386,6 +386,8 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
     Route::get('/courses/{course}/duplicate', [App\Http\Controllers\Admin\CoursesController::class, 'duplicate'])
         ->name('courses.duplicate')
         ->middleware('admin.permission:manage_courses,manage_own_courses');
+    Route::post('/enrollments/bulk-update-status', [App\Http\Controllers\Admin\EnrollmentsController::class, 'bulkUpdateStatus'])->name('enrollments.bulk_update_status')->middleware('admin.permission:manage_enrollments');
+    Route::post('/enrollments/bulk-delete', [App\Http\Controllers\Admin\EnrollmentsController::class, 'bulkDestroy'])->name('enrollments.bulk_delete')->middleware('admin.permission:manage_enrollments');
     Route::resource('enrollments', App\Http\Controllers\Admin\EnrollmentsController::class)->middleware('admin.permission:manage_enrollments');
     Route::post('/enrollments/{enrollment}/update-status', [App\Http\Controllers\Admin\EnrollmentsController::class, 'updateStatus'])->name('enrollments.update_status')->middleware('admin.permission:manage_enrollments');
     Route::get('/orders', [App\Http\Controllers\Admin\OrdersController::class, 'index'])->name('orders.index')->middleware('admin.permission:manage_enrollments');

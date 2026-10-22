@@ -39,6 +39,13 @@
             </div>
         @endif
 
+        @if ($errors->any())
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fa fa-exclamation-circle me-2"></i>{{ $errors->first() }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+
         <!-- Stats Cards -->
         <div class="row g-4 mb-4">
             <div class="col-md-2">
@@ -201,6 +208,30 @@
         <!-- Enrollments Table -->
         <div class="card">
             <div class="card-body">
+                <!-- Bulk actions: shown while rows are selected -->
+                <div class="enrollment-bulk-bar d-none" id="bulkActionsBar">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fa fa-check-square text-primary"></i>
+                        <span class="fw-semibold"><span id="bulkSelectedCount">0</span> selected</span>
+                        <button type="button" class="btn btn-link btn-sm p-0 ms-1" id="bulkClearSelection">Clear</button>
+                    </div>
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                        <select class="form-select form-select-sm w-auto" id="bulkStatusSelect" aria-label="New status">
+                            <option value="">Change status to…</option>
+                            <option value="active">Active</option>
+                            <option value="pending">Pending</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                        <button type="button" class="btn btn-sm btn-primary" id="bulkApplyStatus" disabled>
+                            <i class="fa fa-check me-1"></i>Apply
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-danger" id="bulkDeleteBtn">
+                            <i class="fa fa-trash me-1"></i>Delete
+                        </button>
+                    </div>
+                </div>
+
                 <div class="table-responsive d-none d-lg-block admin-table-no-mobile-cards">
                     <table class="table table-hover table-striped">
                         <thead>
@@ -534,6 +565,9 @@
                             paginationContainer.innerHTML = newPagination.innerHTML;
                         }
 
+                        // New rows come in unchecked
+                        syncSelectAll();
+
                         // Update URL without reload
                         const newUrl = `{{ route('admin.enrollments.index') }}?${params.toString()}`;
                         window.history.pushState({}, '', newUrl);
@@ -610,12 +644,128 @@
                 });
             }
 
+            // Select all: each master checkbox controls the row checkboxes in its own list.
+            // Delegated on document so it keeps working after AJAX replaces the rows.
+            const selectAllScopes = {
+                selectAll: '.table tbody .enrollment-checkbox',
+                selectAllMobile: '#mobileEnrollmentsList .enrollment-checkbox',
+            };
+
+            function syncSelectAll() {
+                Object.entries(selectAllScopes).forEach(([masterId, rowSelector]) => {
+                    const master = document.getElementById(masterId);
+                    if (!master) {
+                        return;
+                    }
+                    const rows = document.querySelectorAll(rowSelector);
+                    const checked = Array.from(rows).filter(cb => cb.checked).length;
+                    master.checked = rows.length > 0 && checked === rows.length;
+                    master.indeterminate = checked > 0 && checked < rows.length;
+                });
+                updateBulkBar();
+            }
+
+            // Bulk actions bar
+            const bulkBar = document.getElementById('bulkActionsBar');
+            const bulkStatusSelect = document.getElementById('bulkStatusSelect');
+            const bulkApplyStatus = document.getElementById('bulkApplyStatus');
+
+            function selectedEnrollmentIds() {
+                // Desktop table and mobile cards hold the same rows; dedupe
+                const ids = Array.from(document.querySelectorAll('.enrollment-checkbox:checked')).map(cb => cb.value);
+                return [...new Set(ids)];
+            }
+
+            function updateBulkBar() {
+                const count = selectedEnrollmentIds().length;
+                document.getElementById('bulkSelectedCount').textContent = count;
+                bulkBar.classList.toggle('d-none', count === 0);
+                bulkApplyStatus.disabled = !bulkStatusSelect.value;
+            }
+
+            bulkStatusSelect.addEventListener('change', updateBulkBar);
+
+            document.getElementById('bulkClearSelection').addEventListener('click', function() {
+                document.querySelectorAll('.enrollment-checkbox, #selectAll, #selectAllMobile').forEach(cb => {
+                    cb.checked = false;
+                });
+                syncSelectAll();
+            });
+
+            // Put the selected ids (and extra fields) into the confirm modal's form, then open it
+            function confirmBulk(options, extraFields) {
+                const form = document.getElementById('actionConfirmForm');
+                form.querySelectorAll('.bulk-field').forEach(el => el.remove());
+                const fields = Object.assign({}, extraFields);
+                selectedEnrollmentIds().forEach((id, i) => {
+                    fields['ids[' + i + ']'] = id;
+                });
+                Object.entries(fields).forEach(([name, value]) => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = name;
+                    input.value = value;
+                    input.className = 'bulk-field';
+                    form.appendChild(input);
+                });
+                showActionConfirmModal(options);
+            }
+
+            bulkApplyStatus.addEventListener('click', function() {
+                const status = bulkStatusSelect.value;
+                const label = bulkStatusSelect.options[bulkStatusSelect.selectedIndex].text;
+                const count = selectedEnrollmentIds().length;
+                if (!status || count === 0) {
+                    return;
+                }
+                confirmBulk({
+                    title: 'Change Status',
+                    message: 'Set ' + count + ' selected ' + (count === 1 ? 'enrollment' : 'enrollments') + ' to "' + label + '"?',
+                    warning: status === 'cancelled' ? 'Cancelled enrollments lose access to the course.' : null,
+                    action: '{{ route('admin.enrollments.bulk_update_status') }}',
+                    method: 'POST',
+                    headerClass: 'bg-primary text-white',
+                    btnClass: 'btn-primary',
+                    btnHtml: '<i class="fa fa-check me-1"></i>Update ' + count
+                }, { status: status });
+            });
+
+            document.getElementById('bulkDeleteBtn').addEventListener('click', function() {
+                const count = selectedEnrollmentIds().length;
+                if (count === 0) {
+                    return;
+                }
+                confirmBulk({
+                    title: 'Delete Enrollments',
+                    message: 'Delete ' + count + ' selected ' + (count === 1 ? 'enrollment' : 'enrollments') + '? The students will lose access to these courses.',
+                    warning: 'This cannot be undone.',
+                    action: '{{ route('admin.enrollments.bulk_delete') }}',
+                    method: 'POST',
+                    headerClass: 'bg-danger text-white',
+                    btnClass: 'btn-danger',
+                    btnHtml: '<i class="fa fa-trash me-1"></i>Delete ' + count
+                });
+            });
+
+            document.addEventListener('change', function(e) {
+                const target = e.target;
+                if (selectAllScopes[target.id]) {
+                    document.querySelectorAll(selectAllScopes[target.id]).forEach(cb => {
+                        cb.checked = target.checked;
+                    });
+                    syncSelectAll();
+                } else if (target.classList.contains('enrollment-checkbox')) {
+                    syncSelectAll();
+                }
+            });
+
             // Refresh stats
             function refreshStats() {
                 location.reload();
             }
         </script>
         @include('admin.partials.status-modal')
+        @include('admin.partials.confirm-modal')
     @endpush
 @endsection
 

@@ -336,3 +336,21 @@
     white-space: nowrap;
     width: 1%;
 }
+
+/* Bulk actions bar shown above a list while rows are selected */
+.enrollment-bulk-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.6rem 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(13, 110, 253, 0.4);
+    border-radius: 0.5rem;
+    background: rgba(13, 110, 253, 0.08);
+}
+
+.enrollment-bulk-bar.d-none {
+    display: none !important;
+}
