@@ -3,11 +3,13 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "vite build"
+        "build": "vite build",
+        "critical-css": "node scripts/critical-css.js"
     },
     "devDependencies": {
         "axios": "^1.6.4",
         "laravel-vite-plugin": "^1.0.0",
+        "puppeteer-core": "^24.43.1",
         "vite": "^5.0.0"
     }
 }

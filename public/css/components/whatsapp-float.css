@@ -17,6 +17,18 @@
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
+}
+
+/* Pulse ring: animated with transform/opacity on a pseudo-element so it runs on the
+   compositor instead of repainting box-shadow every frame */
+.whatsapp-float::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background-color: rgba(37, 211, 102, 0.7);
+    z-index: -1;
+    pointer-events: none;
     animation: pulse-whatsapp 2s infinite;
 }
 
@@ -33,13 +45,23 @@
 
 @keyframes pulse-whatsapp {
     0% {
-        box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+        transform: scale(1);
+        opacity: 1;
     }
     50% {
-        box-shadow: 0 0 0 15px rgba(37, 211, 102, 0);
+        transform: scale(1.5);
+        opacity: 0;
     }
     100% {
-        box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+        transform: scale(1);
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .whatsapp-float::after {
+        animation: none;
+        opacity: 0;
     }
 }
 

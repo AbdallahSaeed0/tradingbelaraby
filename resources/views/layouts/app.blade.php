@@ -98,9 +98,30 @@
             $layoutCss[] = $extraCss;
         }
     @endphp
-    @foreach (css_bundle_urls($layoutCss) as $cssUrl)
-        <link rel="stylesheet" href="{{ $cssUrl }}">
-    @endforeach
+    @php
+        // Pages with generated critical CSS (scripts/critical-css.js) inline it and load the
+        // full bundle without blocking first paint. Regenerate it after changing their CSS.
+        $criticalCssFile = request()->routeIs('home')
+            ? public_path('css/critical/home-' . ($isRtlLayout ? 'rtl' : 'ltr') . '.css')
+            : null;
+        $criticalCss = $criticalCssFile && is_file($criticalCssFile) ? file_get_contents($criticalCssFile) : null;
+    @endphp
+    @if ($criticalCss)
+        {{-- Until the bundle applies, unstyled below-the-fold content must not widen the page --}}
+        <script>document.documentElement.classList.add('css-loading')</script>
+        <style>{!! $criticalCss !!}
+.css-loading main, .css-loading footer { overflow-x: hidden; overflow-x: clip; }</style>
+        @foreach (css_bundle_urls($layoutCss) as $cssUrl)
+            {{-- Once applied, a resize event lets sliders that measured with critical CSS only re-measure --}}
+            <link rel="preload" href="{{ $cssUrl }}" as="style"
+                onload="this.onload=function(){document.documentElement.classList.remove('css-loading');window.dispatchEvent(new Event('resize'))};this.rel='stylesheet'">
+            <noscript><link rel="stylesheet" href="{{ $cssUrl }}"></noscript>
+        @endforeach
+    @else
+        @foreach (css_bundle_urls($layoutCss) as $cssUrl)
+            <link rel="stylesheet" href="{{ $cssUrl }}">
+        @endforeach
+    @endif
 
     <!-- Page-specific RTL Styles -->
     @if ($isRtlLayout)

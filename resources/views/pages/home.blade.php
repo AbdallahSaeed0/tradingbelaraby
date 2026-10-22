@@ -196,7 +196,7 @@
 
                 function startAutoplay() {
                     stopAutoplay();
-                    if (prefersReducedMotion || !canAutoplay()) return;
+                    if (prefersReducedMotion || !isOnScreen || !canAutoplay()) return;
                     autoplayTimer = setInterval(function () {
                         if (!isAnimating) slide('next');
                     }, AUTOPLAY_MS);
@@ -205,6 +205,15 @@
                 function resetAutoplay() {
                     stopAutoplay();
                     startAutoplay();
+                }
+
+                // Autoplay only while the slider is on screen (saves layout/paint work)
+                var isOnScreen = !('IntersectionObserver' in window);
+                if (!isOnScreen) {
+                    new IntersectionObserver(function (entries) {
+                        isOnScreen = entries[0].isIntersecting;
+                        if (isOnScreen) startAutoplay(); else stopAutoplay();
+                    }).observe(wrap);
                 }
 
                 // Initialise position after layout
