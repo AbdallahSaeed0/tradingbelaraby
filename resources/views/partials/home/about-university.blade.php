@@ -11,6 +11,8 @@
                 <!-- Left Image -->
                 <div class="col-lg-6 mb-4 mb-lg-0 d-flex justify-content-center">
                     <img src="{{ optimized_image_or($aboutUniversity->image, $aboutUniversity->image_url, 1200) }}" loading="lazy" decoding="async"
+                        srcset="{{ optimized_image_or($aboutUniversity->image, $aboutUniversity->image_url, 400) }} 400w, {{ optimized_image_or($aboutUniversity->image, $aboutUniversity->image_url, 700) }} 700w, {{ optimized_image_or($aboutUniversity->image, $aboutUniversity->image_url, 1200) }} 1200w"
+                        sizes="(max-width: 991px) 90vw, 50vw"
                         alt="{{ get_current_language_code() === 'ar' && $aboutUniversity->title_ar ? $aboutUniversity->title_ar : $aboutUniversity->title }}"
                         class="img-fluid" width="600" height="400">
                 </div>

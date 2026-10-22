@@ -267,8 +267,25 @@
             });
         })();
 
-        // Slick Testimonial Slider
+        // Slick Testimonial Slider: initialised when the section nears the viewport, so its
+        // layout measurements (forced reflows) don't run during the initial page load.
         $(document).ready(function() {
+            const testimonialSlider = document.querySelector('.testimonial-slider');
+            if (!testimonialSlider) return;
+            if (!('IntersectionObserver' in window)) {
+                initTestimonialSlider();
+                return;
+            }
+            const sliderObserver = new IntersectionObserver(function(entries) {
+                if (entries.some(function(entry) { return entry.isIntersecting; })) {
+                    sliderObserver.disconnect();
+                    initTestimonialSlider();
+                }
+            }, { rootMargin: '400px 0px' });
+            sliderObserver.observe(testimonialSlider);
+        });
+
+        function initTestimonialSlider() {
             $('.testimonial-slider').slick({
                 slidesToShow: 3,
                 slidesToScroll: 1,
@@ -297,7 +314,7 @@
             $('.testimonial-slider').on('afterChange', function() {
                 initTestimonialReadMore();
             });
-        });
+        }
 
         // Read More/Less functionality for testimonial text
         function initTestimonialReadMore() {

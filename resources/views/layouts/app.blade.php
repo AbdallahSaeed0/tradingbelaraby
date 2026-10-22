@@ -29,25 +29,23 @@
     @stack('preload')
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11.2.10/swiper-bundle.min.css" />
     <!-- Non-critical CSS: loaded without blocking first paint -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="{{ versioned_asset('css/vendors/fontawesome-6.5.2-swap.min.css') }}" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css" media="print" onload="this.media='all'">
     <noscript>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="stylesheet" href="{{ versioned_asset('css/vendors/fontawesome-6.5.2-swap.min.css') }}">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css">
     </noscript>
 
-    <!-- Bootstrap 5.3.3 (local copy) + language-specific styles, served as one bundled file; see css_bundle_urls() -->
+    <!-- Bootstrap 5.3.3 + Swiper 11.2.10 (local copies) + language-specific styles, served as one bundled file; see css_bundle_urls() -->
     @php
         $isRtlLayout = \App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl';
         $layoutCss = $isRtlLayout
             ? [
                 'css/vendors/bootstrap.min.css',
+                'css/vendors/swiper-bundle-11.2.10.min.css',
                 'css/rtl/components/footer.css',
                 'css/rtl/pages/categories.css',
                 'css/rtl/pages/course-sections.css',
@@ -69,6 +67,7 @@
             ]
             : [
                 'css/vendors/bootstrap.min.css',
+                'css/vendors/swiper-bundle-11.2.10.min.css',
                 'css/base/main.css',
                 'css/components/footer.css',
                 'css/pages/categories.css',
@@ -756,9 +755,9 @@
                 <div class="col-6 col-sm-6 col-md-3 mb-4 mb-md-0">
                     <div class="footer-logo mb-3">
                         <a href="{{ route('home') }}" class="footer-logo-link">
-                            <img src="{{ optimized_image_or($mainContentSettings?->logo, $mainContentSettings ? $mainContentSettings->logo_url : asset('images/default-logo.svg'), 360) }}"
+                            <img src="{{ optimized_image_or($mainContentSettings?->logo, $mainContentSettings ? $mainContentSettings->logo_url : asset('images/default-logo.svg'), 160) }}"
                                 alt="{{ $mainContentSettings ? $mainContentSettings->logo_alt_text : 'Site Logo' }}"
-                                class="footer-logo-img">
+                                class="footer-logo-img" width="160" height="96" loading="lazy" decoding="async">
                         </a>
                     </div>
                     <h4 class="footer-title mb-2">{{ custom_trans('about_us', 'front') }}</h4>

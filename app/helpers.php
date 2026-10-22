@@ -160,7 +160,7 @@ if (!function_exists('css_bundle_urls')) {
      */
     function css_bundle_urls(array $paths): array
     {
-        $signature = '';
+        $signature = 'v2;'; // bump when the bundle format changes
         foreach ($paths as $path) {
             $file = public_path($path);
             $signature .= $path . ':' . (is_file($file) ? filemtime($file) : 0) . ';';
@@ -172,8 +172,12 @@ if (!function_exists('css_bundle_urls')) {
             // @charset is only honoured as the first bytes of a stylesheet
             $css = "@charset \"UTF-8\";\n";
             foreach ($paths as $path) {
-                $css .= "/* {$path} */\n" . css_bundle_read($path) . "\n";
+                $css .= css_bundle_read($path) . "\n";
             }
+            // Light minification: drop comments (keeping /*! license notices) and indentation
+            $css = preg_replace('#/\*(?!!).*?\*/#s', '', $css);
+            $css = preg_replace('/^[ \t]+|[ \t]+$/m', '', $css);
+            $css = preg_replace("/\n{2,}/", "\n", $css);
             $dir = dirname($bundleFile);
             if (!is_dir($dir)) {
                 @mkdir($dir, 0755, true);
@@ -185,7 +189,8 @@ if (!function_exists('css_bundle_urls')) {
             }
         }
 
-        return [asset($bundlePath)];
+        // ?v= lets the long-lived cache rule in .htaccess apply (the name is already unique)
+        return [asset($bundlePath) . '?v=' . substr(md5($signature), 0, 8)];
     }
 }
 
