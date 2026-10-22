@@ -121,11 +121,11 @@
         </div>
 
         <!-- Slider Navigation Buttons (focusable for keyboard) -->
-        <div class="swiper-button-next hero-swiper-button-next" role="button" tabindex="0" aria-label="{{ custom_trans('next_slide', 'front') ?? 'Next slide' }}"></div>
-        <div class="swiper-button-prev hero-swiper-button-prev" role="button" tabindex="0" aria-label="{{ custom_trans('previous_slide', 'front') ?? 'Previous slide' }}"></div>
+        <div class="swiper-button-next hero-swiper-button-next" role="button" tabindex="0" aria-label="{{ custom_trans('Next', 'front') }}"></div>
+        <div class="swiper-button-prev hero-swiper-button-prev" role="button" tabindex="0" aria-label="{{ custom_trans('Previous', 'front') }}"></div>
 
         <!-- Slider Pagination -->
-        <div class="swiper-pagination hero-swiper-pagination" role="tablist" aria-label="{{ custom_trans('slider_pagination', 'front') ?? 'Slider pagination' }}"></div>
+        <div class="swiper-pagination hero-swiper-pagination"></div>
         </div>
     </div>
 
@@ -308,6 +308,11 @@
             pagination: {
                 el: '.hero-swiper-pagination',
                 clickable: true,
+            },
+            a11y: {
+                prevSlideMessage: isRtl ? 'الشريحة السابقة' : 'Previous slide',
+                nextSlideMessage: isRtl ? 'الشريحة التالية' : 'Next slide',
+                paginationBulletMessage: (isRtl ? 'الانتقال إلى الشريحة ' : 'Go to slide ') + '@{{index}}',
             },
             on: {
                 init: function() {

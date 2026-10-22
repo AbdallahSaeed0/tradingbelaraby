@@ -137,28 +137,28 @@
                                 @if ($hasSocialLinks)
                                     <span>{{ custom_trans('Follow Us', 'front') }}:</span>
                                     @if ($contactSettings->social_facebook)
-                                        <a href="{{ $contactSettings->social_facebook }}" target="_blank"><i
-                                                class="fab fa-facebook-f"></i></a>
+                                        <a href="{{ $contactSettings->social_facebook }}" target="_blank" rel="noopener" aria-label="Facebook"><i
+                                                class="fab fa-facebook-f" aria-hidden="true"></i></a>
                                     @endif
                                     @if ($contactSettings->social_twitter)
-                                        <a href="{{ $contactSettings->social_twitter }}" target="_blank"><i
-                                                class="fab fa-twitter"></i></a>
+                                        <a href="{{ $contactSettings->social_twitter }}" target="_blank" rel="noopener" aria-label="X (Twitter)"><i
+                                                class="fab fa-twitter" aria-hidden="true"></i></a>
                                     @endif
                                     @if ($contactSettings->social_youtube)
-                                        <a href="{{ $contactSettings->social_youtube }}" target="_blank"><i
-                                                class="fab fa-youtube"></i></a>
+                                        <a href="{{ $contactSettings->social_youtube }}" target="_blank" rel="noopener" aria-label="YouTube"><i
+                                                class="fab fa-youtube" aria-hidden="true"></i></a>
                                     @endif
                                     @if ($contactSettings->social_linkedin)
-                                        <a href="{{ $contactSettings->social_linkedin }}" target="_blank"><i
-                                                class="fab fa-linkedin-in"></i></a>
+                                        <a href="{{ $contactSettings->social_linkedin }}" target="_blank" rel="noopener" aria-label="LinkedIn"><i
+                                                class="fab fa-linkedin-in" aria-hidden="true"></i></a>
                                     @endif
                                     @if ($contactSettings->social_snapchat)
-                                        <a href="{{ $contactSettings->social_snapchat }}" target="_blank"><i
-                                                class="fab fa-snapchat"></i></a>
+                                        <a href="{{ $contactSettings->social_snapchat }}" target="_blank" rel="noopener" aria-label="Snapchat"><i
+                                                class="fab fa-snapchat" aria-hidden="true"></i></a>
                                     @endif
                                     @if ($contactSettings->social_tiktok)
-                                        <a href="{{ $contactSettings->social_tiktok }}" target="_blank"><i
-                                                class="fab fa-tiktok"></i></a>
+                                        <a href="{{ $contactSettings->social_tiktok }}" target="_blank" rel="noopener" aria-label="TikTok"><i
+                                                class="fab fa-tiktok" aria-hidden="true"></i></a>
                                     @endif
                                 @endif
                             </div>
@@ -282,9 +282,10 @@
                         <form action="{{ route('courses.search') }}" method="GET" class="d-flex">
                             <input type="text" name="q"
                                 placeholder="{{ custom_trans('search_courses', 'front') }}"
+                                aria-label="{{ custom_trans('search_courses', 'front') }}"
                                 class="form-control search-input" value="{{ request('q') }}">
-                            <button type="submit" class="btn btn-outline-dark ms-2">
-                                <i class="fas fa-search"></i>
+                            <button type="submit" class="btn btn-outline-dark ms-2" aria-label="{{ custom_trans('search_courses', 'front') }}">
+                                <i class="fas fa-search" aria-hidden="true"></i>
                             </button>
                         </form>
                     </div>
@@ -764,28 +765,28 @@
                     @if ($hasFooterSocialLinks)
                         <div class="footer-social mb-3">
                             @if ($contactSettings->social_facebook)
-                                <a href="{{ $contactSettings->social_facebook }}" target="_blank"
-                                    class="footer-social-icon"><i class="fab fa-facebook-f"></i></a>
+                                <a href="{{ $contactSettings->social_facebook }}" target="_blank" rel="noopener" aria-label="Facebook"
+                                    class="footer-social-icon"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
                             @endif
                             @if ($contactSettings->social_twitter)
-                                <a href="{{ $contactSettings->social_twitter }}" target="_blank"
-                                    class="footer-social-icon"><i class="fab fa-twitter"></i></a>
+                                <a href="{{ $contactSettings->social_twitter }}" target="_blank" rel="noopener" aria-label="X (Twitter)"
+                                    class="footer-social-icon"><i class="fab fa-twitter" aria-hidden="true"></i></a>
                             @endif
                             @if ($contactSettings->social_youtube)
-                                <a href="{{ $contactSettings->social_youtube }}" target="_blank"
-                                    class="footer-social-icon"><i class="fab fa-youtube"></i></a>
+                                <a href="{{ $contactSettings->social_youtube }}" target="_blank" rel="noopener" aria-label="YouTube"
+                                    class="footer-social-icon"><i class="fab fa-youtube" aria-hidden="true"></i></a>
                             @endif
                             @if ($contactSettings->social_linkedin)
-                                <a href="{{ $contactSettings->social_linkedin }}" target="_blank"
-                                    class="footer-social-icon"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="{{ $contactSettings->social_linkedin }}" target="_blank" rel="noopener" aria-label="LinkedIn"
+                                    class="footer-social-icon"><i class="fab fa-linkedin-in" aria-hidden="true"></i></a>
                             @endif
                             @if ($contactSettings->social_snapchat)
-                                <a href="{{ $contactSettings->social_snapchat }}" target="_blank"
-                                    class="footer-social-icon"><i class="fab fa-snapchat"></i></a>
+                                <a href="{{ $contactSettings->social_snapchat }}" target="_blank" rel="noopener" aria-label="Snapchat"
+                                    class="footer-social-icon"><i class="fab fa-snapchat" aria-hidden="true"></i></a>
                             @endif
                             @if ($contactSettings->social_tiktok)
-                                <a href="{{ $contactSettings->social_tiktok }}" target="_blank"
-                                    class="footer-social-icon"><i class="fab fa-tiktok"></i></a>
+                                <a href="{{ $contactSettings->social_tiktok }}" target="_blank" rel="noopener" aria-label="TikTok"
+                                    class="footer-social-icon"><i class="fab fa-tiktok" aria-hidden="true"></i></a>
                             @endif
                         </div>
                     @endif
@@ -918,8 +919,8 @@
                     <div class="footer-lang-dropdown mb-3">
                         <div class="input-group">
                             <span class="input-group-text bg-dark text-white border-0"><i
-                                    class="fas fa-globe"></i></span>
-                            <select class="form-select bg-dark text-white border-0" id="footerLangSelect">
+                                    class="fas fa-globe" aria-hidden="true"></i></span>
+                            <select class="form-select bg-dark text-white border-0" id="footerLangSelect" aria-label="{{ custom_trans('language', 'front') }}">
                                 @foreach ($availableLanguages as $language)
                                     <option value="{{ $language->code }}"
                                         {{ $currentLanguage->id == $language->id ? 'selected' : '' }}>
@@ -937,8 +938,9 @@
             <div class="footer-copyright text-center flex-grow-1">
                 {{ $mainContentSettings?->getLocalizedFooterCopyright() ?? 'Copyright © ' . date('Y') . ' Tadawul Bel Araby.' }}
             </div>
-            <button id="backToTopBtn" class="btn btn-light btn-lg rounded-circle shadow-sm"><i
-                    class="fa fa-arrow-up"></i></button>
+            <button id="backToTopBtn" class="btn btn-light btn-lg rounded-circle shadow-sm"
+                aria-label="{{ get_current_language_code() === 'ar' ? 'العودة إلى الأعلى' : 'Back to top' }}"><i
+                    class="fa fa-arrow-up" aria-hidden="true"></i></button>
         </div>
     </footer>
 
@@ -986,9 +988,10 @@
                     <form action="{{ route('courses.search') }}" method="GET" class="d-flex gap-2">
                         <input type="text" name="q" class="form-control"
                             placeholder="{{ custom_trans('search_courses', 'front') }}"
+                            aria-label="{{ custom_trans('search_courses', 'front') }}"
                             value="{{ request('q') }}" autocomplete="off">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-search"></i>
+                        <button type="submit" class="btn btn-primary" aria-label="{{ custom_trans('search_courses', 'front') }}">
+                            <i class="fas fa-search" aria-hidden="true"></i>
                         </button>
                     </form>
                 </div>
