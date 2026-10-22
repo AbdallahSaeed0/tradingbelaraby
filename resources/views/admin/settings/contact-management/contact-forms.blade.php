@@ -184,16 +184,12 @@
                                     </td>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <div class="me-3">
-                                                <div
-                                                    class="avatar-sm bg-primary rounded-circle d-flex align-items-center justify-content-center">
-                                                    <span
-                                                        class="text-white fw-bold">{{ strtoupper(substr($form->name, 0, 1)) }}</span>
-                                                </div>
+                                            <div class="user-avatar me-3">
+                                                <i class="fa fa-user"></i>
                                             </div>
-                                            <div>
-                                                <h6 class="mb-0">{{ $form->name }}</h6>
-                                                <small class="text-muted">{{ $form->phone ?? 'No phone' }}</small>
+                                            <div class="min-w-0">
+                                                <h6 class="mb-0 text-break">{{ $form->name }}</h6>
+                                                <small class="text-muted" dir="ltr">{{ $form->phone ?: 'No phone' }}</small>
                                             </div>
                                         </div>
                                     </td>
@@ -210,7 +206,9 @@
                                     </td>
                                     <td>
                                         <span
-                                            class="badge bg-{{ $form->status === 'new' ? 'warning' : ($form->status === 'read' ? 'info' : ($form->status === 'replied' ? 'success' : 'secondary')) }}">
+                                            class="badge status-badge bg-{{ $form->status === 'new' ? 'warning text-dark' : ($form->status === 'read' ? 'info' : ($form->status === 'replied' ? 'success' : 'secondary')) }}"
+                                            style="cursor: pointer;" title="{{ custom_trans('Change Status', 'admin') }}"
+                                            onclick="changeSubmissionStatus({{ $form->id }}, '{{ $form->status }}')">
                                             {{ ucfirst($form->status) }}
                                         </span>
                                     </td>
@@ -220,17 +218,16 @@
                                             <small class="text-muted">{{ $form->created_at->format('H:i', 'admin') }}</small>
                                         </div>
                                     </td>
-                                    <td>
-                                        <div class="btn-group" role="group">
+                                    <td class="table-icon-actions-cell">
+                                        <div class="table-icon-actions">
                                             <a href="{{ route('admin.settings.contact-management.show', $form->id) }}"
                                                 class="btn btn-sm btn-outline-primary" title="{{ custom_trans('View Details', 'admin') }}">
                                                 <i class="fas fa-eye"></i>
                                             </a>
-                                            <button type="button"
-                                                class="btn btn-sm btn-outline-success toggle-status-btn"
-                                                data-id="{{ $form->id }}" data-status="{{ $form->status }}"
-                                                title="{{ custom_trans('Toggle Status', 'admin') }}">
-                                                <i class="fas fa-toggle-on"></i>
+                                            <button type="button" class="btn btn-sm btn-outline-success"
+                                                onclick="changeSubmissionStatus({{ $form->id }}, '{{ $form->status }}')"
+                                                title="{{ custom_trans('Change Status', 'admin') }}">
+                                                <i class="fas fa-exchange-alt"></i>
                                             </button>
                                             <button type="button" class="btn btn-sm btn-outline-danger delete-btn"
                                                 data-id="{{ $form->id }}" title="{{ custom_trans('Delete', 'admin') }}">
@@ -466,36 +463,17 @@
                 });
             });
 
-            // Toggle status
-            $('.toggle-status-btn').on('click', function() {
-                const id = $(this).data('id');
-                const currentStatus = $(this).data('status');
-                const newStatus = currentStatus === 'new' ? 'read' : (currentStatus === 'read' ? 'replied' :
-                    'new');
-
-                $.ajax({
-                    url: `{{ url('admin/settings/contact-management/contact-forms') }}/${id}/status`,
-                    type: 'POST',
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        status: newStatus
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            toastr.success(response.message);
-                            setTimeout(() => {
-                                location.reload();
-                            }, 1500);
-                        } else {
-                            toastr.error(response.message || '{{ custom_trans('An error occurred.', 'admin') }}');
-                        }
-                    },
-                    error: function() {
-                        toastr.error(
-                            '{{ custom_trans('An error occurred while updating the status.', 'admin') }}');
-                    }
-                });
-            });
         });
+
+        // Pick an exact status (statuses must match the contact_forms.status enum)
+        function changeSubmissionStatus(id, currentStatus) {
+            showStatusModal(id, currentStatus, [
+                { value: 'new', label: '{{ custom_trans('New', 'admin') }}' },
+                { value: 'read', label: '{{ custom_trans('Read', 'admin') }}' },
+                { value: 'replied', label: '{{ custom_trans('Replied', 'admin') }}' },
+                { value: 'closed', label: '{{ custom_trans('Closed', 'admin') }}' }
+            ], `{{ url('admin/settings/contact-management/contact-forms') }}/${id}/status`);
+        }
     </script>
+    @include('admin.partials.status-modal')
 @endpush

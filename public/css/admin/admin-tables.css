@@ -339,18 +339,97 @@
 
 /* Bulk actions bar shown above a list while rows are selected */
 .enrollment-bulk-bar {
+    position: sticky;
+    top: 0.75rem;
+    z-index: 6;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 0.75rem;
-    padding: 0.6rem 1rem;
+    gap: 0.75rem 1.25rem;
+    padding: 0.75rem 1rem;
     margin-bottom: 1rem;
-    border: 1px solid rgba(13, 110, 253, 0.4);
-    border-radius: 0.5rem;
-    background: rgba(13, 110, 253, 0.08);
+    border: 1px solid rgba(13, 110, 253, 0.35);
+    border-inline-start: 4px solid #0d6efd;
+    border-radius: 0.6rem;
+    background: var(--admin-card-bg, #fff);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+    animation: enrollment-bulk-bar-in 0.18s ease-out;
 }
 
 .enrollment-bulk-bar.d-none {
     display: none !important;
+}
+
+@keyframes enrollment-bulk-bar-in {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.enrollment-bulk-bar__info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.enrollment-bulk-bar__count {
+    min-width: 2.25rem;
+    height: 2.25rem;
+    padding: 0 0.5rem;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #fff;
+    background: #0d6efd;
+}
+
+.enrollment-bulk-bar__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.enrollment-bulk-bar__status {
+    width: auto;
+    flex-wrap: nowrap;
+}
+
+.enrollment-bulk-bar__status .form-select {
+    min-width: 175px;
+}
+
+.enrollment-bulk-bar__divider {
+    width: 1px;
+    align-self: stretch;
+    margin: 0 0.25rem;
+    background: var(--admin-border, #dee2e6);
+}
+
+@media (max-width: 575.98px) {
+    .enrollment-bulk-bar__actions,
+    .enrollment-bulk-bar__status {
+        width: 100%;
+    }
+
+    .enrollment-bulk-bar__status .form-select {
+        min-width: 0;
+    }
+
+    .enrollment-bulk-bar__divider {
+        display: none;
+    }
+
+    .enrollment-bulk-bar__actions > .btn {
+        flex: 1;
+    }
 }

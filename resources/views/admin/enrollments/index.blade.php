@@ -209,25 +209,34 @@
         <div class="card">
             <div class="card-body">
                 <!-- Bulk actions: shown while rows are selected -->
-                <div class="enrollment-bulk-bar d-none" id="bulkActionsBar">
-                    <div class="d-flex align-items-center gap-2">
-                        <i class="fa fa-check-square text-primary"></i>
-                        <span class="fw-semibold"><span id="bulkSelectedCount">0</span> selected</span>
-                        <button type="button" class="btn btn-link btn-sm p-0 ms-1" id="bulkClearSelection">Clear</button>
+                <div class="enrollment-bulk-bar d-none" id="bulkActionsBar" role="region" aria-label="Bulk actions">
+                    <div class="enrollment-bulk-bar__info">
+                        <span class="enrollment-bulk-bar__count" id="bulkSelectedCount">0</span>
+                        <div class="lh-sm">
+                            <div class="fw-semibold" id="bulkSelectedLabel">enrollments selected</div>
+                            <small class="text-muted">Choose an action to apply to them</small>
+                        </div>
                     </div>
-                    <div class="d-flex flex-wrap align-items-center gap-2">
-                        <select class="form-select form-select-sm w-auto" id="bulkStatusSelect" aria-label="New status">
-                            <option value="">Change status to…</option>
-                            <option value="active">Active</option>
-                            <option value="pending">Pending</option>
-                            <option value="completed">Completed</option>
-                            <option value="cancelled">Cancelled</option>
-                        </select>
-                        <button type="button" class="btn btn-sm btn-primary" id="bulkApplyStatus" disabled>
-                            <i class="fa fa-check me-1"></i>Apply
-                        </button>
-                        <button type="button" class="btn btn-sm btn-outline-danger" id="bulkDeleteBtn">
+                    <div class="enrollment-bulk-bar__actions">
+                        <div class="input-group input-group-sm enrollment-bulk-bar__status">
+                            <span class="input-group-text"><i class="fa fa-exchange-alt"></i></span>
+                            <select class="form-select" id="bulkStatusSelect" aria-label="New status">
+                                <option value="">Change status to…</option>
+                                <option value="active">Active</option>
+                                <option value="pending">Pending</option>
+                                <option value="completed">Completed</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                            <button type="button" class="btn btn-primary" id="bulkApplyStatus" disabled>
+                                <i class="fa fa-check me-1"></i>Apply
+                            </button>
+                        </div>
+                        <span class="enrollment-bulk-bar__divider" aria-hidden="true"></span>
+                        <button type="button" class="btn btn-sm btn-danger" id="bulkDeleteBtn">
                             <i class="fa fa-trash me-1"></i>Delete
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="bulkClearSelection" title="Deselect all">
+                            <i class="fa fa-times me-1"></i>Deselect
                         </button>
                     </div>
                 </div>
@@ -679,6 +688,7 @@
             function updateBulkBar() {
                 const count = selectedEnrollmentIds().length;
                 document.getElementById('bulkSelectedCount').textContent = count;
+                document.getElementById('bulkSelectedLabel').textContent = (count === 1 ? 'enrollment' : 'enrollments') + ' selected';
                 bulkBar.classList.toggle('d-none', count === 0);
                 bulkApplyStatus.disabled = !bulkStatusSelect.value;
             }

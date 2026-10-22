@@ -120,7 +120,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Public pages
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
-Route::post('/contact', [App\Http\Controllers\ContactController::class, 'store'])->name('contact.store');
+Route::post('/contact', [App\Http\Controllers\ContactController::class, 'store'])->name('contact.store')->middleware('throttle:5,10');
 Route::get('/trainers', fn () => redirect()->route('instructor.index', [], 301))->name('trainers');
 Route::get('/live-sessions', fn () => redirect()->route('live-classes.index', [], 301))->name('live-sessions');
 Route::get('/page/privacy-policy', [PageController::class, 'privacyPolicy'])->name('privacy-policy');

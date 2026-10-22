@@ -82,6 +82,11 @@
                     <h2 class="fw-bold text-center mb-4">{{ custom_trans('Student Inquiry Form', 'front') }}</h2>
                     <form id="contactForm" class="contact-form">
                         @csrf
+                        {{-- Spam protection: render time + a honeypot field people never see --}}
+                        <input type="hidden" name="form_token" value="{{ encrypt(now()->timestamp) }}">
+                        <div style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;" aria-hidden="true">
+                            <label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+                        </div>
                         <div class="row g-3 mb-3">
                             <div class="col-md-4">
                                 <div class="input-group">

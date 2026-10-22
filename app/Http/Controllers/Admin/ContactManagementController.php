@@ -15,7 +15,7 @@ class ContactManagementController extends Controller
         $contactSettings = ContactSettings::first();
         $contactForms = ContactForm::latest()->take(5)->get();
         $totalSubmissions = ContactForm::count();
-        $unreadSubmissions = ContactForm::where('status', 'unread')->count();
+        $unreadSubmissions = ContactForm::where('status', 'new')->count();
         $readSubmissions = ContactForm::where('status', 'read')->count();
         $repliedSubmissions = ContactForm::where('status', 'replied')->count();
 
@@ -69,7 +69,7 @@ class ContactManagementController extends Controller
     {
         $contactForms = ContactForm::latest()->paginate(15);
         $totalSubmissions = ContactForm::count();
-        $unreadSubmissions = ContactForm::where('status', 'unread')->count();
+        $unreadSubmissions = ContactForm::where('status', 'new')->count();
         $readSubmissions = ContactForm::where('status', 'read')->count();
         $repliedSubmissions = ContactForm::where('status', 'replied')->count();
 
@@ -84,9 +84,9 @@ class ContactManagementController extends Controller
 
     public function showContactForm(ContactForm $contactForm)
     {
-        // Mark as read if unread
-        if ($contactForm->status === 'unread') {
-            $contactForm->update(['status' => 'read']);
+        // Opening a new submission marks it as read
+        if ($contactForm->status === 'new') {
+            $contactForm->markAsRead();
         }
 
         return view('admin.settings.contact-management.contact-form-details', compact('contactForm'));
@@ -94,16 +94,34 @@ class ContactManagementController extends Controller
 
     public function updateContactFormStatus(Request $request, ContactForm $contactForm)
     {
+        // Must match the contact_forms.status enum
         $request->validate([
-            'status' => 'required|in:read,unread,replied'
+            'status' => 'required|in:new,read,replied,closed'
         ]);
 
-        $contactForm->update(['status' => $request->status]);
+        $contactForm->update($this->statusAttributes($request->status, $contactForm));
 
         return response()->json([
             'success' => true,
             'message' => __('Contact form status updated successfully!')
         ]);
+    }
+
+    /**
+     * Status plus the matching timestamps (first read / first reply are kept once set)
+     */
+    private function statusAttributes(string $status, ContactForm $contactForm): array
+    {
+        $attributes = ['status' => $status];
+
+        if (in_array($status, ['read', 'replied', 'closed'], true) && !$contactForm->read_at) {
+            $attributes['read_at'] = now();
+        }
+        if ($status === 'replied' && !$contactForm->replied_at) {
+            $attributes['replied_at'] = now();
+        }
+
+        return $attributes;
     }
 
     public function deleteContactForm(ContactForm $contactForm)
@@ -119,7 +137,7 @@ class ContactManagementController extends Controller
     public function bulkAction(Request $request)
     {
         $request->validate([
-            'action' => 'required|in:delete,mark_read,mark_unread,mark_replied',
+            'action' => 'required|in:delete,mark_read,mark_unread,mark_replied,mark_closed',
             'contact_forms' => 'required|array',
             'contact_forms.*' => 'exists:contact_forms,id'
         ]);
@@ -127,23 +145,21 @@ class ContactManagementController extends Controller
         $contactForms = ContactForm::whereIn('id', $request->contact_forms);
         $count = $contactForms->count();
 
-        switch ($request->action) {
-            case 'delete':
-                $contactForms->delete();
-                $message = "Successfully deleted {$count} contact form submissions.";
-                break;
-            case 'mark_read':
-                $contactForms->update(['status' => 'read']);
-                $message = "Marked {$count} submissions as read.";
-                break;
-            case 'mark_unread':
-                $contactForms->update(['status' => 'unread']);
-                $message = "Marked {$count} submissions as unread.";
-                break;
-            case 'mark_replied':
-                $contactForms->update(['status' => 'replied']);
-                $message = "Marked {$count} submissions as replied.";
-                break;
+        if ($request->action === 'delete') {
+            $contactForms->delete();
+            $message = "Successfully deleted {$count} contact form submissions.";
+        } else {
+            $status = [
+                'mark_read' => 'read',
+                'mark_unread' => 'new',
+                'mark_replied' => 'replied',
+                'mark_closed' => 'closed',
+            ][$request->action];
+
+            foreach ($contactForms->get() as $contactForm) {
+                $contactForm->update($this->statusAttributes($status, $contactForm));
+            }
+            $message = "Marked {$count} submissions as {$status}.";
         }
 
         return response()->json([
