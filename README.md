@@ -1,66 +1,63 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Courses Platform (Laravel)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A bilingual (Arabic / English) online courses platform built with Laravel 10. Instructors publish courses made of sections and lectures, students enroll and pay online, and admins manage everything from a dashboard.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Courses, sections and lectures** with lecture types (theory, demo, exercise, quiz), difficulty levels, learning objectives, prerequisites, resources, transcripts and subtitles
+- **Full Arabic / English content** for every course, section and lecture, with RTL support and a language switcher
+- **Built-in SEO tooling** per course: localized meta tags, Open Graph and Twitter cards, canonical URLs, hreflang, JSON-LD structured data and an auto-generated sitemap
+- **Multiple payment options**: free enrollment, credit card, Tabby (buy now, pay later) and PayPal with verified webhooks and automatic enrollment activation (SAR currency)
+- **Authentication**: email login plus social login (Socialite with Apple and Twitter providers) and API tokens via Sanctum
+- **Certificates** and PDF generation (dompdf)
+- **Admin dashboard** for course content, orders and enrollments
+- **Notifications** through Firebase
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Tech stack
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+| Layer | Technology |
+|---|---|
+| Backend | PHP 8.1+, Laravel 10 |
+| Database | MySQL |
+| Frontend tooling | Vite, Blade |
+| Auth | Laravel Sanctum, Socialite |
+| Other | dompdf, spatie/laravel-sitemap, kreait/laravel-firebase |
 
-## Learning Laravel
+## Project structure
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+```
+app/                  Models, controllers, services, helpers
+config/               Application configuration
+database/             Migrations and seeders
+lang/                 Arabic and English translations
+resources/views/      Blade templates (admin and public site)
+routes/               Web and API routes
+tests/                PHPUnit tests
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Getting started
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```bash
+git clone https://github.com/AbdallahSaeed0/tradingbelaraby.git
+cd tradingbelaraby
+composer install
+npm install
+cp .env.example .env
+php artisan key:generate
+# set your database and payment credentials in .env
+php artisan migrate
+npm run dev
+php artisan serve
+```
 
-## Laravel Sponsors
+## Multilingual content
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Each translatable field has an `_ar` counterpart (for example `name` and `name_ar`). Models expose localized accessors such as `$course->localized_name`, and a `MultilingualHelper` handles slugs, SEO metadata and text direction.
 
-### Premium Partners
+## Payments
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+Payment gateways are configured through environment variables. PayPal needs a webhook pointing to `/webhook/paypal`; the webhook ID goes in `PAYPAL_WEBHOOK_ID`. Never commit real credentials.
 
-## Contributing
+## Author
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Built by [Abdallah Saeed](https://github.com/AbdallahSaeed0).
