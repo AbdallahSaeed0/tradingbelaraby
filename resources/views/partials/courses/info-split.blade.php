@@ -9,7 +9,7 @@
             <div class="row align-items-center justify-content-center">
                 <div class="col-lg-6 mb-4 px-4 mb-lg-0">
                     @if ($infoSplit->image)
-                        <img src="{{ $infoSplit->image_url }}" alt="Info Split"
+                        <img src="{{ optimized_image_or($infoSplit->image, $infoSplit->image_url, 1200) }}" alt="Info Split" loading="lazy" decoding="async"
                             class="img-fluid rounded-4 w-100">
                     @endif
                 </div>

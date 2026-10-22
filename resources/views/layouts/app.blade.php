@@ -26,70 +26,74 @@
     <meta name="twitter:card" content="summary_large_image">
     <link rel="canonical" href="{{ url()->current() }}">
     <link rel="icon" type="image/x-icon" href="{{ $faviconUrl }}" />
+    @stack('preload')
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Slick CSS -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
-    <link rel="stylesheet" type="text/css"
-        href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
-    <!-- External Libraries - Always loaded -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Toastr CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <!-- Non-critical CSS: loaded without blocking first paint -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css" media="print" onload="this.media='all'">
+    <noscript>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css">
+    </noscript>
 
-    <!-- Language-specific Styles -->
-    @if (\App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl')
-        <!-- RTL Base Styles -->
-        <link rel="stylesheet" href="{{ asset('css/rtl/main.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/rtl/utilities.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/rtl/utilities-extended.css') }}">
-
-        <!-- RTL Layout Styles -->
-        <link rel="stylesheet" href="{{ asset('css/rtl/layout.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/rtl/layout/main.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/rtl/layout/rtl.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/rtl/layout/header-nav.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/rtl/layout/language-switcher.css') }}">
-
-        <!-- RTL Component Styles -->
-        <link rel="stylesheet" href="{{ asset('css/rtl/components/main.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/rtl/components/buttons.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/rtl/components/cards.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/rtl/components/alerts.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/rtl/components/badges.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/rtl/components/dropdowns.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/rtl/components/forms.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/rtl/components/whatsapp-float.css') }}">
-
-        <!-- RTL Additional Styles -->
-        <link rel="stylesheet" href="{{ asset('css/rtl/responsive/main.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/rtl/base/main.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/rtl/fonts/main.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/rtl/webfonts/main.css') }}">
-    @else
-        <!-- LTR Base Styles -->
-        <link rel="stylesheet" href="{{ asset('css/main.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/utilities.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/utilities-extended.css') }}">
-
-        <!-- LTR Layout Styles -->
-        <link rel="stylesheet" href="{{ asset('css/layout.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/layout/language-switcher.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/layout/header-nav.css') }}">
-
-        <!-- LTR Component Styles -->
-        <link rel="stylesheet" href="{{ asset('css/components/buttons.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/components/cards.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/components/alerts.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/components/badges.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/components/dropdowns.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/components/forms.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/components/whatsapp-float.css') }}">
-    @endif
+    <!-- Language-specific Styles (linked directly instead of via main.css @import chains so they download in parallel) -->
+    @php
+        $isRtlLayout = \App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl';
+        $layoutCss = $isRtlLayout
+            ? [
+                'css/rtl/components/footer.css',
+                'css/rtl/pages/categories.css',
+                'css/rtl/pages/course-sections.css',
+                'css/rtl/pages/home.css',
+                'css/rtl/utilities.css',
+                'css/rtl/utilities-extended.css',
+                'css/rtl/layout.css',
+                'css/rtl/layout/rtl.css',
+                'css/rtl/layout/header-nav.css',
+                'css/rtl/layout/language-switcher.css',
+                'css/rtl/components/buttons.css',
+                'css/rtl/components/cards.css',
+                'css/rtl/components/alerts.css',
+                'css/rtl/components/badges.css',
+                'css/rtl/components/dropdowns.css',
+                'css/rtl/components/forms.css',
+                'css/rtl/components/whatsapp-float.css',
+                'css/rtl/base/main.css',
+            ]
+            : [
+                'css/base/main.css',
+                'css/components/footer.css',
+                'css/pages/categories.css',
+                'css/pages/course-sections.css',
+                'css/pages/home.css',
+                'css/utilities.css',
+                'css/utilities-extended.css',
+                'css/layout.css',
+                'css/layout/language-switcher.css',
+                'css/layout/header-nav.css',
+                'css/components/buttons.css',
+                'css/components/cards.css',
+                'css/components/alerts.css',
+                'css/components/badges.css',
+                'css/components/dropdowns.css',
+                'css/components/forms.css',
+                'css/components/whatsapp-float.css',
+            ];
+    @endphp
+    @foreach ($layoutCss as $cssPath)
+        <link rel="stylesheet" href="{{ versioned_asset($cssPath) }}">
+    @endforeach
 
     <!-- Page-specific RTL Styles -->
-    @if (\App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl')
+    @if ($isRtlLayout)
         @stack('rtl-styles')
     @endif
 
@@ -992,7 +996,7 @@
         </div>
     </div>
 
-    <script src="{{ asset('js/script.js') }}"></script>
+    <script src="{{ versioned_asset('js/script.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -1001,7 +1005,7 @@
     <!-- Slick JS -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
     <!-- Toastr JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
 
     <!-- Language Switcher Script -->
     <script>

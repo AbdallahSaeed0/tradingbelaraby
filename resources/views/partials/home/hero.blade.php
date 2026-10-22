@@ -1,4 +1,27 @@
 <!-- Hero Section - .hero-stage controls height; features in normal flow (no internal scroll) -->
+@php
+    // Responsive, optimized hero backgrounds (mobile/desktop). The first one is the LCP element,
+    // so it is preloaded and painted by CSS without waiting for Swiper/JS.
+    $heroBgUrls = function ($slider) {
+        return [
+            'mobile' => optimized_image_or($slider->background_image, $slider->background_image_url, 800),
+            'desktop' => optimized_image_or($slider->background_image, $slider->background_image_url, 1920),
+        ];
+    };
+    $firstHeroBg = $sliders->isNotEmpty()
+        ? $heroBgUrls($sliders->first())
+        : ['mobile' => asset('images/slider-default.png'), 'desktop' => asset('images/slider-default.png')];
+    // Raw (not HTML-escaped) URLs for the <style> block: CSS does not decode &amp;
+    $cssUrl = fn ($url) => str_replace(["'", '<', '>', '\\'],['%27', '%3C', '%3E', '%5C'], $url);
+@endphp
+@push('preload')
+    <link rel="preload" as="image" href="{{ $firstHeroBg['mobile'] }}" media="(max-width: 800px)" fetchpriority="high">
+    <link rel="preload" as="image" href="{{ $firstHeroBg['desktop'] }}" media="(min-width: 801px)" fetchpriority="high">
+    <style>
+        .hero-slide-first { background-image: url('{!! $cssUrl($firstHeroBg['mobile']) !!}'); background-size: cover; background-repeat: no-repeat; }
+        @media (min-width: 801px) { .hero-slide-first { background-image: url('{!! $cssUrl($firstHeroBg['desktop']) !!}'); } }
+    </style>
+@endpush
 <section class="hero hero-colored hero-slider">
     <div class="hero-stage">
         <div class="swiper hero-swiper">
@@ -36,7 +59,10 @@
                 @php
                     $slideUrl = $slider->button_url ?? route('courses.index');
                 @endphp
-                <div class="swiper-slide hero-slide hero-slide-bg" data-bg-image="{{ $slider->background_image_url }}" data-slide-url="{{ $slideUrl }}" @if(!empty($slider->background_position)) data-bg-pos="{{ $slider->background_position }}" @endif @if(!empty($slider->background_position_mobile)) data-bg-pos-mobile="{{ $slider->background_position_mobile }}" @endif>
+                @php
+                    $slideBg = $heroBgUrls($slider);
+                @endphp
+                <div class="swiper-slide hero-slide hero-slide-bg {{ $loop->first ? 'hero-slide-first' : '' }}" data-bg-image="{{ $slideBg['desktop'] }}" data-bg-image-mobile="{{ $slideBg['mobile'] }}" data-slide-url="{{ $slideUrl }}" @if(!empty($slider->background_position)) data-bg-pos="{{ $slider->background_position }}" @endif @if(!empty($slider->background_position_mobile)) data-bg-pos-mobile="{{ $slider->background_position_mobile }}" @endif>
                     <div class="hero-slide-overlay"></div>
                     <div class="container-fluid h-100">
                         <div class="row {{ $alignClass }} min-vh-75 min-h-520 {{ $justifyClass }} h-100">
@@ -72,7 +98,7 @@
                 </div>
             @empty
                 <!-- Default Slide (if no sliders in database) -->
-                <div class="swiper-slide hero-slide hero-slide-bg"
+                <div class="swiper-slide hero-slide hero-slide-bg hero-slide-first"
                     data-bg-image="{{ asset('images/slider-default.png') }}"
                     data-slide-url="{{ route('courses.index') }}">
                     <div class="hero-slide-overlay"></div>
@@ -162,10 +188,7 @@
     <div class="hero-features-mobile d-block d-md-none">
         <div class="container py-4">
             <div class="row">
-                @php
-                    $heroFeaturesMobile = \App\Models\HeroFeature::active()->ordered()->get();
-                @endphp
-                @forelse($heroFeaturesMobile as $heroFeature)
+                @forelse($heroFeatures as $heroFeature)
                     <div class="col-12 {{ $loop->last ? '' : 'mb-3' }}">
                         <div class="hero-feature-box mobile-feature-box d-flex align-items-center">
                             <i class="{{ $heroFeature->icon }} fa-3x me-4"></i>
@@ -216,6 +239,9 @@
 <!-- Swiper loaded once in layouts/app.blade.php (swiper@11) -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Must match the breakpoint of the .hero-slide-first preload/style above
+        var isMobileViewport = window.matchMedia('(max-width: 800px)').matches;
+
         /**
          * Apply background-image only to active, prev, and next slides (lazy-load backgrounds).
          * Removes background from other slides to save memory and improve performance.
@@ -230,7 +256,9 @@
             var nextIdx = (active + 1) % total;
             for (var i = 0; i < total; i++) {
                 var slide = slides[i];
-                var bgImage = slide.getAttribute && slide.getAttribute('data-bg-image');
+                var bgImage = slide.getAttribute && (
+                    (isMobileViewport && slide.getAttribute('data-bg-image-mobile')) || slide.getAttribute('data-bg-image')
+                );
                 if (i === active || i === prevIdx || i === nextIdx) {
                     if (bgImage) {
                         slide.style.backgroundImage = "url('" + bgImage.replace(/'/g, "\\'") + "')";

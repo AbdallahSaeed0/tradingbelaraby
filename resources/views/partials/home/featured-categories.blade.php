@@ -16,7 +16,7 @@
                             <div class="category-card h-100">
                                 <div class="category-img-wrap">
                                     @if ($category->image)
-                                        <img src="{{ $category->image_url }}"
+                                        <img src="{{ optimized_image_or($category->image, $category->image_url, 600) }}" loading="lazy" decoding="async"
                                             alt="{{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}"
                                             class="category-img">
                                     @else

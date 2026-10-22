@@ -18,7 +18,7 @@
     <!-- Course Image -->
     <div class="course-image position-relative">
         <a href="{{ route('courses.show', $course->id) }}" class="d-block text-decoration-none">
-            <img src="{{ $course->image_url }}" alt="{{ $course->localized_name }}" class="w-100 img-h-200">
+            <img src="{{ optimized_image_or($course->image, $course->image_url, 600) }}" alt="{{ $course->localized_name }}" class="w-100 img-h-200" loading="lazy" decoding="async">
         </a>
 
         <!-- Course Badge -->

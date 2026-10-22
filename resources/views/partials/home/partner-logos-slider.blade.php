@@ -25,12 +25,12 @@
                                 @if ($logo->link)
                                     <a href="{{ $logo->link }}" target="_blank" rel="noopener"
                                         class="partner-logo-link">
-                                        <img src="{{ $logo->logo_url }}" alt="{{ $logo->name }}"
+                                        <img src="{{ optimized_image_or($logo->logo, $logo->logo_url, 400) }}" alt="{{ $logo->name }}" loading="lazy" decoding="async"
                                             class="partner-logo-img">
                                     </a>
                                 @else
                                     <div class="partner-logo-link">
-                                        <img src="{{ $logo->logo_url }}" alt="{{ $logo->name }}"
+                                        <img src="{{ optimized_image_or($logo->logo, $logo->logo_url, 400) }}" alt="{{ $logo->name }}" loading="lazy" decoding="async"
                                             class="partner-logo-img">
                                     </div>
                                 @endif

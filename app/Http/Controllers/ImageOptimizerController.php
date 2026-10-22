@@ -89,6 +89,7 @@ class ImageOptimizerController extends Controller
             'Content-Type' => $mime,
             'Cache-Control' => 'public, max-age=' . self::CACHE_MAX_AGE,
             'Expires' => gmdate('D, d M Y H:i:s', time() + self::CACHE_MAX_AGE) . ' GMT',
+            'Vary' => 'Accept',
         ]);
     }
 

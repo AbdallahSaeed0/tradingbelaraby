@@ -63,7 +63,7 @@
             <div class="features-split-container">
                 <!-- Left: Features and background image -->
                 @if ($featuresSplit->background_image)
-                    <img src="{{ $featuresSplit->background_image_url }}" alt="Decorative" class="features-bg-img" width="600" height="400">
+                    <img src="{{ optimized_image_or($featuresSplit->background_image, $featuresSplit->background_image_url, 600) }}" alt="Decorative" class="features-bg-img" width="600" height="400" loading="lazy" decoding="async">
                 @endif
                 <div class="features-split-left">
                     <div class="features-content">
@@ -91,7 +91,7 @@
                 <!-- Right: Main image -->
                 <div class="features-split-right">
                     @if ($featuresSplit->main_image)
-                        <img src="{{ $featuresSplit->main_image_url }}" alt="Feature" class="features-main-img" width="500" height="400">
+                        <img src="{{ optimized_image_or($featuresSplit->main_image, $featuresSplit->main_image_url, 1000) }}" alt="Feature" class="features-main-img" width="500" height="400" loading="lazy" decoding="async">
                     @endif
                 </div>
             </div>
@@ -105,11 +105,11 @@
 
 @if (\App\Helpers\TranslationHelper::getCurrentLanguage()->direction == 'rtl')
     @push('rtl-styles')
-        <link rel="stylesheet" href="{{ asset('css/rtl/pages/home.css') }}">
+        <link rel="stylesheet" href="{{ versioned_asset('css/rtl/pages/home.css') }}">
     @endpush
 @else
     @push('styles')
-        <link rel="stylesheet" href="{{ asset('css/pages/home.css') }}">
+        <link rel="stylesheet" href="{{ versioned_asset('css/pages/home.css') }}">
     @endpush
 @endif
 

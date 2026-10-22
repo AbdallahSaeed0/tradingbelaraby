@@ -10,7 +10,7 @@
             <div class="row align-items-center">
                 <!-- Left Image -->
                 <div class="col-lg-6 mb-4 mb-lg-0 d-flex justify-content-center">
-                    <img src="{{ $aboutUniversity->image_url }}"
+                    <img src="{{ optimized_image_or($aboutUniversity->image, $aboutUniversity->image_url, 1200) }}" loading="lazy" decoding="async"
                         alt="{{ get_current_language_code() === 'ar' && $aboutUniversity->title_ar ? $aboutUniversity->title_ar : $aboutUniversity->title }}"
                         class="img-fluid" width="600" height="400">
                 </div>
@@ -120,7 +120,7 @@
         </div>
         <!-- Absolute background image on the right bottom -->
         @if ($aboutUniversity->background_image)
-            <img src="{{ $aboutUniversity->background_image_url }}" alt="contact-bg-an-01"
+            <img src="{{ optimized_image_or($aboutUniversity->background_image, $aboutUniversity->background_image_url, 800) }}" alt="contact-bg-an-01" loading="lazy" decoding="async"
                 class="about-bg-img d-none d-md-block" width="400" height="300">
         @endif
     </section>

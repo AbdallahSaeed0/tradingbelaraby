@@ -29,7 +29,7 @@
 @if ($allBundles->count() > 0)
     <section class="courses-section position-relative py-5 bg-white">
         <!-- Background image on the left behind the cards -->
-        <img src="{{ asset('images/deco-bundle.png') }}" alt=""
+        <img src="{{ asset('images/deco-bundle.png') }}" alt="" loading="lazy" decoding="async"
             class="courses-bg-img d-none d-md-block" width="400" height="400">
         <div class="container position-relative z-2">
             <!-- Slider controls -->
@@ -118,7 +118,7 @@
                                     <a href="{{ route('bundles.show', $item->slug) }}"
                                         class="read-more">{{ custom_trans('Read More', 'front') }}
                                         &rarr;</a>
-                                    <img src="{{ asset('images/icon-coupon.png') }}"
+                                    <img src="{{ asset('images/icon-coupon.png') }}" loading="lazy" decoding="async"
                                         class="book-icon" alt="book" width="32" height="32">
                                 </div>
                             </div>

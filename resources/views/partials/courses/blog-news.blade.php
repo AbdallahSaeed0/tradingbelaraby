@@ -22,7 +22,7 @@
                             <div class="blog-img-wrap position-relative overflow-hidden rounded-top-4">
                                 <a href="{{ route('blog.show', $blog->slug) }}" class="d-block text-decoration-none">
                                     <img src="{{ $blog->getLocalizedImageUrl() ?? asset('images/placeholder.jpg') }}"
-                                        class="blog-img w-100" alt="{{ $blog->getLocalizedTitle() }}">
+                                        class="blog-img w-100" alt="{{ $blog->getLocalizedTitle() }}" loading="lazy" decoding="async">
                                 </a>
                                 <span class="badge blog-date-badge position-absolute top-0 start-0 m-3 px-3 py-2"><i
                                         class="fa fa-calendar me-2"></i>{{ $blog->created_at->format('M d, Y') }}</span>

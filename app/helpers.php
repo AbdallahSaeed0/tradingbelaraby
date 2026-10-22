@@ -112,3 +112,30 @@ if (!function_exists('optimized_image_url')) {
         return url('/img/opt?' . http_build_query($params));
     }
 }
+
+if (!function_exists('optimized_image_or')) {
+    /**
+     * Optimized URL for a storage-relative image path, or the given fallback URL
+     * when the path is empty or already an absolute URL (which the optimizer cannot serve).
+     */
+    function optimized_image_or(?string $storagePath, string $fallbackUrl, int $width, ?int $height = null): string
+    {
+        if ($storagePath === null || $storagePath === '' || filter_var($storagePath, FILTER_VALIDATE_URL)) {
+            return $fallbackUrl;
+        }
+        return optimized_image_url($storagePath, $width, $height);
+    }
+}
+
+if (!function_exists('versioned_asset')) {
+    /**
+     * asset() URL with a file-modification-time query string, so public CSS/JS
+     * can be cached long-term by browsers and still refresh after a deploy.
+     */
+    function versioned_asset(string $path): string
+    {
+        $file = public_path($path);
+        $version = is_file($file) ? filemtime($file) : null;
+        return asset($path) . ($version ? '?v=' . $version : '');
+    }
+}
