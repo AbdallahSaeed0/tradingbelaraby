@@ -16,6 +16,17 @@
             $mainContentSettings && $mainContentSettings->favicon
                 ? $mainContentSettings->favicon_url
                 : asset('favicon.ico');
+        // Logo <img> width/height must match the uploaded logo's proportions, otherwise the
+        // space reserved before it loads is wrong and the page shifts when it appears.
+        $logoPath = $mainContentSettings?->logo;
+        $logoFile = $logoPath && !filter_var($logoPath, FILTER_VALIDATE_URL) ? storage_path('app/public/' . $logoPath) : null;
+        $logoSize = $logoFile && is_file($logoFile) ? @getimagesize($logoFile) : false;
+        $logoHeight = fn (int $width) => $logoSize && $logoSize[0] > 0
+            ? (int) round($width * $logoSize[1] / $logoSize[0])
+            : (int) round($width * 50 / 180);
+        // The header CSS sizes the logo with width/height auto, which ignores those attributes;
+        // a definite height (clamped per breakpoint by the existing max-height rules) fixes that.
+        $headerLogoStyle = $logoSize ? 'height: ' . min($logoSize[1], 100) . 'px' : null;
     @endphp
     <title>@yield('title', 'أكاديمية تداول بالعربي') | تداول بالعربي</title>
     <meta name="description" content="@yield('meta_description', 'أكاديمية تداول بالعربي - تعلم الأسواق المالية والتداول الاحترافي')">
@@ -230,7 +241,7 @@ main:has(> section.hero) > section:not(.hero), body:has(main > section.hero) foo
                     <a href="{{ route('home') }}" class="logo-link">
                         <img src="{{ optimized_image_or($mainContentSettings?->logo, $mainContentSettings ? $mainContentSettings->logo_url : asset('images/default-logo.svg'), 360) }}"
                             alt="{{ $mainContentSettings ? $mainContentSettings->logo_alt_text : 'Site Logo' }}"
-                            class="logo-img" width="180" height="50">
+                            class="logo-img" width="180" height="{{ $logoHeight(180) }}" @if ($headerLogoStyle) style="{{ $headerLogoStyle }}" @endif>
                     </a>
                 </div>
                 <div class="nav-mobile-toolbar d-lg-none">
@@ -562,7 +573,7 @@ main:has(> section.hero) > section:not(.hero), body:has(main > section.hero) foo
                     <a href="{{ route('home') }}" class="mobile-offcanvas-logo me-3">
                         <img src="{{ optimized_image_or($mainContentSettings?->logo, $mainContentSettings ? $mainContentSettings->logo_url : asset('images/default-logo.svg'), 360) }}"
                             alt="{{ $mainContentSettings ? $mainContentSettings->logo_alt_text : 'Site Logo' }}"
-                            class="mobile-offcanvas-logo-img" width="180" height="50">
+                            class="mobile-offcanvas-logo-img" width="180" height="{{ $logoHeight(180) }}">
                     </a>
                 </div>
                 <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
@@ -779,7 +790,7 @@ main:has(> section.hero) > section:not(.hero), body:has(main > section.hero) foo
                         <a href="{{ route('home') }}" class="footer-logo-link">
                             <img src="{{ optimized_image_or($mainContentSettings?->logo, $mainContentSettings ? $mainContentSettings->logo_url : asset('images/default-logo.svg'), 160) }}"
                                 alt="{{ $mainContentSettings ? $mainContentSettings->logo_alt_text : 'Site Logo' }}"
-                                class="footer-logo-img" width="160" height="96" loading="lazy" decoding="async">
+                                class="footer-logo-img" width="160" height="{{ $logoHeight(160) }}" loading="lazy" decoding="async">
                         </a>
                     </div>
                     <h4 class="footer-title mb-2">{{ custom_trans('about_us', 'front') }}</h4>
