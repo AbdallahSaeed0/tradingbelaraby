@@ -20,6 +20,14 @@ const chromePath = process.env.CHROME_PATH
         ? 'C:/Program Files/Google/Chrome/Application/chrome.exe'
         : '/usr/bin/google-chrome');
 
+if (!fs.existsSync(chromePath)) {
+    console.error(`Chrome was not found at ${chromePath}.
+This script only needs to reach the public URL, so run it on a machine with Chrome
+(e.g. your development PC), then deploy the generated public/css/critical/${key}.css.
+Or set CHROME_PATH to a Chrome/Chromium binary.`);
+    process.exit(1);
+}
+
 const browser = await puppeteer.launch({ executablePath: chromePath, headless: true });
 try {
     const page = await browser.newPage();
