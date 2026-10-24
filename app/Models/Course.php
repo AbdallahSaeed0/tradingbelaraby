@@ -137,6 +137,16 @@ class Course extends Model
         return $this->slug ?: $this->getKey();
     }
 
+    /**
+     * Find a course by numeric id or slug (same rules as route binding), e.g. for API links copied from the website
+     */
+    public function scopeWhereIdOrSlug($query, $value)
+    {
+        return is_numeric($value)
+            ? $query->where('id', $value)
+            : $query->where('slug', $value);
+    }
+
     public function resolveRouteBinding($value, $field = null)
     {
         if (is_numeric($value)) {

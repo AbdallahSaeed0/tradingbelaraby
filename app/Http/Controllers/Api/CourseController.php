@@ -104,7 +104,7 @@ class CourseController extends Controller
                 },
                 'approvedRatings.user'
             ]);
-        $course = $courseQuery->findOrFail($id);
+        $course = $courseQuery->whereIdOrSlug($id)->firstOrFail();
 
         return response()->json([
             'data' => new CourseResource($course),
@@ -187,7 +187,7 @@ class CourseController extends Controller
      */
     public function getReviews(Request $request, $id)
     {
-        $courseQuery = Course::published();        $course = $courseQuery->findOrFail($id);
+        $courseQuery = Course::published();        $course = $courseQuery->whereIdOrSlug($id)->firstOrFail();
 
         $query = $course->approvedRatings()->with('user');
 
@@ -231,7 +231,7 @@ class CourseController extends Controller
             return response()->json(['success' => false, 'message' => 'Unauthenticated.'], 401);
         }
 
-        $courseQuery = Course::published();        $course = $courseQuery->findOrFail($id);
+        $courseQuery = Course::published();        $course = $courseQuery->whereIdOrSlug($id)->firstOrFail();
 
         if (!$course->isEnrolledBy($user)) {
             return response()->json([

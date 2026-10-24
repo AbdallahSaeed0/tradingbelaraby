@@ -55,6 +55,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/users/account', [AuthController::class, 'deleteAccount'])->name('api.users.account.delete');
 });
 
+// Learning progress (shared with the website's lecture_completions)
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/lectures/{lectureId}/progress', [App\Http\Controllers\Api\ProgressController::class, 'showLecture'])->name('api.lectures.progress.show');
+    Route::post('/lectures/{lectureId}/progress', [App\Http\Controllers\Api\ProgressController::class, 'updateLecture'])->name('api.lectures.progress.update');
+    Route::post('/lectures/{lectureId}/complete', [App\Http\Controllers\Api\ProgressController::class, 'completeLecture'])->name('api.lectures.complete');
+    Route::get('/courses/{courseId}/progress', [App\Http\Controllers\Api\ProgressController::class, 'showCourse'])->name('api.courses.progress.show');
+});
+
 // Public course/instructor routes (no auth, safe for catalog — instructors omit email)
 Route::prefix('public')->group(function () {
     Route::get('/courses', [CourseController::class, 'index'])->name('api.public.courses.index');
