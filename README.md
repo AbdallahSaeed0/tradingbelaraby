@@ -1,16 +1,17 @@
 # Courses Platform (Laravel)
 
-A bilingual (Arabic / English) online courses platform built with Laravel 10. Instructors publish courses made of sections and lectures, students enroll and pay online, and admins manage everything from a dashboard.
+A bilingual (Arabic / English) online courses platform built with Laravel 10. Instructors publish courses made of sections and lectures, students enroll and pay online or through the mobile apps, and admins manage everything from a dashboard.
 
 ## Features
 
 - **Courses, sections and lectures** with lecture types (theory, demo, exercise, quiz), difficulty levels, learning objectives, prerequisites, resources, transcripts and subtitles
 - **Full Arabic / English content** for every course, section and lecture, with RTL support and a language switcher
 - **Built-in SEO tooling** per course: localized meta tags, Open Graph and Twitter cards, canonical URLs, hreflang, JSON-LD structured data and an auto-generated sitemap
-- **Multiple payment options**: free enrollment, credit card, Tabby (buy now, pay later) and PayPal with verified webhooks and automatic enrollment activation (SAR currency)
-- **Authentication**: email login plus social login (Socialite with Apple and Twitter providers) and API tokens via Sanctum
+- **Payments**: free enrollment, bank card payments (NBE), and in-app purchases through Apple and Google Play with server-side verification (prices in SAR)
+- **Authentication**: email login, social login (Google, X/Twitter, Sign in with Apple), email and WhatsApp OTP verification, and API tokens via Sanctum
+- **Mobile app backend**: API for the iOS and Android apps, Universal Links and Google Play real-time notifications
 - **Certificates** and PDF generation (dompdf)
-- **Admin dashboard** for course content, orders and enrollments
+- **Admin dashboard** for course content, orders, enrollments and site settings
 - **Notifications** through Firebase
 
 ## Tech stack
@@ -23,18 +24,6 @@ A bilingual (Arabic / English) online courses platform built with Laravel 10. In
 | Auth | Laravel Sanctum, Socialite |
 | Other | dompdf, spatie/laravel-sitemap, kreait/laravel-firebase |
 
-## Project structure
-
-```
-app/                  Models, controllers, services, helpers
-config/               Application configuration
-database/             Migrations and seeders
-lang/                 Arabic and English translations
-resources/views/      Blade templates (admin and public site)
-routes/               Web and API routes
-tests/                PHPUnit tests
-```
-
 ## Getting started
 
 ```bash
@@ -44,7 +33,7 @@ composer install
 npm install
 cp .env.example .env
 php artisan key:generate
-# set your database and payment credentials in .env
+# set your database and service credentials in .env
 php artisan migrate
 npm run dev
 php artisan serve
@@ -56,7 +45,7 @@ Each translatable field has an `_ar` counterpart (for example `name` and `name_a
 
 ## Payments
 
-Payment gateways are configured through environment variables. PayPal needs a webhook pointing to `/webhook/paypal`; the webhook ID goes in `PAYPAL_WEBHOOK_ID`. Never commit real credentials.
+Third-party services (payment gateway, Apple, Google Play, Firebase, WhatsApp) are configured through environment variables and `config/services.php`. Never commit real credentials.
 
 ## Author
 
