@@ -171,11 +171,10 @@
                 </div>
 
                 <!-- Pagination -->
-                @if ($testimonials->hasPages())
-                    <div class="d-flex justify-content-center mt-4">
-                        {{ $testimonials->links() }}
-                    </div>
-                @endif
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-4">
+                    @include('admin.partials.per-page', ['paginator' => $testimonials])
+                    {{ $testimonials->links() }}
+                </div>
             </div>
         </div>
     </div>

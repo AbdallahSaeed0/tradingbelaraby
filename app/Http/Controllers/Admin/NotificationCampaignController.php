@@ -14,7 +14,7 @@ class NotificationCampaignController extends Controller
 {
     public function index()
     {
-        $campaigns = ManualNotificationCampaign::with('admin')->latest()->paginate(15);
+        $campaigns = ManualNotificationCampaign::with('admin')->latest()->paginate(admin_per_page())->withQueryString();
         return view('admin.notification-campaigns.index', compact('campaigns'));
     }
 

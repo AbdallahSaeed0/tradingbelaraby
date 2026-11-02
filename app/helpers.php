@@ -147,6 +147,43 @@ if (!function_exists('versioned_asset')) {
     }
 }
 
+if (!function_exists('admin_per_page_options')) {
+    /**
+     * Page sizes an admin can choose for list tables.
+     *
+     * @return array<int, int>
+     */
+    function admin_per_page_options(): array
+    {
+        return [10, 20, 50, 100, 200, 500];
+    }
+}
+
+if (!function_exists('admin_per_page')) {
+    /**
+     * Rows per page for an admin list table. Takes ?per_page= when it is one of the allowed
+     * sizes and remembers it in the session (per list), so AJAX searches, sorting and
+     * pagination keep the same size until the admin picks another one.
+     *
+     * @param string|null $key List name for the remembered choice; defaults to the route name
+     */
+    function admin_per_page(?string $key = null, int $default = 10): int
+    {
+        $request = request();
+        $sessionKey = 'admin_per_page.' . ($key ?? $request->route()?->getName() ?? $request->path());
+        $requested = (int) $request->query('per_page', 0);
+
+        if (in_array($requested, admin_per_page_options(), true)) {
+            session([$sessionKey => $requested]);
+            return $requested;
+        }
+
+        $remembered = (int) session($sessionKey, 0);
+
+        return in_array($remembered, admin_per_page_options(), true) ? $remembered : $default;
+    }
+}
+
 if (!function_exists('css_bundle_urls')) {
     /**
      * Concatenate public CSS files into one cached bundle (public/cache/css) so the layout

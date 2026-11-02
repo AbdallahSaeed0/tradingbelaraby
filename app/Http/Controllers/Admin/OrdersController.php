@@ -36,7 +36,7 @@ class OrdersController extends Controller
             $query->where('payment_method', $request->payment_method);
         }
 
-        $perPage = (int) $request->get('per_page', 15);
+        $perPage = admin_per_page();
         $orders = $query->latest()->paginate($perPage)->appends($request->query());
 
         $stats = [
@@ -69,20 +69,7 @@ class OrdersController extends Controller
             return back()->with('error', 'This order is already confirmed.');
         }
 
-        DB::transaction(function () use ($order) {
-            $courseIds = $order->getCourseIds();
-
-            CourseEnrollment::where('user_id', $order->user_id)
-                ->whereIn('course_id', $courseIds)
-                ->where('status', 'pending')
-                ->update([
-                    'status' => 'active',
-                    'enrolled_at' => now(),
-                ]);
-
-            $order->update(['status' => 'completed']);
-            $order->applyEnrollmentAccess();
-        });
+        DB::transaction(fn () => $this->confirmOrder($order));
 
         return back()->with('success', 'Order confirmed and enrollments activated successfully.');
     }
@@ -93,18 +80,7 @@ class OrdersController extends Controller
             return back()->with('error', 'Cannot reject a completed order.');
         }
 
-        DB::transaction(function () use ($order) {
-            $courseIds = $order->getCourseIds();
-
-            CourseEnrollment::where('user_id', $order->user_id)
-                ->whereIn('course_id', $courseIds)
-                ->where('status', 'pending')
-                ->update(['status' => 'cancelled']);
-
-            $this->releaseCouponUsage($order);
-
-            $order->update(['status' => 'cancelled']);
-        });
+        DB::transaction(fn () => $this->rejectOrder($order));
 
         return back()->with('success', 'Order rejected and pending enrollments cancelled.');
     }
@@ -112,19 +88,104 @@ class OrdersController extends Controller
     public function destroy(Order $order)
     {
         DB::transaction(function () use ($order) {
-            $couponIds = $this->couponIdsForOrder($order);
-
-            $this->linkedEnrollments($order)->delete();
-            $this->releaseCouponUsage($order);
-            $order->delete();
-
+            $this->deleteOrder($order);
             CouponUsage::pruneOrphanedUsages();
-            $this->syncCouponsUsedCount($couponIds);
         });
 
         return redirect()
             ->route('admin.orders.index')
             ->with('success', 'Order and linked enrollments deleted successfully.');
+    }
+
+    /**
+     * Confirm, reject or delete several orders at once (same rules as the single actions)
+     */
+    public function bulkAction(Request $request)
+    {
+        $data = $request->validate([
+            'action' => 'required|in:confirm,reject,delete',
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer|exists:orders,id',
+        ]);
+
+        $orders = Order::whereIn('id', $data['ids'])->get();
+        $action = $data['action'];
+
+        [$done, $skipped] = DB::transaction(function () use ($orders, $action) {
+            $done = 0;
+            $skipped = 0;
+
+            foreach ($orders as $order) {
+                if ($action === 'confirm') {
+                    if ($order->status === 'completed') {
+                        $skipped++;
+                        continue;
+                    }
+                    $this->confirmOrder($order);
+                } elseif ($action === 'reject') {
+                    if ($order->status === 'completed') {
+                        $skipped++;
+                        continue;
+                    }
+                    $this->rejectOrder($order);
+                } else {
+                    $this->deleteOrder($order);
+                }
+                $done++;
+            }
+
+            if ($action === 'delete') {
+                CouponUsage::pruneOrphanedUsages();
+            }
+
+            return [$done, $skipped];
+        });
+
+        $verb = ['confirm' => 'confirmed', 'reject' => 'rejected', 'delete' => 'deleted'][$action];
+        $message = $done . ' ' . \Illuminate\Support\Str::plural('order', $done) . ' ' . $verb . '.';
+
+        if ($skipped > 0) {
+            $message .= ' ' . $skipped . ' already completed ' . \Illuminate\Support\Str::plural('order', $skipped) . ' skipped.';
+        }
+
+        return back()->with('success', $message);
+    }
+
+    private function confirmOrder(Order $order): void
+    {
+        CourseEnrollment::where('user_id', $order->user_id)
+            ->whereIn('course_id', $order->getCourseIds())
+            ->where('status', 'pending')
+            ->update([
+                'status' => 'active',
+                'enrolled_at' => now(),
+            ]);
+
+        $order->update(['status' => 'completed']);
+        $order->applyEnrollmentAccess();
+    }
+
+    private function rejectOrder(Order $order): void
+    {
+        CourseEnrollment::where('user_id', $order->user_id)
+            ->whereIn('course_id', $order->getCourseIds())
+            ->where('status', 'pending')
+            ->update(['status' => 'cancelled']);
+
+        $this->releaseCouponUsage($order);
+
+        $order->update(['status' => 'cancelled']);
+    }
+
+    private function deleteOrder(Order $order): void
+    {
+        $couponIds = $this->couponIdsForOrder($order);
+
+        $this->linkedEnrollments($order)->delete();
+        $this->releaseCouponUsage($order);
+        $order->delete();
+
+        $this->syncCouponsUsedCount($couponIds);
     }
 
     private function linkedEnrollments(Order $order)

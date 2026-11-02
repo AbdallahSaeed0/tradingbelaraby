@@ -45,7 +45,7 @@ class SubscriberController extends Controller
             $query->whereDate('created_at', '<=', $request->date_to);
         }
 
-        $subscribers = $query->orderBy('created_at', 'desc')->paginate(15);
+        $subscribers = $query->orderBy('created_at', 'desc')->paginate(admin_per_page())->withQueryString();
 
         return view('admin.subscribers.index', compact('subscribers'));
     }

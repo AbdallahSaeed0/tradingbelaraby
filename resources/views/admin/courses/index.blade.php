@@ -356,7 +356,8 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="d-flex justify-content-end">
+                        <div class="d-flex flex-wrap justify-content-end align-items-center gap-3">
+                            @include('admin.partials.per-page', ['paginator' => $courses])
                             {{ $courses->links('pagination::bootstrap-5') }}
                         </div>
                     </div>
@@ -688,10 +689,6 @@
                 performAjaxSearch();
             });
 
-            document.getElementById('perPageFilter').addEventListener('change', function() {
-                performAjaxSearch();
-            });
-
             // Clear filters button - use AJAX
             const clearFiltersBtn = document.getElementById('clearFiltersBtn');
             if (clearFiltersBtn) {
@@ -701,7 +698,6 @@
                     document.getElementById('statusFilter').value = '';
                     document.getElementById('categoryFilter').value = '';
                     document.getElementById('instructorFilter').value = '';
-                    document.getElementById('perPageFilter').value = '10';
 
                     // Update URL without parameters
                     window.history.pushState({}, '', '{{ route('admin.courses.index') }}');

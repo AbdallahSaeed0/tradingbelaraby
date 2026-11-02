@@ -285,11 +285,10 @@
         @endforelse
 
         <!-- Pagination -->
-        @if ($submissions->hasPages())
-            <div class="d-flex justify-content-center mt-4">
-                {{ $submissions->links() }}
-            </div>
-        @endif
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-4">
+            @include('admin.partials.per-page', ['paginator' => $submissions])
+            {{ $submissions->links() }}
+        </div>
     </div>
 
     @push('scripts')

@@ -203,6 +203,32 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        // "Show N entries" selector (admin.partials.per-page): reload the list with the new size,
+        // keeping the current filters (from the URL and any GET filter form on the page).
+        // Delegated so it keeps working after AJAX replaces the table.
+        document.addEventListener('change', function(e) {
+            if (!e.target.classList.contains('js-per-page')) {
+                return;
+            }
+            const url = new URL(window.location.href);
+            document.querySelectorAll('main form').forEach(function(form) {
+                if (form.method !== 'get') {
+                    return;
+                }
+                new FormData(form).forEach(function(value, name) {
+                    if (typeof value === 'string' && value !== '') {
+                        url.searchParams.set(name, value);
+                    } else {
+                        url.searchParams.delete(name);
+                    }
+                });
+            });
+            url.searchParams.set('per_page', e.target.value);
+            url.searchParams.delete('page');
+            window.location.href = url.toString();
+        });
+    </script>
     @stack('scripts')
     
     <!-- Placeholder fix - Loads after all styles to override Bootstrap -->

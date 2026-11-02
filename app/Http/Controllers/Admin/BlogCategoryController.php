@@ -13,7 +13,7 @@ class BlogCategoryController extends Controller
     public function index(Request $request)
     {
         $search = trim((string) $request->input('search', $request->input('q', '')));
-        $per = (int) ($request->per_page ?? 15);
+        $per = admin_per_page('blog-categories');
 
         $categories = $this->filteredCategories($request, $search, $per);
 
@@ -23,7 +23,7 @@ class BlogCategoryController extends Controller
     public function data(Request $request)
     {
         $search = trim((string) $request->input('search', $request->input('q', '')));
-        $per = (int) ($request->per_page ?? 15);
+        $per = admin_per_page('blog-categories');
 
         $categories = $this->filteredCategories($request, $search, $per);
 
@@ -51,7 +51,7 @@ class BlogCategoryController extends Controller
             ->when($request->blogs === 'without_blogs', fn ($query) => $query->doesntHave('blogs'))
             ->withCount(['blogs', 'publishedBlogs'])
             ->ordered()
-            ->paginate($per > 0 ? $per : 15)
+            ->paginate($per)
             ->withQueryString();
     }
 

@@ -32,8 +32,8 @@
                     </div>
                     <div class="col-md-3">
                         <select name="per_page" class="form-select" id="categoryPerPage">
-                            @foreach ([10, 15, 25, 50] as $s)
-                                <option value="{{ $s }}" {{ ($perPage ?? 15) == $s ? 'selected' : '' }}>{{ $s }} per page</option>
+                            @foreach (admin_per_page_options() as $size)
+                                <option value="{{ $size }}" {{ $categories->perPage() === $size ? 'selected' : '' }}>{{ $size }} per page</option>
                             @endforeach
                         </select>
                     </div>
@@ -56,15 +56,7 @@
                 <div class="row mt-3" id="categoriesPagination">
                     <div class="col-md-6">
                         <div class="d-flex align-items-center">
-                            <label class="form-label me-2 mb-0 small">Per page:</label>
-                            <select class="form-select form-select-sm w-auto" id="perPageSelect" onchange="changePerPage(this.value)">
-                                @php
-                                    $perPage = (int) request('per_page', $perPage ?? 15);
-                                @endphp
-                                @foreach ([10, 15, 25, 50, 100] as $size)
-                                    <option value="{{ $size }}" {{ $perPage === $size ? 'selected' : '' }}>{{ $size }}</option>
-                                @endforeach
-                            </select>
+                            @include('admin.partials.per-page', ['paginator' => $categories])
                         </div>
                     </div>
                     <div class="col-md-6">

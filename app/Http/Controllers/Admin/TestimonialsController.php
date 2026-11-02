@@ -37,7 +37,7 @@ class TestimonialsController extends Controller
         $direction = $request->get('direction', 'asc');
         $query->orderBy($sort, $direction);
 
-        $testimonials = $query->paginate(15);
+        $testimonials = $query->paginate(admin_per_page())->withQueryString();
 
         return view('admin.settings.testimonials.index', compact('testimonials'));
     }

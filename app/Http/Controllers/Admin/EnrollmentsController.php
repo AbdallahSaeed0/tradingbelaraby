@@ -81,12 +81,8 @@ class EnrollmentsController extends Controller
                 break;
         }
 
-        // Pagination size (default 15, user-controllable)
-        $perPage = (int) $request->get('per_page', 15);
-        $allowedPerPage = [10, 15, 25, 50, 100];
-        if (!in_array($perPage, $allowedPerPage)) {
-            $perPage = 15;
-        }
+        // Pagination size (user-controllable)
+        $perPage = admin_per_page();
 
         // addSelect() with raw expressions does not add "table.*" by itself
         if (is_null($query->getQuery()->columns)) {

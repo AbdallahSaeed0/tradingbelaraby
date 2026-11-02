@@ -112,10 +112,41 @@
 
         <div class="card">
             <div class="card-body">
+                <!-- Bulk actions: shown while rows are selected -->
+                <div class="enrollment-bulk-bar d-none" id="bulkActionsBar" role="region" aria-label="Bulk actions">
+                    <div class="enrollment-bulk-bar__info">
+                        <span class="enrollment-bulk-bar__count" id="bulkSelectedCount">0</span>
+                        <div class="lh-sm">
+                            <div class="fw-semibold" id="bulkSelectedLabel">orders selected</div>
+                            <small class="text-muted">Choose an action to apply to them</small>
+                        </div>
+                    </div>
+                    <div class="enrollment-bulk-bar__actions">
+                        <button type="button" class="btn btn-sm btn-success" id="bulkConfirmBtn">
+                            <i class="fa fa-check me-1"></i>Confirm
+                        </button>
+                        <button type="button" class="btn btn-sm btn-warning" id="bulkRejectBtn">
+                            <i class="fa fa-ban me-1"></i>Reject
+                        </button>
+                        <span class="enrollment-bulk-bar__divider" aria-hidden="true"></span>
+                        <button type="button" class="btn btn-sm btn-danger" id="bulkDeleteBtn">
+                            <i class="fa fa-trash me-1"></i>Delete
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="bulkClearSelection" title="Deselect all">
+                            <i class="fa fa-times me-1"></i>Deselect
+                        </button>
+                    </div>
+                </div>
+
                 <div class="table-responsive">
                     <table class="table table-hover table-striped">
                         <thead>
                             <tr>
+                                <th width="50">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="selectAll" aria-label="Select all orders on this page">
+                                    </div>
+                                </th>
                                 <th>Order #</th>
                                 <th>Student</th>
                                 <th>Payment</th>
@@ -129,6 +160,13 @@
                         <tbody>
                             @forelse($orders as $order)
                                 <tr>
+                                    <td>
+                                        <div class="form-check">
+                                            <input class="form-check-input order-checkbox" type="checkbox" value="{{ $order->id }}"
+                                                data-completed="{{ $order->status === 'completed' ? '1' : '0' }}"
+                                                aria-label="Select order {{ $order->order_number }}">
+                                        </div>
+                                    </td>
                                     <td class="fw-semibold">{{ $order->order_number }}</td>
                                     <td>
                                         <div>{{ $order->user->name ?? 'N/A' }}</div>
@@ -176,14 +214,15 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center py-5 text-muted">No orders found.</td>
+                                    <td colspan="9" class="text-center py-5 text-muted">No orders found.</td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
                 </div>
 
-                <div class="mt-3">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-3">
+                    @include('admin.partials.per-page', ['paginator' => $orders])
                     {{ $orders->links() }}
                 </div>
             </div>
@@ -210,6 +249,120 @@
                     btnClass: 'btn-danger',
                     btnHtml: '<i class="fa fa-trash me-1"></i>Delete Order'
                 });
+            });
+        });
+
+        // Multi-select + bulk actions
+        const selectAll = document.getElementById('selectAll');
+        const bulkBar = document.getElementById('bulkActionsBar');
+
+        function selectedOrderBoxes() {
+            return Array.from(document.querySelectorAll('.order-checkbox:checked'));
+        }
+
+        function syncSelection() {
+            const rows = document.querySelectorAll('.order-checkbox');
+            const count = selectedOrderBoxes().length;
+            selectAll.checked = rows.length > 0 && count === rows.length;
+            selectAll.indeterminate = count > 0 && count < rows.length;
+            document.getElementById('bulkSelectedCount').textContent = count;
+            document.getElementById('bulkSelectedLabel').textContent = (count === 1 ? 'order' : 'orders') + ' selected';
+            bulkBar.classList.toggle('d-none', count === 0);
+        }
+
+        selectAll.addEventListener('change', function() {
+            document.querySelectorAll('.order-checkbox').forEach(cb => {
+                cb.checked = selectAll.checked;
+            });
+            syncSelection();
+        });
+
+        document.querySelectorAll('.order-checkbox').forEach(cb => cb.addEventListener('change', syncSelection));
+
+        document.getElementById('bulkClearSelection').addEventListener('click', function() {
+            document.querySelectorAll('.order-checkbox').forEach(cb => {
+                cb.checked = false;
+            });
+            syncSelection();
+        });
+
+        // Put the selected ids and the action into the confirm modal's form, then open it
+        function confirmBulk(action, options) {
+            const form = document.getElementById('actionConfirmForm');
+            form.querySelectorAll('.bulk-field').forEach(el => el.remove());
+            const fields = { action: action };
+            selectedOrderBoxes().forEach((cb, i) => {
+                fields['ids[' + i + ']'] = cb.value;
+            });
+            Object.entries(fields).forEach(([name, value]) => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = name;
+                input.value = value;
+                input.className = 'bulk-field';
+                form.appendChild(input);
+            });
+            showActionConfirmModal(Object.assign({
+                action: '{{ route('admin.orders.bulk_action') }}',
+                method: 'POST'
+            }, options));
+        }
+
+        // The single delete button reuses the same modal; drop leftover bulk fields when it opens
+        document.querySelectorAll('.btn-order-delete').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('#actionConfirmForm .bulk-field').forEach(el => el.remove());
+            }, true);
+        });
+
+        function selectionSummary() {
+            const boxes = selectedOrderBoxes();
+            const completed = boxes.filter(cb => cb.dataset.completed === '1').length;
+            return { count: boxes.length, completed: completed };
+        }
+
+        document.getElementById('bulkConfirmBtn').addEventListener('click', function() {
+            const s = selectionSummary();
+            if (s.count === 0) {
+                return;
+            }
+            confirmBulk('confirm', {
+                title: 'Confirm Orders',
+                message: 'Confirm ' + s.count + ' selected ' + (s.count === 1 ? 'order' : 'orders') + ' and activate their enrollments?',
+                warning: s.completed > 0 ? s.completed + ' already completed ' + (s.completed === 1 ? 'order' : 'orders') + ' will be skipped.' : null,
+                headerClass: 'bg-success text-white',
+                btnClass: 'btn-success',
+                btnHtml: '<i class="fa fa-check me-1"></i>Confirm ' + s.count
+            });
+        });
+
+        document.getElementById('bulkRejectBtn').addEventListener('click', function() {
+            const s = selectionSummary();
+            if (s.count === 0) {
+                return;
+            }
+            confirmBulk('reject', {
+                title: 'Reject Orders',
+                message: 'Reject ' + s.count + ' selected ' + (s.count === 1 ? 'order' : 'orders') + ' and cancel their pending enrollments?',
+                warning: s.completed > 0 ? s.completed + ' completed ' + (s.completed === 1 ? 'order' : 'orders') + ' cannot be rejected and will be skipped.' : null,
+                headerClass: 'bg-warning text-dark',
+                btnClass: 'btn-warning',
+                btnHtml: '<i class="fa fa-ban me-1"></i>Reject ' + s.count
+            });
+        });
+
+        document.getElementById('bulkDeleteBtn').addEventListener('click', function() {
+            const s = selectionSummary();
+            if (s.count === 0) {
+                return;
+            }
+            confirmBulk('delete', {
+                title: 'Delete Orders',
+                message: 'Delete ' + s.count + ' selected ' + (s.count === 1 ? 'order' : 'orders') + ' and remove all linked enrollments? This action cannot be undone.',
+                warning: s.completed > 0 ? s.completed + ' of them ' + (s.completed === 1 ? 'is' : 'are') + ' completed — those students will lose course access.' : null,
+                headerClass: 'bg-danger text-white',
+                btnClass: 'btn-danger',
+                btnHtml: '<i class="fa fa-trash me-1"></i>Delete ' + s.count
             });
         });
     </script>

@@ -54,7 +54,7 @@ class HomeworkManagementController extends Controller
             $query->where('is_published', $request->status === 'published');
         }
 
-        $homework = $query->orderByDesc('created_at')->paginate(15);
+        $homework = $query->orderByDesc('created_at')->paginate(admin_per_page())->withQueryString();
 
         // Get stats based on permissions
         if ($admin->hasPermission('manage_own_homework') && !$admin->hasPermission('manage_homework')) {
@@ -468,7 +468,7 @@ class HomeworkManagementController extends Controller
             $query->where('is_graded', true);
         }
 
-        $submissions = $query->orderByDesc('submitted_at')->paginate(20);
+        $submissions = $query->orderByDesc('submitted_at')->paginate(admin_per_page())->withQueryString();
 
         return view('admin.homework.submissions', compact('homework', 'submissions'));
     }

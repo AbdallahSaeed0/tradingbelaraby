@@ -16,7 +16,7 @@ class LanguageController extends Controller
     {
         $languages = Language::orderBy('is_default', 'desc')
             ->orderBy('name')
-            ->paginate(10);
+            ->paginate(admin_per_page())->withQueryString();
 
         return view('admin.languages.index', compact('languages'));
     }

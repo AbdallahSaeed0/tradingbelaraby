@@ -50,7 +50,7 @@ class QuizManagementController extends Controller
             }
         }
 
-        $quizzes = $query->orderByDesc('created_at')->paginate(15);
+        $quizzes = $query->orderByDesc('created_at')->paginate(admin_per_page())->withQueryString();
 
         // Calculate stats based on permissions
         $admin = auth('admin')->user();

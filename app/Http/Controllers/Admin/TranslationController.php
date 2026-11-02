@@ -33,12 +33,8 @@ class TranslationController extends Controller
             $query->where('translation_key', 'like', '%' . $request->key . '%');
         }
 
-        // Pagination size (default 15, user-controllable)
-        $perPage = (int) $request->get('per_page', 15);
-        $allowedPerPage = [10, 25, 50, 100];
-        if (!in_array($perPage, $allowedPerPage)) {
-            $perPage = 15;
-        }
+        // Pagination size (user-controllable)
+        $perPage = admin_per_page();
 
         $translations = $query->orderBy('language_id')
             ->orderBy('group')

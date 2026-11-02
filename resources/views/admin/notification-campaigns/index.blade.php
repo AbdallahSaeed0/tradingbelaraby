@@ -49,7 +49,8 @@
 
                 <!-- Pagination (same as other admin tables) -->
                 <div class="row mt-3">
-                    <div class="col-md-6">
+                    <div class="col-md-6 d-flex flex-wrap align-items-center gap-3">
+                        @include('admin.partials.per-page', ['paginator' => $campaigns])
                         <small class="text-muted">
                             Showing {{ $campaigns->firstItem() ?? 0 }} to {{ $campaigns->lastItem() ?? 0 }} of {{ $campaigns->total() }} campaigns
                         </small>

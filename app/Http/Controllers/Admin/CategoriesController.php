@@ -13,7 +13,7 @@ class CategoriesController extends Controller
     public function index(Request $request)
     {
         $search = $request->q;
-        $perPage = $request->per_page ?? 15;
+        $perPage = admin_per_page('categories');
         $categories = CourseCategory::when($search, fn($q)=>$q->where('name','like',"%{$search}%"))
             ->latest()->paginate($perPage)->withQueryString();
         return view('admin.categories.index', compact('categories','search','perPage'));
@@ -22,7 +22,7 @@ class CategoriesController extends Controller
     public function data(Request $request)
     {
         $search = $request->q;
-        $perPage = $request->per_page ?? 15;
+        $perPage = admin_per_page('categories');
         $categories = CourseCategory::when($search, fn($q)=>$q->where('name','like',"%{$search}%"))
             ->latest()->paginate($perPage)->withQueryString();
         if($request->ajax())

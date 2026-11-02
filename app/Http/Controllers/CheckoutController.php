@@ -437,9 +437,15 @@ class CheckoutController extends Controller
 
             } */
             else {
-                // Card payment: NBE Hosted Checkout when enabled, otherwise CyberSource.
+                // Card payment: Stripe Checkout or NBE Hosted Checkout when enabled, otherwise CyberSource.
                 // Note: Cart will be cleared after successful payment confirmation
-                return redirect()->route(config('nbe.enabled') ? 'nbe.pay' : 'checkout.payment', $order->id);
+                $cardRoute = match (true) {
+                    config('stripe.enabled') => 'stripe.pay',
+                    config('nbe.enabled') => 'nbe.pay',
+                    default => 'checkout.payment',
+                };
+
+                return redirect()->route($cardRoute, $order->id);
             }
 
         } catch (\Exception $e) {

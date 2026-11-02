@@ -79,14 +79,10 @@
                         <div class="col-md-2">
                             <label for="per_page" class="form-label">Per Page</label>
                             <select class="form-select" id="perPageFilter" name="per_page">
-                            @php
-                                $perPage = (int) request('per_page', 15);
-                            @endphp
-                            <option value="10" {{ $perPage === 10 ? 'selected' : '' }}>10 per page</option>
-                            <option value="25" {{ $perPage === 25 ? 'selected' : '' }}>25 per page</option>
-                            <option value="50" {{ $perPage === 50 ? 'selected' : '' }}>50 per page</option>
-                            <option value="100" {{ $perPage === 100 ? 'selected' : '' }}>100 per page</option>
-                        </select>
+                                @foreach (admin_per_page_options() as $size)
+                                    <option value="{{ $size }}" {{ $translations->perPage() === $size ? 'selected' : '' }}>{{ $size }} per page</option>
+                                @endforeach
+                            </select>
                     </div>
                     <div class="col-md-2 d-flex align-items-end">
                         <div class="d-flex gap-2">
@@ -184,18 +180,7 @@
                     <div class="col-md-6">
                         <div class="d-flex align-items-center">
                             <div class="d-flex align-items-center me-3">
-                                <label class="form-label me-2 mb-0 small">Per page:</label>
-                                <select class="form-select form-select-sm w-auto" id="perPageSelect" onchange="changePerPage(this.value)">
-                                    @php
-                                        $perPage = (int) request('per_page', 10);
-                                    @endphp
-                                    <option value="10" {{ $perPage === 10 ? 'selected' : '' }}>10</option>
-                                    <option value="20" {{ $perPage === 20 ? 'selected' : '' }}>20</option>
-                                    <option value="50" {{ $perPage === 50 ? 'selected' : '' }}>50</option>
-                                    <option value="100" {{ $perPage === 100 ? 'selected' : '' }}>100</option>
-                                    <option value="500" {{ $perPage === 500 ? 'selected' : '' }}>500</option>
-                                    <option value="1000" {{ $perPage === 1000 ? 'selected' : '' }}>1000</option>
-                                </select>
+                                @include('admin.partials.per-page', ['paginator' => $translations])
                             </div>
                             @if ($translations->hasPages())
                                 <div class="text-muted ms-3">
@@ -392,7 +377,7 @@
                     document.getElementById('searchInput').value = '';
                     document.getElementById('languageFilter').value = '';
                     document.getElementById('groupFilter').value = '';
-                    document.getElementById('perPageFilter').value = '15';
+                    document.getElementById('perPageFilter').value = '10';
 
                     // Update URL without parameters
                     window.history.pushState({}, '', '{{ route('admin.translations.index') }}');

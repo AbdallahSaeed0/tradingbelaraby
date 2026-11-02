@@ -50,7 +50,7 @@ class UsersController extends Controller
             $query->orderByDesc('created_at');
         }
 
-        $perPage = $request->get('per_page', 15);
+        $perPage = admin_per_page('users');
         $users = $query->paginate($perPage)->appends($request->query());
 
         // Calculate stats
@@ -67,7 +67,7 @@ class UsersController extends Controller
     public function data(Request $request)
     {
         $search = $request->query('q');
-        $perPage = $request->query('per_page',15);
+        $perPage = admin_per_page('users');
         $users = User::when($search,function($q) use($search){
                 $q->where('name','like',"%{$search}%")->orWhere('email','like',"%{$search}%");
             })

@@ -59,7 +59,7 @@ class AdminsController extends Controller
                 break;
         }
 
-        $admins = $query->paginate(15);
+        $admins = $query->paginate(admin_per_page('admins'))->withQueryString();
 
         // Calculate stats
         $stats = [
@@ -77,12 +77,12 @@ class AdminsController extends Controller
     public function data(Request $request)
     {
         $search = $request->query('q');
-        $perPage = $request->query('per_page', 15);
+        $perPage = admin_per_page('admins');
         $admins = Admin::with('adminType')
             ->when($search, function($q) use ($search) {
                 $q->where('name','like',"%{$search}%")->orWhere('email','like',"%{$search}%");
             })
-            ->latest()->paginate($perPage);
+            ->latest()->paginate($perPage)->withQueryString();
 
         if ($request->ajax()) {
             return view('admin.admins.partials.table', compact('admins'))->render();

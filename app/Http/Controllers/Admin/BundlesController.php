@@ -27,13 +27,9 @@ class BundlesController extends Controller
         }
 
         // Pagination
-        $perPage = (int) $request->get('per_page', 10);
-        $allowedPerPage = [10, 25, 50, 100];
-        if (!in_array($perPage, $allowedPerPage)) {
-            $perPage = 10;
-        }
+        $perPage = admin_per_page();
 
-        $bundles = $query->latest()->paginate($perPage);
+        $bundles = $query->latest()->paginate($perPage)->withQueryString();
 
         return view('admin.bundles.index', compact('bundles'));
     }

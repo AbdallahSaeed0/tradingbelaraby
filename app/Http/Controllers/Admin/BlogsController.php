@@ -19,7 +19,7 @@ class BlogsController extends Controller
         $search = $request->search;
         $category = $request->category;
         $status = $request->status;
-        $per = $request->per_page ?? 15;
+        $per = admin_per_page('blogs');
 
         $blogs = Blog::when($search, function($query) use ($search) {
                 $query->where('title', 'like', "%{$search}%")
@@ -49,7 +49,7 @@ class BlogsController extends Controller
         $search = $request->search;
         $category = $request->category;
         $status = $request->status;
-        $per = $request->per_page ?? 15;
+        $per = admin_per_page('blogs');
 
         $blogs = Blog::when($search, function($query) use ($search) {
                 $query->where('title', 'like', "%{$search}%")

@@ -47,7 +47,7 @@ class HeroFeaturesController extends Controller
             $query->orderBy('order', 'asc');
         }
 
-        $heroFeatures = $query->paginate(10);
+        $heroFeatures = $query->paginate(admin_per_page())->withQueryString();
 
         return view('admin.settings.hero-features.index', compact('heroFeatures'));
     }

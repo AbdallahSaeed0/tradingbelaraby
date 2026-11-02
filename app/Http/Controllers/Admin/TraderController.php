@@ -26,7 +26,7 @@ class TraderController extends Controller
         }
 
 
-        $traders = $query->orderBy('created_at', 'desc')->paginate(15);
+        $traders = $query->orderBy('created_at', 'desc')->paginate(admin_per_page())->withQueryString();
 
         return view('admin.traders.index', compact('traders'));
     }

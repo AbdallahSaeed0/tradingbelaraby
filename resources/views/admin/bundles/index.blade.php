@@ -43,10 +43,9 @@
                         </div>
                         <div class="col-md-2">
                             <select class="form-select" name="per_page" id="perPageFilter">
-                                <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10 per page</option>
-                                <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25 per page</option>
-                                <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50 per page</option>
-                                <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100 per page</option>
+                                @foreach (admin_per_page_options() as $size)
+                                    <option value="{{ $size }}" {{ $bundles->perPage() === $size ? 'selected' : '' }}>{{ $size }} per page</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="col-md-4">
@@ -182,18 +181,7 @@
                         <div class="col-md-6">
                             <div class="d-flex align-items-center">
                                 <div class="d-flex align-items-center me-3">
-                                    <label class="form-label me-2 mb-0 small">Per page:</label>
-                                    <select class="form-select form-select-sm w-auto" id="perPageSelect" onchange="changePerPage(this.value)">
-                                        @php
-                                            $perPage = (int) request('per_page', 10);
-                                        @endphp
-                                        <option value="10" {{ $perPage === 10 ? 'selected' : '' }}>10</option>
-                                        <option value="20" {{ $perPage === 20 ? 'selected' : '' }}>20</option>
-                                        <option value="50" {{ $perPage === 50 ? 'selected' : '' }}>50</option>
-                                        <option value="100" {{ $perPage === 100 ? 'selected' : '' }}>100</option>
-                                        <option value="500" {{ $perPage === 500 ? 'selected' : '' }}>500</option>
-                                        <option value="1000" {{ $perPage === 1000 ? 'selected' : '' }}>1000</option>
-                                    </select>
+                                    @include('admin.partials.per-page', ['paginator' => $bundles])
                                 </div>
                             </div>
                         </div>

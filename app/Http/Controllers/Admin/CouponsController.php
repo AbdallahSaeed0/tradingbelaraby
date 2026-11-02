@@ -34,13 +34,9 @@ class CouponsController extends Controller
         }
 
         // Pagination
-        $perPage = (int) $request->get('per_page', 10);
-        $allowedPerPage = [10, 25, 50, 100];
-        if (!in_array($perPage, $allowedPerPage)) {
-            $perPage = 10;
-        }
+        $perPage = admin_per_page();
 
-        $coupons = $query->latest()->paginate($perPage);
+        $coupons = $query->latest()->paginate($perPage)->withQueryString();
 
         return view('admin.coupons.index', compact('coupons'));
     }

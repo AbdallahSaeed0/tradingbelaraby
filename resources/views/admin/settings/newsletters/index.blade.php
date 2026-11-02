@@ -267,10 +267,11 @@
                     </table>
                 </div>
             </div>
-            @if ($newsletters->hasPages())
+            @if ($newsletters->total() > 0)
                 <div class="card-footer">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                        <div class="d-flex flex-wrap align-items-center gap-3">
+                            @include('admin.partials.per-page', ['paginator' => $newsletters])
                             <p class="text-muted mb-0">
                                 {{ custom_trans('Showing', 'admin') }} {{ $newsletters->firstItem() }} {{ custom_trans('to', 'admin') }}
                                 {{ $newsletters->lastItem() }} {{ custom_trans('of', 'admin') }} {{ $newsletters->total() }}

@@ -186,7 +186,7 @@ class ContentManagementController extends Controller
      */
     public function contactForms()
     {
-        $contactForms = ContactForm::orderBy('created_at', 'desc')->paginate(15);
+        $contactForms = ContactForm::orderBy('created_at', 'desc')->paginate(admin_per_page())->withQueryString();
 
         return view('admin.settings.content-management.contact-forms', compact('contactForms'));
     }

@@ -86,7 +86,7 @@ class QuestionsAnswersManagementController extends Controller
                 break;
         }
 
-        $questions = $query->paginate(15);
+        $questions = $query->paginate(admin_per_page())->withQueryString();
 
         // Get filter options
         $courses = Course::orderBy('name')->get();

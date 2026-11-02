@@ -116,11 +116,10 @@
                 </div>
 
                 <!-- Pagination -->
-                @if ($contactForms->hasPages())
-                    <div class="d-flex justify-content-center mt-4">
-                        {{ $contactForms->links() }}
-                    </div>
-                @endif
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-4">
+                    @include('admin.partials.per-page', ['paginator' => $contactForms])
+                    {{ $contactForms->links() }}
+                </div>
             </div>
         </div>
     </div>

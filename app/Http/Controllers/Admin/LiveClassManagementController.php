@@ -50,7 +50,7 @@ class LiveClassManagementController extends Controller
             $query->where('scheduled_at', '<=', $request->date_to . ' 23:59:59');
         }
 
-        $liveClasses = $query->orderByDesc('scheduled_at')->paginate(15);
+        $liveClasses = $query->orderByDesc('scheduled_at')->paginate(admin_per_page())->withQueryString();
 
         $stats = [
             'total_classes' => LiveClass::count(),

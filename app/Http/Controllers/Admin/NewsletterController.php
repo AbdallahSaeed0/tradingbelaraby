@@ -27,7 +27,7 @@ class NewsletterController extends Controller
         $sortOrder = $request->get('sort_order', 'desc');
         $query->orderBy($sortBy, $sortOrder);
 
-        $newsletters = $query->paginate(15);
+        $newsletters = $query->paginate(admin_per_page())->withQueryString();
 
         // Statistics
         $totalSubscribers = Newsletter::count();

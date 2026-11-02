@@ -37,11 +37,7 @@ class AdminTypeController extends Controller
             $query->whereJsonContains('permissions', $permission);
         }
 
-        $perPage = (int) $request->get('per_page', 15);
-        $allowedPerPage = [10, 25, 50, 100];
-        if (!in_array($perPage, $allowedPerPage)) {
-            $perPage = 15;
-        }
+        $perPage = admin_per_page();
         $adminTypes = $query->ordered()->paginate($perPage)->appends($request->query());
 
         // Get available permissions for filter dropdown

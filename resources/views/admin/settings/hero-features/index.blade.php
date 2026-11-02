@@ -140,7 +140,8 @@
                 </div>
 
                 <!-- Pagination -->
-                <div class="d-flex justify-content-center">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                    @include('admin.partials.per-page', ['paginator' => $heroFeatures])
                     {{ $heroFeatures->links() }}
                 </div>
             </div>

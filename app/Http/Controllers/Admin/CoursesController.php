@@ -38,8 +38,10 @@ class CoursesController extends Controller
 
         // Apply search filter
         if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%')
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
                   ->orWhere('description', 'like', '%' . $request->search . '%');
+            });
         }
 
         // Apply status filter
@@ -57,14 +59,10 @@ class CoursesController extends Controller
             $query->where('instructor_id', $request->instructor);
         }
 
-        // Pagination size (default 10, user-controllable)
-        $perPage = (int) $request->get('per_page', 10);
-        $allowedPerPage = [10, 25, 50, 100];
-        if (!in_array($perPage, $allowedPerPage)) {
-            $perPage = 10;
-        }
+        // Pagination size (user-controllable)
+        $perPage = admin_per_page();
 
-        $courses = $query->paginate($perPage)->appends($request->query());
+        $courses = $query->latest()->latest('id')->paginate($perPage)->appends($request->query());
 
                 // Get statistics based on permissions
         if ($admin->hasPermission('manage_own_courses') && !$admin->hasPermission('manage_courses')) {
@@ -898,7 +896,7 @@ class CoursesController extends Controller
             'average_progress' => round($course->enrollments()->avg('progress_percentage') ?? 0, 1),
         ];
 
-        $enrollments = $course->enrollments()->with('user')->paginate(20);
+        $enrollments = $course->enrollments()->with('user')->latest()->latest('id')->paginate(admin_per_page())->withQueryString();
         return view('admin.courses.enrollments', compact('course', 'enrollments', 'stats'));
     }
 

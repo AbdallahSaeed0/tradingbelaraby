@@ -290,6 +290,7 @@
                         Showing {{ $enrollments->firstItem() }} to {{ $enrollments->lastItem() }} of
                         {{ $enrollments->total() }} entries
                     </div>
+                    @include('admin.partials.per-page', ['paginator' => $enrollments])
                     {{ $enrollments->links() }}
                 </div>
             </div>
@@ -390,6 +391,7 @@
                         Showing {{ $enrollments->firstItem() }} to {{ $enrollments->lastItem() }} of
                         {{ $enrollments->total() }} entries
                     </div>
+                    @include('admin.partials.per-page', ['paginator' => $enrollments])
                     {{ $enrollments->links() }}
                 </div>
             </div>

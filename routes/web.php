@@ -34,6 +34,9 @@ Route::post('/coming-soon/subscribe', [ComingSoonController::class, 'subscribe']
 // Google Play RTDN Webhook (public endpoint - must be excluded from CSRF)
 Route::post('/webhook/google-play', [App\Http\Controllers\GooglePlayWebhookController::class, 'handle'])->name('webhook.google-play');
 
+// Stripe Webhook (public endpoint - must be excluded from CSRF)
+Route::post('/webhook/stripe', [App\Http\Controllers\StripeController::class, 'webhook'])->name('webhook.stripe');
+
 // Apple Universal Links & app deep-link bridge (public, no auth)
 Route::get('/.well-known/apple-app-site-association', [UniversalLinkController::class, 'appleAppSiteAssociation'])
     ->name('apple.app.site.association');
@@ -299,6 +302,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/checkout/success/{order}', [CheckoutController::class, 'success'])->name('checkout.success');
     Route::get('/checkout/bank-transfer-pending/{order}', [CheckoutController::class, 'bankTransferPending'])->name('checkout.bank-transfer-pending');
 
+    // Stripe Checkout Payment Routes
+    Route::get('/stripe/pay/{order}', [App\Http\Controllers\StripeController::class, 'pay'])->name('stripe.pay');
+    Route::get('/stripe/return/{order}', [App\Http\Controllers\StripeController::class, 'return'])->name('stripe.return');
+    Route::get('/stripe/cancel/{order}', [App\Http\Controllers\StripeController::class, 'cancel'])->name('stripe.cancel');
+
     // NBE (Mastercard Hosted Checkout) Payment Routes
     Route::get('/nbe/pay/{order}', [App\Http\Controllers\NbeController::class, 'pay'])->name('nbe.pay');
     Route::get('/nbe/return/{order}', [App\Http\Controllers\NbeController::class, 'return'])->name('nbe.return');
@@ -391,6 +399,7 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
     Route::resource('enrollments', App\Http\Controllers\Admin\EnrollmentsController::class)->middleware('admin.permission:manage_enrollments');
     Route::post('/enrollments/{enrollment}/update-status', [App\Http\Controllers\Admin\EnrollmentsController::class, 'updateStatus'])->name('enrollments.update_status')->middleware('admin.permission:manage_enrollments');
     Route::get('/orders', [App\Http\Controllers\Admin\OrdersController::class, 'index'])->name('orders.index')->middleware('admin.permission:manage_enrollments');
+    Route::post('/orders/bulk-action', [App\Http\Controllers\Admin\OrdersController::class, 'bulkAction'])->name('orders.bulk_action')->middleware('admin.permission:manage_enrollments');
     Route::get('/orders/{order}', [App\Http\Controllers\Admin\OrdersController::class, 'show'])->name('orders.show')->middleware('admin.permission:manage_enrollments');
     Route::post('/orders/{order}/confirm', [App\Http\Controllers\Admin\OrdersController::class, 'confirm'])->name('orders.confirm')->middleware('admin.permission:manage_enrollments');
     Route::post('/orders/{order}/reject', [App\Http\Controllers\Admin\OrdersController::class, 'reject'])->name('orders.reject')->middleware('admin.permission:manage_enrollments');
@@ -643,7 +652,7 @@ Route::resource('quizzes.questions', App\Http\Controllers\Admin\QuizQuestionMana
     Route::get('/questions-answers/analytics', [App\Http\Controllers\Admin\QuestionsAnswersManagementController::class, 'analytics'])->name('questions-answers.analytics')->middleware('admin.permission:view_analytics,view_own_analytics');
     Route::get('/questions-answers/export', [App\Http\Controllers\Admin\QuestionsAnswersManagementController::class, 'export'])->name('questions-answers.export');
     Route::post('/questions-answers/{questions_answer}/store-reply', [App\Http\Controllers\Admin\QuestionsAnswersManagementController::class, 'storeReply'])->name('questions-answers.store_reply');
-    Route::post('/questions-answers/{questions_answer}/update-reply', [App\Http\Controllers\Admin\QuestionsAnswersManagementController::class, 'updateReply'])->name('questions-answers.update_reply');
+    Route::put('/questions-answers/{questions_answer}/update-reply', [App\Http\Controllers\Admin\QuestionsAnswersManagementController::class, 'updateReply'])->name('questions-answers.update_reply');
     Route::delete('/questions-answers/{questions_answer}/delete-reply', [App\Http\Controllers\Admin\QuestionsAnswersManagementController::class, 'deleteReply'])->name('questions-answers.delete_reply');
     Route::put('/questions-answers/{questions_answer}/update-priority', [App\Http\Controllers\Admin\QuestionsAnswersManagementController::class, 'updatePriority'])->name('questions-answers.update_priority');
 

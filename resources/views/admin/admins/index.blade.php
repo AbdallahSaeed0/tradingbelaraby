@@ -261,7 +261,8 @@
 
                 <!-- Pagination -->
                 <div class="row mt-3">
-                    <div class="col-md-6">
+                    <div class="col-md-6 d-flex flex-wrap align-items-center gap-3">
+                        @include('admin.partials.per-page', ['paginator' => $admins])
                         <small class="text-muted">
                             Showing {{ $admins->count() }} of {{ $admins->total() }} admins
                         </small>

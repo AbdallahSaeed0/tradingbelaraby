@@ -67,7 +67,7 @@ class ContactManagementController extends Controller
 
     public function contactForms()
     {
-        $contactForms = ContactForm::latest()->paginate(15);
+        $contactForms = ContactForm::latest()->paginate(admin_per_page())->withQueryString();
         $totalSubmissions = ContactForm::count();
         $unreadSubmissions = ContactForm::where('status', 'new')->count();
         $readSubmissions = ContactForm::where('status', 'read')->count();
