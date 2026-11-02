@@ -38,6 +38,40 @@
     color: #fff;
 }
 
+/* Accepted payment methods row */
+.footer-payments {
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.footer-payments-label {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.9rem;
+}
+
+.footer-payments-label i {
+    color: #ff7043;
+    margin-inline-end: 4px;
+}
+
+.footer-payments-list li {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 40px;
+    background: #fff;
+    border-radius: 6px;
+    color: #1a1f36;
+    font-size: 30px;
+    line-height: 1;
+}
+
+.footer-payments-list .fa-cc-visa { color: #1a1f71; }
+.footer-payments-list .fa-cc-mastercard { color: #eb001b; }
+.footer-payments-list .fa-cc-apple-pay { color: #000; }
+.footer-payments-list .fa-google-pay { color: #5f6368; font-size: 34px; }
+.footer-payments-list .fa-cc-stripe { color: #635bff; }
+
 /* Back to top button */
 #backToTopBtn {
     color: #ff7043;

@@ -976,6 +976,24 @@ main:has(> section.hero) > section:not(.hero), body:has(main > section.hero) foo
                 </div>
             </div>
         </div>
+        <!-- Accepted payment methods -->
+        @if (config('stripe.enabled') || config('nbe.enabled'))
+            <div class="footer-payments container d-flex flex-wrap justify-content-center align-items-center gap-3 py-3">
+                <span class="footer-payments-label">
+                    <i class="fas fa-lock" aria-hidden="true"></i>
+                    {{ get_current_language_code() === 'ar' ? 'طرق الدفع الآمنة' : 'Secure payments' }}
+                </span>
+                <ul class="footer-payments-list list-unstyled d-flex flex-wrap justify-content-center gap-2 mb-0">
+                    <li title="Visa"><i class="fab fa-cc-visa" aria-hidden="true"></i><span class="visually-hidden">Visa</span></li>
+                    <li title="Mastercard"><i class="fab fa-cc-mastercard" aria-hidden="true"></i><span class="visually-hidden">Mastercard</span></li>
+                    @if (config('stripe.enabled'))
+                        <li title="Apple Pay"><i class="fab fa-cc-apple-pay" aria-hidden="true"></i><span class="visually-hidden">Apple Pay</span></li>
+                        <li title="Google Pay"><i class="fab fa-google-pay" aria-hidden="true"></i><span class="visually-hidden">Google Pay</span></li>
+                        <li title="Stripe"><i class="fab fa-cc-stripe" aria-hidden="true"></i><span class="visually-hidden">Stripe</span></li>
+                    @endif
+                </ul>
+            </div>
+        @endif
         <!-- Copyright & Back to Top -->
         <div class="footer-bottom-bar d-flex justify-content-between align-items-center px-3 px-md-5 py-3">
             <div class="footer-copyright text-center flex-grow-1">
