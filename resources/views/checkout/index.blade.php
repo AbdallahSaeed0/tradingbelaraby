@@ -214,6 +214,24 @@
                                         </div>
                                     @endif
 
+                                    {{-- Card via Stripe Checkout (only when STRIPE_ENABLED=true) --}}
+                                    @if (config('stripe.enabled'))
+                                        <div class="payment-option-card {{ config('nbe.enabled') ? '' : 'selected' }} p-4 border rounded-3 position-relative"
+                                            onclick="selectPayment(this, 'stripe')">
+                                            <input type="radio" name="payment_method" value="stripe" id="stripe_payment"
+                                                {{ config('nbe.enabled') ? '' : 'checked' }} class="position-absolute top-0 end-0 m-3">
+                                            <div class="payment-icon mb-3">
+                                                <i class="fab fa-stripe fa-3x text-primary"></i>
+                                            </div>
+                                            <h5 class="fw-bold mb-2">{{ custom_trans('Pay with Stripe', 'front') }}</h5>
+                                            <p class="text-muted mb-0 small">
+                                                {{ custom_trans('Visa, Mastercard, Apple Pay and Google Pay', 'front') }}</p>
+                                            <div class="selected-badge position-absolute top-0 start-0 m-2 {{ config('nbe.enabled') ? 'd-none' : '' }}">
+                                                <i class="fas fa-check-circle text-success"></i>
+                                            </div>
+                                        </div>
+                                    @endif
+
                                     {{-- Bank Transfer (only when enabled in admin) --}}
                                     @if ($paymentSettings->bank_transfer_enabled)
                                         <div class="payment-option-card p-4 border rounded-3 position-relative"

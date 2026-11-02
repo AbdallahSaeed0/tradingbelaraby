@@ -156,7 +156,7 @@ class CheckoutController extends Controller
             'state'                 => 'nullable|string|max:255',
             'postal_code'           => 'nullable|string|max:20',
             'country'               => 'nullable|string|max:255',
-            'payment_method'        => 'required|in:visa,free,bank_transfer',
+            'payment_method'        => 'required|in:visa,stripe,free,bank_transfer',
             'transaction_reference' => 'nullable|string|max:255',
         ]);
 
@@ -195,8 +195,12 @@ class CheckoutController extends Controller
             return back()->withErrors(['payment_method' => 'Free enrollment is only available for free courses']);
         }
 
-        if ($request->payment_method === 'visa' && $allFree) {
+        if (in_array($request->payment_method, ['visa', 'stripe']) && $allFree) {
             return back()->withErrors(['payment_method' => 'Free courses do not require payment']);
+        }
+
+        if ($request->payment_method === 'stripe' && !config('stripe.enabled')) {
+            return back()->withErrors(['payment_method' => 'This payment method is not available']);
         }
 
         try {
@@ -253,7 +257,7 @@ class CheckoutController extends Controller
 
                     // Enroll user in all courses in the bundle
                     $enrollmentStatus = 'active';
-                    if (in_array($request->payment_method, ['bank_transfer', 'visa'])) {
+                    if (in_array($request->payment_method, ['bank_transfer', 'visa', 'stripe'])) {
                         $enrollmentStatus = 'pending';
                     }
 
@@ -315,7 +319,7 @@ class CheckoutController extends Controller
                     }
 
                     $enrollmentStatus = 'active';
-                    if (in_array($request->payment_method, ['bank_transfer', 'visa'])) {
+                    if (in_array($request->payment_method, ['bank_transfer', 'visa', 'stripe'])) {
                         $enrollmentStatus = 'pending';
                     }
 
@@ -437,10 +441,10 @@ class CheckoutController extends Controller
 
             } */
             else {
-                // Card payment: Stripe Checkout or NBE Hosted Checkout when enabled, otherwise CyberSource.
+                // Card payment: Stripe Checkout, or NBE Hosted Checkout when enabled, otherwise CyberSource.
                 // Note: Cart will be cleared after successful payment confirmation
                 $cardRoute = match (true) {
-                    config('stripe.enabled') => 'stripe.pay',
+                    $request->payment_method === 'stripe' => 'stripe.pay',
                     config('nbe.enabled') => 'nbe.pay',
                     default => 'checkout.payment',
                 };

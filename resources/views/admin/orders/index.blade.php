@@ -97,6 +97,8 @@
                         <select class="form-select" name="payment_method">
                             <option value="">All Methods</option>
                             <option value="bank_transfer" {{ request('payment_method') === 'bank_transfer' ? 'selected' : '' }}>Bank Transfer</option>
+                            <option value="visa" {{ request('payment_method') === 'visa' ? 'selected' : '' }}>Credit Card</option>
+                            <option value="stripe" {{ request('payment_method') === 'stripe' ? 'selected' : '' }}>Stripe</option>
                             <option value="paypal" {{ request('payment_method') === 'paypal' ? 'selected' : '' }}>PayPal</option>
                             <option value="free" {{ request('payment_method') === 'free' ? 'selected' : '' }}>Free</option>
                         </select>

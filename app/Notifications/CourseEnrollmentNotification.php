@@ -71,6 +71,7 @@ class CourseEnrollmentNotification extends Notification implements ShouldQueue
                 'total' => 'Total',
                 'free' => 'Free',
                 'visa' => 'Credit Card',
+                'stripe' => 'Stripe',
                 'tabby' => 'Tabby',
             ],
             'ar' => [
@@ -91,6 +92,7 @@ class CourseEnrollmentNotification extends Notification implements ShouldQueue
                 'total' => 'الإجمالي',
                 'free' => 'مجاني',
                 'visa' => 'بطاقة ائتمان',
+                'stripe' => 'Stripe',
                 'tabby' => 'تابي',
             ],
         ];
@@ -177,11 +179,13 @@ class CourseEnrollmentNotification extends Notification implements ShouldQueue
             'en' => [
                 'free' => 'Free',
                 'visa' => 'Credit Card',
+                'stripe' => 'Stripe',
                 'tabby' => 'Tabby',
             ],
             'ar' => [
                 'free' => 'مجاني',
                 'visa' => 'بطاقة ائتمان',
+                'stripe' => 'Stripe',
                 'tabby' => 'تابي',
             ],
         ];

@@ -149,6 +149,8 @@ class Order extends Model
     {
         return match ($this->payment_method) {
             'bank_transfer' => 'Bank Transfer',
+            'visa' => 'Credit Card',
+            'stripe' => 'Stripe',
             'paypal' => 'PayPal',
             'free' => 'Free',
             'tabby' => 'Tabby',
