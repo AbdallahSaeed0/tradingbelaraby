@@ -52,7 +52,8 @@ class StripeService
             'cancel_url' => $cancelUrl,
             'client_reference_id' => (string) $order->id,
             'customer_email' => $order->billing_email ?: null,
-            'locale' => app()->getLocale() === 'ar' ? 'ar' : 'en',
+            // Checkout has no Arabic locale; 'auto' follows the browser language.
+            'locale' => app()->getLocale() === 'en' ? 'en' : 'auto',
             'line_items' => [[
                 'quantity' => 1,
                 'price_data' => [
