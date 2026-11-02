@@ -78,10 +78,11 @@
 
         <div class="card mb-4">
             <div class="card-body">
-                <form method="GET" action="{{ route('admin.orders.index') }}" class="row g-3">
-                    <div class="col-md-4">
-                        <input type="text" class="form-control" name="search" value="{{ request('search') }}"
-                            placeholder="Search order #, transaction ref, student...">
+                <form method="GET" action="{{ route('admin.orders.index') }}" class="row g-3" data-live-filter="ordersResults">
+                    <div class="col-md-6">
+                        <input type="search" class="form-control" name="search" value="{{ request('search') }}"
+                            placeholder="Search order #, transaction ref, student..." autocomplete="off"
+                            aria-label="Search orders">
                     </div>
                     <div class="col-md-2">
                         <select class="form-select" name="status">
@@ -101,10 +102,7 @@
                         </select>
                     </div>
                     <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary w-100"><i class="fa fa-search me-1"></i>Filter</button>
-                    </div>
-                    <div class="col-md-2">
-                        <a href="{{ route('admin.orders.index') }}" class="btn btn-outline-secondary w-100">Clear</a>
+                        <a href="{{ route('admin.orders.index') }}" class="btn btn-outline-secondary w-100" data-live-clear>Clear</a>
                     </div>
                 </form>
             </div>
@@ -138,6 +136,7 @@
                     </div>
                 </div>
 
+                <div id="ordersResults" data-live-region>
                 <div class="table-responsive">
                     <table class="table table-hover table-striped">
                         <thead>
@@ -225,6 +224,7 @@
                     @include('admin.partials.per-page', ['paginator' => $orders])
                     {{ $orders->links() }}
                 </div>
+                </div>
             </div>
         </div>
     </div>
@@ -234,26 +234,27 @@
 
 @push('scripts')
     <script>
-        document.querySelectorAll('.btn-order-delete').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                const orderNumber = this.dataset.order;
-                const isCompleted = this.dataset.completed === '1';
-
-                showActionConfirmModal({
-                    title: 'Delete Order',
-                    message: 'Delete order ' + orderNumber + ' and remove all linked enrollments? This action cannot be undone.',
-                    warning: isCompleted ? 'This order is completed — the student will lose course access.' : null,
-                    action: this.dataset.action,
-                    method: 'DELETE',
-                    headerClass: 'bg-danger text-white',
-                    btnClass: 'btn-danger',
-                    btnHtml: '<i class="fa fa-trash me-1"></i>Delete Order'
-                });
+        // Rows are replaced by live filtering (#ordersResults), so row handlers are delegated
+        document.addEventListener('click', function(e) {
+            const btn = e.target.closest('.btn-order-delete');
+            if (!btn) {
+                return;
+            }
+            // The modal is shared with the bulk actions; drop leftover bulk fields first
+            document.querySelectorAll('#actionConfirmForm .bulk-field').forEach(el => el.remove());
+            showActionConfirmModal({
+                title: 'Delete Order',
+                message: 'Delete order ' + btn.dataset.order + ' and remove all linked enrollments? This action cannot be undone.',
+                warning: btn.dataset.completed === '1' ? 'This order is completed — the student will lose course access.' : null,
+                action: btn.dataset.action,
+                method: 'DELETE',
+                headerClass: 'bg-danger text-white',
+                btnClass: 'btn-danger',
+                btnHtml: '<i class="fa fa-trash me-1"></i>Delete Order'
             });
         });
 
         // Multi-select + bulk actions
-        const selectAll = document.getElementById('selectAll');
         const bulkBar = document.getElementById('bulkActionsBar');
 
         function selectedOrderBoxes() {
@@ -261,23 +262,31 @@
         }
 
         function syncSelection() {
+            const selectAll = document.getElementById('selectAll');
             const rows = document.querySelectorAll('.order-checkbox');
             const count = selectedOrderBoxes().length;
-            selectAll.checked = rows.length > 0 && count === rows.length;
-            selectAll.indeterminate = count > 0 && count < rows.length;
+            if (selectAll) {
+                selectAll.checked = rows.length > 0 && count === rows.length;
+                selectAll.indeterminate = count > 0 && count < rows.length;
+            }
             document.getElementById('bulkSelectedCount').textContent = count;
             document.getElementById('bulkSelectedLabel').textContent = (count === 1 ? 'order' : 'orders') + ' selected';
             bulkBar.classList.toggle('d-none', count === 0);
         }
 
-        selectAll.addEventListener('change', function() {
-            document.querySelectorAll('.order-checkbox').forEach(cb => {
-                cb.checked = selectAll.checked;
-            });
-            syncSelection();
+        document.addEventListener('change', function(e) {
+            if (e.target.id === 'selectAll') {
+                document.querySelectorAll('.order-checkbox').forEach(cb => {
+                    cb.checked = e.target.checked;
+                });
+                syncSelection();
+            } else if (e.target.classList.contains('order-checkbox')) {
+                syncSelection();
+            }
         });
 
-        document.querySelectorAll('.order-checkbox').forEach(cb => cb.addEventListener('change', syncSelection));
+        // New results come in unselected
+        document.addEventListener('live-filter:updated', syncSelection);
 
         document.getElementById('bulkClearSelection').addEventListener('click', function() {
             document.querySelectorAll('.order-checkbox').forEach(cb => {
@@ -307,13 +316,6 @@
                 method: 'POST'
             }, options));
         }
-
-        // The single delete button reuses the same modal; drop leftover bulk fields when it opens
-        document.querySelectorAll('.btn-order-delete').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('#actionConfirmForm .bulk-field').forEach(el => el.remove());
-            }, true);
-        });
 
         function selectionSummary() {
             const boxes = selectedOrderBoxes();

@@ -59,7 +59,8 @@
         <!-- Filters -->
         <div class="card mb-4">
             <div class="card-body">
-                <form method="GET" action="{{ route('admin.homework.submissions', $homework) }}" class="row g-3">
+                <form method="GET" action="{{ route('admin.homework.submissions', $homework) }}" class="row g-3"
+                    data-live-filter="submissionsResults">
                     <div class="col-md-3">
                         <label for="status" class="form-label">Status</label>
                         <select class="form-select" id="status" name="status">
@@ -90,9 +91,8 @@
                     <div class="col-md-3">
                         <label class="form-label">&nbsp;</label>
                         <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-primary">Filter</button>
                             <a href="{{ route('admin.homework.submissions', $homework) }}"
-                                class="btn btn-outline-secondary">Clear</a>
+                                class="btn btn-outline-secondary" data-live-clear>Clear</a>
                         </div>
                     </div>
                 </form>
@@ -100,6 +100,7 @@
         </div>
 
         <!-- Submissions List -->
+        <div id="submissionsResults" data-live-region>
         @forelse($submissions as $submission)
             <div class="submission-card">
                 <div class="submission-header">
@@ -288,6 +289,7 @@
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-4">
             @include('admin.partials.per-page', ['paginator' => $submissions])
             {{ $submissions->links() }}
+        </div>
         </div>
     </div>
 

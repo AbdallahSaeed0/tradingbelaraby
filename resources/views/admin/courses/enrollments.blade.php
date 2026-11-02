@@ -92,7 +92,8 @@
         <!-- Filters and Search -->
         <div class="card mb-4">
             <div class="card-body">
-                <form method="GET" action="{{ route('admin.courses.enrollments', $course) }}" id="filterForm">
+                <form method="GET" action="{{ route('admin.courses.enrollments', $course) }}" id="filterForm"
+                    data-live-filter="enrollmentsShowing enrollmentsListResults enrollmentsGridResults">
                     <div class="row g-3">
                         <div class="col-md-3">
                             <div class="input-group">
@@ -104,7 +105,9 @@
                         <div class="col-md-2">
                             <select class="form-select" name="status" id="statusFilter">
                                 <option value="">All Status</option>
-                                <option value="enrolled" {{ request('status') == 'enrolled' ? 'selected' : '' }}>Enrolled
+                                <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active
+                                </option>
+                                <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending
                                 </option>
                                 <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>
                                     Completed</option>
@@ -138,11 +141,8 @@
                         </div>
                         <div class="col-md-3">
                             <div class="d-flex gap-2">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fa fa-search me-1"></i>Filter
-                                </button>
                                 <a href="{{ route('admin.courses.enrollments', $course) }}"
-                                    class="btn btn-outline-secondary">
+                                    class="btn btn-outline-secondary" data-live-clear>
                                     <i class="fa fa-refresh me-1"></i>Clear
                                 </a>
                             </div>
@@ -167,8 +167,8 @@
                         </div>
                     </div>
                     <div class="d-flex align-items-center">
-                        <span class="text-muted me-3">Showing {{ $enrollments->firstItem() }} to
-                            {{ $enrollments->lastItem() }} of {{ $enrollments->total() }} entries</span>
+                        <span class="text-muted me-3" id="enrollmentsShowing" data-live-region>Showing {{ $enrollments->firstItem() ?? 0 }} to
+                            {{ $enrollments->lastItem() ?? 0 }} of {{ $enrollments->total() }} entries</span>
                     </div>
                 </div>
             </div>
@@ -179,6 +179,7 @@
             <div class="card-header">
                 <h5 class="mb-0">Enrollments List</h5>
             </div>
+            <div id="enrollmentsListResults" data-live-region>
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-custom mb-0">
@@ -294,6 +295,7 @@
                     {{ $enrollments->links() }}
                 </div>
             </div>
+            </div>
         </div>
 
         <!-- Enrollments Grid View -->
@@ -301,6 +303,7 @@
             <div class="card-header">
                 <h5 class="mb-0">Enrollments Grid</h5>
             </div>
+            <div id="enrollmentsGridResults" data-live-region>
             <div class="card-body">
                 <div class="row g-4">
                     @forelse($enrollments as $enrollment)
@@ -395,6 +398,7 @@
                     {{ $enrollments->links() }}
                 </div>
             </div>
+            </div>
         </div>
 
         <form id="removeEnrollmentForm" method="POST" class="d-none">
@@ -463,28 +467,7 @@
                 this.classList.add('active');
                 gridViewBtn.classList.remove('active');
             });
-
-            // Auto-submit form on filter change
-            document.getElementById('statusFilter').addEventListener('change', function() {
-                document.getElementById('filterForm').submit();
-            });
-
-            document.getElementById('progressFilter').addEventListener('change', function() {
-                document.getElementById('filterForm').submit();
-            });
-
-            document.getElementById('sortFilter').addEventListener('change', function() {
-                document.getElementById('filterForm').submit();
-            });
-
-            // Search with debounce
-            let searchTimeout;
-            document.getElementById('searchInput').addEventListener('input', function() {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    document.getElementById('filterForm').submit();
-                }, 500);
-            });
+            // Filters update the list live (data-live-filter in the admin layout)
         });
     </script>
 @endpush

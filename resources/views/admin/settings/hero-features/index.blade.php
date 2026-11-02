@@ -15,7 +15,7 @@
         <!-- Filters and Search -->
         <div class="card mb-4">
             <div class="card-body">
-                <form method="GET" action="{{ route('admin.settings.hero-features.index') }}" id="filterForm" class="row g-3">
+                <form method="GET" action="{{ route('admin.settings.hero-features.index') }}" id="filterForm" class="row g-3" data-live-filter="heroFeaturesResults">
                     <div class="col-md-3">
                         <select class="form-select" name="status" id="status_filter">
                             <option value="">{{ custom_trans('All Status', 'admin') }}</option>
@@ -47,10 +47,7 @@
                     </div>
                     <div class="col-md-2">
                         <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fa fa-search me-1"></i>{{ custom_trans('Filter', 'admin') }}
-                            </button>
-                            <button type="button" class="btn btn-outline-secondary" id="clear_filters">
+                            <button type="button" class="btn btn-outline-secondary" id="clear_filters" data-live-clear>
                                 <i class="fa fa-refresh me-1"></i>{{ custom_trans('Clear', 'admin') }}
                         </button>
                         </div>
@@ -60,7 +57,7 @@
         </div>
 
         <!-- Hero Features Table -->
-        <div class="card mb-4">
+        <div class="card mb-4" id="heroFeaturesResults" data-live-region>
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-hover table-striped" id="hero-features-table">
@@ -466,59 +463,16 @@
                 }
             });
 
-            // Debounce function for search
-            function debounce(func, wait) {
-                let timeout;
-                return function executedFunction(...args) {
-                    const later = () => {
-                        clearTimeout(timeout);
-                        func(...args);
-                    };
-                    clearTimeout(timeout);
-                    timeout = setTimeout(later, wait);
-                };
-            }
-
-            // Apply filters function
-            function applyFilters() {
-                const status = $('#status_filter').val();
-                const search = $('#search_filter').val();
-                const orderBy = $('#order_filter').val();
-
-                window.location.href = '{{ route('admin.settings.hero-features.index') }}?' + $.param({
-                    status: status,
-                    search: search,
-                    order_by: orderBy
-                });
-            }
-
-            // Debounced search function
-            const debouncedSearch = debounce(applyFilters, 500);
-
-            // Automatic search on input change
-            $('#search_filter').on('input', function() {
-                debouncedSearch();
-            });
-
-            // Automatic filter on status change
-            $('#status_filter, #order_filter').on('change', function() {
-                applyFilters();
-            });
-
-            $('#clear_filters').on('click', function() {
-                $('#status_filter').val('');
-                $('#search_filter').val('');
-                $('#order_filter').val('order');
-                applyFilters();
-            });
+            // Filters update the table live (data-live-filter in the admin layout); row handlers
+            // below are delegated so they keep working after the table is replaced
 
             // Select all functionality
-            $('#select_all').on('change', function() {
+            $(document).on('change', '#select_all', function() {
                 $('.feature-checkbox').prop('checked', $(this).is(':checked'));
                 updateBulkActions();
             });
 
-            $('.feature-checkbox').on('change', function() {
+            $(document).on('change', '.feature-checkbox', function() {
                 updateBulkActions();
                 updateSelectAll();
             });
@@ -582,7 +536,7 @@
             }
 
             // Status toggle
-            $('.status-toggle').on('change', function() {
+            $(document).on('change', '.status-toggle', function() {
                 const heroFeatureId = $(this).data('id');
                 const isChecked = $(this).is(':checked');
 
@@ -678,7 +632,7 @@
             });
 
             // Edit button click
-            $('.edit-btn').on('click', function() {
+            $(document).on('click', '.edit-btn', function() {
                 const heroFeature = $(this).data('hero-feature');
 
                 $('#edit_hero_feature_id').val(heroFeature.id);
@@ -694,7 +648,7 @@
             });
 
             // View button click
-            $('.view-btn').on('click', function() {
+            $(document).on('click', '.view-btn', function() {
                 const heroFeature = $(this).data('hero-feature');
 
                 $('#view_title').text(heroFeature.title);
@@ -711,7 +665,7 @@
 
             // Delete button click
             let deleteHeroFeatureId = null;
-            $('.delete-btn').on('click', function() {
+            $(document).on('click', '.delete-btn', function() {
                 deleteHeroFeatureId = $(this).data('id');
                 $('#deleteConfirmMessage').text('{{ custom_trans('Are you sure you want to delete this hero feature? This action cannot be undone.', 'admin') }}');
                 $('#deleteConfirmModal').modal('show');

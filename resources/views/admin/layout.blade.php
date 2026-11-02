@@ -204,9 +204,166 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script>
+        // Live filtering for admin lists, without reloading the page.
+        //   <form method="GET" data-live-filter="resultsId">  filter form (typing, selects, dates, Enter);
+        //                                                      several ids (space separated) refresh several areas
+        //   <div id="resultsId" data-live-region>             table + pagination, swapped on every change
+        //   [data-live-clear]                                  button that empties the form
+        // The page is fetched as usual and only the regions are replaced, so the controller needs no
+        // changes. Pagination links and the per-page selector inside a region load the same way.
+        // After each swap 'live-filter:updated' fires on document (detail.regions) for page scripts.
+        window.adminLiveFilter = (function() {
+            let activeRequest = null;
+
+            // All regions refreshed together with the given one (those named by the same form)
+            function regionGroup(region) {
+                const form = Array.from(document.querySelectorAll('form[data-live-filter]'))
+                    .find(f => f.dataset.liveFilter.split(/\s+/).includes(region.id));
+                return form ? formRegions(form) : [region];
+            }
+
+            function formRegions(form) {
+                return form.dataset.liveFilter.split(/\s+/)
+                    .map(id => document.getElementById(id))
+                    .filter(Boolean);
+            }
+
+            function filterUrl(form) {
+                const url = new URL(form.getAttribute('action') || window.location.href, window.location.href);
+                url.search = '';
+                new FormData(form).forEach(function(value, name) {
+                    if (typeof value === 'string' && value.trim() !== '') {
+                        url.searchParams.set(name, value.trim());
+                    }
+                });
+                return url.toString();
+            }
+
+            function load(regions, url) {
+                if (!regions.length) {
+                    return;
+                }
+                if (activeRequest) {
+                    activeRequest.abort();
+                }
+                const request = new AbortController();
+                activeRequest = request;
+                regions.forEach(function(region) {
+                    region.classList.add('is-live-loading');
+                    region.setAttribute('aria-busy', 'true');
+                });
+
+                fetch(url, {
+                        headers: { 'Accept': 'text/html', 'X-Live-Filter': '1' },
+                        credentials: 'same-origin',
+                        signal: request.signal
+                    })
+                    .then(function(response) {
+                        if (!response.ok) {
+                            throw new Error('HTTP ' + response.status);
+                        }
+                        return response.text();
+                    })
+                    .then(function(html) {
+                        const doc = new DOMParser().parseFromString(html, 'text/html');
+                        const fresh = regions.map(region => doc.getElementById(region.id));
+                        if (fresh.some(el => !el)) {
+                            // e.g. the session expired and we got the login page
+                            window.location.href = url;
+                            return;
+                        }
+                        regions.forEach(function(region, i) {
+                            region.innerHTML = fresh[i].innerHTML;
+                        });
+                        history.replaceState(history.state, '', url);
+                        document.dispatchEvent(new CustomEvent('live-filter:updated', { detail: { regions: regions } }));
+                    })
+                    .catch(function(error) {
+                        if (error.name !== 'AbortError') {
+                            window.location.href = url;
+                        }
+                    })
+                    .finally(function() {
+                        if (activeRequest === request) {
+                            activeRequest = null;
+                            regions.forEach(function(region) {
+                                region.classList.remove('is-live-loading');
+                                region.removeAttribute('aria-busy');
+                            });
+                        }
+                    });
+            }
+
+            function submitLive(form) {
+                load(formRegions(form), filterUrl(form));
+            }
+
+            const typingTimers = new WeakMap();
+            const isTextField = el => el.matches('input:not([type]), input[type="text"], input[type="search"], input[type="email"], input[type="number"]');
+
+            document.addEventListener('input', function(e) {
+                const form = e.target.closest('form[data-live-filter]');
+                if (!form || !isTextField(e.target)) {
+                    return;
+                }
+                clearTimeout(typingTimers.get(form));
+                typingTimers.set(form, setTimeout(() => submitLive(form), 300));
+            });
+
+            document.addEventListener('change', function(e) {
+                const form = e.target.closest('form[data-live-filter]');
+                // Text fields are already handled while typing; their change-on-blur would search twice
+                if (form && !isTextField(e.target)) {
+                    submitLive(form);
+                }
+            });
+
+            document.addEventListener('submit', function(e) {
+                const form = e.target.closest('form[data-live-filter]');
+                if (form) {
+                    e.preventDefault();
+                    clearTimeout(typingTimers.get(form));
+                    submitLive(form);
+                }
+            });
+
+            document.addEventListener('click', function(e) {
+                const clear = e.target.closest('[data-live-clear]');
+                if (clear) {
+                    const form = clear.closest('form[data-live-filter]') || document.querySelector('form[data-live-filter]');
+                    if (!form) {
+                        return;
+                    }
+                    e.preventDefault();
+                    form.querySelectorAll('input, select, textarea').forEach(function(field) {
+                        if (field.matches('[type="hidden"], [type="submit"], [type="button"]')) {
+                            return;
+                        }
+                        if (field.matches('[type="checkbox"], [type="radio"]')) {
+                            field.checked = false;
+                        } else if (field.tagName === 'SELECT') {
+                            field.selectedIndex = 0;
+                        } else {
+                            field.value = '';
+                        }
+                    });
+                    submitLive(form);
+                    return;
+                }
+
+                const pageLink = e.target.closest('[data-live-region] .pagination a[href]');
+                if (pageLink) {
+                    e.preventDefault();
+                    load(regionGroup(pageLink.closest('[data-live-region]')), pageLink.href);
+                }
+            });
+
+            return { load: load, regionGroup: regionGroup };
+        })();
+
         // "Show N entries" selector (admin.partials.per-page): reload the list with the new size,
         // keeping the current filters (from the URL and any GET filter form on the page).
-        // Delegated so it keeps working after AJAX replaces the table.
+        // Inside a live region only that region is reloaded. Delegated so it survives AJAX swaps.
         document.addEventListener('change', function(e) {
             if (!e.target.classList.contains('js-per-page')) {
                 return;
@@ -226,7 +383,13 @@
             });
             url.searchParams.set('per_page', e.target.value);
             url.searchParams.delete('page');
-            window.location.href = url.toString();
+
+            const region = e.target.closest('[data-live-region]');
+            if (region && region.id) {
+                window.adminLiveFilter.load(window.adminLiveFilter.regionGroup(region), url.toString());
+            } else {
+                window.location.href = url.toString();
+            }
         });
     </script>
     @stack('scripts')

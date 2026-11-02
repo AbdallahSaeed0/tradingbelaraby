@@ -93,7 +93,7 @@
                 </h5>
             </div>
             <div class="card-body">
-                <form method="GET" action="{{ route('admin.admin-types.index') }}" id="filterForm" data-settings-mobile-toolbar="skip">
+                <form method="GET" action="{{ route('admin.admin-types.index') }}" id="filterForm" data-settings-mobile-toolbar="skip" data-live-filter="adminTypesResults">
                     <div class="row">
                         <div class="col-md-3">
                             <label for="search" class="form-label">
@@ -146,7 +146,7 @@
                         <div class="col-md-3">
                             <label class="form-label">&nbsp;</label>
                             <div class="d-flex gap-2">
-                                <button type="button" class="btn btn-outline-secondary" id="clearFiltersBtn">
+                                <button type="button" class="btn btn-outline-secondary" id="clearFiltersBtn" data-live-clear>
                                     <i class="fa fa-times me-2"></i>Clear Filters
                                 </button>
                             </div>
@@ -157,7 +157,7 @@
         </div>
 
         <!-- Admin Types Table -->
-        <div class="card shadow-sm">
+        <div class="card shadow-sm" id="adminTypesResults" data-live-region>
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0"><i class="fa fa-list me-2"></i>Admin Types List</h5>
                 <div class="text-muted d-flex align-items-center">
@@ -403,6 +403,8 @@
                 });
             }
             attachToggleListeners();
+            // Rows are replaced by live filtering
+            document.addEventListener('live-filter:updated', attachToggleListeners);
         });
 
         function showToast(title, message, type) {

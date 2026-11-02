@@ -433,3 +433,13 @@
         flex: 1;
     }
 }
+
+/* Live-filtered list (admin layout: data-live-region) while new results load */
+[data-live-region] {
+    transition: opacity 0.15s ease;
+}
+
+[data-live-region].is-live-loading {
+    opacity: 0.55;
+    pointer-events: none;
+}

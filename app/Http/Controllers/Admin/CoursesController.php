@@ -886,7 +886,7 @@ class CoursesController extends Controller
         return $trends;
     }
 
-    public function enrollments(Course $course)
+    public function enrollments(Request $request, Course $course)
     {
         // Get enrollment statistics
         $stats = [
@@ -896,7 +896,33 @@ class CoursesController extends Controller
             'average_progress' => round($course->enrollments()->avg('progress_percentage') ?? 0, 1),
         ];
 
-        $enrollments = $course->enrollments()->with('user')->latest()->latest('id')->paginate(admin_per_page())->withQueryString();
+        $query = $course->enrollments()->with('user');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->whereHas('user', function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $progressRanges = ['0-25' => [0, 25], '26-50' => [26, 50], '51-75' => [51, 75], '76-100' => [76, 100]];
+        if (isset($progressRanges[$request->progress])) {
+            $query->whereBetween('progress_percentage', $progressRanges[$request->progress]);
+        }
+
+        match ($request->sort) {
+            'oldest' => $query->oldest()->oldest('id'),
+            'progress_high' => $query->orderByDesc('progress_percentage')->latest('id'),
+            'progress_low' => $query->orderBy('progress_percentage')->latest('id'),
+            default => $query->latest()->latest('id'),
+        };
+
+        $enrollments = $query->paginate(admin_per_page())->withQueryString();
         return view('admin.courses.enrollments', compact('course', 'enrollments', 'stats'));
     }
 
