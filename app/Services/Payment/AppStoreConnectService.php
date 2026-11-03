@@ -460,14 +460,15 @@ class AppStoreConnectService
 
     private function authToken(): string
     {
-        // Apple rejects tokens valid for more than 20 minutes; cache for slightly less.
-        return Cache::remember('asc_api_token', 900, function () {
+        // Apple rejects tokens valid for more than 20 minutes by *its* clock, so a server clock
+        // running even a few seconds ahead breaks a 20-minute token. Use 15 and cache for 10.
+        return Cache::remember('asc_api_token', 600, function () {
             $now = time();
 
             return JWT::encode([
                 'iss' => config('services.apple.iap_issuer_id'),
                 'iat' => $now,
-                'exp' => $now + 1200,
+                'exp' => $now + 900,
                 'aud' => 'appstoreconnect-v1',
             ], file_get_contents(config('services.apple.asc_private_key_path')), 'ES256', config('services.apple.asc_key_id'));
         });
