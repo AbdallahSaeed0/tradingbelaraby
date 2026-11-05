@@ -89,6 +89,19 @@ return [
         'rtdn_audience' => env('GOOGLE_PLAY_RTDN_AUDIENCE', env('APP_URL') . '/webhook/google-play'),
     ],
 
+    /*
+    | Google Analytics Data API (GA4) — site traffic reports in the admin panel.
+    | The service account needs Viewer access on the GA4 property.
+    */
+    'google_analytics' => [
+        'property_id' => env('ANALYTICS_PROPERTY_ID'),
+        'credentials_path' => ($p = env('ANALYTICS_CREDENTIALS_PATH'))
+            ? (str_starts_with($p, '/') || preg_match('#^[A-Za-z]:[\\\\/]#', $p) ? $p : base_path($p))
+            : storage_path('app/analytics/service-account-credentials.json'),
+        // How long report data is cached (minutes). Realtime data is cached for one minute.
+        'cache_minutes' => (int) env('ANALYTICS_CACHE_MINUTES', 60),
+    ],
+
     'fcm' => [
         'server_key' => env('FCM_SERVER_KEY'),
     ],

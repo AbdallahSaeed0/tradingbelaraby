@@ -376,6 +376,8 @@ Route::post('/admin/logout', [App\Http\Controllers\Admin\AdminAuthController::cl
 // Admin routes
 Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard')->middleware('admin.permission:view_analytics,view_own_analytics');
+    Route::get('/site-analytics', [App\Http\Controllers\Admin\SiteAnalyticsController::class, 'index'])->name('site-analytics.index')->middleware('admin.permission:view_analytics');
+    Route::get('/site-analytics/realtime', [App\Http\Controllers\Admin\SiteAnalyticsController::class, 'realtime'])->name('site-analytics.realtime')->middleware('admin.permission:view_analytics');
 
     // Admin profile
     Route::get('/profile', [App\Http\Controllers\Admin\ProfileController::class, 'show'])->name('profile');

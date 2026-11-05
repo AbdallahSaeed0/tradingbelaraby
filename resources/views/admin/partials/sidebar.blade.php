@@ -13,6 +13,14 @@
                 <i class="fa fa-chart-line"></i>
                 <span class="sidebar-nav-text">Dashboard</span>
             </a>
+            @if (auth('admin')->user()->hasPermission('view_analytics'))
+                <a href="{{ route('admin.site-analytics.index') }}"
+                    class="list-group-item list-group-item-action {{ request()->routeIs('admin.site-analytics.*') ? 'active' : '' }}"
+                    title="Site Analytics">
+                    <i class="fa fa-chart-area"></i>
+                    <span class="sidebar-nav-text">{{ custom_trans('Site Analytics', 'admin') }}</span>
+                </a>
+            @endif
 
             <!-- Course Management Section -->
             <div class="list-group-item sidebar-section-header bg-light text-muted small fw-bold text-uppercase">
