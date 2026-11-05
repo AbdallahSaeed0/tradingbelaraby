@@ -45,7 +45,8 @@ class GoogleAnalyticsService
     public function overview(int $days, bool $fresh = false): array
     {
         $days = in_array($days, self::PERIODS, true) ? $days : 28;
-        $key = "ga4:overview:{$this->propertyId()}:{$days}";
+        // Bump the version when the report shape changes, so old cached reports are not reused.
+        $key = "ga4:overview:v2:{$this->propertyId()}:{$days}";
 
         if ($fresh) {
             Cache::forget($key);
@@ -59,6 +60,10 @@ class GoogleAnalyticsService
             'channels' => $this->breakdown($days, 'sessionDefaultChannelGroup', 'sessions', 8),
             'countries' => $this->breakdown($days, 'country', 'activeUsers', 8),
             'devices' => $this->breakdown($days, 'deviceCategory', 'activeUsers', 5),
+            'operating_systems' => $this->breakdown($days, 'operatingSystemWithVersion', 'activeUsers', 10),
+            'browsers' => $this->breakdown($days, 'browser', 'activeUsers', 8),
+            'phone_models' => $this->phoneModels($days),
+            'screen_resolutions' => $this->breakdown($days, 'screenResolution', 'activeUsers', 8),
             'fetched_at' => now()->toIso8601String(),
         ]);
     }
@@ -229,6 +234,54 @@ class GoogleAnalyticsService
         }
 
         return $rows;
+    }
+
+    /**
+     * Phones and tablets by brand and model, e.g. "Samsung Galaxy S23".
+     * Desktops have no brand/model ("(not set)"), so they are left out. Apple does not
+     * report the iPhone model to browsers, so all iPhones show up as "Apple iPhone".
+     */
+    private function phoneModels(int $days, int $limit = 10): array
+    {
+        $response = $this->client()->runReport(
+            (new RunReportRequest())
+                ->setProperty($this->property())
+                ->setDateRanges([new DateRange(['start_date' => ($days - 1) . 'daysAgo', 'end_date' => 'today'])])
+                ->setDimensions([
+                    new Dimension(['name' => 'mobileDeviceBranding']),
+                    new Dimension(['name' => 'mobileDeviceMarketingName']),
+                    new Dimension(['name' => 'mobileDeviceModel']),
+                ])
+                ->setMetrics([new Metric(['name' => 'activeUsers'])])
+                ->setOrderBys([$this->orderByMetric('activeUsers')])
+                ->setLimit(50)
+        );
+
+        $models = [];
+        foreach ($response->getRows() as $row) {
+            [$brand, $marketingName, $model] = array_map(
+                fn ($v) => $v->getValue() === '(not set)' ? '' : $v->getValue(),
+                iterator_to_array($row->getDimensionValues())
+            );
+            $name = $marketingName !== '' ? $marketingName : $model;
+            if ($brand === '' && $name === '') {
+                continue;
+            }
+            // Marketing names sometimes already start with the brand ("Apple iPhone").
+            $label = $brand !== '' && !str_starts_with(strtolower($name), strtolower($brand))
+                ? trim($brand . ' ' . $name)
+                : ($name !== '' ? $name : $brand);
+
+            $models[$label] = ($models[$label] ?? 0) + (int) $row->getMetricValues()[0]->getValue();
+        }
+
+        arsort($models);
+
+        return array_map(
+            fn ($label, $value) => ['label' => (string) $label, 'value' => $value],
+            array_keys(array_slice($models, 0, $limit, true)),
+            array_slice($models, 0, $limit, true)
+        );
     }
 
     private function orderByMetric(string $metric): OrderBy

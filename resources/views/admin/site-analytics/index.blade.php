@@ -264,6 +264,40 @@
                 </div>
             </div>
 
+            {{-- ── Device details ── --}}
+            @php
+                $techWidgets = [
+                    ['rows' => $report['operating_systems'] ?? [], 'title' => 'Operating systems', 'icon' => 'fa-laptop-code', 'color' => 'primary'],
+                    ['rows' => $report['browsers'] ?? [], 'title' => 'Browsers', 'icon' => 'fa-window-maximize', 'color' => 'info'],
+                    ['rows' => $report['phone_models'] ?? [], 'title' => 'Phone & tablet models', 'icon' => 'fa-mobile-alt', 'color' => 'success'],
+                    ['rows' => $report['screen_resolutions'] ?? [], 'title' => 'Screen sizes', 'icon' => 'fa-expand', 'color' => 'warning'],
+                ];
+            @endphp
+            <div class="row g-3 g-md-4 mb-4">
+                @foreach ($techWidgets as $widget)
+                    <div class="col-md-6 col-xl-3">
+                        <div class="db-widget h-100">
+                            <div class="db-widget-header db-widget-{{ $widget['color'] }}">
+                                <i class="fa {{ $widget['icon'] }}"></i>
+                                <span>{{ custom_trans($widget['title'], 'admin') }}</span>
+                            </div>
+                            <div class="db-widget-body p-3" dir="ltr">
+                                @include('admin.site-analytics.partials.bars', [
+                                    'rows' => $widget['rows'],
+                                    'icons' => [],
+                                    'unit' => 'visitors',
+                                    'showPercent' => true,
+                                ])
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+            <p class="text-muted small mb-3">
+                <i class="fab fa-apple me-1"></i>
+                {{ custom_trans('Apple does not share the iPhone model with websites, so all iPhones appear as "Apple iPhone".', 'admin') }}
+            </p>
+
             <p class="text-muted small mb-0">
                 <i class="fa fa-info-circle me-1"></i>
                 {{ custom_trans('Compared with the previous', 'admin') }} {{ $days }} {{ custom_trans('days', 'admin') }}.
@@ -323,7 +357,11 @@
                     new Chart(devicesCanvas, {
                         type: 'doughnut',
                         data: {
-                            labels: devices.map(d => d.label.charAt(0).toUpperCase() + d.label.slice(1)),
+                            labels: (function() {
+                                const total = devices.reduce((sum, d) => sum + d.value, 0) || 1;
+                                return devices.map(d => d.label.charAt(0).toUpperCase() + d.label.slice(1) +
+                                    ' (' + Math.round(d.value / total * 100) + '%)');
+                            })(),
                             datasets: [{
                                 data: devices.map(d => d.value),
                                 backgroundColor: ['#0d6efd', '#198754', '#ffc107', '#6f42c1', '#adb5bd'],
