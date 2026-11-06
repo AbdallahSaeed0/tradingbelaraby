@@ -24,7 +24,7 @@
 @section('content')
     <div class="container-fluid py-4 admin-dashboard">
 
-        {{-- â”€â”€ Header â”€â”€ --}}
+        {{-- ── Header ── --}}
         <div class="db-welcome-banner mb-4">
             <div class="db-welcome-content">
                 <div>
@@ -53,6 +53,8 @@
                 </div>
             </div>
         </div>
+
+        @include('admin.site-analytics.partials.nav', ['active' => 'overview', 'periodQuery' => ['period' => $days]])
 
         @if ($problem)
             <div class="alert alert-warning">
@@ -85,7 +87,7 @@
                 ];
             @endphp
 
-            {{-- â”€â”€ Headline numbers â”€â”€ --}}
+            {{-- ── Headline numbers ── --}}
             <div class="row g-3 g-md-4 mb-4">
                 @foreach ($cards as $card)
                     @php $m = $t[$card['key']]; @endphp
@@ -133,7 +135,7 @@
                 @endforeach
             </div>
 
-            {{-- â”€â”€ Traffic chart â”€â”€ --}}
+            {{-- ── Traffic chart ── --}}
             <div class="db-widget mb-4">
                 <div class="db-widget-header db-widget-primary">
                     <i class="fa fa-chart-line"></i>
@@ -170,7 +172,8 @@
                                             @foreach ($report['top_pages'] as $page)
                                                 <tr>
                                                     <td style="max-width: 420px;">
-                                                        <div class="fw-semibold text-truncate" title="{{ $page['title'] }}">{{ $page['title'] ?: '(no title)' }}</div>
+                                                        <a href="{{ route('admin.site-analytics.item', ['reportKey' => 'pages', 'view' => 'path', 'period' => $days, 'f' => ['pagePath' => $page['path'], 'pageTitle' => $page['title']]]) }}"
+                                                            class="fw-semibold text-truncate d-block" title="{{ $page['title'] }}">{{ $page['title'] ?: '(no title)' }}</a>
                                                         <a href="{{ url($page['path']) }}" target="_blank" rel="noopener"
                                                             class="small text-muted text-truncate d-block" dir="ltr">{{ urldecode($page['path']) }}</a>
                                                     </td>
@@ -189,6 +192,7 @@
                                 </div>
                             @endif
                         </div>
+                        @include('admin.site-analytics.partials.view-all', ['report' => 'pages', 'view' => 'path'])
                     </div>
                 </div>
 
@@ -221,6 +225,7 @@
                                 'unit' => 'sessions',
                             ])
                         </div>
+                        @include('admin.site-analytics.partials.view-all', ['report' => 'sources', 'view' => 'channel'])
                     </div>
                 </div>
 
@@ -238,6 +243,7 @@
                                 'unit' => 'visitors',
                             ])
                         </div>
+                        @include('admin.site-analytics.partials.view-all', ['report' => 'locations', 'view' => 'country'])
                     </div>
                 </div>
 
@@ -260,6 +266,7 @@
                                 </div>
                             @endif
                         </div>
+                        @include('admin.site-analytics.partials.view-all', ['report' => 'technology', 'view' => 'device'])
                     </div>
                 </div>
             </div>
@@ -267,10 +274,10 @@
             {{-- ── Device details ── --}}
             @php
                 $techWidgets = [
-                    ['rows' => $report['operating_systems'] ?? [], 'title' => 'Operating systems', 'icon' => 'fa-laptop-code', 'color' => 'primary'],
-                    ['rows' => $report['browsers'] ?? [], 'title' => 'Browsers', 'icon' => 'fa-window-maximize', 'color' => 'info'],
-                    ['rows' => $report['phone_models'] ?? [], 'title' => 'Phone & tablet models', 'icon' => 'fa-mobile-alt', 'color' => 'success'],
-                    ['rows' => $report['screen_resolutions'] ?? [], 'title' => 'Screen sizes', 'icon' => 'fa-expand', 'color' => 'warning'],
+                    ['rows' => $report['operating_systems'] ?? [], 'title' => 'Operating systems', 'icon' => 'fa-laptop-code', 'color' => 'primary', 'view' => 'os_version'],
+                    ['rows' => $report['browsers'] ?? [], 'title' => 'Browsers', 'icon' => 'fa-window-maximize', 'color' => 'info', 'view' => 'browser'],
+                    ['rows' => $report['phone_models'] ?? [], 'title' => 'Phone & tablet models', 'icon' => 'fa-mobile-alt', 'color' => 'success', 'view' => 'model'],
+                    ['rows' => $report['screen_resolutions'] ?? [], 'title' => 'Screen sizes', 'icon' => 'fa-expand', 'color' => 'warning', 'view' => 'screen'],
                 ];
             @endphp
             <div class="row g-3 g-md-4 mb-4">
@@ -289,6 +296,7 @@
                                     'showPercent' => true,
                                 ])
                             </div>
+                            @include('admin.site-analytics.partials.view-all', ['report' => 'technology', 'view' => $widget['view']])
                         </div>
                     </div>
                 @endforeach

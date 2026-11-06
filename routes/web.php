@@ -378,6 +378,10 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
     Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard')->middleware('admin.permission:view_analytics,view_own_analytics');
     Route::get('/site-analytics', [App\Http\Controllers\Admin\SiteAnalyticsController::class, 'index'])->name('site-analytics.index')->middleware('admin.permission:view_analytics');
     Route::get('/site-analytics/realtime', [App\Http\Controllers\Admin\SiteAnalyticsController::class, 'realtime'])->name('site-analytics.realtime')->middleware('admin.permission:view_analytics');
+    Route::get('/site-analytics/{reportKey}', [App\Http\Controllers\Admin\SiteAnalyticsController::class, 'report'])->name('site-analytics.report')->middleware('admin.permission:view_analytics')
+        ->where('reportKey', implode('|', array_map('preg_quote', App\Services\Analytics\ReportCatalog::keys())));
+    Route::get('/site-analytics/{reportKey}/item', [App\Http\Controllers\Admin\SiteAnalyticsController::class, 'item'])->name('site-analytics.item')->middleware('admin.permission:view_analytics')
+        ->where('reportKey', implode('|', array_map('preg_quote', App\Services\Analytics\ReportCatalog::keys())));
 
     // Admin profile
     Route::get('/profile', [App\Http\Controllers\Admin\ProfileController::class, 'show'])->name('profile');

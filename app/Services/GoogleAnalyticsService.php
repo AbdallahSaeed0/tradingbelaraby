@@ -2,12 +2,22 @@
 
 namespace App\Services;
 
+use App\Services\Analytics\Period;
+use App\Services\Analytics\ReportCatalog;
 use Carbon\Carbon;
 use Google\Analytics\Data\V1beta\Client\BetaAnalyticsDataClient;
 use Google\Analytics\Data\V1beta\DateRange;
 use Google\Analytics\Data\V1beta\Dimension;
+use Google\Analytics\Data\V1beta\Filter;
+use Google\Analytics\Data\V1beta\Filter\StringFilter;
+use Google\Analytics\Data\V1beta\Filter\StringFilter\MatchType;
+use Google\Analytics\Data\V1beta\FilterExpression;
+use Google\Analytics\Data\V1beta\FilterExpressionList;
 use Google\Analytics\Data\V1beta\Metric;
+use Google\Analytics\Data\V1beta\MetricAggregation;
 use Google\Analytics\Data\V1beta\OrderBy;
+use Google\Analytics\Data\V1beta\OrderBy\DimensionOrderBy;
+use Google\Analytics\Data\V1beta\OrderBy\DimensionOrderBy\OrderType;
 use Google\Analytics\Data\V1beta\OrderBy\MetricOrderBy;
 use Google\Analytics\Data\V1beta\RunRealtimeReportRequest;
 use Google\Analytics\Data\V1beta\RunReportRequest;
@@ -66,6 +76,191 @@ class GoogleAnalyticsService
             'screen_resolutions' => $this->breakdown($days, 'screenResolution', 'activeUsers', 8),
             'fetched_at' => now()->toIso8601String(),
         ]);
+    }
+
+    /**
+     * One page of a detailed report (see ReportCatalog), with totals for the whole period.
+     *
+     * $options: sort (metric key), desc (bool), search (string), page (1-based), per_page,
+     *           fresh (bool, skip cache), limit/offset override (used by CSV export).
+     */
+    public function table(array $report, string $viewKey, Period $period, array $options = []): array
+    {
+        $view = $report['views'][$viewKey];
+        $perPage = (int) ($options['per_page'] ?? $view['per_page'] ?? 25);
+        $page = max(1, (int) ($options['page'] ?? 1));
+        $limit = (int) ($options['limit'] ?? $perPage);
+        $offset = (int) ($options['offset'] ?? ($page - 1) * $perPage);
+        $sort = $options['sort'] ?? null;
+        $desc = (bool) ($options['desc'] ?? true);
+        $search = trim((string) ($options['search'] ?? ''));
+
+        $key = 'ga4:table:' . md5(json_encode([$this->propertyId(), $report['title'], $viewKey, $period->query(), $limit, $offset, $sort, $desc, $search]));
+        if (!empty($options['fresh'])) {
+            Cache::forget($key);
+        }
+
+        return Cache::remember($key, $this->cacheTtl(), function () use ($report, $view, $period, $limit, $offset, $sort, $desc, $search) {
+            $dimensions = array_map(fn ($d) => $d['name'], $view['dimensions']);
+            $apiMetrics = ReportCatalog::apiMetrics($report);
+
+            $filters = [];
+            if (!empty($view['exclude_not_set'])) {
+                $filters[] = new FilterExpression(['not_expression' => $this->exactFilter($view['exclude_not_set'], '(not set)')]);
+            }
+            if ($search !== '') {
+                $searchable = array_values(array_filter($view['dimensions'], fn ($d) => empty($d['hidden'])));
+                $filters[] = $this->anyOf(array_map(fn ($d) => new FilterExpression(['filter' => new Filter([
+                    'field_name' => $d['name'],
+                    'string_filter' => new StringFilter(['value' => $search, 'match_type' => MatchType::CONTAINS, 'case_sensitive' => false]),
+                ])]), $searchable));
+            }
+
+            if ($sort !== null && in_array($sort, ReportCatalog::sortableMetrics($report), true)) {
+                $orderBy = new OrderBy(['metric' => new MetricOrderBy(['metric_name' => $sort]), 'desc' => $desc]);
+            } elseif (!empty($view['sort_dimension'])) {
+                $orderBy = new OrderBy([
+                    'dimension' => new DimensionOrderBy(['dimension_name' => $view['sort_dimension'], 'order_type' => OrderType::NUMERIC]),
+                    'desc' => false,
+                ]);
+            } else {
+                $orderBy = $this->orderByMetric(ReportCatalog::sortableMetrics($report)[0]);
+            }
+
+            $request = (new RunReportRequest())
+                ->setProperty($this->property())
+                ->setDateRanges([$this->dateRange($period)])
+                ->setDimensions(array_map(fn ($n) => new Dimension(['name' => $n]), $dimensions))
+                ->setMetrics(array_map(fn ($n) => new Metric(['name' => $n]), $apiMetrics))
+                ->setMetricAggregations([MetricAggregation::TOTAL])
+                ->setOrderBys([$orderBy])
+                ->setLimit($limit)
+                ->setOffset($offset);
+            if ($filters) {
+                $request->setDimensionFilter($this->allOf($filters));
+            }
+
+            $response = $this->client()->runReport($request);
+
+            $rows = [];
+            foreach ($response->getRows() as $row) {
+                $dims = [];
+                foreach ($dimensions as $i => $name) {
+                    $dims[$name] = $row->getDimensionValues()[$i]->getValue();
+                }
+                $rows[] = ['dimensions' => $dims, 'metrics' => $this->metricValues($report, $apiMetrics, $row->getMetricValues())];
+            }
+
+            $totals = null;
+            foreach ($response->getTotals() as $totalRow) {
+                $totals = $this->metricValues($report, $apiMetrics, $totalRow->getMetricValues());
+                break;
+            }
+
+            return [
+                'rows' => $rows,
+                'totals' => $totals,
+                'row_count' => (int) $response->getRowCount(),
+                'fetched_at' => now()->toIso8601String(),
+            ];
+        });
+    }
+
+    /**
+     * Drill-down for one row of a report, e.g. one page or one country:
+     * its totals, a day-by-day trend and how it splits by channel / country / device / page.
+     *
+     * @param array<string,string> $match dimension name => exact value
+     */
+    public function item(array $report, array $match, Period $period, bool $fresh = false): array
+    {
+        $key = 'ga4:item:' . md5(json_encode([$this->propertyId(), $report['title'], $match, $period->query()]));
+        if ($fresh) {
+            Cache::forget($key);
+        }
+
+        return Cache::remember($key, $this->cacheTtl(), function () use ($report, $match, $period) {
+            $filter = $this->allOf(array_map(
+                fn ($name, $value) => $this->exactFilter($name, $value),
+                array_keys($match),
+                array_values($match)
+            ));
+            $apiMetrics = ReportCatalog::apiMetrics($report);
+            $mainMetric = ReportCatalog::sortableMetrics($report)[0];
+
+            // Totals for the whole period.
+            $response = $this->client()->runReport(
+                (new RunReportRequest())
+                    ->setProperty($this->property())
+                    ->setDateRanges([$this->dateRange($period)])
+                    ->setMetrics(array_map(fn ($n) => new Metric(['name' => $n]), $apiMetrics))
+                    ->setDimensionFilter($filter)
+            );
+            $totals = null;
+            foreach ($response->getRows() as $row) {
+                $totals = $this->metricValues($report, $apiMetrics, $row->getMetricValues());
+            }
+
+            // Day by day, for the first two plain metrics.
+            $trendMetrics = array_slice(ReportCatalog::sortableMetrics($report), 0, 2);
+            $response = $this->client()->runReport(
+                (new RunReportRequest())
+                    ->setProperty($this->property())
+                    ->setDateRanges([$this->dateRange($period)])
+                    ->setDimensions([new Dimension(['name' => 'date'])])
+                    ->setMetrics(array_map(fn ($n) => new Metric(['name' => $n]), $trendMetrics))
+                    ->setDimensionFilter($filter)
+                    ->setLimit(1000)
+            );
+            $byDate = [];
+            foreach ($response->getRows() as $row) {
+                foreach ($trendMetrics as $i => $name) {
+                    $byDate[$row->getDimensionValues()[0]->getValue()][$name] = (float) $row->getMetricValues()[$i]->getValue();
+                }
+            }
+            $trend = ['labels' => [], 'series' => array_fill_keys($trendMetrics, [])];
+            for ($date = $period->start->copy(); $date->lte($period->end); $date->addDay()) {
+                $trend['labels'][] = $date->format('M d');
+                foreach ($trendMetrics as $name) {
+                    $trend['series'][$name][] = $byDate[$date->format('Ymd')][$name] ?? 0;
+                }
+            }
+
+            // Splits by other dimensions. One failing split should not break the whole page.
+            $breakdowns = [];
+            foreach ($report['breakdowns'] as $dimension) {
+                if (array_key_exists($dimension, $match)) {
+                    continue;
+                }
+                try {
+                    $response = $this->client()->runReport(
+                        (new RunReportRequest())
+                            ->setProperty($this->property())
+                            ->setDateRanges([$this->dateRange($period)])
+                            ->setDimensions([new Dimension(['name' => $dimension])])
+                            ->setMetrics([new Metric(['name' => $mainMetric])])
+                            ->setDimensionFilter($filter)
+                            ->setOrderBys([$this->orderByMetric($mainMetric)])
+                            ->setLimit(10)
+                    );
+                    $rows = [];
+                    foreach ($response->getRows() as $row) {
+                        $rows[] = ['label' => $row->getDimensionValues()[0]->getValue(), 'value' => (float) $row->getMetricValues()[0]->getValue()];
+                    }
+                    $breakdowns[$dimension] = ['rows' => $rows, 'error' => null];
+                } catch (\Throwable $e) {
+                    $breakdowns[$dimension] = ['rows' => [], 'error' => $e->getMessage()];
+                }
+            }
+
+            return [
+                'totals' => $totals,
+                'trend' => $trend,
+                'main_metric' => $mainMetric,
+                'breakdowns' => $breakdowns,
+                'fetched_at' => now()->toIso8601String(),
+            ];
+        });
     }
 
     /** Users active in the last 30 minutes, and the pages they are on. */
@@ -282,6 +477,61 @@ class GoogleAnalyticsService
             array_keys(array_slice($models, 0, $limit, true)),
             array_slice($models, 0, $limit, true)
         );
+    }
+
+    /** Column values for one row, computing ratio metrics (e.g. avg. time = engagement time / users). */
+    private function metricValues(array $report, array $apiMetrics, $values): array
+    {
+        $raw = [];
+        foreach ($apiMetrics as $i => $name) {
+            $raw[$name] = (float) $values[$i]->getValue();
+        }
+
+        $result = [];
+        foreach ($report['metrics'] as $metric) {
+            if (isset($metric['ratio'])) {
+                [$numerator, $denominator] = $metric['ratio'];
+                $result[$metric['key']] = $raw[$denominator] > 0 ? $raw[$numerator] / $raw[$denominator] : 0.0;
+            } else {
+                $result[$metric['key']] = $raw[$metric['key']];
+            }
+        }
+
+        return $result;
+    }
+
+    private function dateRange(Period $period): DateRange
+    {
+        return new DateRange(['start_date' => $period->startDate(), 'end_date' => $period->endDate()]);
+    }
+
+    private function exactFilter(string $dimension, string $value): FilterExpression
+    {
+        return new FilterExpression(['filter' => new Filter([
+            'field_name' => $dimension,
+            'string_filter' => new StringFilter(['value' => $value, 'match_type' => MatchType::EXACT, 'case_sensitive' => true]),
+        ])]);
+    }
+
+    /** @param FilterExpression[] $expressions */
+    private function allOf(array $expressions): FilterExpression
+    {
+        return count($expressions) === 1
+            ? $expressions[0]
+            : new FilterExpression(['and_group' => new FilterExpressionList(['expressions' => $expressions])]);
+    }
+
+    /** @param FilterExpression[] $expressions */
+    private function anyOf(array $expressions): FilterExpression
+    {
+        return count($expressions) === 1
+            ? $expressions[0]
+            : new FilterExpression(['or_group' => new FilterExpressionList(['expressions' => $expressions])]);
+    }
+
+    private function cacheTtl(): \DateTimeInterface
+    {
+        return now()->addMinutes(max(1, (int) config('services.google_analytics.cache_minutes', 60)));
     }
 
     private function orderByMetric(string $metric): OrderBy
