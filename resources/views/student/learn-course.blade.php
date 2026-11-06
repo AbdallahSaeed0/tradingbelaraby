@@ -892,6 +892,11 @@
                     progressBar.setAttribute('aria-valuenow', progress);
                     progressBar.textContent = progress + '%';
                 }
+
+                // Course finished -> show the certificate box under the bar; otherwise "Continue".
+                const completed = Number(progress) >= 100;
+                document.getElementById('certificateArea')?.classList.toggle('d-none', !completed);
+                document.querySelector('.course-content-hero .continue-to-lecture-btn')?.classList.toggle('d-none', completed);
             }
 
             // Function to show toast messages
