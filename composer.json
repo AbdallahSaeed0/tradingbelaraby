@@ -9,6 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "chillerlan/php-qrcode": "^5.0",
         "doctrine/dbal": "^3.10",
         "dompdf/dompdf": "^3.1",
         "google/analytics-data": "^0.29.0",

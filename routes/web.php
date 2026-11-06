@@ -51,6 +51,12 @@ Route::get('/img/opt', [App\Http\Controllers\ImageOptimizerController::class, '_
 
 // Public routes test
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Public certificate verification (QR code target)
+Route::get('/verify/{number}', [App\Http\Controllers\CertificateController::class, 'verify'])
+    ->name('certificate.verify')
+    ->where('number', '[A-Za-z0-9\-]+')
+    ->middleware('throttle:60,1');
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 // Authentication routes

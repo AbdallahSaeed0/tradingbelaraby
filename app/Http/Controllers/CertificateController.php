@@ -4,43 +4,72 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use App\Models\CourseEnrollment;
+use App\Models\LectureCompletion;
+use App\Services\CertificateService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class CertificateController extends Controller
 {
-    /**
-     * Show certificate name input form
-     */
-    public function showCertificateForm(Course $course)
+    public function __construct(private CertificateService $certificates)
     {
-        $user = Auth::user();
-        if (!$user) {
-            return redirect()->route('login');
-        }
+    }
 
-        $enrollment = CourseEnrollment::where('user_id', $user->id)
+    /**
+     * The enrollment of the current user that qualifies for a certificate:
+     * status "completed" AND every lecture currently in the course is completed.
+     */
+    private function eligibleEnrollment(Course $course): ?CourseEnrollment
+    {
+        $enrollment = CourseEnrollment::where('user_id', Auth::id())
             ->where('course_id', $course->id)
             ->where('status', 'completed')
             ->first();
 
         if (!$enrollment) {
+            return null;
+        }
+
+        $lectureIds = $course->sections()->with('lectures:id,section_id')->get()
+            ->flatMap(fn ($section) => $section->lectures->pluck('id'));
+
+        if ($lectureIds->isEmpty()) {
+            return null;
+        }
+
+        $done = LectureCompletion::where('user_id', Auth::id())
+            ->whereIn('lecture_id', $lectureIds)
+            ->where('is_completed', true)
+            ->count();
+
+        return $done >= $lectureIds->count() ? $enrollment : null;
+    }
+
+    /**
+     * Show certificate name input form
+     */
+    public function showCertificateForm(Course $course)
+    {
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        $course->refresh();
+        if (!$course->enable_certificate) {
+            return redirect()->route('courses.learn', $course->id)
+                ->with('error', 'This course does not offer certificates.');
+        }
+
+        $enrollment = $this->eligibleEnrollment($course);
+        if (!$enrollment) {
             return redirect()->route('student.my-courses')
                 ->with('error', 'Course not completed yet.');
         }
 
-        if ($enrollment->certificate_path) {
+        if ($enrollment->certificate_path && $enrollment->certificate_number) {
             return redirect()->route('certificate.download', $enrollment->id);
-        }
-
-        // Refresh course to ensure enable_certificate is loaded
-        $course->refresh();
-        
-        if (!$course->enable_certificate) {
-            return redirect()->route('courses.learn', $course->id)
-                ->with('error', 'This course does not offer certificates.');
         }
 
         return view('certificates.request', compact('course', 'enrollment'));
@@ -51,47 +80,74 @@ class CertificateController extends Controller
      */
     public function storeCertificateName(Request $request, Course $course)
     {
-        $user = Auth::user();
-        if (!$user) {
+        if (!Auth::check()) {
             return redirect()->route('login');
-        }
-
-        $enrollment = CourseEnrollment::where('user_id', $user->id)
-            ->where('course_id', $course->id)
-            ->where('status', 'completed')
-            ->first();
-
-        if (!$enrollment) {
-            return back()->with('error', 'Course not completed yet.');
         }
 
         if (!$course->enable_certificate) {
             return back()->with('error', 'This course does not offer certificates.');
         }
 
-        $request->validate([
-            'certificate_name' => 'required|string|max:255',
+        $enrollment = $this->eligibleEnrollment($course);
+        if (!$enrollment) {
+            return back()->with('error', 'Course not completed yet.');
+        }
+
+        // Once issued, the certificate is a fixed document: the name cannot be changed here.
+        if ($enrollment->certificate_path && $enrollment->certificate_number) {
+            return redirect()->route('certificate.download', $enrollment->id);
+        }
+
+        $data = $request->validate([
+            'certificate_name' => 'required|string|max:120',
+            'certificate_name_en' => 'nullable|string|max:120',
         ]);
 
         $enrollment->update([
-            'certificate_name' => $request->certificate_name,
+            'certificate_name' => trim($data['certificate_name']),
+            'certificate_name_en' => isset($data['certificate_name_en']) ? trim($data['certificate_name_en']) : null,
+            'certificate_issued_at' => now(),
+            'certificate_status' => 'active',
         ]);
 
-        // Generate certificate
         try {
-            $certificatePath = $this->generateCertificate($course, $enrollment, $request->certificate_name);
-            
-            $enrollment->update([
-                'certificate_path' => $certificatePath,
-                'certificate_issued_at' => now(),
-            ]);
+            $enrollment->update(['certificate_path' => $this->certificates->generate($enrollment)]);
 
             return redirect()->route('certificate.download', $enrollment->id)
                 ->with('success', 'Certificate generated successfully!');
-        } catch (\Exception $e) {
-            \Log::error('Certificate generation failed: ' . $e->getMessage());
+        } catch (\Throwable $e) {
+            Log::error('Certificate generation failed: ' . $e->getMessage(), ['enrollment' => $enrollment->id]);
+
             return back()->with('error', 'Failed to generate certificate. Please try again.');
         }
+    }
+
+    /**
+     * Owned enrollment with a usable stored certificate. Upgrades old-style certificates
+     * (issued before the new template) and HTML fallbacks once Chrome becomes available.
+     */
+    private function ownedCertificate($enrollmentId): CourseEnrollment
+    {
+        $enrollment = CourseEnrollment::with('course')->findOrFail($enrollmentId);
+
+        if ($enrollment->user_id != Auth::id()) {
+            abort(403);
+        }
+
+        $path = $enrollment->certificate_path;
+        $missing = !$path || !Storage::exists($path);
+        $legacy = $path && !$enrollment->certificate_number;
+        $upgradeable = $path && str_ends_with($path, '.html') && $this->certificates->canMakePdf();
+
+        if ($enrollment->certificate_name && ($missing || $legacy || $upgradeable)) {
+            try {
+                $enrollment->update(['certificate_path' => $this->certificates->generate($enrollment)]);
+            } catch (\Throwable $e) {
+                Log::error('Certificate regeneration failed: ' . $e->getMessage(), ['enrollment' => $enrollment->id]);
+            }
+        }
+
+        return $enrollment;
     }
 
     /**
@@ -99,32 +155,23 @@ class CertificateController extends Controller
      */
     public function download($enrollment)
     {
-        $user = Auth::user();
-        if (!$user) {
+        if (!Auth::check()) {
             return redirect()->route('login');
         }
 
-        // Get enrollment by ID
-        $enrollmentModel = CourseEnrollment::with('course')->findOrFail($enrollment);
-        
-        if ($enrollmentModel->user_id != $user->id) {
-            abort(403);
-        }
+        $model = $this->ownedCertificate($enrollment);
 
-        if (!$enrollmentModel->certificate_path || !Storage::exists($enrollmentModel->certificate_path)) {
-            return redirect()->route('certificate.request', $enrollmentModel->course_id)
+        if (!$model->certificate_path || !Storage::exists($model->certificate_path)) {
+            return redirect()->route('certificate.request', $model->course_id)
                 ->with('error', 'Certificate not found. Please regenerate.');
         }
 
-        $fileExtension = pathinfo($enrollmentModel->certificate_path, PATHINFO_EXTENSION);
-        $fileName = 'certificate-' . $enrollmentModel->course->slug . '-' . $enrollmentModel->id . '.' . $fileExtension;
-        
-        // If it's an HTML file, return it as a view instead of download
-        if ($fileExtension === 'html') {
+        // HTML fallback: open it; the page has a "print / save as PDF" button.
+        if (str_ends_with($model->certificate_path, '.html')) {
             return $this->view($enrollment);
         }
 
-        return Storage::download($enrollmentModel->certificate_path, $fileName);
+        return Storage::download($model->certificate_path, 'certificate-' . $model->certificate_number . '.pdf');
     }
 
     /**
@@ -132,73 +179,54 @@ class CertificateController extends Controller
      */
     public function view($enrollment)
     {
-        $user = Auth::user();
-        if (!$user) {
+        if (!Auth::check()) {
             return redirect()->route('login');
         }
 
-        // Get enrollment by ID
-        $enrollmentModel = CourseEnrollment::with('course')->findOrFail($enrollment);
-        
-        if ($enrollmentModel->user_id != $user->id) {
-            abort(403);
-        }
+        $model = $this->ownedCertificate($enrollment);
 
-        if (!$enrollmentModel->certificate_path || !Storage::exists($enrollmentModel->certificate_path)) {
-            return redirect()->route('certificate.request', $enrollmentModel->course_id)
+        if (!$model->certificate_path || !Storage::exists($model->certificate_path)) {
+            return redirect()->route('certificate.request', $model->course_id)
                 ->with('error', 'Certificate not found. Please regenerate.');
         }
 
-        $fileExtension = pathinfo($enrollmentModel->certificate_path, PATHINFO_EXTENSION);
-        
-        // If it's an HTML file, render it directly
-        if ($fileExtension === 'html') {
-            $htmlContent = Storage::get($enrollmentModel->certificate_path);
-            return response($htmlContent)->header('Content-Type', 'text/html');
+        if (str_ends_with($model->certificate_path, '.html')) {
+            return response(Storage::get($model->certificate_path))->header('Content-Type', 'text/html; charset=UTF-8');
         }
 
-        // For PDF files, return as file
-        return response()->file(Storage::path($enrollmentModel->certificate_path));
+        return response()->file(Storage::path($model->certificate_path), [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="certificate-' . $model->certificate_number . '.pdf"',
+        ]);
     }
 
     /**
-     * Generate certificate as PDF using DomPDF (or HTML fallback)
+     * Public verification page: /verify/{number}
+     * Shows only name, course, date, number and status — no other personal data.
      */
-    private function generateCertificate(Course $course, CourseEnrollment $enrollment, string $studentName): string
+    public function verify(string $number)
     {
-        $certificatePath = 'certificates/' . $course->id . '/' . $enrollment->id . '.pdf';
-        Storage::makeDirectory(dirname($certificatePath));
-        
-        // Generate HTML certificate template
-        $html = view('certificates.template', [
-            'studentName' => $studentName,
-            'courseName' => $course->localized_name,
-            'completionDate' => $enrollment->completed_at->format('F d, Y'),
-            'course' => $course,
-        ])->render();
+        $enrollment = CourseEnrollment::with('course')
+            ->where('certificate_number', $number)
+            ->whereNotNull('certificate_path')
+            ->first();
 
-        // Check if DomPDF class exists
-        if (class_exists('\Dompdf\Dompdf')) {
-            try {
-                $dompdf = new \Dompdf\Dompdf();
-                $dompdf->loadHtml($html);
-                $dompdf->setPaper('A4', 'landscape');
-                $dompdf->render();
-                $pdfContent = $dompdf->output();
-                Storage::put($certificatePath, $pdfContent);
-                return $certificatePath;
-            } catch (\Exception $e) {
-                Log::error('PDF generation failed: ' . $e->getMessage());
-                // Fall through to HTML fallback
-            }
-        } else {
-            Log::warning('Dompdf class not found. Using HTML fallback. Please install dompdf/dompdf via composer.');
+        $certificate = null;
+        if ($enrollment) {
+            $data = $this->certificates->data($enrollment);
+            $certificate = [
+                'name' => $data['student_name_ar'],
+                'name_en' => $data['student_name_en'],
+                'course' => $data['course_title_ar'],
+                'course_en' => $data['course_title_en'],
+                'date' => $data['issue_date'],
+                'number' => $data['certificate_id'],
+                'valid' => ($enrollment->certificate_status ?? 'active') === 'active',
+            ];
         }
-        
-        // Fallback: Save as HTML (can be printed to PDF by browser)
-        $htmlPath = str_replace('.pdf', '.html', $certificatePath);
-        Storage::put($htmlPath, $html);
-        Log::info('Certificate saved as HTML. User can print to PDF from browser.');
-        return $htmlPath;
+
+        return response()
+            ->view('certificates.verify', ['certificate' => $certificate, 'number' => $number], $certificate ? 200 : 404)
+            ->header('X-Robots-Tag', 'noindex');
     }
 }

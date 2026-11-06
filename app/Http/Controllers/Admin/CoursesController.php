@@ -208,6 +208,7 @@ class CoursesController extends Controller
             'show_in_recent_courses' => 'boolean',
             'is_free' => 'boolean',
             'enable_certificate' => 'boolean',
+            'certificate_hours' => 'nullable|numeric|min:0|max:9999',
             'sections' => 'nullable|string', // JSON string
             'learn_items' => 'nullable|string', // JSON string
         ]);
@@ -458,6 +459,7 @@ class CoursesController extends Controller
             'show_in_recent_courses' => 'boolean',
             'is_free' => 'boolean',
             'enable_certificate' => 'boolean',
+            'certificate_hours' => 'nullable|numeric|min:0|max:9999',
             'learning_objectives' => 'nullable|array',
             'learning_objectives.*' => 'string',
             'sections' => 'nullable|array',

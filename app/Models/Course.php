@@ -32,6 +32,7 @@ class Course extends Model
         'certificate_text',
         'certificate_text_ar',
         'enable_certificate',
+        'certificate_hours',
         'book',
         'category_id',
         'what_to_learn',

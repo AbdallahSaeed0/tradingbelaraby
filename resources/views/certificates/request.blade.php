@@ -48,6 +48,25 @@
                                 </small>
                             </div>
 
+                            <div class="mb-4">
+                                <label for="certificate_name_en" class="form-label fw-bold">
+                                    {{ custom_trans('Name in English (optional)', 'front') }}
+                                </label>
+                                <input type="text"
+                                    name="certificate_name_en"
+                                    id="certificate_name_en"
+                                    dir="ltr"
+                                    class="form-control form-control-lg @error('certificate_name_en') is-invalid @enderror"
+                                    value="{{ old('certificate_name_en') }}"
+                                    placeholder="e.g. Mohamed Ahmed Ali">
+                                @error('certificate_name_en')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="form-text text-muted">
+                                    {{ custom_trans('Printed under your name. Once the certificate is issued the names cannot be changed.', 'front') }}
+                                </small>
+                            </div>
+
                             <div class="d-flex justify-content-between">
                                 <a href="{{ route('courses.learn', $course->id) }}" class="btn btn-secondary">
                                     <i class="fas fa-arrow-left me-2"></i>

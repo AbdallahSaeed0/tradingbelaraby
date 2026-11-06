@@ -827,6 +827,12 @@
                             </div>
                         </div>
                         <div class="mb-3">
+                            <label for="certificate_hours" class="form-label">Certificate Hours</label>
+                            <input type="number" step="0.5" min="0" class="form-control" id="certificate_hours" name="certificate_hours"
+                                value="{{ old('certificate_hours', '') }}" placeholder="e.g. 12">
+                            <small class="form-text text-muted">Course duration printed on the certificate (hours). Leave empty to use the lectures' total duration.</small>
+                        </div>
+                        <div class="mb-3">
                             <label class="form-label fw-bold">Display in Homepage Sections:</label>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="show_in_top_discounted"
