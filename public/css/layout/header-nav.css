@@ -728,21 +728,67 @@ body:has(.offcanvas-backdrop.show) .whatsapp-float {
 }
 
 /* ============================================
-   RESPONSIVE — NARROW DESKTOP (992px–1399px)
-   Tighten spacing so links + search + icons fit beside the logo.
+   RESPONSIVE — DESKTOP (≥992px), FLUID
+   Font sizes, gaps and control sizes scale with the viewport (clamp)
+   so the whole row always fits beside the logo. Selectors are prefixed
+   with .main-nav to win over older rules in pages/home.css and the
+   Bootstrap me-3 utilities on the action groups.
    ============================================ */
-@media (min-width: 992px) and (max-width: 1399.98px) {
-    .nav-desktop-actions {
-        gap: 0.4rem;
+@media (min-width: 992px) {
+    .main-nav .nav-flex {
+        gap: clamp(0.5rem, 1.2vw, 1.5rem);
     }
 
-    .nav-links li a {
-        padding: 0.45rem 0.55rem;
+    .main-nav .nav-flex > .logo .logo-img {
+        max-height: clamp(56px, 4.6vw, 96px);
     }
 
-    .nav-desktop-actions .search-container {
-        flex: 0 1 180px;
-        margin-inline-end: 0.5rem !important;
+    .main-nav .nav-desktop-actions {
+        gap: clamp(0.3rem, 0.8vw, 0.9rem);
+    }
+
+    /* Spacing between groups comes from the gap above, not from me-3 */
+    .main-nav .nav-desktop-actions > .me-3 {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    .main-nav .nav-links li {
+        margin: 0 clamp(0px, 0.3vw, 6px);
+    }
+
+    .main-nav .nav-links li a {
+        font-size: clamp(0.8rem, 0.45rem + 0.45vw, 1rem);
+        padding: 0.45rem clamp(0.35rem, 0.8vw, 0.9rem);
+    }
+
+    .main-nav .language-switcher .btn {
+        font-size: clamp(0.78rem, 0.4rem + 0.4vw, 0.95rem);
+        padding: 0.35rem clamp(0.5rem, 0.7vw, 0.8rem);
+    }
+
+    .main-nav .nav-desktop-actions .search-container {
+        flex: 0 1 clamp(150px, 16vw, 300px);
+        min-width: 110px;
+    }
+
+    .main-nav .search-container .search-input,
+    .main-nav .search-container .btn {
+        font-size: clamp(0.78rem, 0.4rem + 0.4vw, 0.9rem);
+    }
+
+    .main-nav .user-actions {
+        gap: clamp(0.35rem, 0.7vw, 0.9rem);
+    }
+
+    .main-nav .user-actions .btn:not(.user-dropdown-btn) {
+        width: clamp(32px, 1.2vw + 18px, 42px);
+        height: clamp(32px, 1.2vw + 18px, 42px);
+        font-size: clamp(0.8rem, 0.5rem + 0.3vw, 0.95rem);
+    }
+
+    .main-nav .user-actions .user-dropdown-btn .user-name {
+        font-size: clamp(0.78rem, 0.4rem + 0.4vw, 0.95rem);
     }
 }
 

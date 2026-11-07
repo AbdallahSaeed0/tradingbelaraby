@@ -200,7 +200,8 @@ if (!function_exists('css_bundle_urls')) {
         $signature = 'v2;'; // bump when the bundle format changes
         foreach ($paths as $path) {
             $file = public_path($path);
-            $signature .= $path . ':' . (is_file($file) ? filemtime($file) : 0) . ';';
+            // Include files pulled in with @import, so editing an imported file rebuilds the bundle too
+            $signature .= $path . ':' . css_bundle_mtime($path) . ';';
         }
         $bundlePath = 'cache/css/bundle-' . md5($signature) . '.css';
         $bundleFile = public_path($bundlePath);
@@ -228,6 +229,44 @@ if (!function_exists('css_bundle_urls')) {
 
         // ?v= lets the long-lived cache rule in .htaccess apply (the name is already unique)
         return [asset($bundlePath) . '?v=' . substr(md5($signature), 0, 8)];
+    }
+}
+
+if (!function_exists('css_bundle_mtime')) {
+    /**
+     * Latest modification time of a public CSS file and every local file it @imports (recursively).
+     */
+    function css_bundle_mtime(string $path, array $seen = []): int
+    {
+        $path = ltrim($path, '/');
+        $file = public_path($path);
+        if (isset($seen[$path]) || !is_file($file)) {
+            return 0;
+        }
+        $seen[$path] = true;
+        $mtime = (int) filemtime($file);
+        $baseDir = trim(dirname($path), '/.');
+
+        if (preg_match_all('/@import\s+(?:url\(\s*)?["\']?([^"\')\s;]+)["\']?/i', (string) file_get_contents($file), $matches)) {
+            foreach ($matches[1] as $url) {
+                if (preg_match('#^(https?:|//|data:)#i', $url)) {
+                    continue;
+                }
+                $url = strtok($url, '?');
+                $target = $url[0] === '/' ? $url : $baseDir . '/' . $url;
+                $parts = [];
+                foreach (explode('/', $target) as $segment) {
+                    if ($segment === '..') {
+                        array_pop($parts);
+                    } elseif ($segment !== '.' && $segment !== '') {
+                        $parts[] = $segment;
+                    }
+                }
+                $mtime = max($mtime, css_bundle_mtime(implode('/', $parts), $seen));
+            }
+        }
+
+        return $mtime;
     }
 }
 
