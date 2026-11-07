@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Services\SocialLoginSettingsService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -146,7 +149,7 @@ class SocialAuthController extends Controller
     /**
      * Show form to collect missing profile data (email for X placeholder, phone for Google/X).
      */
-    public function showCompleteProfileForm(): \Illuminate\View\View|RedirectResponse
+    public function showCompleteProfileForm(Request $request): \Illuminate\View\View|RedirectResponse
     {
         $user = Auth::user();
         if (!$user || !$this->needsCompleteProfile($user)) {
@@ -154,7 +157,8 @@ class SocialAuthController extends Controller
         }
         $needsEmail = $this->isPlaceholderEmail($user->email);
         $needsPhone = empty(trim((string) $user->phone));
-        return view('auth.complete-profile', compact('needsEmail', 'needsPhone'));
+        $defaultCountry = $needsPhone ? $this->detectCountryCode($request) : 'eg';
+        return view('auth.complete-profile', compact('needsEmail', 'needsPhone', 'defaultCountry'));
     }
 
     /**
@@ -179,7 +183,7 @@ class SocialAuthController extends Controller
                 'required',
                 'string',
                 'max:20',
-                'regex:/^\+?[0-9]{9,15}$/',
+                'regex:/^\+[1-9][0-9]{7,14}$/',
             ];
         }
 
@@ -188,7 +192,7 @@ class SocialAuthController extends Controller
             'email.email' => custom_trans('Please enter a valid email address.', 'front'),
             'email.unique' => custom_trans('This email is already registered. Use another or sign in with that account.', 'front'),
             'phone.required' => custom_trans('Please enter your phone number.', 'front'),
-            'phone.regex' => custom_trans('Please enter a valid phone number (only numbers, 9–15 digits; optional + at the start).', 'front'),
+            'phone.regex' => custom_trans('Please enter a valid phone number for the selected country.', 'front'),
         ]);
 
         $updates = [];
@@ -204,6 +208,39 @@ class SocialAuthController extends Controller
         }
 
         return redirect()->intended(route('home'))->with('success', custom_trans('Your profile has been updated.', 'front'));
+    }
+
+    /**
+     * Two-letter ISO country of the visitor's IP (lowercase), used to preselect the phone dial code.
+     * Uses Cloudflare's CF-IPCountry header when present, otherwise a cached ip-api.com lookup.
+     * Falls back to Egypt.
+     */
+    private function detectCountryCode(Request $request): string
+    {
+        $fallback = 'eg';
+
+        $cf = strtoupper((string) $request->header('CF-IPCountry'));
+        if (preg_match('/^[A-Z]{2}$/', $cf) && !in_array($cf, ['XX', 'T1'], true)) {
+            return strtolower($cf);
+        }
+
+        $ip = $request->ip();
+        if (!$ip || !filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+            return $fallback;
+        }
+
+        return Cache::remember('ip_country:' . $ip, now()->addDay(), function () use ($ip, $fallback) {
+            try {
+                $response = Http::timeout(2)->get('http://ip-api.com/json/' . $ip, ['fields' => 'status,countryCode']);
+                $code = $response->ok() && $response->json('status') === 'success'
+                    ? strtolower((string) $response->json('countryCode'))
+                    : '';
+                return preg_match('/^[a-z]{2}$/', $code) ? $code : $fallback;
+            } catch (\Throwable $e) {
+                Log::info('IP country lookup failed', ['error' => $e->getMessage()]);
+                return $fallback;
+            }
+        });
     }
 
     private function needsCompleteProfile(User $user): bool

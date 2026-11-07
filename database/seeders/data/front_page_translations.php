@@ -2451,6 +2451,10 @@ return [
         'en' => 'Please enter a valid phone number (at least 9 digits).',
         'ar' => 'يرجى إدخال رقم هاتف صحيح (9 أرقام على الأقل).',
     ],
+    'Please enter a valid phone number for the selected country.' => [
+        'en' => 'Please enter a valid phone number for the selected country.',
+        'ar' => 'يرجى إدخال رقم هاتف صحيح للدولة المختارة.',
+    ],
 
     // ── Checkout / Coupon ─────────────────────────────────────────────────────
     'Have a coupon code?' => [
