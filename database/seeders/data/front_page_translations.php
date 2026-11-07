@@ -701,6 +701,10 @@ return [
     'Phone number' => [
         'ar' => 'رقم الهاتف',
     ],
+    'Mobile number' => [
+        'en' => 'Mobile number',
+        'ar' => 'رقم الجوال',
+    ],
     'Photography' => [
         'ar' => 'التصوير',
     ],

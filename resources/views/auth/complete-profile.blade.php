@@ -40,7 +40,7 @@
 
             @if($needsPhone)
                 <div class="mb-3">
-                    <label for="phone" class="form-label">{{ custom_trans('Phone number', 'front') }}</label>
+                    <label for="phone" class="form-label">{{ custom_trans('Mobile number', 'front') }}</label>
                     <div dir="ltr">
                         <input type="tel" name="phone" id="phone" value="{{ old('phone') }}" required {{ $needsEmail ? '' : 'autofocus' }}
                             class="form-control @error('phone') is-invalid @enderror"
