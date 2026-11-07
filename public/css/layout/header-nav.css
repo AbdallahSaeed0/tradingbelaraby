@@ -33,11 +33,18 @@
     flex-wrap: nowrap;
 }
 
-/* Desktop actions — flex-wrap: nowrap enforces one row */
+/* Logo never shrinks, so nav items can't slide over it */
+.nav-flex > .logo {
+    flex-shrink: 0;
+}
+
+/* Desktop actions — flex-wrap: nowrap enforces one row.
+   "safe" keeps any overflow away from the logo side (matters in RTL). */
 .nav-desktop-actions {
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    justify-content: safe flex-end;
     gap: 0.6rem;
     flex: 1 1 auto;
     margin-left: auto;
@@ -718,6 +725,25 @@ body:has(.offcanvas-backdrop.show) .whatsapp-float {
     visibility: hidden;
     pointer-events: none;
     transform: scale(0.8);
+}
+
+/* ============================================
+   RESPONSIVE — NARROW DESKTOP (992px–1399px)
+   Tighten spacing so links + search + icons fit beside the logo.
+   ============================================ */
+@media (min-width: 992px) and (max-width: 1399.98px) {
+    .nav-desktop-actions {
+        gap: 0.4rem;
+    }
+
+    .nav-links li a {
+        padding: 0.45rem 0.55rem;
+    }
+
+    .nav-desktop-actions .search-container {
+        flex: 0 1 180px;
+        margin-inline-end: 0.5rem !important;
+    }
 }
 
 /* ============================================
