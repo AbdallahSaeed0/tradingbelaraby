@@ -13,6 +13,9 @@
     <!-- About Our University Section -->
     @include('partials.home.about-university')
 
+    <!-- Free Courses Section (first of the course sections) -->
+    @include('partials.home.free-courses-section')
+
     <!-- Courses Slider Section -->
     @include('partials.home.courses-slider')
 
@@ -27,9 +30,6 @@
 
     <!-- Recent Courses Section -->
     @include('partials.home.recent-courses-section')
-
-    <!-- Free Courses Section -->
-    @include('partials.home.free-courses-section')
 
     <!-- Courses by Category Tabs Section -->
     @include('partials.home.courses-by-category-tabs')
