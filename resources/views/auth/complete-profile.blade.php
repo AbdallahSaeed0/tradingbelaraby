@@ -39,73 +39,14 @@
             @endif
 
             @if($needsPhone)
-                <div class="mb-3">
-                    <label for="phone" class="form-label">{{ custom_trans('Mobile number', 'front') }}</label>
-                    <div dir="ltr">
-                        <input type="tel" name="phone" id="phone" value="{{ old('phone') }}" required {{ $needsEmail ? '' : 'autofocus' }}
-                            class="form-control @error('phone') is-invalid @enderror"
-                            inputmode="tel"
-                            maxlength="20"
-                            autocomplete="tel">
-                    </div>
-                    <div class="invalid-feedback d-block" id="phone-error">@error('phone'){{ $message }}@enderror</div>
-                </div>
+                @include('partials.intl-phone-input', [
+                    'label' => custom_trans('Mobile number', 'front'),
+                    'defaultCountry' => $defaultCountry ?? 'EG',
+                    'autofocus' => !$needsEmail,
+                ])
             @endif
 
             <button type="submit" class="btn btn-primary w-100">{{ custom_trans('Save and continue', 'front') }}</button>
         </form>
     </div>
-
-    @if($needsPhone)
-    @push('styles')
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.2.1/css/intlTelInput.css">
-        <style>
-            .iti { width: 100%; }
-            .iti .form-control { direction: ltr; text-align: left; }
-            .iti__country-list { text-align: left; }
-        </style>
-    @endpush
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.2.1/js/intlTelInput.min.js"></script>
-    <script>
-        (function () {
-            var input = document.getElementById('phone');
-            var errorBox = document.getElementById('phone-error');
-            if (!input || typeof window.intlTelInput !== 'function') return;
-
-            var iti = window.intlTelInput(input, {
-                initialCountry: @json($defaultCountry ?? 'eg'),
-                preferredCountries: ['eg', 'sa', 'ae', 'kw', 'qa', 'bh', 'om', 'jo'],
-                separateDialCode: true,
-                nationalMode: true,
-                autoPlaceholder: 'aggressive',
-                utilsScript: 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.2.1/js/utils.js'
-            });
-
-            var invalidMsg = @json(custom_trans('Please enter a valid phone number for the selected country.', 'front'));
-
-            // Digits only in the local part (the dial code is shown separately)
-            input.addEventListener('input', function () {
-                var cleaned = this.value.replace(/[^\d+]/g, '');
-                if (cleaned !== this.value) this.value = cleaned;
-                input.classList.remove('is-invalid');
-                errorBox.textContent = '';
-            });
-
-            input.form.addEventListener('submit', function (e) {
-                var number = iti.getNumber();
-                var utilsReady = !!window.intlTelInputUtils;
-                var ok = utilsReady ? iti.isValidNumber() : /^\+[1-9]\d{7,14}$/.test(number);
-                if (!input.value.trim() || !ok) {
-                    e.preventDefault();
-                    input.classList.add('is-invalid');
-                    errorBox.textContent = invalidMsg;
-                    input.focus();
-                    return;
-                }
-                // Submit the full international number, e.g. +201001234567
-                input.value = number;
-            });
-        })();
-    </script>
-    @endif
 @endsection

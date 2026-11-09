@@ -4,12 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Services\SocialLoginSettingsService;
+use App\Services\VisitorCountryService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -157,7 +156,7 @@ class SocialAuthController extends Controller
         }
         $needsEmail = $this->isPlaceholderEmail($user->email);
         $needsPhone = empty(trim((string) $user->phone));
-        $defaultCountry = $needsPhone ? $this->detectCountryCode($request) : 'eg';
+        $defaultCountry = $needsPhone ? app(VisitorCountryService::class)->detect($request) : VisitorCountryService::FALLBACK;
         return view('auth.complete-profile', compact('needsEmail', 'needsPhone', 'defaultCountry'));
     }
 
@@ -208,39 +207,6 @@ class SocialAuthController extends Controller
         }
 
         return redirect()->intended(route('home'))->with('success', custom_trans('Your profile has been updated.', 'front'));
-    }
-
-    /**
-     * Two-letter ISO country of the visitor's IP (lowercase), used to preselect the phone dial code.
-     * Uses Cloudflare's CF-IPCountry header when present, otherwise a cached ip-api.com lookup.
-     * Falls back to Egypt.
-     */
-    private function detectCountryCode(Request $request): string
-    {
-        $fallback = 'eg';
-
-        $cf = strtoupper((string) $request->header('CF-IPCountry'));
-        if (preg_match('/^[A-Z]{2}$/', $cf) && !in_array($cf, ['XX', 'T1'], true)) {
-            return strtolower($cf);
-        }
-
-        $ip = $request->ip();
-        if (!$ip || !filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
-            return $fallback;
-        }
-
-        return Cache::remember('ip_country:' . $ip, now()->addDay(), function () use ($ip, $fallback) {
-            try {
-                $response = Http::timeout(2)->get('http://ip-api.com/json/' . $ip, ['fields' => 'status,countryCode']);
-                $code = $response->ok() && $response->json('status') === 'success'
-                    ? strtolower((string) $response->json('countryCode'))
-                    : '';
-                return preg_match('/^[a-z]{2}$/', $code) ? $code : $fallback;
-            } catch (\Throwable $e) {
-                Log::info('IP country lookup failed', ['error' => $e->getMessage()]);
-                return $fallback;
-            }
-        });
     }
 
     private function needsCompleteProfile(User $user): bool
