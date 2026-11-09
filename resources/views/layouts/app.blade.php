@@ -532,13 +532,6 @@ main:has(> section.hero) > section:not(.hero), body:has(main > section.hero) foo
                                             </span>
                                             <span class="user-dropdown-link-label">{{ custom_trans('profile', 'front') }}</span>
                                         </a>
-                                        <a class="user-dropdown-link user-dropdown-link--extra" href="{{ route('demo.charts') }}">
-                                            <span class="user-dropdown-link-icon user-dropdown-link-icon--warning">
-                                                <i class="fas fa-chart-line"></i>
-                                            </span>
-                                            <span class="user-dropdown-link-label">Charts</span>
-                                            <span class="user-dropdown-link-badge">demo</span>
-                                        </a>
                                     </li>
                                     <li class="user-dropdown-footer">
                                         <form action="{{ route('logout') }}" method="POST">
@@ -699,12 +692,6 @@ main:has(> section.hero) > section:not(.hero), body:has(main > section.hero) foo
                                 data-bs-dismiss="offcanvas" data-bs-target="#mobileNavOffcanvas">
                                 <i class="fas fa-shopping-cart"></i>
                                 <span>{{ custom_trans('cart', 'front') }}</span>
-                            </a>
-                            <a href="{{ route('demo.charts') }}" class="mobile-action-btn"
-                                data-bs-dismiss="offcanvas" data-bs-target="#mobileNavOffcanvas">
-                                <i class="fas fa-chart-line"></i>
-                                <span>Charts</span>
-                                <span class="mobile-action-badge">demo</span>
                             </a>
                         </div>
                         <form action="{{ route('logout') }}" method="POST" class="mt-2">
