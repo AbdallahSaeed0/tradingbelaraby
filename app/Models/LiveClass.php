@@ -205,7 +205,7 @@ class LiveClass extends Model
         }
 
         $startTime = $this->scheduled_at;
-        $endTime = $this->scheduled_at->addMinutes($this->duration_minutes);
+        $endTime = $this->scheduled_at->copy()->addMinutes($this->duration_minutes ?? 60);
         $now = now();
 
         return $now->between($startTime, $endTime) && $this->status === 'live';
@@ -220,7 +220,7 @@ class LiveClass extends Model
             return false;
         }
 
-        $endTime = $this->scheduled_at->addMinutes($this->duration_minutes);
+        $endTime = $this->scheduled_at->copy()->addMinutes($this->duration_minutes ?? 60);
         return now()->isAfter($endTime);
     }
 

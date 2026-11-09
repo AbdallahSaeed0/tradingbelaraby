@@ -79,25 +79,47 @@
                                 <h3 class="fw-bold">{{ custom_trans('Live Classes', 'front') }}</h3>
                             </div>
 
-                            @if ($course->liveClasses && $course->liveClasses->count() > 0)
+                            @php
+                                // Hide past/cancelled classes, unless a past class has a recording to watch
+                                $visibleLiveClasses = ($course->liveClasses ?? collect())->filter(function ($lc) {
+                                    if ($lc->status === 'cancelled') {
+                                        return false;
+                                    }
+                                    $ended = $lc->status === 'completed' || $lc->is_ended;
+                                    return !$ended || !empty($lc->recording_url);
+                                });
+                            @endphp
+                            @if ($visibleLiveClasses->count() > 0)
                                 <div class="row g-4">
-                                    @foreach ($course->liveClasses as $liveClass)
+                                    @foreach ($visibleLiveClasses as $liveClass)
                                         @php
                                             $userRegistration = $liveClass->registrations->first();
                                             $isRegistered = $userRegistration !== null;
+                                            $hasEnded = $liveClass->status === 'completed' || $liveClass->is_ended;
                                         @endphp
                                         <div class="col-lg-6">
                                             <div class="live-class-card bg-white p-4 rounded-4 shadow-sm h-100">
                                                 <div class="d-flex justify-content-between align-items-start mb-3">
                                                     <h5 class="fw-bold mb-0" @if (\App\Helpers\TranslationHelper::getFrontendLanguage()->code === 'ar') dir="rtl" @endif>{{ $liveClass->localized_name }}</h5>
-                                                    <span
-                                                        class="badge bg-{{ $liveClass->status === 'scheduled' ? 'primary' : ($liveClass->status === 'live' ? 'success' : 'secondary') }}">
-                                                        {{ ucfirst($liveClass->status) }}
-                                                    </span>
+                                                    @if ($hasEnded)
+                                                        <span class="badge bg-secondary">{{ custom_trans('Ended', 'front') }}</span>
+                                                    @else
+                                                        <span
+                                                            class="badge bg-{{ $liveClass->status === 'scheduled' ? 'primary' : ($liveClass->status === 'live' ? 'success' : 'secondary') }}">
+                                                            {{ ucfirst($liveClass->status) }}
+                                                        </span>
+                                                    @endif
                                                 </div>
                                                 <div class="text-muted mb-3 live-class-description" @if (\App\Helpers\TranslationHelper::getFrontendLanguage()->code === 'ar') dir="rtl" @endif>{!! $liveClass->localized_description ?? '' !!}</div>
 
-                                                @if ($isRegistered)
+                                                @if ($hasEnded)
+                                                    <div class="alert alert-secondary mb-3">
+                                                        <div class="d-flex align-items-center">
+                                                            <i class="fa fa-info-circle me-2"></i>
+                                                            <span>{{ custom_trans('This class has ended. You can watch the recording below.', 'front') }}</span>
+                                                        </div>
+                                                    </div>
+                                                @elseif ($isRegistered)
                                                     <div class="alert alert-success mb-3">
                                                         <div class="d-flex align-items-center">
                                                             <i class="fa fa-check-circle me-2"></i>
@@ -138,7 +160,12 @@
                                                 </div>
 
                                                 <div class="d-flex gap-2">
-                                                    @if (!$isRegistered)
+                                                    @if ($hasEnded)
+                                                        <a href="{{ $liveClass->recording_url }}" target="_blank" rel="noopener"
+                                                            class="btn btn-primary flex-fill">
+                                                            <i class="fa fa-play-circle me-2"></i>{{ custom_trans('Watch Recording', 'front') }}
+                                                        </a>
+                                                    @elseif (!$isRegistered)
                                                         <button class="btn btn-outline-primary flex-fill"
                                                             onclick="joinLiveClass({{ $liveClass->id }}, {{ json_encode($liveClass->link ?? '') }})">
                                                             <i class="fa fa-video me-2"></i>{{ custom_trans('Join Live Class', 'front') }}
