@@ -494,18 +494,17 @@ class CoursesController extends Controller
             $data['instructor_id'] = $request->instructor_ids[0];
         }
 
-        // Ensure is_free is always set explicitly on create as well
-        if (!$request->has('is_free')) {
-            $data['is_free'] = false;
-        } else {
-            $data['is_free'] = (bool) $request->is_free;
-        }
-        
-        // Ensure enable_certificate is always set explicitly
-        if (!$request->has('enable_certificate')) {
-            $data['enable_certificate'] = false;
-        } else {
-            $data['enable_certificate'] = (bool) $request->enable_certificate;
+        // Unchecked checkboxes are not sent, so set every course-settings flag explicitly
+        foreach ([
+            'is_featured',
+            'is_free',
+            'enable_certificate',
+            'show_in_top_discounted',
+            'show_in_subscription_bundles',
+            'show_in_live_meeting',
+            'show_in_recent_courses',
+        ] as $flag) {
+            $data[$flag] = $request->boolean($flag);
         }
 
         $plans = $this->validatedSubscriptionPlans($request);

@@ -1291,9 +1291,9 @@
                         </div>
                         <div class="mb-3">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="featured" name="featured"
-                                    value="1" {{ old('featured', $course->is_featured) ? 'checked' : '' }}>
-                                <label class="form-check-label" for="featured">
+                                <input class="form-check-input" type="checkbox" id="is_featured" name="is_featured"
+                                    value="1" {{ old('is_featured', $course->is_featured) ? 'checked' : '' }}>
+                                <label class="form-check-label" for="is_featured">
                                     Featured Course
                                 </label>
                             </div>
