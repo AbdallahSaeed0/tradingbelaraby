@@ -141,7 +141,9 @@ main:has(> section.hero) > section:not(.hero), body:has(main > section.hero) foo
     @endif
 
     @stack('styles')
-    @php($gaQueuedEvents = session()->pull('ga_events', []))
+    @php
+        $gaQueuedEvents = session()->pull('ga_events', []);
+    @endphp
     @if(config('app.ga_id'))
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id={{ config('app.ga_id') }}"></script>
