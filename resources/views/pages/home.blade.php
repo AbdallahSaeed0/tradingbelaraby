@@ -28,6 +28,9 @@
     <!-- Recent Courses Section -->
     @include('partials.home.recent-courses-section')
 
+    <!-- Free Courses Section -->
+    @include('partials.home.free-courses-section')
+
     <!-- Courses by Category Tabs Section -->
     @include('partials.home.courses-by-category-tabs')
 

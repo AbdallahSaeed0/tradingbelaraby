@@ -89,6 +89,15 @@ class HomeController extends Controller
             ->limit(8)
             ->get();
 
+        // Fetch Free Courses (every published course marked as free)
+        $freeCourses = Course::where('is_free', true)
+            ->published()
+            ->with(['category', 'instructor', 'instructors', 'ratings'])
+            ->withCount(['enrollments', 'ratings'])
+            ->orderBy('created_at', 'desc')
+            ->limit(8)
+            ->get();
+
         // Fetch featured categories
         $featuredCategories = CourseCategory::featured()
             ->withCount('courses')
@@ -115,6 +124,7 @@ class HomeController extends Controller
             'subscriptionBundles',
             'liveMeetingCourses',
             'recentCoursesSection',
+            'freeCourses',
             'featuredCategories',
             'allCategories'
         ));
