@@ -173,7 +173,7 @@
                                                             <button type="button" class="btn btn-primary btn-sm enroll-btn" data-course-id="{{ $course->id }}" data-enroll-type="{{ $course->price > 0 ? 'paid' : 'free' }}"><i class="fa fa-graduation-cap me-1"></i>{{ custom_trans('enroll_now', 'front') }}</button>
                                                         @endif
                                                     @else
-                                                        <a href="{{ route('login') }}" class="btn btn-primary btn-sm">{{ $course->price > 0 ? custom_trans('Add to cart', 'front') : custom_trans('enroll_now', 'front') }}</a>
+                                                        <a href="{{ route('register') }}" class="btn btn-primary btn-sm">{{ $course->price > 0 ? custom_trans('Add to cart', 'front') : custom_trans('enroll_now', 'front') }}</a>
                                                     @endauth
                                                 </div>
                                             </div>

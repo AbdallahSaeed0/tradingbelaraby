@@ -4,7 +4,11 @@
 
 @section('content')
     <div class="container py-5 max-w-560">
-        <h2 class="text-center mb-4">{{ custom_trans('Create an Account', 'front') }}</h2>
+        <h2 class="text-center mb-3">{{ custom_trans('Create an Account', 'front') }}</h2>
+        <p class="text-center mb-4">
+            {{ custom_trans('Already have an account?', 'front') }}
+            <a href="{{ route('login') }}" class="fw-bold">{{ custom_trans('Sign in', 'front') }}</a>
+        </p>
 
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">

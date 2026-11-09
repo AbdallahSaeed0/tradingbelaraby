@@ -2,6 +2,23 @@
 
 // This file contains common helper functions for the application
 
+if (!function_exists('ga_event')) {
+    /**
+     * Queue a Google Analytics (GA4) event. It is sent by the frontend layout
+     * on the next page it renders (works across redirects and AJAX + reload).
+     */
+    function ga_event(string $name, array $params = []): void
+    {
+        try {
+            $events = session('ga_events', []);
+            $events[] = ['name' => $name, 'params' => $params];
+            session(['ga_events' => array_slice($events, -10)]);
+        } catch (\Throwable $e) {
+            // No session (CLI / API) - analytics must never break the request
+        }
+    }
+}
+
 if (!function_exists('format_date')) {
     /**
      * Format a date in a consistent way

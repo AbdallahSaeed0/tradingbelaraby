@@ -20,6 +20,8 @@ class AuthController extends Controller
      */
     public function showLoginForm(SocialLoginSettingsService $socialSettings)
     {
+        $this->rememberReturnUrl();
+
         return view('auth.login', [
             'googleLoginEnabled' => $socialSettings->isGoogleEnabled(),
             'twitterLoginEnabled' => $socialSettings->isTwitterEnabled(),
@@ -82,7 +84,39 @@ class AuthController extends Controller
      */
     public function showRegisterForm()
     {
+        $this->rememberReturnUrl();
+
         return view('auth.register');
+    }
+
+    /**
+     * Remember the page the visitor came from (e.g. a course page) so that after
+     * login / registration + verification they land back on it instead of home.
+     */
+    private function rememberReturnUrl(): void
+    {
+        if (session()->has('url.intended')) {
+            return;
+        }
+
+        $previous = url()->previous();
+        $previousHost = parse_url($previous, PHP_URL_HOST);
+        $path = '/' . ltrim((string) parse_url($previous, PHP_URL_PATH), '/');
+
+        if ($previousHost !== request()->getHost()) {
+            return;
+        }
+
+        // Don't bounce back to auth / verification pages
+        foreach (['/login', '/register', '/password', '/email', '/whatsapp', '/auth', '/logout', '/complete-profile'] as $skip) {
+            if (str_contains($path, $skip)) {
+                return;
+            }
+        }
+
+        if ($previous !== url()->current()) {
+            redirect()->setIntendedUrl($previous);
+        }
     }
 
     /**
@@ -189,6 +223,7 @@ class AuthController extends Controller
         ]);
 
         Auth::login($user);
+        ga_event('sign_up', ['method' => 'email']);
 
         $verification = app(VerificationSettingsService::class);
 
@@ -251,7 +286,7 @@ class AuthController extends Controller
 
         $user->markPhoneAsVerified();
 
-        return redirect()->route('home')->with('success', 'Phone number verified successfully! Welcome!');
+        return redirect()->intended(route('home'))->with('success', 'Phone number verified successfully! Welcome!');
     }
 
     /**

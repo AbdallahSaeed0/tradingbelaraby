@@ -139,7 +139,7 @@
                                     @endif
                                 @endif
                             @else
-                                <a href="{{ route('login', 'front') }}" class="btn btn-orange w-100 fw-bold mb-3">
+                                <a href="{{ route('register') }}" class="btn btn-orange w-100 fw-bold mb-3">
                                     <i class="fas fa-graduation-cap me-2"></i>{{ custom_trans('enroll_now', 'front') }}
                                 </a>
                             @endauth
@@ -507,7 +507,7 @@
                                     @endif
                                 @endif
                             @else
-                                <a href="{{ route('login', 'front') }}" class="btn btn-orange w-100 fw-bold mb-2">
+                                <a href="{{ route('register') }}" class="btn btn-orange w-100 fw-bold mb-2">
                                     <i class="fas fa-graduation-cap me-2"></i>{{ custom_trans('enroll_now', 'front') }}
                                 </a>
                             @endauth
@@ -625,7 +625,7 @@
                             </button>
                         @endif
                     @else
-                        <a href="{{ route('login', 'front') }}" class="btn btn-light btn-sm fw-bold">
+                        <a href="{{ route('register') }}" class="btn btn-light btn-sm fw-bold">
                             <i class="fas fa-graduation-cap me-1"></i>{{ custom_trans('enroll_now', 'front') }}
                         </a>
                     @endauth

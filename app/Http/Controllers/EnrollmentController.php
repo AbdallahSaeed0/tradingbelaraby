@@ -75,6 +75,13 @@ class EnrollmentController extends Controller
             'progress_percentage' => 0,
         ]);
 
+        ga_event('enroll', [
+            'course_id' => $course->id,
+            'course_name' => $course->name,
+            'value' => 0,
+            'currency' => 'SAR',
+        ]);
+
         // Send enrollment notification email
         try {
             $language = Session::get('frontend_locale', config('app.locale'));

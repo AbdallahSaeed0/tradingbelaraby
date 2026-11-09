@@ -559,6 +559,30 @@ return [
     'Join Meeting' => [
         'ar' => 'انضم إلى الاجتماع',
     ],
+    'New here?' => [
+        'ar' => 'جديد هنا؟',
+    ],
+    'Create a free account in less than a minute to start learning.' => [
+        'ar' => 'أنشئ حساباً مجانياً في أقل من دقيقة وابدأ التعلّم.',
+    ],
+    'Create a free account' => [
+        'ar' => 'إنشاء حساب مجاني',
+    ],
+    'Free Courses' => [
+        'ar' => 'الدورات المجانية',
+    ],
+    'Learn for Free' => [
+        'ar' => 'تعلّم مجاناً',
+    ],
+    'Watch Recording' => [
+        'ar' => 'شاهد التسجيل',
+    ],
+    'Ended' => [
+        'ar' => 'انتهت',
+    ],
+    'This class has ended. You can watch the recording below.' => [
+        'ar' => 'انتهت هذه الحصة. يمكنك مشاهدة التسجيل أدناه.',
+    ],
     'Join our trading community! Fill out the form below to register as a trader.' => [
         'ar' => 'انضم إلى مجتمعنا التجاري! عبئ النموذج أدناه للتسجيل كتاجر.',
     ],

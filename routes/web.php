@@ -121,7 +121,7 @@ Route::get('/email/verify/{id}/{hash}', function (\Illuminate\Http\Request $requ
     // Auto-login the user after verification
     \Illuminate\Support\Facades\Auth::login($user);
 
-    return redirect()->route('home')->with('success', 'Your email has been verified successfully! You are now logged in.');
+    return redirect()->intended(route('home'))->with('success', 'Your email has been verified successfully! You are now logged in.');
 })->middleware(['signed'])->name('verification.verify');
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

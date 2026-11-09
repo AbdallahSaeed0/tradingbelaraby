@@ -468,6 +468,39 @@ class CheckoutController extends Controller
             abort(403);
         }
 
+        // Report the conversion to Google Analytics once per order
+        // (every payment gateway redirects here after a successful payment)
+        $sentOrders = session('ga_sent_orders', []);
+        if ($order->status === 'completed' && !in_array($order->id, $sentOrders, true)) {
+            $order->loadMissing('orderItems.course');
+            $items = $order->orderItems->map(fn ($item) => [
+                'item_id' => (string) $item->course_id,
+                'item_name' => $item->course->name ?? '',
+                'price' => (float) $item->price,
+                'quantity' => 1,
+            ])->values()->all();
+
+            if ((float) $order->total > 0) {
+                ga_event('purchase', [
+                    'transaction_id' => (string) $order->order_number,
+                    'value' => (float) $order->total,
+                    'currency' => 'SAR',
+                    'items' => $items,
+                ]);
+            }
+            foreach ($items as $item) {
+                ga_event('enroll', [
+                    'course_id' => $item['item_id'],
+                    'course_name' => $item['item_name'],
+                    'value' => $item['price'],
+                    'currency' => 'SAR',
+                ]);
+            }
+
+            $sentOrders[] = $order->id;
+            session(['ga_sent_orders' => array_slice($sentOrders, -20)]);
+        }
+
         return view('checkout.success', compact('order'));
     }
 

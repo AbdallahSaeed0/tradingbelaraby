@@ -135,11 +135,11 @@
                 @endif
             @else
                 @if ($course->price > 0 || !$course->offersLifetime())
-                    <a href="{{ route('login') }}" class="btn btn-orange flex-fill">
+                    <a href="{{ route('register') }}" class="btn btn-orange flex-fill">
                         <i class="fa fa-graduation-cap me-1"></i>{{ custom_trans('enroll_now', 'front') }}
                     </a>
                 @else
-                    <a href="{{ route('login') }}" class="btn btn-success flex-fill">
+                    <a href="{{ route('register') }}" class="btn btn-success flex-fill">
                         <i class="fa fa-play me-1"></i>{{ custom_trans('start_free', 'front') }}
                     </a>
                 @endif

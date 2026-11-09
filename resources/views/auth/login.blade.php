@@ -19,6 +19,14 @@
             </div>
         @endif
 
+        <div class="card border-primary mb-4 p-3 text-center shadow-sm">
+            <div class="fw-bold mb-1">{{ custom_trans('New here?', 'front') }}</div>
+            <div class="text-muted small mb-3">{{ custom_trans('Create a free account in less than a minute to start learning.', 'front') }}</div>
+            <a href="{{ route('register') }}" class="btn btn-outline-primary w-100 fw-bold">
+                <i class="fas fa-user-plus me-2"></i>{{ custom_trans('Create a free account', 'front') }}
+            </a>
+        </div>
+
         <form method="POST" action="{{ route('login.attempt') }}" class="card p-4 shadow-sm">
             @csrf
 

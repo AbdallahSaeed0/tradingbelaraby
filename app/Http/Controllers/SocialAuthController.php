@@ -299,6 +299,8 @@ class SocialAuthController extends Controller
             'email_verified_at' => now(),
         ]);
 
+        ga_event('sign_up', ['method' => $provider]);
+
         return $user;
     }
 

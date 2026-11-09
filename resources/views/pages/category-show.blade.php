@@ -313,7 +313,7 @@
                                                     class="cc-btn cc-btn-outline">
                                                     {{ custom_trans('view_details', 'front') }}
                                                 </a>
-                                                <a href="{{ route('login') }}" class="cc-btn cc-btn-primary">
+                                                <a href="{{ route('register') }}" class="cc-btn cc-btn-primary">
                                                     <i class="fas fa-graduation-cap me-1"></i>
                                                     <span>{{ custom_trans('enroll_now', 'front') }}</span>
                                                 </a>

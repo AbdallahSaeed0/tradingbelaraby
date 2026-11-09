@@ -47,7 +47,7 @@
                     <button type="button" class="home-courses-slider__btn home-courses-slider__btn--primary enroll-btn" data-course-id="{{ $course->id }}" data-enroll-type="{{ $course->price > 0 ? 'paid' : 'free' }}">{{ $course->price > 0 ? custom_trans('Add to cart', 'front') : custom_trans('enroll_now', 'front') }}</button>
                 @endif
             @else
-                <a href="{{ route('login') }}" class="home-courses-slider__btn home-courses-slider__btn--primary">{{ $course->price > 0 ? custom_trans('Add to cart', 'front') : custom_trans('enroll_now', 'front') }}</a>
+                <a href="{{ route('register') }}" class="home-courses-slider__btn home-courses-slider__btn--primary">{{ $course->price > 0 ? custom_trans('Add to cart', 'front') : custom_trans('enroll_now', 'front') }}</a>
             @endauth
         </div>
     </div>

@@ -141,6 +141,7 @@ main:has(> section.hero) > section:not(.hero), body:has(main > section.hero) foo
     @endif
 
     @stack('styles')
+    @php($gaQueuedEvents = session()->pull('ga_events', []))
     @if(config('app.ga_id'))
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id={{ config('app.ga_id') }}"></script>
@@ -149,6 +150,9 @@ main:has(> section.hero) > section:not(.hero), body:has(main > section.hero) foo
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
         gtag('config', '{{ config('app.ga_id') }}');
+        @foreach ($gaQueuedEvents as $gaEvent)
+        gtag('event', @json($gaEvent['name']), @json((object) $gaEvent['params']));
+        @endforeach
     </script>
     @endif
 </head>

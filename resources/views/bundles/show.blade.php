@@ -121,7 +121,7 @@
                                     <i class="fas fa-shopping-cart me-2"></i>{{ custom_trans('Add to Cart', 'front') }}
                                 </button>
                             @else
-                                <a href="{{ route('login', 'front') }}" class="btn btn-primary w-100 fw-bold mb-3">
+                                <a href="{{ route('register') }}" class="btn btn-primary w-100 fw-bold mb-3">
                                     <i class="fas fa-shopping-cart me-2"></i>{{ custom_trans('Add to Cart', 'front') }}
                                 </a>
                             @endauth
