@@ -39,6 +39,12 @@
                         @endforelse
                     </tbody>
                 </table>
+
+                @if ($questions->hasPages())
+                    <div class="d-flex justify-content-center mt-3">
+                        {{ $questions->links() }}
+                    </div>
+                @endif
             </div>
         </div>
     </div>

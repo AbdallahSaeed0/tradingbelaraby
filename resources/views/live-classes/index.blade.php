@@ -44,6 +44,12 @@
                         @endforelse
                     </tbody>
                 </table>
+
+                @if ($liveClasses->hasPages())
+                    <div class="d-flex justify-content-center mt-3">
+                        {{ $liveClasses->links() }}
+                    </div>
+                @endif
             </div>
         </div>
     </div>

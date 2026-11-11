@@ -69,7 +69,7 @@
                                     <div class="col-6">
                                         <div class="card bg-primary text-white">
                                             <div class="card-body text-center">
-                                                <h3>{{ $registrations->count() }}</h3>
+                                                <h3>{{ $registrationStats['total'] }}</h3>
                                                 <p class="mb-0">Total Registrations</p>
                                             </div>
                                         </div>
@@ -77,7 +77,7 @@
                                     <div class="col-6">
                                         <div class="card bg-success text-white">
                                             <div class="card-body text-center">
-                                                <h3>{{ $registrations->where('attended', true)->count() }}</h3>
+                                                <h3>{{ $registrationStats['attended'] }}</h3>
                                                 <p class="mb-0">Attended</p>
                                             </div>
                                         </div>
@@ -104,7 +104,7 @@
                                     @forelse($registrations as $index => $registration)
                                         @if ($registration->user)
                                             <tr>
-                                                <td>{{ $index + 1 }}</td>
+                                                <td>{{ $registrations->firstItem() + $index }}</td>
                                                 <td>
                                                     <div class="d-flex align-items-center">
                                                         @if ($registration->user->profile_photo)
@@ -194,7 +194,7 @@
                                             </tr>
                                         @else
                                             <tr>
-                                                <td>{{ $index + 1 }}</td>
+                                                <td>{{ $registrations->firstItem() + $index }}</td>
                                                 <td>
                                                     <div class="d-flex align-items-center">
                                                         <div
@@ -266,6 +266,12 @@
                                 </tbody>
                             </table>
                         </div>
+
+                        @if ($registrations->hasPages())
+                            <div class="d-flex justify-content-center mt-3">
+                                {{ $registrations->links() }}
+                            </div>
+                        @endif
 
                         <!-- Export Options -->
                         @if ($registrations->count() > 0)

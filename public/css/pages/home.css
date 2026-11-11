@@ -2888,3 +2888,81 @@ body:has(main > section.hero) footer.footer-main > .container {
     content-visibility: auto;
     contain-intrinsic-size: auto 600px;
 }
+
+/* ── Hero slider on phones: full banner image on top, text + buttons on a panel below ──
+   Slide images are wide banners with their own artwork/text, so cropping them into a short
+   box (and overlaying text) hid the buttons and cut the banner. Must stay at the end of the file. */
+@media (max-width: 767.98px) {
+    .hero-stage,
+    .hero-stage .hero-slide-bg {
+        min-height: 0 !important;
+        max-height: none !important;
+        height: auto !important;
+    }
+    .hero-stage .hero-swiper,
+    .hero-stage .swiper-wrapper,
+    .hero-stage .swiper-slide,
+    .hero-stage .hero-slide {
+        height: auto !important;
+    }
+    .hero-stage .hero-slide-bg {
+        display: block;
+        padding-top: 56.25vw; /* banner area (16:9) */
+        background-color: #0b2b36 !important;
+        background-size: 100% auto !important;
+        background-position: top center !important;
+    }
+    .hero-stage .hero-slide-overlay {
+        display: none;
+    }
+    .hero-slider .hero-slide .container-fluid,
+    .hero-slider .hero-slide .row,
+    .hero-slider .hero-slide .h-100 {
+        height: auto !important;
+        min-height: 0 !important;
+    }
+    .hero-slider .hero-slide .row {
+        padding: 1rem 0 2.25rem;
+        justify-content: center !important;
+    }
+    .hero-slider .hero-content {
+        padding-inline: 0;
+        margin-inline: auto;
+        text-align: center;
+    }
+    .hero-slider .hero-welcome {
+        justify-content: center;
+        font-size: 12px;
+        margin-bottom: .4rem !important;
+    }
+    .hero-slider .hero-slide h1,
+    .hero-slider .hero-slide .hero-slide-heading {
+        font-size: 20px !important;
+        line-height: 1.35;
+        margin-bottom: .5rem !important;
+    }
+    .hero-slider .hero-sub {
+        font-size: 13px;
+        margin-bottom: .9rem !important;
+        opacity: .9;
+    }
+    .hero-slider .hero-actions {
+        justify-content: center;
+        flex-wrap: nowrap;
+        gap: 8px;
+    }
+    .hero-slider .hero-actions .btn {
+        flex: 1 1 0;
+        max-width: 180px;
+        padding: 9px 12px;
+        font-size: 13px;
+        border-radius: 8px;
+        margin: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .hero-slider .hero-swiper-pagination {
+        bottom: 10px !important;
+    }
+}

@@ -179,7 +179,7 @@ class HomeworkController extends Controller
         }
 
         // Get all homework assignments (you might want to filter by enrolled courses)
-        $homework = Homework::published()
+        $homeworks = Homework::published()
             ->with(['course', 'submissions' => function($query) use ($user) {
                 $query->where('user_id', $user->id);
             }])
@@ -187,14 +187,14 @@ class HomeworkController extends Controller
             ->paginate(10);
 
         // Add submission status to each homework
-        $homework->getCollection()->transform(function($hw) {
+        $homeworks->getCollection()->transform(function($hw) {
             $submission = $hw->submissions->first();
             $hw->submission_status = $submission ? $submission->status : 'not_submitted';
             $hw->user_submission = $submission;
             return $hw;
         });
 
-        return view('homework.index', compact('homework'));
+        return view('homework.index', compact('homeworks'));
     }
 
     /**

@@ -425,9 +425,15 @@ class LiveClassManagementController extends Controller
         $registrations = $liveClass->registrations()
             ->with('user')
             ->orderBy('created_at', 'desc')
-            ->paginate(20);
+            ->paginate(20)
+            ->withQueryString();
 
-        return view('admin.live-classes.registrations', compact('liveClass', 'registrations'));
+        $registrationStats = [
+            'total' => $liveClass->registrations()->count(),
+            'attended' => $liveClass->registrations()->where('attended', true)->count(),
+        ];
+
+        return view('admin.live-classes.registrations', compact('liveClass', 'registrations', 'registrationStats'));
     }
 
     /**
