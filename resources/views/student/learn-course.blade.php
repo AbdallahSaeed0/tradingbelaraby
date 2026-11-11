@@ -10,6 +10,40 @@
         <link rel="stylesheet" href="{{ versioned_asset('css/pages/course-content.css') }}">
         <link rel="stylesheet" href="{{ versioned_asset('css/pages/student-dashboard.css') }}">
     @endif
+    <style>
+        /* Lecture video popup: as wide as possible while the 16:9 video still fits the screen height */
+        #videoModal .modal-dialog {
+            max-width: min(1200px, 95vw, calc((100vh - 150px) * 16 / 9));
+            max-width: min(1200px, 95vw, calc((100dvh - 150px) * 16 / 9));
+        }
+        @media (max-width: 767.98px) {
+            #videoModal .modal-dialog {
+                max-width: none;
+                margin: .5rem;
+            }
+            #videoModal .modal-content { overflow: hidden; }
+            #videoModal .modal-header { padding: .6rem .9rem; }
+            #videoModal .modal-title {
+                font-size: 1rem;
+                min-width: 0;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            #videoModal .modal-body { padding: 0; }
+            #videoModal #fileDownload { padding: 1.5rem 1rem; }
+        }
+        /* Phones in landscape: little height, so let the video fill it */
+        @media (max-height: 500px) and (orientation: landscape) {
+            #videoModal .modal-dialog {
+                max-width: calc((100vh - 70px) * 16 / 9);
+                max-width: calc((100dvh - 70px) * 16 / 9);
+                margin: .25rem auto;
+            }
+            #videoModal .modal-header { padding: .4rem .8rem; }
+            #videoModal .modal-body { padding: 0; }
+        }
+    </style>
 @endpush
 
 @section('content')
@@ -321,8 +355,7 @@
 
     <!-- Video Modal -->
     <div class="modal fade" id="videoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered"
-            style="max-width: min(1200px, 95vw, calc((100vh - 140px) * 16 / 9));">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="videoModalLabel">{{ custom_trans('Course Video', 'front') }}</h5>
