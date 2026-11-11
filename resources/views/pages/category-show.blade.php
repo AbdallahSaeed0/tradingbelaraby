@@ -233,23 +233,6 @@
                                                 <i class="fas fa-heart {{ $inWishlist ? 'text-danger' : '' }}"></i>
                                             </button>
                                         @endauth
-
-                                        {{-- Price --}}
-                                        <div class="cc-price-wrap">
-                                            @if ($isFree)
-                                                <span class="cc-price cc-price-free">
-                                                    <i class="fas fa-gift"></i>{{ custom_trans('free', 'front') }}
-                                                </span>
-                                            @else
-                                                <span class="cc-price cc-price-paid">
-                                                    @if ($course->original_price > $course->price)
-                                                        <del class="cc-price-original">{{ number_format($course->original_price, 0) }}</del>
-                                                    @endif
-                                                    <span class="cc-price-amount">{{ number_format($course->price, 0) }}</span>
-                                                    <span class="cc-price-currency">SAR</span>
-                                                </span>
-                                            @endif
-                                        </div>
                                     </div>
 
                                     {{-- BODY --}}
@@ -262,20 +245,38 @@
                                             </a>
                                         </h5>
 
-                                        {{-- Rating --}}
-                                        <div class="cc-rating">
-                                            @if ($avgRating > 0)
-                                                <div class="cc-stars">
-                                                    @for ($i = 1; $i <= 5; $i++)
-                                                        <i class="fa{{ $i <= $avgRating ? 's' : 'r' }} fa-star"></i>
-                                                    @endfor
-                                                </div>
-                                                <span class="cc-rating-val">{{ number_format($avgRating, 1) }}</span>
-                                            @else
-                                                <span class="cc-new-badge">
-                                                    <i class="fas fa-certificate me-1"></i>{{ custom_trans('new', 'front') }}
-                                                </span>
-                                            @endif
+                                        {{-- Rating + Price --}}
+                                        <div class="cc-rating-row">
+                                            <div class="cc-rating">
+                                                @if ($avgRating > 0)
+                                                    <div class="cc-stars">
+                                                        @for ($i = 1; $i <= 5; $i++)
+                                                            <i class="fa{{ $i <= $avgRating ? 's' : 'r' }} fa-star"></i>
+                                                        @endfor
+                                                    </div>
+                                                    <span class="cc-rating-val">{{ number_format($avgRating, 1) }}</span>
+                                                @else
+                                                    <span class="cc-new-badge">
+                                                        <i class="fas fa-certificate me-1"></i>{{ custom_trans('new', 'front') }}
+                                                    </span>
+                                                @endif
+                                            </div>
+
+                                            <div class="cc-price-wrap">
+                                                @if ($isFree)
+                                                    <span class="cc-price cc-price-free">
+                                                        <i class="fas fa-gift"></i>{{ custom_trans('free', 'front') }}
+                                                    </span>
+                                                @else
+                                                    <span class="cc-price cc-price-paid">
+                                                        @if ($course->original_price > $course->price)
+                                                            <del class="cc-price-original">{{ number_format($course->original_price, 0) }}</del>
+                                                        @endif
+                                                        <span class="cc-price-amount">{{ number_format($course->price, 0) }}</span>
+                                                        <span class="cc-price-currency">SAR</span>
+                                                    </span>
+                                                @endif
+                                            </div>
                                         </div>
 
                                         {{-- Meta --}}

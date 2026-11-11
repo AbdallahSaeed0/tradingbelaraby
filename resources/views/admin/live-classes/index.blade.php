@@ -385,13 +385,22 @@
                             @endforeach
                         </div>
 
-                        <!-- Bulk Actions -->
-                        <div class="row mt-3" id="bulkActionsContainer" style="display: none !important;">
+                        <!-- Pagination (always visible) -->
+                        <div class="row mt-3 align-items-center g-2" id="paginationRow">
+                            <div class="col-md-6" id="perPageContainer">
+                                @include('admin.partials.per-page', ['paginator' => $liveClasses])
+                            </div>
                             <div class="col-md-6">
+                                <div class="d-flex justify-content-end" id="paginationContainer">
+                                    {{ $liveClasses->links() }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bulk Actions (shown when rows are selected) -->
+                        <div class="row mt-3" id="bulkActionsContainer" style="display: none;">
+                            <div class="col-12">
                                 <div class="d-flex align-items-center">
-                                    <div class="d-flex align-items-center me-3">
-                                        @include('admin.partials.per-page', ['paginator' => $liveClasses])
-                                    </div>
                                     <div class="d-flex gap-2">
                                         <button type="button" class="btn btn-outline-danger btn-sm"
                                             onclick="bulkDelete()">
@@ -414,11 +423,6 @@
                                             </ul>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="d-flex justify-content-end">
-                                    {{ $liveClasses->links() }}
                                 </div>
                             </div>
                         </div>
@@ -492,7 +496,7 @@
             const searchInput = document.getElementById('searchInput');
             const tableBody = document.querySelector('.table tbody');
             const mobileList = document.getElementById('mobileLiveClassesList');
-            const paginationContainer = document.querySelector('.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
+            const paginationContainer = document.getElementById('paginationContainer');
             const tableContainer = document.getElementById('listViewContainer');
 
             // AJAX search function
@@ -525,9 +529,8 @@
                         // Extract table body
                         const newTableBody = tempDiv.querySelector('.table tbody');
                         const newMobileList = tempDiv.querySelector('#mobileLiveClassesList');
-                        const newPagination = tempDiv.querySelector(
-                            '.row.mt-3 .col-md-6:last-child .d-flex.justify-content-end');
-                        const newBulkActions = tempDiv.querySelector('.row.mt-3 .col-md-6:first-child');
+                        const newPagination = tempDiv.querySelector('#paginationContainer');
+                        const newPerPage = tempDiv.querySelector('#perPageContainer');
 
                         if (newTableBody && tableBody) {
                             tableBody.innerHTML = newTableBody.innerHTML;
@@ -541,11 +544,9 @@
                             paginationContainer.innerHTML = newPagination.innerHTML;
                         }
 
-                        if (newBulkActions) {
-                            const bulkActionsContainer = document.querySelector('.row.mt-3 .col-md-6:first-child');
-                            if (bulkActionsContainer) {
-                                bulkActionsContainer.innerHTML = newBulkActions.innerHTML;
-                            }
+                        const perPageContainer = document.getElementById('perPageContainer');
+                        if (newPerPage && perPageContainer) {
+                            perPageContainer.innerHTML = newPerPage.innerHTML;
                         }
 
                         // Update URL without reload
