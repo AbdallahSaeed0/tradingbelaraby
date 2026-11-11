@@ -237,12 +237,17 @@
                                         {{-- Price --}}
                                         <div class="cc-price-wrap">
                                             @if ($isFree)
-                                                <span class="cc-price cc-price-free">{{ custom_trans('free', 'front') }}</span>
+                                                <span class="cc-price cc-price-free">
+                                                    <i class="fas fa-gift"></i>{{ custom_trans('free', 'front') }}
+                                                </span>
                                             @else
-                                                @if ($course->original_price > $course->price)
-                                                    <span class="cc-price cc-price-original">{{ number_format($course->original_price, 0) }}</span>
-                                                @endif
-                                                <span class="cc-price cc-price-paid">{{ number_format($course->price, 0) }} SAR</span>
+                                                <span class="cc-price cc-price-paid">
+                                                    @if ($course->original_price > $course->price)
+                                                        <del class="cc-price-original">{{ number_format($course->original_price, 0) }}</del>
+                                                    @endif
+                                                    <span class="cc-price-amount">{{ number_format($course->price, 0) }}</span>
+                                                    <span class="cc-price-currency">SAR</span>
+                                                </span>
                                             @endif
                                         </div>
                                     </div>

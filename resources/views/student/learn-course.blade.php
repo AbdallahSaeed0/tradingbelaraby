@@ -321,7 +321,8 @@
 
     <!-- Video Modal -->
     <div class="modal fade" id="videoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl modal-dialog-centered"
+            style="max-width: min(1200px, 95vw, calc((100vh - 140px) * 16 / 9));">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="videoModalLabel">{{ custom_trans('Course Video', 'front') }}</h5>

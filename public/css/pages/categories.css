@@ -681,31 +681,47 @@
 }
 
 .cc-price {
-  display: inline-block;
-  padding: .25rem .65rem;
-  border-radius: 6px;
-  font-size: .72rem;
-  font-weight: 700;
+  display: inline-flex;
+  align-items: baseline;
+  gap: .35rem;
+  padding: .45rem .85rem;
+  border-radius: 50px;
+  font-size: .95rem;
+  font-weight: 800;
   line-height: 1;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .3);
 }
 
 .cc-price-free {
+  align-items: center;
   background: var(--cat-success);
   color: #fff;
-  box-shadow: 0 2px 6px rgba(40, 167, 69, .35);
+  border: 2px solid #fff;
 }
 
+.cc-price-free i { font-size: .8rem; }
+
 .cc-price-paid {
-  background: var(--cat-primary);
-  color: #fff;
-  box-shadow: 0 2px 6px rgba(23, 80, 107, .35);
+  background: #fff;
+  color: var(--cat-primary);
+  border: 2px solid var(--cat-primary);
+}
+
+.cc-price-amount { font-size: 1.05rem; }
+
+.cc-price-currency {
+  font-size: .7rem;
+  font-weight: 700;
+  opacity: .8;
 }
 
 .cc-price-original {
-  background: rgba(0, 0, 0, .55);
-  color: rgba(255, 255, 255, .7);
+  color: #dc3545;
+  font-size: .78rem;
+  font-weight: 600;
   text-decoration: line-through;
-  font-size: .65rem;
+  text-decoration-thickness: 2px;
 }
 
 /* Card body */
