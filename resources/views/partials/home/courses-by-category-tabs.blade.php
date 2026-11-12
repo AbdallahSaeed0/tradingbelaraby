@@ -13,7 +13,8 @@
             </div>
 
             <!-- Category Tabs -->
-            <ul class="nav nav-pills justify-content-center mb-4 category-tabs" id="categoryTabs" role="tablist">
+            <div class="category-tabs-wrap mb-4">
+            <ul class="nav nav-pills category-tabs" id="categoryTabs" role="tablist">
                 @foreach ($allCategories->take(6) as $index => $category)
                     <li class="nav-item" role="presentation">
                         <button class="nav-link {{ $index === 0 ? 'active' : '' }}"
@@ -22,14 +23,15 @@
                             aria-controls="category-{{ $category->id }}"
                             aria-selected="{{ $index === 0 ? 'true' : 'false' }}">
                             @if ($category->icon)
-                                <i class="{{ $category->icon }} me-2"></i>
+                                <i class="{{ $category->icon }}" aria-hidden="true"></i>
                             @endif
-                            {{ $category->localized_name }}
-                            <span class="badge ms-2">{{ $category->courses_count }}</span>
+                            <span class="category-tab-name">{{ $category->localized_name }}</span>
+                            <span class="category-tab-count">{{ $category->courses_count }}</span>
                         </button>
                     </li>
                 @endforeach
             </ul>
+            </div>
 
             <!-- Tab Content -->
             <div class="tab-content" id="categoryTabsContent">
