@@ -2629,5 +2629,326 @@ return [
         'en' => 'My Courses',
         'ar' => 'دوراتي',
     ],
-];
 
+    // ── Keys used on public pages that had no Arabic fallback (added 2026-11-12) ──
+    '30-day money-back guarantee' => [
+        'en' => '30-day money-back guarantee',
+        'ar' => 'ضمان استرداد الأموال لمدة 30 يومًا',
+    ],
+    'A 6-digit verification code has been sent to your WhatsApp number' => [
+        'en' => 'A 6-digit verification code has been sent to your WhatsApp number',
+        'ar' => 'تم إرسال رمز تحقق مكوّن من 6 أرقام إلى رقم واتساب الخاص بك',
+    ],
+    'About Me' => [
+        'en' => 'About Me',
+        'ar' => 'نبذة عني',
+    ],
+    'About This Bundle' => [
+        'en' => 'About This Bundle',
+        'ar' => 'عن هذه الباقة',
+    ],
+    'Access expired on' => [
+        'en' => 'Access expired on',
+        'ar' => 'انتهى الوصول في',
+    ],
+    'Access until' => [
+        'en' => 'Access until',
+        'ar' => 'الوصول حتى',
+    ],
+    'Add more time' => [
+        'en' => 'Add more time',
+        'ar' => 'إضافة مدة أطول',
+    ],
+    'Add to Cart' => [
+        'en' => 'Add to Cart',
+        'ar' => 'أضف إلى السلة',
+    ],
+    'An error occurred' => [
+        'en' => 'An error occurred',
+        'ar' => 'حدث خطأ',
+    ],
+    'An error occurred. Please try again.' => [
+        'en' => 'An error occurred. Please try again.',
+        'ar' => 'حدث خطأ. يرجى المحاولة مرة أخرى.',
+    ],
+    'Bundle' => [
+        'en' => 'Bundle',
+        'ar' => 'باقة',
+    ],
+    'Bundle Details' => [
+        'en' => 'Bundle Details',
+        'ar' => 'تفاصيل الباقة',
+    ],
+    'Bundle added to cart' => [
+        'en' => 'Bundle added to cart',
+        'ar' => 'تمت إضافة الباقة إلى السلة',
+    ],
+    'Bundles' => [
+        'en' => 'Bundles',
+        'ar' => 'الباقات',
+    ],
+    'Certificate of completion' => [
+        'en' => 'Certificate of completion',
+        'ar' => 'شهادة إتمام',
+    ],
+    'Copy course link' => [
+        'en' => 'Copy course link',
+        'ar' => 'نسخ رابط الدورة',
+    ],
+    'Coupon applied successfully!' => [
+        'en' => 'Coupon applied successfully!',
+        'ar' => 'تم تطبيق الكوبون بنجاح!',
+    ],
+    'Course Bundles' => [
+        'en' => 'Course Bundles',
+        'ar' => 'باقات الدورات',
+    ],
+    'Course link copied to clipboard!' => [
+        'en' => 'Course link copied to clipboard!',
+        'ar' => 'تم نسخ رابط الدورة!',
+    ],
+    'Course removed from wishlist!' => [
+        'en' => 'Course removed from wishlist!',
+        'ar' => 'تمت إزالة الدورة من المفضلة!',
+    ],
+    'Courses Included' => [
+        'en' => 'Courses Included',
+        'ar' => 'الدورات المتضمنة',
+    ],
+    'Credit / Debit Card' => [
+        'en' => 'Credit / Debit Card',
+        'ar' => 'بطاقة ائتمان / خصم',
+    ],
+    'Discount' => [
+        'en' => 'Discount',
+        'ar' => 'خصم',
+    ],
+    'Download our app' => [
+        'en' => 'Download our app',
+        'ar' => 'حمّل تطبيقنا',
+    ],
+    'Expired' => [
+        'en' => 'Expired',
+        'ar' => 'منتهي',
+    ],
+    'Extend' => [
+        'en' => 'Extend',
+        'ar' => 'تمديد',
+    ],
+    'Extend access' => [
+        'en' => 'Extend access',
+        'ar' => 'تمديد الوصول',
+    ],
+    'From' => [
+        'en' => 'From',
+        'ar' => 'يبدأ من',
+    ],
+    'Inactive' => [
+        'en' => 'Inactive',
+        'ar' => 'غير نشط',
+    ],
+    'Invalid coupon code' => [
+        'en' => 'Invalid coupon code',
+        'ar' => 'كود الكوبون غير صالح',
+    ],
+    'Lifetime access' => [
+        'en' => 'Lifetime access',
+        'ar' => 'وصول مدى الحياة',
+    ],
+    'Link copied to clipboard!' => [
+        'en' => 'Link copied to clipboard!',
+        'ar' => 'تم نسخ الرابط!',
+    ],
+    'Name in English (optional)' => [
+        'en' => 'Name in English (optional)',
+        'ar' => 'الاسم بالإنجليزية (اختياري)',
+    ],
+    'No bundles found' => [
+        'en' => 'No bundles found',
+        'ar' => 'لا توجد باقات',
+    ],
+    'Notify' => [
+        'en' => 'Notify',
+        'ar' => 'تنبيه',
+    ],
+    'OK' => [
+        'en' => 'OK',
+        'ar' => 'حسنًا',
+    ],
+    'Office Location' => [
+        'en' => 'Office Location',
+        'ar' => 'موقع المكتب',
+    ],
+    'Pay securely with Visa or Mastercard' => [
+        'en' => 'Pay securely with Visa or Mastercard',
+        'ar' => 'ادفع بأمان باستخدام فيزا أو ماستركارد',
+    ],
+    'Pay with Stripe' => [
+        'en' => 'Pay with Stripe',
+        'ar' => 'الدفع عبر Stripe',
+    ],
+    'Please enter it below to confirm your number.' => [
+        'en' => 'Please enter it below to confirm your number.',
+        'ar' => 'يرجى إدخاله أدناه لتأكيد رقمك.',
+    ],
+    'Printed under your name. Once the certificate is issued the names cannot be changed.' => [
+        'en' => 'Printed under your name. Once the certificate is issued the names cannot be changed.',
+        'ar' => 'يُطبع أسفل اسمك. بعد إصدار الشهادة لا يمكن تغيير الأسماء.',
+    ],
+    'Read less' => [
+        'en' => 'Read less',
+        'ar' => 'عرض أقل',
+    ],
+    'Read more' => [
+        'en' => 'Read more',
+        'ar' => 'اقرأ المزيد',
+    ],
+    'Related Bundles' => [
+        'en' => 'Related Bundles',
+        'ar' => 'باقات ذات صلة',
+    ],
+    'Renew' => [
+        'en' => 'Renew',
+        'ar' => 'تجديد',
+    ],
+    'Renew your access' => [
+        'en' => 'Renew your access',
+        'ar' => 'جدّد وصولك',
+    ],
+    'Resend code to WhatsApp' => [
+        'en' => 'Resend code to WhatsApp',
+        'ar' => 'إعادة إرسال الرمز عبر واتساب',
+    ],
+    'Save' => [
+        'en' => 'Save',
+        'ar' => 'وفّر',
+    ],
+    'Search bundles...' => [
+        'en' => 'Search bundles...',
+        'ar' => 'ابحث في الباقات...',
+    ],
+    'Share on Facebook' => [
+        'en' => 'Share on Facebook',
+        'ar' => 'مشاركة على فيسبوك',
+    ],
+    'Share on LinkedIn' => [
+        'en' => 'Share on LinkedIn',
+        'ar' => 'مشاركة على لينكدإن',
+    ],
+    'Share on Twitter (X)' => [
+        'en' => 'Share on Twitter (X)',
+        'ar' => 'مشاركة على تويتر (X)',
+    ],
+    'Share on WhatsApp' => [
+        'en' => 'Share on WhatsApp',
+        'ar' => 'مشاركة على واتساب',
+    ],
+    'Subscribe' => [
+        'en' => 'Subscribe',
+        'ar' => 'اشترك',
+    ],
+    'Subscription' => [
+        'en' => 'Subscription',
+        'ar' => 'اشتراك',
+    ],
+    'Successfully enrolled in course!' => [
+        'en' => 'Successfully enrolled in course!',
+        'ar' => 'تم التسجيل في الدورة بنجاح!',
+    ],
+    'This bundle includes:' => [
+        'en' => 'This bundle includes:',
+        'ar' => 'تتضمن هذه الباقة:',
+    ],
+    "This instructor hasn't published any courses yet." => [
+        'en' => "This instructor hasn't published any courses yet.",
+        'ar' => 'لم ينشر هذا المدرب أي دورات بعد.',
+    ],
+    'Unable to add bundle to cart.' => [
+        'en' => 'Unable to add bundle to cart.',
+        'ar' => 'تعذّرت إضافة الباقة إلى السلة.',
+    ],
+    'Unable to copy link. Please try again.' => [
+        'en' => 'Unable to copy link. Please try again.',
+        'ar' => 'تعذّر نسخ الرابط. يرجى المحاولة مرة أخرى.',
+    ],
+    'Upgrade to lifetime access' => [
+        'en' => 'Upgrade to lifetime access',
+        'ar' => 'الترقية إلى وصول مدى الحياة',
+    ],
+    'Verification Code' => [
+        'en' => 'Verification Code',
+        'ar' => 'رمز التحقق',
+    ],
+    'Verify Number' => [
+        'en' => 'Verify Number',
+        'ar' => 'تأكيد الرقم',
+    ],
+    'Verify WhatsApp' => [
+        'en' => 'Verify WhatsApp',
+        'ar' => 'تأكيد واتساب',
+    ],
+    'Verify Your WhatsApp Number' => [
+        'en' => 'Verify Your WhatsApp Number',
+        'ar' => 'أكّد رقم واتساب الخاص بك',
+    ],
+    'View Bundle' => [
+        'en' => 'View Bundle',
+        'ar' => 'عرض الباقة',
+    ],
+    'Visa, Mastercard, Apple Pay and Google Pay' => [
+        'en' => 'Visa, Mastercard, Apple Pay and Google Pay',
+        'ar' => 'فيزا، ماستركارد، Apple Pay و Google Pay',
+    ],
+    'Voice Testimonial' => [
+        'en' => 'Voice Testimonial',
+        'ar' => 'رأي صوتي',
+    ],
+    'Wishlist' => [
+        'en' => 'Wishlist',
+        'ar' => 'المفضلة',
+    ],
+    'Your access ends on' => [
+        'en' => 'Your access ends on',
+        'ar' => 'ينتهي وصولك في',
+    ],
+    'Your access expired on' => [
+        'en' => 'Your access expired on',
+        'ar' => 'انتهى وصولك في',
+    ],
+    'e.g. name@example.com' => [
+        'en' => 'e.g. name@example.com',
+        'ar' => 'مثال: name@example.com',
+    ],
+    'apply_filters' => [
+        'en' => 'Apply Filters',
+        'ar' => 'تطبيق الفلاتر',
+    ],
+    'confirming_payment' => [
+        'en' => 'Confirming payment...',
+        'ar' => 'جارٍ تأكيد الدفع...',
+    ],
+    'delete' => [
+        'en' => 'Delete',
+        'ar' => 'حذف',
+    ],
+    'error' => [
+        'en' => 'Error',
+        'ar' => 'خطأ',
+    ],
+    'payment_failed_message' => [
+        'en' => 'Payment failed. Please try again.',
+        'ar' => 'فشلت عملية الدفع. يرجى المحاولة مرة أخرى.',
+    ],
+    'item' => [
+        'en' => 'item',
+        'ar' => 'عنصر',
+    ],
+    'applied' => [
+        'en' => 'applied',
+        'ar' => 'مُطبّق',
+    ],
+    'at' => [
+        'en' => 'at',
+        'ar' => 'في',
+    ],
+];

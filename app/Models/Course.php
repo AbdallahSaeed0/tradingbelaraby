@@ -560,7 +560,7 @@ class Course extends Model
     public function getFormattedPriceAttribute(): string
     {
         if ($this->is_free) {
-            return 'Free';
+            return custom_trans('Free', 'front');
         }
         $currency = config('app.currency', 'SAR');
         if (!$this->offersLifetime()) {

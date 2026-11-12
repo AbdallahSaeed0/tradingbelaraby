@@ -2061,7 +2061,7 @@ footer {
     align-items: center;
     justify-content: center;
     font-size: 1.6rem;
-    margin-right: 16px;
+    margin-inline-end: 16px;
     flex-shrink: 0;
 }
 .feature-label {
