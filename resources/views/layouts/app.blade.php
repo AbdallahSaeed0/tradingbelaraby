@@ -829,10 +829,16 @@ main:has(> section.hero) > section:not(.hero), body:has(main > section.hero) foo
                     <!-- Download Our App -->
                     <div class="mt-3">
                         <p class="text-white-50 small mb-2">{{ custom_trans('Download our app', 'front') }}</p>
-                        <a href="https://play.google.com/store/apps/details?id=com.tradingbelaraby.courses" target="_blank" rel="noopener">
-                            <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" loading="lazy" decoding="async"
-                                 alt="Get it on Google Play" style="max-width: 150px; height: auto;">
-                        </a>
+                        <div class="d-flex flex-wrap align-items-center gap-2">
+                            <a href="https://play.google.com/store/apps/details?id=com.tradingbelaraby.courses" target="_blank" rel="noopener">
+                                <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" loading="lazy" decoding="async"
+                                     alt="Get it on Google Play" style="max-width: 150px; height: auto;">
+                            </a>
+                            <a href="https://apps.apple.com/eg/app/trading-bel-araby/id6761126211" target="_blank" rel="noopener">
+                                <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" loading="lazy" decoding="async"
+                                     alt="Download on the App Store" width="120" height="40" style="height: 40px; width: auto;">
+                            </a>
+                        </div>
                     </div>
                 </div>
                 <!-- Links -->
