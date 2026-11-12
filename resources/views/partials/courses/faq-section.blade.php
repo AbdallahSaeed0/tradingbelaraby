@@ -90,19 +90,23 @@
                                 </div>
 
                                 <!-- Contact Information -->
-                                <div class="col-md-4">
-                                    <label for="phone_number"
-                                        class="form-label small fw-bold">{{ custom_trans('Phone', 'front') }}</label>
-                                    <input type="tel" class="form-control form-control-sm" id="phone_number"
-                                        name="phone_number" placeholder="{{ custom_trans('Phone number', 'front') }}">
-                                </div>
+                                @include('partials.intl-phone-input', [
+                                    'name' => 'phone_number',
+                                    'label' => custom_trans('Phone', 'front'),
+                                    'labelClass' => 'form-label small fw-bold',
+                                    'wrapperClass' => 'col-md-4',
+                                    'inputClass' => 'form-control-sm',
+                                    'required' => false,
+                                ])
 
-                                <div class="col-md-4">
-                                    <label for="whatsapp_number"
-                                        class="form-label small fw-bold">{{ custom_trans('WhatsApp', 'front') }}</label>
-                                    <input type="tel" class="form-control form-control-sm" id="whatsapp_number"
-                                        name="whatsapp_number" placeholder="{{ custom_trans('WhatsApp number', 'front') }}">
-                                </div>
+                                @include('partials.intl-phone-input', [
+                                    'name' => 'whatsapp_number',
+                                    'label' => custom_trans('WhatsApp', 'front'),
+                                    'labelClass' => 'form-label small fw-bold',
+                                    'wrapperClass' => 'col-md-4',
+                                    'inputClass' => 'form-control-sm',
+                                    'required' => false,
+                                ])
 
                                 <div class="col-md-4">
                                     <label for="trading_community"

@@ -106,4 +106,26 @@
             @endif
         </div>
     </section>
+
+    <script>
+        // Start loading a tab's course images as soon as its tab is hovered/focused/touched,
+        // so they are ready (or close) by the time the panel is shown.
+        (function () {
+            var tabs = document.getElementById('categoryTabs');
+            if (!tabs) return;
+            function warm(e) {
+                var btn = e.target.closest && e.target.closest('[data-bs-target]');
+                if (!btn || btn.dataset.warmed) return;
+                btn.dataset.warmed = '1';
+                var pane = document.querySelector(btn.getAttribute('data-bs-target'));
+                if (!pane) return;
+                pane.querySelectorAll('img[loading="lazy"]').forEach(function (img) {
+                    img.loading = 'eager';
+                });
+            }
+            ['pointerenter', 'focusin', 'touchstart'].forEach(function (evt) {
+                tabs.addEventListener(evt, warm, { capture: true, passive: true });
+            });
+        })();
+    </script>
 @endif

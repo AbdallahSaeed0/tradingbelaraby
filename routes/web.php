@@ -150,6 +150,13 @@ Route::post('/newsletter/unsubscribe', [App\Http\Controllers\NewsletterControlle
 Route::get('/instructors', [App\Http\Controllers\InstructorController::class, 'index'])->name('instructor.index');
 Route::get('/instructors/{id}', [App\Http\Controllers\InstructorController::class, 'show'])->name('instructor.show');
 
+// Visitor's country (ISO code) for preselecting phone dial codes; looked up per IP and cached
+Route::get('/visitor-country', function (\Illuminate\Http\Request $request) {
+    return response()
+        ->json(['country' => app(\App\Services\VisitorCountryService::class)->detect($request)])
+        ->header('Cache-Control', 'private, max-age=86400');
+})->middleware('throttle:30,1')->name('visitor-country');
+
 // Language switching routes
 Route::get('/language/{code}', function($code, \Illuminate\Http\Request $request) {
     // Frontend language switching

@@ -437,12 +437,12 @@ a.mobile-offcanvas-link:focus, a.mobile-offcanvas-link:focus-visible { outline: 
   100% { transform: scale(1); }
 }
 @keyframes notifDropIn { 
-  0% { opacity: 0; transform: translateY(-10px) scale(0.97); }
-  100% { opacity: 1; transform: translateY(0px) scale(1); }
+  0% { opacity: 0; translate: 0 -6px; }
+  100% { opacity: 1; translate: 0 0; }
 }
 @keyframes userDropIn { 
-  0% { opacity: 0; transform: translateY(-8px) scale(0.98); }
-  100% { opacity: 1; transform: translateY(0px) scale(1); }
+  0% { opacity: 0; translate: 0 -6px; }
+  100% { opacity: 1; translate: 0 0; }
 }
 [dir="rtl"] .input-group:not(.flex-row-reverse):not(.has-validation) > :not(:last-child):not(.dropdown-menu):not(.form-floating):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) { border-top-left-radius: 0px !important; border-bottom-left-radius: 0px !important; border-top-right-radius: var(--bs-border-radius) !important; border-bottom-right-radius: var(--bs-border-radius) !important; }
 [dir="rtl"] .input-group:not(.flex-row-reverse) > :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) { margin-left: 0px !important; margin-right: -1px !important; border-top-right-radius: 0px !important; border-bottom-right-radius: 0px !important; border-top-left-radius: var(--bs-border-radius) !important; border-bottom-left-radius: var(--bs-border-radius) !important; }

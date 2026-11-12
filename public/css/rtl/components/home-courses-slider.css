@@ -424,3 +424,24 @@
     flex: none;
     width: 100%;
 }
+
+/* ── Wider sliders: 1400px box, cards sized to whole columns (no half-cut card at the edge) ──
+   The slider script measures card width live, so scrolling steps follow these sizes. */
+.home-courses-slider__container {
+    max-width: 1400px;
+}
+@media (min-width: 1200px) {
+    .home-courses-slider__container {
+        max-width: 1400px;
+    }
+    .home-courses-slider__card {
+        width: calc((100% - 3 * 1.25rem) / 4);
+        min-width: 0;
+    }
+}
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    .home-courses-slider__card {
+        width: calc((100% - 2 * 1.25rem) / 3);
+        min-width: 0;
+    }
+}

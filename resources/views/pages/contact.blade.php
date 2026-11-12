@@ -102,12 +102,12 @@
                                     <span class="input-group-text bg-white"><i class="fa fa-envelope"></i></span>
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <div class="input-group">
-                                    <input type="text" name="phone" class="form-control rounded-3" placeholder="{{ custom_trans('Phone', 'front') }}">
-                                    <span class="input-group-text bg-white"><i class="fa fa-phone"></i></span>
-                                </div>
-                            </div>
+                            @include('partials.intl-phone-input', [
+                                'wrapperClass' => 'col-md-4',
+                                'inputClass' => 'rounded-3',
+                                'placeholder' => custom_trans('Phone', 'front'),
+                                'required' => false,
+                            ])
                         </div>
                         <div class="mb-3">
                             <div class="input-group">

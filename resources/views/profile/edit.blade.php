@@ -93,18 +93,12 @@
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="phone" class="form-label">{{ custom_trans('Phone Number', 'front') }}</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fa fa-phone"></i></span>
-                                            <input type="tel" class="form-control @error('phone') is-invalid @enderror"
-                                                id="phone" name="phone" value="{{ old('phone', $user->phone) }}"
-                                                placeholder="{{ custom_trans('Enter your phone number', 'front') }}">
-                                        </div>
-                                        @error('phone')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
+                                    @include('partials.intl-phone-input', [
+                                        'label' => custom_trans('Phone Number', 'front'),
+                                        'value' => old('phone', $user->phone),
+                                        'wrapperClass' => 'col-md-6 mb-3',
+                                        'required' => false,
+                                    ])
 
                                     <div class="col-md-6 mb-3">
                                         <label for="gender" class="form-label">{{ custom_trans('Gender', 'front') }}</label>

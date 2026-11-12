@@ -117,11 +117,11 @@
                                     <input type="email" class="form-control" id="email" name="email"
                                         value="{{ $user->email }}" required>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="phone" class="form-label">{{ custom_trans('phone', 'front') }} *</label>
-                                    <input type="tel" class="form-control" id="phone" name="phone"
-                                        value="{{ old('phone', $user->phone) }}" required>
-                                </div>
+                                @include('partials.intl-phone-input', [
+                                    'label' => custom_trans('phone', 'front') . ' *',
+                                    'value' => old('phone', $user->phone),
+                                    'wrapperClass' => 'col-md-6 mb-3',
+                                ])
                             </div>
                             <div class="mb-3">
                                 <label for="address" class="form-label">{{ custom_trans('address', 'front') }}</label>

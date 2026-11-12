@@ -3092,13 +3092,16 @@ body:has(main > section.hero) footer.footer-main > .container {
     background: rgba(255, 255, 255, .22);
     color: #fff;
 }
-/* Smooth panel switch */
+/* Instant panel swap (no fade-out wait), then a quick fade-in of the new panel */
 #categoryTabsContent > .tab-pane.fade {
-    transition: opacity .3s ease, transform .3s ease;
-    transform: translateY(8px);
+    transition: none;
 }
-#categoryTabsContent > .tab-pane.fade.show {
-    transform: none;
+#categoryTabsContent > .tab-pane.active.show {
+    animation: categoryTabIn .2s ease-out;
+}
+@keyframes categoryTabIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: none; }
 }
 @media (max-width: 767.98px) {
     .category-tabs-wrap { justify-content: flex-start; }
@@ -3106,5 +3109,20 @@ body:has(main > section.hero) footer.footer-main > .container {
 }
 @media (prefers-reduced-motion: reduce) {
     .category-tabs .nav-link,
-    #categoryTabsContent > .tab-pane.fade { transition: none; transform: none; }
+    #categoryTabsContent > .tab-pane.active.show { animation: none; }
+}
+
+/* ── Tighter spacing: category tabs section -> featured categories ──
+   (padding + margin + padding used to stack into ~136px of blank space). Must stay at the end. */
+.courses-by-category-section {
+    padding-bottom: 1.5rem !important;
+}
+.courses-by-category-section .tab-pane > .home-courses-slider {
+    padding-bottom: 1rem;
+}
+.courses-by-category-section .tab-pane > .text-center.mt-4 {
+    margin-top: 1rem !important;
+}
+.featured-categories-section {
+    margin-top: 0 !important;
 }
