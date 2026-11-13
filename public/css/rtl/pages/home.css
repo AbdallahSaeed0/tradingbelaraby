@@ -3126,3 +3126,52 @@ body:has(main > section.hero) footer.footer-main > .container {
 .featured-categories-section {
     margin-top: 0 !important;
 }
+
+/* ── Mobile bottom nav: compact (58px instead of 74px), floating with side margins. Must stay at the end.
+   Pages that stack a bar above it (course page enroll bar) rely on its top edge ≈ 66px from the bottom. ── */
+@media (max-width: 768px) {
+    .mobile-bottom-bar {
+        bottom: 8px;
+        left: 10px;
+        right: 10px;
+        padding: 4px 4px max(4px, env(safe-area-inset-bottom, 0px));
+        border-radius: 18px;
+        box-shadow: 0 6px 20px rgba(241, 90, 41, .3);
+    }
+    .mobile-nav-item { padding: 6px 2px; margin: 0 2px; border-radius: 12px; }
+    .mobile-nav-item i { font-size: 18px; margin-bottom: 3px; }
+    .mobile-nav-item span { font-size: 10.5px; letter-spacing: 0; }
+    .mobile-nav-item:hover,
+    .mobile-nav-item.active { transform: none; }
+}
+
+/* ── FAQ arrow: always at the far end of the row, same box open or closed. Must stay at the end. ── */
+.faq-accordion .accordion-button { gap: 1rem; }
+.faq-accordion .accordion-button > .fw-bold { flex: 1 1 auto; min-width: 0; text-align: start; }
+.faq-accordion .faq-chevron {
+    flex: 0 0 auto;
+    margin: 0 !important;
+    margin-inline-start: auto !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    background: #fff;
+    color: #f15a29;
+    font-size: .95rem;
+    transform: none;
+    transition: background-color .2s ease, border-color .2s ease, color .2s ease;
+}
+.faq-accordion .faq-chevron i { transition: transform .3s ease; }
+.faq-accordion .accordion-button:hover .faq-chevron { border-color: #f15a29; }
+.faq-accordion .accordion-button:not(.collapsed) .faq-chevron {
+    transform: none;
+    border: 1px solid #f15a29;
+    background: #fff1ec;
+}
+.faq-accordion .accordion-button:not(.collapsed) .faq-chevron i { transform: rotate(180deg); }
+.faq-accordion .accordion-button::after { display: none; }

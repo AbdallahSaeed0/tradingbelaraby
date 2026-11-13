@@ -3027,4 +3027,16 @@ return [
         'en' => 'Pagination',
         'ar' => 'التنقل بين الصفحات',
     ],
+    'star_one' => [
+        'en' => '1 star',
+        'ar' => 'نجمة واحدة',
+    ],
+    'stars_two' => [
+        'en' => '2 stars',
+        'ar' => 'نجمتان',
+    ],
+    'stars_many' => [
+        'en' => 'stars',
+        'ar' => 'نجوم',
+    ],
 ];

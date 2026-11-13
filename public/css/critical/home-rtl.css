@@ -745,3 +745,21 @@ body { padding-bottom: 80px; }
         bottom: 10px !important;
     }
 }
+
+/* ── Mobile bottom nav: compact (58px instead of 74px), floating with side margins. Must stay at the end.
+   Pages that stack a bar above it (course page enroll bar) rely on its top edge ≈ 66px from the bottom. ── */
+@media (max-width: 768px) {
+    .mobile-bottom-bar {
+        bottom: 8px;
+        left: 10px;
+        right: 10px;
+        padding: 4px 4px max(4px, env(safe-area-inset-bottom, 0px));
+        border-radius: 18px;
+        box-shadow: 0 6px 20px rgba(241, 90, 41, .3);
+    }
+    .mobile-nav-item { padding: 6px 2px; margin: 0 2px; border-radius: 12px; }
+    .mobile-nav-item i { font-size: 18px; margin-bottom: 3px; }
+    .mobile-nav-item span { font-size: 10.5px; letter-spacing: 0; }
+    .mobile-nav-item:hover,
+    .mobile-nav-item.active { transform: none; }
+}
