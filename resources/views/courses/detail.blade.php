@@ -841,11 +841,10 @@
             }
 
             // "1 star" / "2 stars" / "5 stars", with Arabic's singular / dual / plural forms
-            const STAR_WORDS = @json([
-                'one' => custom_trans('star_one', 'front'),
-                'two' => custom_trans('stars_two', 'front'),
-                'many' => custom_trans('stars_many', 'front'),
-            ]);
+            @php
+                $starWords = ['one' => custom_trans('star_one', 'front'), 'two' => custom_trans('stars_two', 'front'), 'many' => custom_trans('stars_many', 'front')];
+            @endphp
+            const STAR_WORDS = @json($starWords);
             function starLabel(n) {
                 if (n === 1) return STAR_WORDS.one;
                 if (n === 2) return STAR_WORDS.two;
