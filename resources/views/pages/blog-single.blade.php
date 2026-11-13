@@ -112,72 +112,56 @@
 
                 <!-- Sidebar -->
                 <div class="col-lg-4">
-                    <div class="blog-sidebar">
+                    <div class="blog-sidebar article-side">
                         <!-- Categories -->
                         @if ($categories->count() > 0)
-                            <div class="card shadow-sm mb-4">
-                                <div class="card-header">
-                                    <h5 class="mb-0">{{ custom_trans('Categories', 'front') }}</h5>
-                                </div>
-                                <div class="card-body">
-                                    <div class="list-group list-group-flush">
-                                        @foreach ($categories as $category)
-                                            <a href="{{ route('blog.index', ['category' => $category->slug]) }}"
-                                                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                                                {{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}
-                                                <span
-                                                    class="badge bg-primary rounded-pill">{{ $category->blogs_count }}</span>
-                                            </a>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            </div>
+                            <section class="side-card">
+                                <h2 class="side-card-title"><i class="fas fa-layer-group" aria-hidden="true"></i>{{ custom_trans('Categories', 'front') }}</h2>
+                                <nav class="side-cats">
+                                    @foreach ($categories as $category)
+                                        <a href="{{ route('blog.index', ['category' => $category->slug]) }}"
+                                            class="side-cat {{ $blog->category_id == $category->id ? 'is-current' : '' }}">
+                                            <span class="side-cat-name">{{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}</span>
+                                            <span class="side-cat-count">{{ $category->blogs_count }}</span>
+                                        </a>
+                                    @endforeach
+                                </nav>
+                            </section>
                         @endif
 
                         <!-- Recent Posts -->
-                        <div class="card shadow-sm">
-                            <div class="card-header">
-                                <h5 class="mb-0">{{ custom_trans('Recent Posts', 'front') }}</h5>
-                            </div>
-                            <div class="card-body">
-                                @php
-                                    $recentBlogs = \App\Models\Blog::visible()
-                                        ->with('category')
-                                        ->latest()
-                                        ->limit(5)
-                                        ->get();
-                                @endphp
-
-                                @if ($recentBlogs->count() > 0)
+                        @php
+                            $recentBlogs = \App\Models\Blog::visible()
+                                ->with('category')
+                                ->where('id', '!=', $blog->id)
+                                ->latest()
+                                ->limit(5)
+                                ->get();
+                        @endphp
+                        <section class="side-card">
+                            <h2 class="side-card-title"><i class="far fa-newspaper" aria-hidden="true"></i>{{ custom_trans('Recent Posts', 'front') }}</h2>
+                            @if ($recentBlogs->count() > 0)
+                                <div class="side-posts">
                                     @foreach ($recentBlogs as $recentBlog)
-                                        <div class="d-flex mb-3">
-                                            @if ($recentBlog->image)
-                                                <img src="{{ $recentBlog->image_url }}"
-                                                    class="rounded me-3 w-60 h-60 img-h-60"
-                                                    alt="{{ $recentBlog->getLocalizedTitle() }}">
-                                            @else
-                                                <div
-                                                    class="rounded me-3 bg-light d-flex align-items-center justify-content-center w-60 h-60">
-                                                    <i class="fas fa-newspaper text-muted"></i>
-                                                </div>
-                                            @endif
-                                            <div class="flex-grow-1">
-                                                <h6 class="mb-1">
-                                                    <a href="{{ route('blog.show', $recentBlog->slug) }}"
-                                                        class="text-decoration-none">
-                                                        {{ Str::limit($recentBlog->getLocalizedTitle(), 40) }}
-                                                    </a>
-                                                </h6>
-                                                <small
-                                                    class="text-muted">{{ $recentBlog->created_at->translatedFormat('M d, Y') }}</small>
-                                            </div>
-                                        </div>
+                                        <a href="{{ route('blog.show', $recentBlog->slug) }}" class="side-post">
+                                            <span class="side-post-thumb">
+                                                @if ($recentBlog->image)
+                                                    <img src="{{ $recentBlog->image_url }}" alt="" loading="lazy" width="80" height="60">
+                                                @else
+                                                    <i class="fas fa-newspaper" aria-hidden="true"></i>
+                                                @endif
+                                            </span>
+                                            <span class="side-post-body">
+                                                <span class="side-post-title">{{ $recentBlog->getLocalizedTitle() }}</span>
+                                                <span class="side-post-date"><i class="far fa-calendar" aria-hidden="true"></i>{{ $recentBlog->created_at->translatedFormat('d M Y') }}</span>
+                                            </span>
+                                        </a>
                                     @endforeach
-                                @else
-                                    <p class="text-muted mb-0">{{ custom_trans('No recent posts.', 'front') }}</p>
-                                @endif
-                            </div>
-                        </div>
+                                </div>
+                            @else
+                                <p class="text-muted mb-0">{{ custom_trans('No recent posts.', 'front') }}</p>
+                            @endif
+                        </section>
                     </div>
                 </div>
             </div>

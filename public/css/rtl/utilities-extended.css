@@ -406,3 +406,42 @@
     background-position: center;
     background-repeat: no-repeat;
 }
+
+/* ── Public-site pagination (resources/views/vendor/pagination/front.blade.php) ── */
+.site-pager {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    margin-top: 1.5rem;
+}
+.site-pager-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 42px;
+    height: 42px;
+    padding: 0 .6rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    background: #fff;
+    color: #334155;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color .2s ease, color .2s ease, border-color .2s ease;
+}
+a.site-pager-btn:hover { border-color: #156481; color: #156481; background: #f1f7fa; }
+.site-pager-btn.is-current {
+    background: #156481;
+    border-color: #156481;
+    color: #fff;
+    box-shadow: 0 6px 14px rgba(21, 100, 129, .25);
+}
+.site-pager-btn.is-disabled { opacity: .4; }
+.site-pager-gap { padding: 0 .2rem; color: #94a3b8; font-weight: 700; }
+[dir="rtl"] .site-pager-arrow { transform: scaleX(-1); }
+@media (max-width: 575.98px) {
+    .site-pager-btn { min-width: 36px; height: 36px; border-radius: 8px; font-size: .9rem; }
+}

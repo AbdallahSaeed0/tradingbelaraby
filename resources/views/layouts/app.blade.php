@@ -313,7 +313,6 @@ main:has(> section.hero) > section:not(.hero), body:has(main > section.hero) foo
                                             lang="{{ $language->code }}" @if ($currentLanguage->id == $language->id) aria-current="true" @endif>
                                             @include('partials.lang-flag', ['code' => $language->code])
                                             <span class="lang-option-name">{{ $language->native_name }}</span>
-                                            <span class="lang-option-code">{{ strtoupper($language->code) }}</span>
                                             @if ($currentLanguage->id == $language->id)
                                                 <i class="fas fa-check lang-option-check" aria-hidden="true"></i>
                                             @endif
@@ -964,7 +963,6 @@ main:has(> section.hero) > section:not(.hero), body:has(main > section.hero) foo
                             aria-expanded="false" aria-label="{{ custom_trans('language', 'front') }}">
                             @include('partials.lang-flag', ['code' => $currentLanguage->code])
                             <span class="lang-option-name">{{ $currentLanguage->native_name }}</span>
-                            <span class="lang-option-code">{{ strtoupper($currentLanguage->code) }}</span>
                         </button>
                         <ul class="dropdown-menu lang-menu footer-lang-menu">
                             @foreach ($availableLanguages as $language)
@@ -974,7 +972,6 @@ main:has(> section.hero) > section:not(.hero), body:has(main > section.hero) foo
                                         lang="{{ $language->code }}" @if ($currentLanguage->id == $language->id) aria-current="true" @endif>
                                         @include('partials.lang-flag', ['code' => $language->code])
                                         <span class="lang-option-name">{{ $language->native_name }}</span>
-                                        <span class="lang-option-code">{{ strtoupper($language->code) }}</span>
                                         @if ($currentLanguage->id == $language->id)
                                             <i class="fas fa-check lang-option-check" aria-hidden="true"></i>
                                         @endif

@@ -696,3 +696,119 @@ a.blog-pager-btn:hover { border-color: #156481; color: #156481; background: #f1f
     padding-top: .75rem;
     border-top: 1px solid #eef2f7;
 }
+
+/* ── Article page sidebar: categories + recent posts. Must stay at the end. ── */
+.article-side { position: sticky; top: 96px; display: flex; flex-direction: column; gap: 1.25rem; }
+.side-card {
+    background: #fff;
+    border: 1px solid #e8edf3;
+    border-radius: 16px;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, .04);
+    padding: 1.1rem 1.1rem 1rem;
+}
+.side-card-title {
+    display: flex;
+    align-items: center;
+    gap: .55rem;
+    margin: 0 0 .9rem;
+    padding-bottom: .75rem;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #156481;
+    border-bottom: 1px solid #eef2f7;
+    position: relative;
+}
+.side-card-title::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    inset-inline-start: 0;
+    width: 42px;
+    height: 3px;
+    border-radius: 3px;
+    background: #ff7043;
+}
+.side-card-title i {
+    display: inline-flex;
+    width: 32px;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    background: #e8f2f6;
+    color: #156481;
+    font-size: .9rem;
+}
+
+.side-cats { display: flex; flex-direction: column; gap: 4px; }
+.side-cat {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    padding: .6rem .7rem;
+    border-radius: 10px;
+    color: #334155;
+    font-weight: 600;
+    font-size: .93rem;
+    text-decoration: none;
+    transition: background-color .2s ease, color .2s ease;
+}
+.side-cat:hover { background: #f1f5f9; color: #156481; }
+.side-cat.is-current { background: #e8f2f6; color: #156481; }
+.side-cat-count {
+    flex: 0 0 auto;
+    min-width: 28px;
+    padding: .15rem .5rem;
+    border-radius: 999px;
+    background: #eef2f7;
+    color: #475569;
+    font-size: .75rem;
+    font-weight: 700;
+    text-align: center;
+}
+.side-cat:hover .side-cat-count,
+.side-cat.is-current .side-cat-count { background: #156481; color: #fff; }
+
+.side-posts { display: flex; flex-direction: column; }
+.side-post {
+    display: flex;
+    align-items: center;
+    gap: .8rem;
+    padding: .65rem .3rem;
+    border-bottom: 1px dashed #e8edf3;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color .2s ease;
+}
+.side-post:last-child { border-bottom: 0; }
+.side-post:hover { background: #f8fafc; }
+.side-post-thumb {
+    flex: 0 0 80px;
+    height: 60px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #eef2f7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+}
+.side-post-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s ease; }
+.side-post:hover .side-post-thumb img { transform: scale(1.06); }
+.side-post-body { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: .3rem; }
+.side-post-title {
+    font-size: .9rem;
+    font-weight: 700;
+    line-height: 1.5;
+    color: #1e293b;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    transition: color .2s ease;
+}
+.side-post:hover .side-post-title { color: #156481; }
+.side-post-date { display: inline-flex; align-items: center; gap: .35rem; font-size: .78rem; color: #94a3b8; }
+
+@media (max-width: 991.98px) { .article-side { position: static; } }

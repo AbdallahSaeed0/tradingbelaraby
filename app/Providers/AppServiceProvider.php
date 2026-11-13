@@ -38,6 +38,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useBootstrapFive();
+        // The bootstrap-5 template is customised for the admin panel (its classes are only styled there);
+        // the public site gets its own compact pager.
+        if (!$this->app->runningInConsole() && !request()->is('admin', 'admin/*')) {
+            Paginator::defaultView('pagination::front');
+        }
 
         Event::listen(SocialiteWasCalled::class, function (SocialiteWasCalled $event) {
             if (class_exists(\SocialiteProviders\Apple\Provider::class)) {

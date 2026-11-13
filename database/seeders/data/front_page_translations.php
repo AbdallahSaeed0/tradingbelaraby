@@ -3023,4 +3023,8 @@ return [
         'en' => 'Use a strong password you do not use elsewhere',
         'ar' => 'استخدم كلمة مرور قوية لا تستخدمها في مكان آخر',
     ],
+    'Pagination' => [
+        'en' => 'Pagination',
+        'ar' => 'التنقل بين الصفحات',
+    ],
 ];
