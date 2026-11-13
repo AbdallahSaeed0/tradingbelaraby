@@ -104,7 +104,13 @@ class CourseController extends Controller
 
     public function search(Request $request)
     {
-        $query = Course::query();
+        // Same data as the category page cards; drafts never appear in public search
+        $query = Course::published()
+            ->with(['instructor', 'instructors', 'category'])
+            ->withCount(['lectures as total_lessons_count' => function ($q) {
+                $q->where('is_published', true);
+            }])
+            ->withAvg('ratings', 'rating');
         $searchQuery = $request->get('q', '');
 
         if ($request->filled('q')) {
@@ -134,11 +140,12 @@ class CourseController extends Controller
                 break;
         }
 
-        $courses = $query->paginate(12);
+        $courses = $query->paginate(12)->withQueryString();
 
         // Get categories for the sidebar filter
         $categories = CourseCategory::active()
             ->withCount(['courses' => function($query) use ($searchQuery) {
+                $query->where('status', 'published');
                 if ($searchQuery) {
                     $query->where('name', 'like', '%' . $searchQuery . '%');
                 }

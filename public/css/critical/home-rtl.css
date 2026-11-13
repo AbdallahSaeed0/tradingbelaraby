@@ -425,8 +425,8 @@ a.mobile-offcanvas-link:focus, a.mobile-offcanvas-link:focus-visible { outline: 
 .language-switcher .dropdown-item.active:hover { background-color: var(--bs-primary) !important; }
 .language-switcher .btn { pointer-events: auto; cursor: pointer; }
 [dir="rtl"] .language-switcher .dropdown-menu { inset-inline: auto 0px; }
-.newsletter-btn { transition: 0.3s; }
-.newsletter-btn:hover { background-color: rgba(255, 255, 255, 0.2); transform: translateY(-2px); }
+.newsletter-btn { transition: background-color .2s, border-color .2s, color .2s; }
+.newsletter-section .newsletter-btn:hover, .newsletter-section .newsletter-btn:focus-visible, .newsletter-section .newsletter-btn:active { background-color: #f15a29 !important; border-color: #f15a29 !important; color: #fff !important; transform: none; box-shadow: none; }
 @keyframes slideDown { 
   0% { opacity: 0; transform: translateY(-10px); }
   100% { opacity: 1; transform: translateY(0px); }

@@ -17,6 +17,7 @@
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
+    text-decoration: none;
 }
 
 /* Pulse ring: animated with transform/opacity on a pseudo-element so it runs on the
@@ -32,7 +33,9 @@
     animation: pulse-whatsapp 2s infinite;
 }
 
-.whatsapp-float:hover {
+.whatsapp-float:hover,
+.whatsapp-float:focus {
+    text-decoration: none;
     background-color: #128c7e;
     color: #fff;
     transform: scale(1.1);

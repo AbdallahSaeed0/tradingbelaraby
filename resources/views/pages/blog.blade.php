@@ -115,121 +115,87 @@
                         <div class="row g-4">
                             @foreach ($blogs as $blog)
                                 <div class="col-md-6 col-xl-4 d-flex">
-                                    <div class="blog-card bg-white rounded-4 shadow-sm w-100 d-flex flex-column">
-                                        <div class="blog-img-wrap position-relative overflow-hidden rounded-top-4">
-                                            @if ($blog->getLocalizedImageUrl())
-                                                @php $blogImgPath = get_current_language_code() === 'ar' && $blog->image_ar ? $blog->image_ar : $blog->image; @endphp
-                                                <a href="{{ route('blog.show', $blog->slug) }}" class="d-block text-decoration-none">
-                                                    @if ($blogImgPath)
-                                                        <img src="{{ optimized_image_url($blogImgPath, 400, 250) }}" class="blog-img w-100"
-                                                            alt="{{ $blog->getLocalizedTitle() }}" width="400" height="250" loading="lazy" srcset="{{ optimized_image_url($blogImgPath, 400, 250) }} 400w, {{ optimized_image_url($blogImgPath, 800, 500) }} 800w" sizes="(max-width: 768px) 100vw, 400px">
-                                                    @else
-                                                        <img src="{{ $blog->getLocalizedImageUrl() }}" class="blog-img w-100"
-                                                            alt="{{ $blog->getLocalizedTitle() }}" width="400" height="250" loading="lazy">
-                                                    @endif
-                                                </a>
+                                    @php
+                                        $blogImgPath = get_current_language_code() === 'ar' && $blog->image_ar ? $blog->image_ar : $blog->image;
+                                        $blogCategory = $blog->category ? \App\Helpers\TranslationHelper::getLocalizedContent($blog->category->name, $blog->category->name_ar) : null;
+                                    @endphp
+                                    <article class="blog-card w-100">
+                                        <a href="{{ route('blog.show', $blog->slug) }}" class="blog-card-media" tabindex="-1" aria-hidden="true">
+                                            @if ($blogImgPath)
+                                                <img src="{{ optimized_image_url($blogImgPath, 400, 250) }}" class="blog-img"
+                                                    alt="" width="400" height="250" loading="lazy"
+                                                    srcset="{{ optimized_image_url($blogImgPath, 400, 250) }} 400w, {{ optimized_image_url($blogImgPath, 800, 500) }} 800w"
+                                                    sizes="(max-width: 768px) 100vw, 400px">
+                                            @elseif ($blog->getLocalizedImageUrl())
+                                                <img src="{{ $blog->getLocalizedImageUrl() }}" class="blog-img" alt="" width="400" height="250" loading="lazy">
                                             @else
-                                                <div
-                                                    class="blog-placeholder d-flex align-items-center justify-content-center bg-light">
-                                                    <i class="fas fa-newspaper fa-3x text-muted"></i>
-                                                </div>
+                                                <span class="blog-placeholder"><i class="fas fa-newspaper"></i></span>
                                             @endif
                                             @if ($blog->is_featured)
-                                                <span class="badge bg-warning position-absolute top-0 start-0 m-2">
-                                                    <i class="fas fa-star me-1"></i>{{ custom_trans('Featured', 'front') }}
-                                                </span>
+                                                <span class="blog-card-featured"><i class="fas fa-star"></i>{{ custom_trans('Featured', 'front') }}</span>
                                             @endif
-                                        </div>
-                                        <div class="p-4 flex-grow-1 d-flex flex-column">
-                                            <div class="mb-2 text-muted small">
-                                                <i class="fa fa-calendar me-1"></i>
-                                                {{ $blog->created_at->format('d-m-Y') }}
-                                                @if ($blog->author_name)
-                                                    <span class="ms-2">
-                                                        <i class="fas fa-user me-1"></i> {{ $blog->author_name }}
-                                                    </span>
-                                                @endif
-                                                @if ($blog->category)
-                                                    <span class="ms-2">
-                                                        <i class="fas fa-folder me-1"></i>
-                                                        {{ \App\Helpers\TranslationHelper::getLocalizedContent($blog->category->name, $blog->category->name_ar) }}
-                                                    </span>
-                                                @endif
+                                            @if ($blogCategory)
+                                                <span class="blog-card-category">{{ $blogCategory }}</span>
+                                            @endif
+                                        </a>
+                                        <div class="blog-card-body">
+                                            <div class="blog-card-meta">
+                                                <span><i class="far fa-calendar" aria-hidden="true"></i>{{ $blog->created_at->format('d-m-Y') }}</span>
+                                                <span><i class="far fa-eye" aria-hidden="true"></i>{{ $blog->views_count }} {{ custom_trans('views', 'front') }}</span>
                                             </div>
-                                            <h5 class="blog-title fw-bold mb-2">
-                                                <a href="{{ route('blog.show', $blog->slug) }}"
-                                                    class="text-decoration-none text-dark">
-                                                    {{ Str::limit($blog->getLocalizedTitle(), 50) }}
-                                                </a>
-                                            </h5>
-                                            <p class="mb-3 text-muted flex-grow-1">
-                                                {{ Str::limit($blog->getLocalizedExcerpt() ?: strip_tags($blog->getLocalizedDescription()), 120) }}
+                                            <h3 class="blog-card-title">
+                                                <a href="{{ route('blog.show', $blog->slug) }}">{{ $blog->getLocalizedTitle() }}</a>
+                                            </h3>
+                                            <p class="blog-card-excerpt">
+                                                {{ Str::limit($blog->getLocalizedExcerpt() ?: strip_tags($blog->getLocalizedDescription()), 200) }}
                                             </p>
-
-                                            <div class="d-flex justify-content-between align-items-center mt-auto">
-                                                <small class="text-muted">
-                                                    <i class="fas fa-eye me-1"></i> {{ $blog->views_count }} {{ custom_trans('views', 'front') }}
-                                                </small>
-                                                <a href="{{ route('blog.show', $blog->slug) }}"
-                                                    class="btn btn-blog-read">{{ custom_trans('Read More', 'front') }}
-                                                    &rarr;</a>
+                                            <div class="blog-card-footer">
+                                                @if ($blog->author_name)
+                                                    <span class="blog-card-author"><i class="far fa-user" aria-hidden="true"></i>{{ $blog->author_name }}</span>
+                                                @endif
+                                                <a href="{{ route('blog.show', $blog->slug) }}" class="blog-card-more">
+                                                    {{ custom_trans('Read More', 'front') }}
+                                                    <i class="fas fa-arrow-right blog-card-arrow" aria-hidden="true"></i>
+                                                </a>
                                             </div>
                                         </div>
-                                    </div>
+                                    </article>
                                 </div>
                             @endforeach
                         </div>
 
-                        <!-- Pagination -->
+                        <!-- Pagination: first, last and the pages around the current one, so it stays on one row -->
                         @if ($blogs->hasPages())
-                            <div class="d-flex justify-content-center mt-5">
-                                <nav aria-label="Blog pagination">
-                                    <ul class="pagination pagination-lg">
-                                        {{-- Previous Page Link --}}
-                                        @if ($blogs->onFirstPage())
-                                            <li class="page-item disabled">
-                                                <span class="page-link" aria-label="Previous">
-                                                    <i class="fas fa-chevron-left"></i>
-                                                </span>
-                                            </li>
-                                        @else
-                                            <li class="page-item">
-                                                <a class="page-link" href="{{ $blogs->appends(request()->query())->previousPageUrl() }}" aria-label="Previous">
-                                                    <i class="fas fa-chevron-left"></i>
-                                                </a>
-                                            </li>
-                                        @endif
+                            @php
+                                $blogs->appends(request()->query());
+                                $current = $blogs->currentPage();
+                                $last = $blogs->lastPage();
+                                $window = collect([1, $last])->merge(range(max(1, $current - 1), min($last, $current + 1)))->unique()->sort()->values();
+                            @endphp
+                            <nav class="blog-pager" aria-label="Blog pagination">
+                                @if ($blogs->onFirstPage())
+                                    <span class="blog-pager-btn is-disabled" aria-hidden="true"><i class="fas fa-chevron-left blog-pager-prev"></i></span>
+                                @else
+                                    <a class="blog-pager-btn" href="{{ $blogs->previousPageUrl() }}" rel="prev" aria-label="{{ custom_trans('Previous', 'front') }}"><i class="fas fa-chevron-left blog-pager-prev"></i></a>
+                                @endif
 
-                                        {{-- Pagination Elements --}}
-                                        @foreach ($blogs->getUrlRange(1, $blogs->lastPage()) as $page => $url)
-                                            @if ($page == $blogs->currentPage())
-                                                <li class="page-item active">
-                                                    <span class="page-link">{{ $page }}</span>
-                                                </li>
-                                            @else
-                                                <li class="page-item">
-                                                    <a class="page-link" href="{{ $blogs->appends(request()->query())->url($page) }}">{{ $page }}</a>
-                                                </li>
-                                            @endif
-                                        @endforeach
+                                @foreach ($window as $k => $page)
+                                    @if ($k > 0 && $page - $window[$k - 1] > 1)
+                                        <span class="blog-pager-gap" aria-hidden="true">…</span>
+                                    @endif
+                                    @if ($page == $current)
+                                        <span class="blog-pager-btn is-current" aria-current="page">{{ $page }}</span>
+                                    @else
+                                        <a class="blog-pager-btn" href="{{ $blogs->url($page) }}">{{ $page }}</a>
+                                    @endif
+                                @endforeach
 
-                                        {{-- Next Page Link --}}
-                                        @if ($blogs->hasMorePages())
-                                            <li class="page-item">
-                                                <a class="page-link" href="{{ $blogs->appends(request()->query())->nextPageUrl() }}" aria-label="Next">
-                                                    <i class="fas fa-chevron-right"></i>
-                                                </a>
-                                            </li>
-                                        @else
-                                            <li class="page-item disabled">
-                                                <span class="page-link" aria-label="Next">
-                                                    <i class="fas fa-chevron-right"></i>
-                                                </span>
-                                            </li>
-                                        @endif
-                                    </ul>
-                                </nav>
-                            </div>
+                                @if ($blogs->hasMorePages())
+                                    <a class="blog-pager-btn" href="{{ $blogs->nextPageUrl() }}" rel="next" aria-label="{{ custom_trans('Next', 'front') }}"><i class="fas fa-chevron-right blog-pager-next"></i></a>
+                                @else
+                                    <span class="blog-pager-btn is-disabled" aria-hidden="true"><i class="fas fa-chevron-right blog-pager-next"></i></span>
+                                @endif
+                            </nav>
                         @endif
                     @else
                         <div class="text-center py-5">

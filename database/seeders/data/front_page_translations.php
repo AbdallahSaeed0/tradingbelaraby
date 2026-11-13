@@ -2951,4 +2951,56 @@ return [
         'en' => 'at',
         'ar' => 'في',
     ],
+    'lectures_count_label' => [
+        'en' => 'lectures',
+        'ar' => 'محاضرات',
+    ],
+    'Play' => [
+        'en' => 'Play',
+        'ar' => 'تشغيل',
+    ],
+    'Purchase History' => [
+        'en' => 'Purchase History',
+        'ar' => 'سجل المشتريات',
+    ],
+    'All the courses you have enrolled in or purchased' => [
+        'en' => 'All the courses you have enrolled in or purchased',
+        'ar' => 'كل الدورات التي اشتركت فيها أو اشتريتها',
+    ],
+    'courses_count_label' => [
+        'en' => 'courses',
+        'ar' => 'دورات',
+    ],
+    'Cancelled' => [
+        'en' => 'Cancelled',
+        'ar' => 'ملغي',
+    ],
+    'Course no longer available' => [
+        'en' => 'Course no longer available',
+        'ar' => 'الدورة لم تعد متاحة',
+    ],
+    'Purchased on' => [
+        'en' => 'Purchased on',
+        'ar' => 'تاريخ الشراء',
+    ],
+    'Review course' => [
+        'en' => 'Review course',
+        'ar' => 'مراجعة الدورة',
+    ],
+    'Continue learning' => [
+        'en' => 'Continue learning',
+        'ar' => 'متابعة التعلم',
+    ],
+    'No purchases yet' => [
+        'en' => 'No purchases yet',
+        'ar' => 'لا توجد مشتريات بعد',
+    ],
+    'Courses you enroll in or buy will appear here.' => [
+        'en' => 'Courses you enroll in or buy will appear here.',
+        'ar' => 'ستظهر هنا الدورات التي تشترك فيها أو تشتريها.',
+    ],
+    'Browse courses' => [
+        'en' => 'Browse courses',
+        'ar' => 'تصفح الدورات',
+    ],
 ];

@@ -42,12 +42,17 @@
 
 /* User dropdown trigger — see components/dropdowns.css */
 
-/* Newsletter Button */
+/* Newsletter Button: colour change only on hover (no lift), never Bootstrap's black-on-white */
 .newsletter-btn {
-    transition: all 0.3s ease;
+    transition: background-color .2s ease, border-color .2s ease, color .2s ease;
 }
 
-.newsletter-btn:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
+.newsletter-section .newsletter-btn:hover,
+.newsletter-section .newsletter-btn:focus-visible,
+.newsletter-section .newsletter-btn:active {
+    background-color: #f15a29 !important;
+    border-color: #f15a29 !important;
+    color: #fff !important;
+    transform: none;
+    box-shadow: none;
 }
