@@ -15,7 +15,10 @@
                 <h2 class="fw-bold mb-2" @if (\App\Helpers\TranslationHelper::getFrontendLanguage()->code === 'ar') dir="rtl" @endif>
                     {{ $course->localized_name }}
                 </h2>
-                <div class="text-muted mb-2">{{ $course->instructor->name ?? custom_trans('Instructor', 'front') }}</div>
+                <div class="course-hero-instructor mb-2">
+                    <i class="fas fa-chalkboard-user" aria-hidden="true"></i>
+                    <span>{{ $course->instructor->name ?? custom_trans('Instructor', 'front') }}</span>
+                </div>
                 <div class="mb-3" @if (\App\Helpers\TranslationHelper::getFrontendLanguage()->code === 'ar') dir="rtl" @endif>
                     {{ $course->localized_description }}
                 </div>

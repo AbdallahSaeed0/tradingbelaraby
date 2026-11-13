@@ -3003,4 +3003,24 @@ return [
         'en' => 'Browse courses',
         'ar' => 'تصفح الدورات',
     ],
+    'Manage your personal information and account security' => [
+        'en' => 'Manage your personal information and account security',
+        'ar' => 'إدارة معلوماتك الشخصية وأمان حسابك',
+    ],
+    'Change photo' => [
+        'en' => 'Change photo',
+        'ar' => 'تغيير الصورة',
+    ],
+    'Update your name, contact details and bio' => [
+        'en' => 'Update your name, contact details and bio',
+        'ar' => 'حدّث اسمك وبيانات التواصل ونبذتك',
+    ],
+    'Click "Update Profile" to save' => [
+        'en' => 'Click "Update Profile" to save',
+        'ar' => 'اضغط "تحديث الملف الشخصي" للحفظ',
+    ],
+    'Use a strong password you do not use elsewhere' => [
+        'en' => 'Use a strong password you do not use elsewhere',
+        'ar' => 'استخدم كلمة مرور قوية لا تستخدمها في مكان آخر',
+    ],
 ];

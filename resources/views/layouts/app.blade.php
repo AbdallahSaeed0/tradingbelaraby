@@ -299,26 +299,24 @@ main:has(> section.hero) > section:not(.hero), body:has(main > section.hero) foo
                     @endphp
                     <div class="language-switcher me-3">
                         <div class="dropdown">
-                            <button class="btn btn-outline-light dropdown-toggle text-black" type="button"
+                            <button class="btn lang-toggle dropdown-toggle" type="button"
                                 id="frontendLangDropdown" data-bs-toggle="dropdown" data-bs-display="static"
-                                data-bs-auto-close="outside"
-                                aria-expanded="false">
-                                <i class="fas fa-globe me-1"></i>
-                                {{ strtoupper($currentLanguage->code) }}
+                                aria-expanded="false" aria-label="{{ custom_trans('language', 'front') }}">
+                                @include('partials.lang-flag', ['code' => $currentLanguage->code])
+                                <span>{{ strtoupper($currentLanguage->code) }}</span>
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="frontendLangDropdown">
+                            <ul class="dropdown-menu dropdown-menu-end lang-menu" aria-labelledby="frontendLangDropdown">
                                 @foreach ($availableLanguages as $language)
                                     <li>
-                                        <a class="dropdown-item {{ $currentLanguage->id == $language->id ? 'active' : '' }}"
-                                            href="{{ route('language.switch', $language->code) }}?redirect={{ urlencode(url()->full()) }}">
-                                            <span class="me-2">
-                                                @if ($language->direction == 'rtl')
-                                                    <i class="fas fa-text-width" title="RTL"></i>
-                                                @else
-                                                    <i class="fas fa-text-width" title="LTR"></i>
-                                                @endif
-                                            </span>
-                                            {{ $language->native_name }} ({{ $language->code }})
+                                        <a class="dropdown-item lang-option {{ $currentLanguage->id == $language->id ? 'is-current' : '' }}"
+                                            href="{{ route('language.switch', $language->code) }}?redirect={{ urlencode(url()->full()) }}"
+                                            lang="{{ $language->code }}" @if ($currentLanguage->id == $language->id) aria-current="true" @endif>
+                                            @include('partials.lang-flag', ['code' => $language->code])
+                                            <span class="lang-option-name">{{ $language->native_name }}</span>
+                                            <span class="lang-option-code">{{ strtoupper($language->code) }}</span>
+                                            @if ($currentLanguage->id == $language->id)
+                                                <i class="fas fa-check lang-option-check" aria-hidden="true"></i>
+                                            @endif
                                         </a>
                                     </li>
                                 @endforeach
@@ -654,16 +652,18 @@ main:has(> section.hero) > section:not(.hero), body:has(main > section.hero) foo
                         <button class="mobile-lang-toggle dropdown-toggle w-100" type="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
                             <span class="mobile-offcanvas-link-inner">
-                                <i class="fas fa-globe"></i>
-                                <span>{{ strtoupper($currentLanguage->code) }}</span>
+                                @include('partials.lang-flag', ['code' => $currentLanguage->code])
+                                <span>{{ $currentLanguage->native_name }}</span>
                             </span>
                         </button>
                         <ul class="dropdown-menu w-100 shadow-sm">
                             @foreach ($availableLanguages as $language)
                                 <li>
-                                    <a class="dropdown-item d-flex justify-content-between align-items-center {{ $currentLanguage->id == $language->id ? 'active' : '' }}"
-                                        href="{{ route('language.switch', $language->code) }}?redirect={{ urlencode(url()->full()) }}">
-                                        <span>{{ $language->native_name }} ({{ $language->code }})</span>
+                                    <a class="dropdown-item lang-option {{ $currentLanguage->id == $language->id ? 'is-current' : '' }}"
+                                        href="{{ route('language.switch', $language->code) }}?redirect={{ urlencode(url()->full()) }}"
+                                        lang="{{ $language->code }}">
+                                        @include('partials.lang-flag', ['code' => $language->code])
+                                        <span class="lang-option-name">{{ $language->native_name }}</span>
                                         @if ($currentLanguage->id == $language->id)
                                             <i class="fas fa-check text-success"></i>
                                         @endif
@@ -959,19 +959,29 @@ main:has(> section.hero) > section:not(.hero), body:has(main > section.hero) foo
                             </div>
                         @endif
                     </div>
-                    <div class="footer-lang-dropdown mb-3">
-                        <div class="input-group">
-                            <span class="input-group-text bg-dark text-white border-0"><i
-                                    class="fas fa-globe" aria-hidden="true"></i></span>
-                            <select class="form-select bg-dark text-white border-0" id="footerLangSelect" aria-label="{{ custom_trans('language', 'front') }}">
-                                @foreach ($availableLanguages as $language)
-                                    <option value="{{ $language->code }}"
-                                        {{ $currentLanguage->id == $language->id ? 'selected' : '' }}>
-                                        {{ strtoupper($language->code) }} - {{ $language->native_name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
+                    <div class="footer-lang-dropdown dropup mb-3">
+                        <button class="footer-lang-toggle dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                            aria-expanded="false" aria-label="{{ custom_trans('language', 'front') }}">
+                            @include('partials.lang-flag', ['code' => $currentLanguage->code])
+                            <span class="lang-option-name">{{ $currentLanguage->native_name }}</span>
+                            <span class="lang-option-code">{{ strtoupper($currentLanguage->code) }}</span>
+                        </button>
+                        <ul class="dropdown-menu lang-menu footer-lang-menu">
+                            @foreach ($availableLanguages as $language)
+                                <li>
+                                    <a class="dropdown-item lang-option {{ $currentLanguage->id == $language->id ? 'is-current' : '' }}"
+                                        href="{{ route('language.switch', $language->code) }}?redirect={{ urlencode(url()->full()) }}"
+                                        lang="{{ $language->code }}" @if ($currentLanguage->id == $language->id) aria-current="true" @endif>
+                                        @include('partials.lang-flag', ['code' => $language->code])
+                                        <span class="lang-option-name">{{ $language->native_name }}</span>
+                                        <span class="lang-option-code">{{ strtoupper($language->code) }}</span>
+                                        @if ($currentLanguage->id == $language->id)
+                                            <i class="fas fa-check lang-option-check" aria-hidden="true"></i>
+                                        @endif
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
                     </div>
                 </div>
             </div>

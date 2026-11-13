@@ -170,7 +170,14 @@
                                 $blogs->appends(request()->query());
                                 $current = $blogs->currentPage();
                                 $last = $blogs->lastPage();
-                                $window = collect([1, $last])->merge(range(max(1, $current - 1), min($last, $current + 1)))->unique()->sort()->values();
+                                // Up to 7 pages: show all. Otherwise first + last + a 5-page run around the current page
+                                if ($last <= 7) {
+                                    $window = collect(range(1, $last));
+                                } else {
+                                    $from = max(2, min($current - 2, $last - 5));
+                                    $to = min($last - 1, max($current + 2, 6));
+                                    $window = collect([1])->merge(range($from, $to))->push($last)->unique()->values();
+                                }
                             @endphp
                             <nav class="blog-pager" aria-label="Blog pagination">
                                 @if ($blogs->onFirstPage())

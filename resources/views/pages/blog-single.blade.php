@@ -217,7 +217,7 @@
                                     @endif
                                     <div class="card-body d-flex flex-column">
                                         <h6 class="card-title">
-                                            {{ Str::limit($relatedBlog->getLocalizedTitle(), 60) }}
+                                            {{ $relatedBlog->getLocalizedTitle() }}
                                         </h6>
                                         <p class="card-text text-muted small flex-grow-1">
                                             {{ Str::limit($relatedBlog->getLocalizedExcerpt() ?: strip_tags($relatedBlog->getLocalizedDescription()), 110) }}
@@ -275,7 +275,9 @@
             new Swiper('.related-blogs-swiper', {
                 slidesPerView: 1,
                 spaceBetween: 24,
-                loop: {{ $relatedBlogs->count() > 3 ? 'true' : 'false' }},
+                // Loop only when there are more articles than fit on screen, so the row is always full
+                loop: {{ $relatedBlogs->count() > 4 ? 'true' : 'false' }},
+                watchOverflow: true,
                 autoplay: {
                     delay: 4500,
                     disableOnInteraction: false,
@@ -292,6 +294,7 @@
                 breakpoints: {
                     576: { slidesPerView: 2, spaceBetween: 20 },
                     992: { slidesPerView: 3, spaceBetween: 24 },
+                    1200: { slidesPerView: 4, spaceBetween: 24 },
                 },
             });
         });

@@ -4,7 +4,7 @@
     </div>
     <div class="d-flex gap-2">
         <a href="{{ route('courses.show', $course->id) }}" class="btn btn-outline-light course-details-btn">
-            <i class="fa fa-arrow-right me-2"></i>{{ custom_trans('Course details', 'front') }}
+            <i class="fas fa-circle-info" aria-hidden="true"></i><span>{{ custom_trans('Course details', 'front') }}</span>
         </a>
     </div>
 </div>
