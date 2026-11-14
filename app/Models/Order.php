@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class Order extends Model
 {
@@ -134,6 +136,80 @@ class Order extends Model
 
             $item->update(['access_applied_at' => now()]);
         }
+    }
+
+    /**
+     * Card orders still unpaid after the payment timeout (config/payments.php).
+     */
+    public function scopeStalePending($query)
+    {
+        return $query->where('status', 'pending')
+            ->whereIn('payment_method', config('payments.expirable_methods', ['visa', 'stripe']))
+            ->where('created_at', '<', now()->subMinutes(config('payments.pending_timeout_minutes', 15)));
+    }
+
+    /**
+     * Whether a gateway confirmation may still complete this order. A card order
+     * that timed out ("failed") is accepted too, so a late but real payment is
+     * never lost.
+     */
+    public function isAwaitingPayment(): bool
+    {
+        return $this->status === 'pending'
+            || ($this->status === 'failed'
+                && in_array($this->payment_method, config('payments.expirable_methods', ['visa', 'stripe']), true));
+    }
+
+    /**
+     * Mark an unpaid order as failed: cancel the enrollments it left pending and
+     * release its coupon, so the student can buy the course again.
+     */
+    public function markPaymentFailed(): void
+    {
+        DB::transaction(function () {
+            $order = static::whereKey($this->id)->lockForUpdate()->first();
+
+            if (!$order || $order->status !== 'pending') {
+                return;
+            }
+
+            // Only enrollments still waiting on THIS order (a newer order for the same
+            // course re-points transaction_id, so it is left alone).
+            CourseEnrollment::where('user_id', $order->user_id)
+                ->whereIn('course_id', $order->getCourseIds())
+                ->where('status', 'pending')
+                ->where('transaction_id', $order->order_number)
+                ->update(['status' => 'cancelled']);
+
+            $couponIds = CouponUsage::where('order_id', $order->id)->pluck('coupon_id')->all();
+            CouponUsage::where('order_id', $order->id)->delete();
+            foreach (array_unique($couponIds) as $couponId) {
+                Coupon::find($couponId)?->syncUsedCount();
+            }
+
+            $order->update(['status' => 'failed']);
+            $this->status = 'failed';
+        });
+    }
+
+    /**
+     * Fail every timed-out card order, optionally for one user only.
+     */
+    public static function expireStalePending(?int $userId = null): int
+    {
+        $orders = static::stalePending()
+            ->when($userId, fn ($q) => $q->where('user_id', $userId))
+            ->get();
+
+        foreach ($orders as $order) {
+            try {
+                $order->markPaymentFailed();
+            } catch (\Throwable $e) {
+                Log::error('Failed to expire pending order', ['order_id' => $order->id, 'error' => $e->getMessage()]);
+            }
+        }
+
+        return $orders->count();
     }
 
     public function getTransactionReferenceAttribute(): ?string

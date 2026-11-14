@@ -78,6 +78,9 @@ class CartController extends Controller
             ]);
         }
 
+        // Timed-out card payments stop blocking the course
+        \App\Models\Order::expireStalePending($user->id);
+
         $enrollment = $user->enrollments()->where('course_id', $course->id)->first();
 
         if ($enrollment && $enrollment->status === 'pending') {

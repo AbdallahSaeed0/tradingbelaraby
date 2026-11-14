@@ -81,6 +81,8 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function hasPendingEnrollment(int $courseId): bool
     {
+        \App\Models\Order::expireStalePending($this->id);
+
         return $this->enrollments()
             ->where('course_id', $courseId)
             ->pending()
@@ -89,6 +91,8 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function blocksCoursePurchase(int $courseId): bool
     {
+        \App\Models\Order::expireStalePending($this->id);
+
         return $this->enrollments()
             ->where('course_id', $courseId)
             ->blockingPurchase()

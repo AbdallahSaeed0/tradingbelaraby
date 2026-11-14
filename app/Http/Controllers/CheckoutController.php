@@ -161,6 +161,7 @@ class CheckoutController extends Controller
         ]);
 
         $user = Auth::user();
+        Order::expireStalePending($user->id);
         $cartItems = $user->cartItems()->with('course', 'bundle.courses', 'subscriptionPlan')->get();
 
         if ($cartItems->isEmpty()) {
@@ -513,6 +514,11 @@ class CheckoutController extends Controller
             abort(403);
         }
 
+        if ($order->status === 'failed') {
+            return redirect()->route('cart.index')
+                ->with('error', 'This payment session has expired. Please try again.');
+        }
+
         if ($order->status !== 'pending') {
             return redirect()->route('checkout.success', $order->id);
         }
@@ -541,7 +547,7 @@ class CheckoutController extends Controller
             'result' => 'required|string',
         ]);
 
-        if ($order->status !== 'pending') {
+        if (!$order->isAwaitingPayment()) {
             return response()->json(['success' => true, 'redirect' => route('checkout.success', $order->id)]);
         }
 

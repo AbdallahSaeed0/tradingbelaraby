@@ -137,7 +137,7 @@ class EnrollmentController extends Controller
         }
 
         $enrolledQuery = $user->enrollments()->where('course_id', $courseId)->accessible();
-        $pending = $user->enrollments()->where('course_id', $courseId)->pending()->exists();
+        $pending = $user->hasPendingEnrollment((int) $courseId);
 
         return response()->json([
             'success' => true,

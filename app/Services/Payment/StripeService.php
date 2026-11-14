@@ -51,6 +51,8 @@ class StripeService
             'success_url' => $successUrl,
             'cancel_url' => $cancelUrl,
             'client_reference_id' => (string) $order->id,
+            // Close the hosted page around the pending-payment timeout (Stripe's minimum is 30 minutes)
+            'expires_at' => now()->addMinutes(max(30, (int) config('payments.pending_timeout_minutes', 15)))->timestamp,
             'customer_email' => $order->billing_email ?: null,
             // Checkout has no Arabic locale; 'auto' follows the browser language.
             'locale' => app()->getLocale() === 'en' ? 'en' : 'auto',

@@ -25,7 +25,12 @@ class NbeController extends Controller
             abort(403);
         }
 
-        if ($order->status !== 'pending') {
+        if ($order->status === 'failed') {
+            return redirect()->route('cart.index')
+                ->with('error', 'This payment session has expired. Please try again.');
+        }
+
+        if (!$order->isAwaitingPayment()) {
             return redirect()->route('checkout.success', $order->id);
         }
 
@@ -63,7 +68,7 @@ class NbeController extends Controller
             abort(403);
         }
 
-        if ($order->status !== 'pending') {
+        if (!$order->isAwaitingPayment()) {
             return redirect()->route('checkout.success', $order->id);
         }
 

@@ -25,7 +25,12 @@ class StripeController extends Controller
             abort(403);
         }
 
-        if ($order->status !== 'pending') {
+        if ($order->status === 'failed') {
+            return redirect()->route('cart.index')
+                ->with('error', 'This payment session has expired. Please try again.');
+        }
+
+        if (!$order->isAwaitingPayment()) {
             return redirect()->route('checkout.success', $order->id);
         }
 
@@ -55,7 +60,7 @@ class StripeController extends Controller
             abort(403);
         }
 
-        if ($order->status !== 'pending') {
+        if (!$order->isAwaitingPayment()) {
             return redirect()->route('checkout.success', $order->id);
         }
 
@@ -133,7 +138,7 @@ class StripeController extends Controller
             return response()->json(['received' => true]);
         }
 
-        if ($order->status !== 'pending') {
+        if (!$order->isAwaitingPayment()) {
             return response()->json(['received' => true]);
         }
 
@@ -165,7 +170,7 @@ class StripeController extends Controller
         DB::transaction(function () use ($order, $session) {
             $order = Order::whereKey($order->id)->lockForUpdate()->first();
 
-            if ($order->status !== 'pending') {
+            if (!$order->isAwaitingPayment()) {
                 return;
             }
 

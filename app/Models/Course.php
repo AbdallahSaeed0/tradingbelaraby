@@ -419,10 +419,7 @@ class Course extends Model
 
     public function hasPendingEnrollmentBy(User $user): bool
     {
-        return $this->enrollments()
-            ->where('user_id', $user->id)
-            ->pending()
-            ->exists();
+        return $user->hasPendingEnrollment($this->id);
     }
 
     /**
