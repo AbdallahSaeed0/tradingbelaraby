@@ -22,6 +22,9 @@
             data-email-taken-msg="{{ custom_trans('This email is already registered. Please sign in or use a different email.', 'front') }}">
             @csrf
             <input type="hidden" name="form_start_time" value="{{ time() }}">
+            @if (!empty($enrollCourseId))
+                <input type="hidden" name="enroll" value="{{ $enrollCourseId }}">
+            @endif
             
             {{-- Honeypot field - hidden from users but bots will fill it --}}
             <div style="position: absolute; left: -9999px; opacity: 0; pointer-events: none;" aria-hidden="true">
@@ -51,41 +54,21 @@
             </div>
 
             <div class="mb-3">
-                <label for="country" class="form-label">{{ custom_trans('Country', 'front') }}</label>
-                <select name="country" id="country" required
-                    class="form-select @error('country') is-invalid @enderror">
-                    <option value="">{{ custom_trans('Select Country', 'front') }}</option>
-                    @include('partials.countries', ['selected' => old('country', $defaultCountry ?? null)])
-                </select>
-                @error('country')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-            @include('partials.intl-phone-input', [
-                'label' => custom_trans('Mobile number', 'front'),
-                'defaultCountry' => $defaultCountry ?? 'EG',
-                'countrySelectId' => 'country',
-            ])
-
-            <div class="mb-3">
                 <label for="password" class="form-label">{{ custom_trans('Password', 'front') }}</label>
                 <input type="password" name="password" id="password" required
                     class="form-control @error('password') is-invalid @enderror"
-                    placeholder="{{ custom_trans('Password', 'front') }}">
+                    placeholder="{{ custom_trans('Password', 'front') }}" minlength="6" autocomplete="new-password">
                 @error('password')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
 
-            <div class="mb-3">
-                <label for="password_confirmation" class="form-label">{{ custom_trans('Confirm Password', 'front') }}</label>
-                <input type="password" name="password_confirmation" id="password_confirmation" required
-                    class="form-control"
-                    placeholder="{{ custom_trans('Confirm Password', 'front') }}">
-            </div>
-
             <button type="submit" class="btn btn-primary w-100" id="submitBtn">{{ custom_trans('Register', 'front') }}</button>
+
+            @if ($googleLoginEnabled ?? false)
+                <div class="text-center text-muted small my-3">{{ custom_trans('or', 'front') }}</div>
+                @include('partials.auth.google-button', ['enrollCourseId' => $enrollCourseId ?? null])
+            @endif
         </form>
 
         <p class="text-center mt-3">{{ custom_trans('Already have an account?', 'front') }} <a href="{{ route('login') }}">{{ custom_trans('Sign in', 'front') }}</a></p>

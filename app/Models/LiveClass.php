@@ -395,4 +395,107 @@ class LiveClass extends Model
             return asset('storage/' . $material);
         }, $this->materials);
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Timezone-aware times
+    |--------------------------------------------------------------------------
+    | scheduled_at holds the wall-clock time the admin typed (e.g. 21:00 Riyadh)
+    | in a UTC app. These helpers turn it into a real moment in time.
+    */
+
+    public static function wallTimezone(): string
+    {
+        return config('app.live_class_timezone', 'Asia/Riyadh');
+    }
+
+    /**
+     * "Now" in the same wall-clock terms as scheduled_at, for DB comparisons.
+     */
+    public static function wallNow(): \Carbon\Carbon
+    {
+        return \Carbon\Carbon::parse(now(self::wallTimezone())->format('Y-m-d H:i:s'));
+    }
+
+    /**
+     * Real start moment, in the live class timezone.
+     */
+    public function startsAt(): ?\Carbon\Carbon
+    {
+        if (!$this->scheduled_at) {
+            return null;
+        }
+
+        return \Carbon\Carbon::parse($this->scheduled_at->format('Y-m-d H:i:s'), self::wallTimezone());
+    }
+
+    public function endsAt(): ?\Carbon\Carbon
+    {
+        return $this->startsAt()?->copy()->addMinutes($this->duration_minutes ?: 60);
+    }
+
+    public function calendarTitle(): string
+    {
+        $name = $this->localized_name ?: $this->name;
+        $course = $this->course?->name;
+
+        return $course && $course !== $name ? "{$name} - {$course}" : (string) $name;
+    }
+
+    public function calendarDetails(): string
+    {
+        $url = $this->course ? route('courses.learn', $this->course) : url('/');
+
+        return custom_trans('The join link will be sent to you one hour before the session.', 'front') . "\n" . $url;
+    }
+
+    public function googleCalendarUrl(): ?string
+    {
+        if (!$this->startsAt()) {
+            return null;
+        }
+
+        return 'https://calendar.google.com/calendar/render?' . http_build_query([
+            'action' => 'TEMPLATE',
+            'text' => $this->calendarTitle(),
+            'dates' => $this->startsAt()->utc()->format('Ymd\THis\Z') . '/' . $this->endsAt()->utc()->format('Ymd\THis\Z'),
+            'details' => $this->calendarDetails(),
+            'ctz' => self::wallTimezone(),
+        ]);
+    }
+
+    /**
+     * iCalendar (.ics) file for Apple Calendar / Outlook, with a 1-hour alarm.
+     */
+    public function toIcs(): string
+    {
+        $escape = fn (string $text) => str_replace(["\r\n", "\n"], '\\n', addcslashes($text, ',;\\'));
+        $host = parse_url(config('app.url'), PHP_URL_HOST) ?: 'localhost';
+        $url = $this->course ? route('courses.learn', $this->course) : url('/');
+
+        $lines = [
+            'BEGIN:VCALENDAR',
+            'VERSION:2.0',
+            'PRODID:-//' . $host . '//Live Classes//EN',
+            'CALSCALE:GREGORIAN',
+            'METHOD:PUBLISH',
+            'BEGIN:VEVENT',
+            'UID:live-class-' . $this->id . '@' . $host,
+            'DTSTAMP:' . now()->utc()->format('Ymd\THis\Z'),
+            'DTSTART:' . $this->startsAt()->utc()->format('Ymd\THis\Z'),
+            'DTEND:' . $this->endsAt()->utc()->format('Ymd\THis\Z'),
+            'SUMMARY:' . $escape($this->calendarTitle()),
+            'DESCRIPTION:' . $escape($this->calendarDetails()),
+            'URL:' . $url,
+            'BEGIN:VALARM',
+            'TRIGGER:-PT1H',
+            'ACTION:DISPLAY',
+            'DESCRIPTION:' . $escape($this->calendarTitle()),
+            'END:VALARM',
+            'END:VEVENT',
+            'END:VCALENDAR',
+        ];
+
+        return implode("\r\n", $lines) . "\r\n";
+    }
 }

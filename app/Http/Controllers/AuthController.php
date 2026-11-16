@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
+use App\Services\EnrollmentFlowService;
 use App\Services\SocialLoginSettingsService;
 use App\Services\VerificationSettingsService;
 use App\Services\WhatsAppService;
@@ -18,8 +20,9 @@ class AuthController extends Controller
     /**
      * Show the login form.
      */
-    public function showLoginForm(SocialLoginSettingsService $socialSettings)
+    public function showLoginForm(Request $request, SocialLoginSettingsService $socialSettings)
     {
+        app(EnrollmentFlowService::class)->rememberIntentFromRequest($request);
         $this->rememberReturnUrl();
 
         return view('auth.login', [
@@ -42,22 +45,13 @@ class AuthController extends Controller
 
         // Attempt default user guard
         if (Auth::attempt($credentials, $remember)) {
-            $user = Auth::user();
-
-            // Check verification status based on configured method
-            $verification = app(VerificationSettingsService::class);
-            if (!$verification->isUserVerified($user)) {
-                Auth::logout();
-                $hint = match($verification->getMethod()) {
-                    'email'    => 'Please verify your email address before logging in.',
-                    'whatsapp' => 'Please verify your WhatsApp number before logging in.',
-                    default    => 'Please verify your account (email or WhatsApp) before logging in.',
-                };
-                return back()->withErrors(['email' => $hint])->onlyInput('email');
-            }
-
+            // Unverified accounts may sign in too: verification is only required
+            // for certificates (see EnsureEmailIsVerifiedForAuthUsers).
             $request->session()->regenerate();
-            return redirect()->intended(route('home'));
+
+            $redirect = app(EnrollmentFlowService::class)->completeIntent(Auth::user());
+
+            return $redirect ? redirect($redirect) : redirect()->intended(route('home'));
         }
 
         return back()->withErrors([
@@ -82,13 +76,15 @@ class AuthController extends Controller
     /**
      * Show registration form.
      */
-    public function showRegisterForm(Request $request)
+    public function showRegisterForm(Request $request, SocialLoginSettingsService $socialSettings)
     {
+        app(EnrollmentFlowService::class)->rememberIntentFromRequest($request);
         $this->rememberReturnUrl();
 
-        $defaultCountry = app(\App\Services\VisitorCountryService::class)->detect($request);
-
-        return view('auth.register', compact('defaultCountry'));
+        return view('auth.register', [
+            'googleLoginEnabled' => $socialSettings->isGoogleEnabled(),
+            'enrollCourseId' => session(EnrollmentFlowService::SESSION_KEY),
+        ]);
     }
 
     /**
@@ -135,50 +131,116 @@ class AuthController extends Controller
     }
 
     /**
-     * Handle registration request.
+     * Handle registration request (full page form or the quick sign-up modal via JSON).
+     *
+     * Only name, email and password are required. Country is detected from the visitor's
+     * IP when not sent, and the phone number is optional. The account is usable right
+     * away: the verification email goes out in the background and is only required for
+     * certificates. If the visitor came from a course's "Enroll" button, the enrollment
+     * is completed here too.
      */
     public function register(Request $request)
     {
-        // Honeypot check - if this field is filled, it's a bot
-        if ($request->filled('website')) {
-            Log::warning('Spam registration attempt detected (honeypot)', [
-                'ip' => $request->ip(),
-                'email' => $request->email
-            ]);
-            return back()->withErrors(['email' => 'Registration failed. Please try again.'])->withInput();
+        $this->guardAgainstSpamRegistration($request);
+
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'min:6'],
+            'country' => ['nullable', 'string', 'max:255'],
+            'phone' => ['nullable', 'string', 'max:20', 'regex:/^\+[1-9][0-9]{7,14}$/'],
+            'enroll' => ['nullable', 'integer'],
+        ], [
+            'name.required' => custom_trans('Please enter your name.', 'front'),
+            'name.max' => 'Name must not exceed 255 characters.',
+            'email.required' => custom_trans('Please enter your email address.', 'front'),
+            'email.email' => custom_trans('Please enter a valid email address.', 'front'),
+            'email.unique' => custom_trans('This email is already registered. Please sign in or use a different email.', 'front'),
+            'phone.regex' => custom_trans('Please enter a valid phone number for the selected country.', 'front'),
+            'phone.max' => 'Phone number must not exceed 20 characters.',
+            'password.required' => custom_trans('Please enter a password.', 'front'),
+            'password.min' => custom_trans('Password must be at least 6 characters.', 'front'),
+        ]);
+
+        $user = User::create([
+            'name'     => $data['name'],
+            'email'    => $data['email'],
+            'country'  => $data['country'] ?? app(\App\Services\VisitorCountryService::class)->detect($request),
+            'phone'    => $data['phone'] ?? null,
+            'password' => Hash::make($data['password']),
+        ]);
+
+        Auth::login($user, true);
+        $request->session()->regenerate();
+        ga_event('sign_up', ['method' => 'email']);
+
+        // Verification email is queued and never blocks the student
+        try {
+            if (app(VerificationSettingsService::class)->isEmailEnabled()) {
+                event(new Registered($user));
+            }
+        } catch (\Throwable $e) {
+            Log::error('Failed to queue verification email', ['user_id' => $user->id, 'error' => $e->getMessage()]);
         }
 
-        // Time-based validation - form must take at least 3 seconds to fill
-        $formStartTime = $request->input('form_start_time');
-        if ($formStartTime && (time() - (int)$formStartTime) < 3) {
-            Log::warning('Spam registration attempt detected (too fast)', [
-                'ip' => $request->ip(),
-                'email' => $request->email,
-                'time_taken' => time() - (int)$formStartTime
-            ]);
-            return back()->withErrors(['email' => 'Registration failed. Please take your time filling the form.'])->withInput();
+        $flow = app(EnrollmentFlowService::class);
+        if (!empty($data['enroll'])) {
+            $flow->rememberIntent((int) $data['enroll']);
         }
 
-        // IP-based rate limiting - check if this IP has registered too many accounts recently
+        $redirect = $flow->completeIntent($user)
+            ?? redirect()->intended(route('home'))->getTargetUrl();
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'redirect' => $redirect]);
+        }
+
+        return redirect($redirect)->with('success', custom_trans('Welcome! Your account is ready.', 'front'));
+    }
+
+    /**
+     * Cheap bot filters run before validation. Throws a validation error (works for
+     * both the normal form and JSON requests from the quick sign-up modal).
+     */
+    private function guardAgainstSpamRegistration(Request $request): void
+    {
+        $email = (string) $request->email;
         $ip = $request->ip();
-        
-        // Check for multiple registrations from same email prefix in last hour (common spam pattern)
-        $emailPrefix = explode('@', $request->email)[0] ?? '';
-        $similarRegistrations = User::where('created_at', '>=', now()->subHour())
-            ->where('email', 'like', $emailPrefix . '@%')
-            ->count();
 
-        if ($similarRegistrations >= 2) {
-            Log::warning('Spam registration attempt detected (too many similar emails)', [
-                'ip' => $ip,
-                'email' => $request->email,
-                'count' => $similarRegistrations
-            ]);
-            return back()->withErrors(['email' => 'Too many registration attempts. Please try again later.'])->withInput();
+        // Honeypot - hidden field only bots fill in
+        if ($request->filled('website')) {
+            Log::warning('Spam registration attempt detected (honeypot)', ['ip' => $ip, 'email' => $email]);
+            throw ValidationException::withMessages(['email' => 'Registration failed. Please try again.']);
         }
 
-        // Check for suspicious email patterns (common spam patterns)
-        $email = $request->email;
+        // Form must take at least 3 seconds to fill
+        $formStartTime = $request->input('form_start_time');
+        if ($formStartTime && (time() - (int) $formStartTime) < 3) {
+            Log::warning('Spam registration attempt detected (too fast)', [
+                'ip' => $ip,
+                'email' => $email,
+                'time_taken' => time() - (int) $formStartTime,
+            ]);
+            throw ValidationException::withMessages(['email' => 'Registration failed. Please take your time filling the form.']);
+        }
+
+        // Many sign-ups with the same email prefix in the last hour (common spam pattern)
+        $emailPrefix = explode('@', $email)[0] ?? '';
+        if ($emailPrefix !== '') {
+            $similarRegistrations = User::where('created_at', '>=', now()->subHour())
+                ->where('email', 'like', $emailPrefix . '@%')
+                ->count();
+
+            if ($similarRegistrations >= 2) {
+                Log::warning('Spam registration attempt detected (too many similar emails)', [
+                    'ip' => $ip,
+                    'email' => $email,
+                    'count' => $similarRegistrations,
+                ]);
+                throw ValidationException::withMessages(['email' => 'Too many registration attempts. Please try again later.']);
+            }
+        }
+
         $suspiciousPatterns = [
             '/^[a-z0-9]+([._-][a-z0-9]+)*@(10minutemail|guerrillamail|tempmail|mailinator|throwaway|trashmail|temp-mail)\./i',
             '/^test\d+@/i',
@@ -187,60 +249,10 @@ class AuthController extends Controller
 
         foreach ($suspiciousPatterns as $pattern) {
             if (preg_match($pattern, $email)) {
-                Log::warning('Spam registration attempt detected (suspicious email)', [
-                    'ip' => $ip,
-                    'email' => $email
-                ]);
-                return back()->withErrors(['email' => 'Please use a valid email address.'])->withInput();
+                Log::warning('Spam registration attempt detected (suspicious email)', ['ip' => $ip, 'email' => $email]);
+                throw ValidationException::withMessages(['email' => 'Please use a valid email address.']);
             }
         }
-
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'country' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:20', 'regex:/^\+[1-9][0-9]{7,14}$/'],
-            'password' => ['required', 'confirmed', 'min:6'],
-        ], [
-            'name.required' => 'Please enter your name.',
-            'name.max' => 'Name must not exceed 255 characters.',
-            'email.required' => 'Please enter your email address.',
-            'email.email' => 'Please enter a valid email address.',
-            'email.unique' => 'This email is already registered. Please sign in or use a different email.',
-            'country.required' => 'Please select your country.',
-            'phone.required' => 'Please enter your phone number.',
-            'phone.regex' => custom_trans('Please enter a valid phone number for the selected country.', 'front'),
-            'phone.max' => 'Phone number must not exceed 20 characters.',
-            'password.required' => 'Please enter a password.',
-            'password.confirmed' => 'Password and confirmation do not match.',
-            'password.min' => 'Password must be at least 6 characters.',
-        ]);
-
-        $user = User::create([
-            'name'     => $data['name'],
-            'email'    => $data['email'],
-            'country'  => $data['country'],
-            'phone'    => $data['phone'],
-            'password' => Hash::make($data['password']),
-        ]);
-
-        Auth::login($user);
-        ga_event('sign_up', ['method' => 'email']);
-
-        $verification = app(VerificationSettingsService::class);
-
-        if ($verification->isWhatsappEnabled() && $data['phone']) {
-            app(WhatsAppService::class)->sendOtp($data['phone']);
-        }
-        if ($verification->isEmailEnabled()) {
-            event(new Registered($user));
-        }
-
-        $redirect = $verification->isWhatsappEnabled()
-            ? route('whatsapp.verify')
-            : route('verification.notice');
-
-        return redirect($redirect)->with('success', custom_trans('Registration successful! Please complete verification.', 'front'));
     }
 
     /**

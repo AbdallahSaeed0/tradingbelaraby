@@ -170,6 +170,23 @@ class LiveClassController extends Controller
     /**
      * Join live class (get meeting link)
      */
+    /**
+     * Download an .ics calendar file for a live class (Apple Calendar / Outlook).
+     */
+    public function calendar(LiveClass $liveClass)
+    {
+        $user = Auth::user();
+        $allowed = $liveClass->isRegisteredByUser($user)
+            || ($liveClass->course_id && $user->hasCourseAccess($liveClass->course_id));
+
+        abort_unless($allowed && $liveClass->scheduled_at, 404);
+
+        return response($liveClass->toIcs(), 200, [
+            'Content-Type' => 'text/calendar; charset=utf-8',
+            'Content-Disposition' => 'attachment; filename="live-class-' . $liveClass->id . '.ics"',
+        ]);
+    }
+
     public function join(LiveClass $liveClass)
     {
         $user = Auth::user();

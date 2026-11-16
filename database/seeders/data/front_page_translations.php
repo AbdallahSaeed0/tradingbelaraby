@@ -3039,4 +3039,120 @@ return [
         'en' => 'stars',
         'ar' => 'نجوم',
     ],
+    'Please verify your account to get your certificate.' => [
+        'en' => 'Please verify your account to get your certificate.',
+        'ar' => 'يرجى توثيق حسابك للحصول على الشهادة.',
+    ],
+    'Welcome! Your account is ready.' => [
+        'en' => 'Welcome! Your account is ready.',
+        'ar' => 'أهلاً بك! حسابك جاهز.',
+    ],
+    'Please enter your name.' => [
+        'en' => 'Please enter your name.',
+        'ar' => 'من فضلك اكتب اسمك.',
+    ],
+    'Please enter your email address.' => [
+        'en' => 'Please enter your email address.',
+        'ar' => 'من فضلك اكتب بريدك الإلكتروني.',
+    ],
+    'Please enter a valid email address.' => [
+        'en' => 'Please enter a valid email address.',
+        'ar' => 'من فضلك اكتب بريداً إلكترونياً صحيحاً.',
+    ],
+    'Please enter a password.' => [
+        'en' => 'Please enter a password.',
+        'ar' => 'من فضلك اكتب كلمة المرور.',
+    ],
+    'Password must be at least 6 characters.' => [
+        'en' => 'Password must be at least 6 characters.',
+        'ar' => 'كلمة المرور يجب ألا تقل عن 6 أحرف.',
+    ],
+    'Please enter your phone number.' => [
+        'en' => 'Please enter your phone number.',
+        'ar' => 'من فضلك اكتب رقم جوالك.',
+    ],
+    'or' => [
+        'en' => 'or',
+        'ar' => 'أو',
+    ],
+    'Create your account to continue' => [
+        'en' => 'Create your account to continue',
+        'ar' => 'أنشئ حسابك للمتابعة',
+    ],
+    'Join for free in seconds' => [
+        'en' => 'Join for free in seconds',
+        'ar' => 'اشترك مجاناً في ثوانٍ',
+    ],
+    'Create account' => [
+        'en' => 'Create account',
+        'ar' => 'إنشاء حساب',
+    ],
+    'Join now' => [
+        'en' => 'Join now',
+        'ar' => 'اشترك الآن',
+    ],
+    'Please take your time filling the form.' => [
+        'en' => 'Please take your time filling the form.',
+        'ar' => 'خذ وقتك في تعبئة النموذج.',
+    ],
+    'The join link will be sent to you one hour before the session.' => [
+        'en' => 'The join link will be sent to you one hour before the session.',
+        'ar' => 'سيصلك رابط الدخول قبل موعد الجلسة بساعة.',
+    ],
+    'We will also remind you one day before.' => [
+        'en' => 'We will also remind you one day before.',
+        'ar' => 'وسنذكّرك أيضاً قبلها بيوم.',
+    ],
+    'You are enrolled' => [
+        'en' => 'You are enrolled',
+        'ar' => 'تم اشتراكك',
+    ],
+    'You are enrolled!' => [
+        'en' => 'You are enrolled!',
+        'ar' => 'تم اشتراكك!',
+    ],
+    'Riyadh time' => [
+        'en' => 'Riyadh time',
+        'ar' => 'بتوقيت الرياض',
+    ],
+    'Hi, I just joined' => [
+        'en' => 'Hi, I just joined',
+        'ar' => 'مرحباً، اشتركت للتو في',
+    ],
+    'Next session' => [
+        'en' => 'Next session',
+        'ar' => 'الجلسة القادمة',
+    ],
+    'Join the session now' => [
+        'en' => 'Join the session now',
+        'ar' => 'ادخل الجلسة الآن',
+    ],
+    'Add to Google Calendar' => [
+        'en' => 'Add to Google Calendar',
+        'ar' => 'أضف إلى تقويم Google',
+    ],
+    'Apple / Outlook calendar' => [
+        'en' => 'Apple / Outlook calendar',
+        'ar' => 'تقويم Apple / Outlook',
+    ],
+    'Get session reminders on WhatsApp' => [
+        'en' => 'Get session reminders on WhatsApp',
+        'ar' => 'استقبل تذكيرات الجلسات على واتساب',
+    ],
+    'Save my number' => [
+        'en' => 'Save my number',
+        'ar' => 'احفظ رقمي',
+    ],
+    'Go to the course' => [
+        'en' => 'Go to the course',
+        'ar' => 'ادخل الدورة',
+    ],
+    'Questions? Message us on WhatsApp' => [
+        'en' => 'Questions? Message us on WhatsApp',
+        'ar' => 'عندك سؤال؟ راسلنا على واتساب',
+    ],
+    'Done! We will send session reminders to your WhatsApp.' => [
+        'en' => 'Done! We will send session reminders to your WhatsApp.',
+        'ar' => 'تم! سنرسل لك تذكيرات الجلسات على واتساب.',
+    ],
 ];

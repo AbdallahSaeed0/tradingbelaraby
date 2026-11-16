@@ -18,7 +18,7 @@ class SendLiveClassTMinus10RemindersJob implements ShouldQueue
 
     public function handle(): void
     {
-        $windowStart = Carbon::now()->addMinutes(10)->startOfMinute();
+        $windowStart = LiveClass::wallNow()->addMinutes(10)->startOfMinute();
         $windowEnd = $windowStart->copy()->addMinute();
         $classes = LiveClass::where('status', 'scheduled')
             ->whereBetween('scheduled_at', [$windowStart, $windowEnd])

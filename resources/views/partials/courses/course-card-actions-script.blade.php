@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     body: JSON.stringify({})
                 })
                 .then(r => {
-                    if (r.status === 401) { window.location.href = '/login'; return; }
+                    if (r.status === 401) { window.location.href = `/register?enroll=${courseId}`; return; }
                     if (!r.ok) throw new Error(`HTTP ${r.status}`);
                     return r.json();
                 })
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 body: JSON.stringify({})
             })
             .then(r => {
-                if (r.status === 401) { window.location.href = '/login'; return; }
+                if (r.status === 401) { window.location.href = `/register?enroll=${courseId}`; return; }
                 if (!r.ok) throw new Error(`HTTP ${r.status}`);
                 return r.json();
             })
@@ -63,6 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     this.innerHTML = '<i class="fas fa-check me-1"></i>{{ custom_trans('enrolled', 'front') }}';
                     this.disabled = true;
                     toastr.success(data.message || '{{ custom_trans('Successfully enrolled in course!', 'front') }}');
+                    if (data.redirect) { setTimeout(() => { window.location.href = data.redirect; }, 600); }
                     setTimeout(() => {
                         const link = document.createElement('a');
                         link.href = `/courses/${courseId}/learn`;

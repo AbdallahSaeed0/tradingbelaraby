@@ -311,6 +311,12 @@ class Course extends Model
      */
     public function requiresPayment(): bool
     {
+        // A course marked free is always enrolled in directly (no cart / checkout),
+        // even if it still has a leftover price or subscription plan configured.
+        if ($this->is_free) {
+            return false;
+        }
+
         return $this->offersSubscription() || !$this->offersLifetime() || $this->price > 0;
     }
 
@@ -344,6 +350,18 @@ class Course extends Model
     public function upcomingLiveClasses(): HasMany
     {
         return $this->hasMany(LiveClass::class)->where('scheduled_at', '>', now())->where('status', 'scheduled');
+    }
+
+    /**
+     * The next live session students can attend (also one that started in the last hour).
+     */
+    public function nextLiveClass(): ?LiveClass
+    {
+        return $this->liveClasses()
+            ->whereIn('status', ['scheduled', 'live'])
+            ->where('scheduled_at', '>=', LiveClass::wallNow()->subHour())
+            ->orderBy('scheduled_at')
+            ->first();
     }
 
     /**

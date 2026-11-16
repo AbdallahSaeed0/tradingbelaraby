@@ -277,6 +277,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/certificates/{enrollment}/view', [App\Http\Controllers\CertificateController::class, 'view'])->name('certificate.view')->where('enrollment', '[0-9]+');
 
     // Enrollment routes
+    Route::get('/courses/{course}/enrolled', [EnrollmentController::class, 'enrolled'])->name('courses.enrolled');
+    Route::post('/courses/{course}/enrolled/whatsapp', [EnrollmentController::class, 'saveWhatsapp'])->middleware('throttle:10,1')->name('courses.enrolled.whatsapp');
     Route::get('/enrollments', [EnrollmentController::class, 'index'])->name('enrollments.index');
     Route::get('/enrollments/export', [EnrollmentController::class, 'export'])->name('enrollments.export');
 
@@ -356,6 +358,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/live-classes/{liveClass}/register', [LiveClassController::class, 'register'])->name('live-classes.register');
     Route::delete('/live-classes/{liveClass}/unregister', [LiveClassController::class, 'unregister'])->name('live-classes.unregister');
     Route::get('/live-classes/{liveClass}/join', [LiveClassController::class, 'join'])->name('live-classes.join');
+    Route::get('/live-classes/{liveClass}/calendar.ics', [LiveClassController::class, 'calendar'])->name('live-classes.calendar');
 
     // Course-specific Live Class routes
 Route::post('/courses/{course}/schedule-live-class', [LiveClassController::class, 'schedule'])->name('courses.schedule-live-class');

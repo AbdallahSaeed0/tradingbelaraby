@@ -116,7 +116,7 @@
                                                 </small>
                                             </div>
                                             <div class="course-actions">
-                                                <a href="{{ route('student.learn-course', $enrollment->course->id) }}"
+                                                <a href="{{ route('courses.learn', $enrollment->course->id) }}"
                                                     class="btn btn-primary btn-sm">
                                                     <i class="fas fa-play"></i>
                                                 </a>

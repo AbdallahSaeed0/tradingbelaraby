@@ -115,6 +115,10 @@ return [
         'token'           => env('META_WHATSAPP_TOKEN'),
         'phone_number_id' => env('META_WHATSAPP_PHONE_NUMBER_ID'),
         'otp_template'    => env('META_WHATSAPP_OTP_TEMPLATE', 'otp_verification'),
+        // Approved template for live session reminders (empty = WhatsApp reminders off).
+        // Body params: {{1}} student name, {{2}} session name, {{3}} date & time, {{4}} link
+        'reminder_template' => env('META_WHATSAPP_REMINDER_TEMPLATE'),
+        'reminder_template_lang' => env('META_WHATSAPP_REMINDER_TEMPLATE_LANG', 'ar'),
         'api_version'     => env('META_WHATSAPP_API_VERSION', 'v21.0'),
         'verify_token'    => env('META_WHATSAPP_VERIFY_TOKEN'),
     ],

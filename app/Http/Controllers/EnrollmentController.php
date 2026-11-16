@@ -4,11 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use App\Models\CourseEnrollment;
-use App\Notifications\CourseEnrollmentNotification;
+use App\Services\EnrollmentFlowService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
 
 class EnrollmentController extends Controller
 {
@@ -32,13 +31,16 @@ class EnrollmentController extends Controller
             $user = Auth::user();
 
             if (!$user) {
+                // Remember the course so sign-up / sign-in finishes the enrollment
+                app(EnrollmentFlowService::class)->rememberIntent($course->id);
+
                 if ($request->expectsJson()) {
                     return response()->json([
                         'success' => false,
                         'message' => 'User not authenticated'
                     ], 401);
                 }
-                return redirect()->route('login');
+                return redirect()->route('register');
             }
 
         // Check if user is already enrolled
@@ -67,45 +69,21 @@ class EnrollmentController extends Controller
             return redirect()->route('cart.index')->with('error', $message);
         }
 
-        // Create enrollment (free courses)
-        $enrollment = $user->enrollments()->create([
-            'course_id' => $course->id,
-            'status' => 'active',
-            'enrolled_at' => now(),
-            'progress_percentage' => 0,
-        ]);
+        // Free course: enroll right away, then show the "you're enrolled" page
+        app(EnrollmentFlowService::class)->enrollFree($user, $course);
 
-        ga_event('enroll', [
-            'course_id' => $course->id,
-            'course_name' => $course->name,
-            'value' => 0,
-            'currency' => 'SAR',
-        ]);
-
-        // Send enrollment notification email
-        try {
-            $language = Session::get('frontend_locale', config('app.locale'));
-            $language = in_array($language, ['ar', 'en']) ? $language : 'en';
-            $user->notify(new CourseEnrollmentNotification($course, null, $language));
-        } catch (\Exception $e) {
-            Log::error('Failed to send enrollment notification', [
-                'user_id' => $user->id,
-                'course_id' => $course->id,
-                'error' => $e->getMessage()
-            ]);
-        }
-
-        // Return JSON for AJAX requests, redirect for regular requests
         $successMessage = custom_trans('Enrolled successfully', 'front');
+        $redirectUrl = route('courses.enrolled', $course);
 
         if ($request->expectsJson()) {
             return response()->json([
                 'success' => true,
                 'message' => $successMessage,
+                'redirect' => $redirectUrl,
             ]);
         }
 
-        return redirect()->route('courses.show', $course->id)->with('success', $successMessage);
+        return redirect($redirectUrl)->with('success', $successMessage);
 
         } catch (\Exception $e) {
             Log::error('Enrollment error', [
@@ -123,6 +101,58 @@ class EnrollmentController extends Controller
 
             return redirect()->back()->with('error', 'An error occurred during enrollment');
         }
+    }
+
+    /**
+     * "You're enrolled" page: answers "when is it and how do I get in?"
+     * Shows the next live session in the live class timezone, add-to-calendar
+     * buttons, a WhatsApp contact and (if missing) a field to add a WhatsApp number.
+     */
+    public function enrolled(Course $course)
+    {
+        $user = Auth::user();
+
+        if (!$user->hasCourseAccess($course->id)) {
+            return redirect()->route('courses.show', $course);
+        }
+
+        $nextClass = $course->nextLiveClass();
+        $startsAt = $nextClass?->startsAt();
+        // Join link is shown here (and sent by reminder) from one hour before the start
+        $canJoinNow = $startsAt && $nextClass->link && now()->gte($startsAt->copy()->subHour());
+
+        $contactSettings = \App\Models\ContactSettings::getActive();
+        $whatsappPhone = $contactSettings && $contactSettings->phone
+            ? preg_replace('/[^0-9]/', '', $contactSettings->phone)
+            : null;
+
+        return view('courses.enrolled', [
+            'course' => $course,
+            'nextClass' => $nextClass,
+            'startsAt' => $startsAt,
+            'canJoinNow' => $canJoinNow,
+            'whatsappPhone' => $whatsappPhone,
+            'needsPhone' => empty(trim((string) $user->phone)),
+            'defaultCountry' => $user->country ?: app(\App\Services\VisitorCountryService::class)->detect(request()),
+        ]);
+    }
+
+    /**
+     * Save the WhatsApp number from the "you're enrolled" page (used for reminders).
+     */
+    public function saveWhatsapp(Request $request, Course $course)
+    {
+        $data = $request->validate([
+            'phone' => ['required', 'string', 'max:20', 'regex:/^\+[1-9][0-9]{7,14}$/'],
+        ], [
+            'phone.required' => custom_trans('Please enter your phone number.', 'front'),
+            'phone.regex' => custom_trans('Please enter a valid phone number for the selected country.', 'front'),
+        ]);
+
+        $request->user()->update(['phone' => trim($data['phone'])]);
+
+        return redirect()->route('courses.enrolled', $course)
+            ->with('success', custom_trans('Done! We will send session reminders to your WhatsApp.', 'front'));
     }
 
     public function export()

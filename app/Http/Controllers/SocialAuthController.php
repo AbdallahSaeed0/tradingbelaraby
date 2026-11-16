@@ -15,10 +15,21 @@ use Laravel\Socialite\Facades\Socialite;
 class SocialAuthController extends Controller
 {
     /**
+     * After a social sign-in: finish a pending course enrollment, else go back where the visitor was.
+     */
+    private function redirectAfterSocialLogin(): RedirectResponse
+    {
+        $redirect = app(\App\Services\EnrollmentFlowService::class)->completeIntent(Auth::user());
+
+        return $redirect ? redirect($redirect) : redirect()->intended(route('home'));
+    }
+
+    /**
      * Redirect to Google OAuth.
      */
-    public function redirectToGoogle(SocialLoginSettingsService $settings): RedirectResponse
+    public function redirectToGoogle(\Illuminate\Http\Request $request, SocialLoginSettingsService $settings): RedirectResponse
     {
+        app(\App\Services\EnrollmentFlowService::class)->rememberIntentFromRequest($request);
         if (!$settings->isGoogleEnabled()) {
             return redirect()->route('login')->with('error', custom_trans('Google login is not available.', 'front'));
         }
@@ -74,7 +85,7 @@ class SocialAuthController extends Controller
             return redirect()->route('auth.x.complete-profile');
         }
 
-        return redirect()->intended(route('home'));
+        return $this->redirectAfterSocialLogin();
     }
 
     /**
@@ -142,7 +153,7 @@ class SocialAuthController extends Controller
             return redirect()->route('auth.x.complete-profile');
         }
 
-        return redirect()->intended(route('home'));
+        return $this->redirectAfterSocialLogin();
     }
 
     /**
@@ -152,7 +163,7 @@ class SocialAuthController extends Controller
     {
         $user = Auth::user();
         if (!$user || !$this->needsCompleteProfile($user)) {
-            return redirect()->intended(route('home'));
+            return $this->redirectAfterSocialLogin();
         }
         $needsEmail = $this->isPlaceholderEmail($user->email);
         $needsPhone = empty(trim((string) $user->phone));
@@ -167,7 +178,7 @@ class SocialAuthController extends Controller
     {
         $user = Auth::user();
         if (!$user || !$this->needsCompleteProfile($user)) {
-            return redirect()->intended(route('home'));
+            return $this->redirectAfterSocialLogin();
         }
 
         $needsEmail = $this->isPlaceholderEmail($user->email);
@@ -179,7 +190,7 @@ class SocialAuthController extends Controller
         }
         if ($needsPhone) {
             $rules['phone'] = [
-                'required',
+                'nullable',
                 'string',
                 'max:20',
                 'regex:/^\+[1-9][0-9]{7,14}$/',
@@ -199,22 +210,21 @@ class SocialAuthController extends Controller
             $updates['email'] = $validated['email'];
             $updates['email_verified_at'] = now();
         }
-        if ($needsPhone && isset($validated['phone'])) {
+        if ($needsPhone && !empty($validated['phone'] ?? null)) {
             $updates['phone'] = trim($validated['phone']);
         }
         if (!empty($updates)) {
             $user->update($updates);
         }
 
-        return redirect()->intended(route('home'))->with('success', custom_trans('Your profile has been updated.', 'front'));
+        return $this->redirectAfterSocialLogin()->with('success', custom_trans('Your profile has been updated.', 'front'));
     }
 
     private function needsCompleteProfile(User $user): bool
     {
-        if ($this->isPlaceholderEmail($user->email)) {
-            return true;
-        }
-        return empty(trim((string) $user->phone));
+        // Only X sign-ins without an email must stop here. The phone number is optional
+        // and can be added later from the profile (it is only used for WhatsApp reminders).
+        return $this->isPlaceholderEmail($user->email);
     }
 
     private function isPlaceholderEmail(string $email): bool

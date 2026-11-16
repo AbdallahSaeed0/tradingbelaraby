@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\VerificationSettingsService;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -9,42 +10,21 @@ use Symfony\Component\HttpFoundation\Response;
 class EnsureEmailIsVerifiedForAuthUsers
 {
     /**
-     * Routes that require email verification. Unverified users can browse all other pages.
+     * Routes that require a verified account.
+     *
+     * Students can sign up, enroll, pay and learn without verifying first, so nothing
+     * stands between a visitor and the course. Verification (email or WhatsApp,
+     * per admin settings) is only required to get a certificate.
+     *
+     * Note: certificate.verify is the public certificate lookup page and is NOT gated.
      */
     protected array $verificationRequiredRoutes = [
-        'profile.*',
-        'student.*',
-        'cart.*',
-        'wishlist.*',
-        'checkout.*',
-        'purchase.*',
-        'purchases.*',
-        'notifications.*',
-        'enrollments.*',
-        'progress.*',
-        'certificate.*',
-        'homework.*',
-        'qa.*',
-        'courses.learn',
-        'courses.enroll',
-        'courses.review',
-        'courses.schedule-live-class',
-        'courses.join-live-class',
-        'courses.live-classes.*',
-        'courses.submit-homework*',
-        'live-classes.register',
-        'live-classes.unregister',
-        'live-classes.join',
-        'tabby.*',
-        'bundles.index',
-        'bundles.show',
+        'certificate.request',
+        'certificate.store',
+        'certificate.download',
+        'certificate.view',
     ];
 
-    /**
-     * Redirect authenticated (frontend) users who have not verified their email
-     * to the verification notice page ONLY when accessing routes that require verification.
-     * Unverified users can browse public pages (home, courses, blog, etc.).
-     */
     public function handle(Request $request, Closure $next): Response
     {
         if (!auth()->guard('web')->check()) {
@@ -53,26 +33,28 @@ class EnsureEmailIsVerifiedForAuthUsers
 
         $user = auth()->guard('web')->user();
 
-        if (!$user || !method_exists($user, 'hasVerifiedEmail')) {
+        if (!$user || !$request->routeIs(...$this->verificationRequiredRoutes)) {
             return $next($request);
         }
 
-        if ($user->hasVerifiedEmail()) {
+        $verification = app(VerificationSettingsService::class);
+
+        if ($verification->isUserVerified($user)) {
             return $next($request);
         }
 
-        // Always allow verification routes and logout
-        if ($request->routeIs('verification.*') || $request->routeIs('logout')) {
-            return $next($request);
+        session()->put('url.intended', $request->fullUrl());
+        $message = custom_trans('Please verify your account to get your certificate.', 'front');
+
+        if ($verification->isWhatsappEnabled() && $user->phone) {
+            return redirect()->route('whatsapp.verify')->with('info', $message);
         }
 
-        // Allow access unless the current route requires verification
-        foreach ($this->verificationRequiredRoutes as $pattern) {
-            if ($request->routeIs($pattern)) {
-                return redirect()->route('verification.notice');
-            }
+        if ($verification->isEmailEnabled()) {
+            return redirect()->route('verification.notice')->with('info', $message);
         }
 
-        return $next($request);
+        // WhatsApp-only verification but no phone on file yet: ask for it first
+        return redirect()->route('profile.edit')->with('info', $message);
     }
 }

@@ -96,6 +96,13 @@ return [
     'timezone' => 'UTC',
 
     /*
+    | Wall-clock timezone of live class times. Admins type a live class time as
+    | local time (e.g. 21:00 Riyadh) and it is stored as-is, so reminders, the
+    | "you're enrolled" page and calendar files read it in this timezone.
+    */
+    'live_class_timezone' => env('LIVE_CLASS_TIMEZONE', 'Asia/Riyadh'),
+
+    /*
     |--------------------------------------------------------------------------
     | Application Currency
     |--------------------------------------------------------------------------

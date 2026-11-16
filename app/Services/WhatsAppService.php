@@ -49,6 +49,56 @@ class WhatsAppService
         return Cache::has(self::OTP_CACHE_PREFIX . $phone);
     }
 
+    /**
+     * Send an approved template message with plain text body parameters.
+     * WhatsApp only allows business-initiated messages through approved templates.
+     */
+    public function sendTemplate(string $phone, string $templateName, string $langCode, array $bodyParams): bool
+    {
+        $config = app(VerificationSettingsService::class)->getWhatsappConfig();
+
+        if (!$config['token'] || !$config['phone_number_id']) {
+            Log::warning('WhatsApp template not sent: service is not configured');
+            return false;
+        }
+
+        $payload = [
+            'messaging_product' => 'whatsapp',
+            'to' => $phone,
+            'type' => 'template',
+            'template' => [
+                'name' => $templateName,
+                'language' => ['code' => $langCode],
+                'components' => [[
+                    'type' => 'body',
+                    'parameters' => array_map(
+                        fn ($value) => ['type' => 'text', 'text' => (string) $value],
+                        array_values($bodyParams)
+                    ),
+                ]],
+            ],
+        ];
+
+        try {
+            $response = Http::withToken($config['token'])
+                ->post("https://graph.facebook.com/{$config['api_version']}/{$config['phone_number_id']}/messages", $payload);
+
+            if ($response->successful()) {
+                return true;
+            }
+
+            Log::warning('WhatsApp template failed', [
+                'template' => $templateName,
+                'status' => $response->status(),
+                'body' => $response->body(),
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('WhatsApp template exception', ['template' => $templateName, 'message' => $e->getMessage()]);
+        }
+
+        return false;
+    }
+
     private function sendOtpMessage(string $phone, string $otp, string $language): bool
     {
         $config        = app(VerificationSettingsService::class)->getWhatsappConfig();

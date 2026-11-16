@@ -19,8 +19,8 @@ class SendLiveClassTodayRemindersJob implements ShouldQueue
 
     public function handle(): void
     {
-        $todayStart = Carbon::today();
-        $todayEnd = Carbon::today()->endOfDay();
+        $todayStart = LiveClass::wallNow()->startOfDay();
+        $todayEnd = LiveClass::wallNow()->endOfDay();
         $classes = LiveClass::where('status', 'scheduled')
             ->whereBetween('scheduled_at', [$todayStart, $todayEnd])
             ->with('registrations.user')
