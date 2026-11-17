@@ -121,7 +121,12 @@ Route::get('/email/verify/{id}/{hash}', function (\Illuminate\Http\Request $requ
     // Auto-login the user after verification
     \Illuminate\Support\Facades\Auth::login($user);
 
-    return redirect()->intended(route('home'))->with('success', 'Your email has been verified successfully! You are now logged in.');
+    // The link is often opened in another browser (mail app) with no saved destination:
+    // send the student straight into their latest course instead of the home page.
+    $latestCourseId = $user->enrollments()->accessible()->latest('enrolled_at')->value('course_id');
+    $fallback = $latestCourseId ? route('courses.learn', $latestCourseId) : route('home');
+
+    return redirect()->intended($fallback)->with('success', custom_trans('Your email has been verified successfully!', 'front'));
 })->middleware(['signed'])->name('verification.verify');
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

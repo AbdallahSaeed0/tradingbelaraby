@@ -133,6 +133,7 @@ class EnrollmentController extends Controller
             'canJoinNow' => $canJoinNow,
             'whatsappPhone' => $whatsappPhone,
             'needsPhone' => empty(trim((string) $user->phone)),
+            'isVerified' => app(\App\Services\VerificationSettingsService::class)->isUserVerified($user),
             'defaultCountry' => $user->country ?: app(\App\Services\VisitorCountryService::class)->detect(request()),
         ]);
     }

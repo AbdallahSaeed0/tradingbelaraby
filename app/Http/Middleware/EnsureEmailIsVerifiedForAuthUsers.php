@@ -12,13 +12,14 @@ class EnsureEmailIsVerifiedForAuthUsers
     /**
      * Routes that require a verified account.
      *
-     * Students can sign up, enroll, pay and learn without verifying first, so nothing
-     * stands between a visitor and the course. Verification (email or WhatsApp,
-     * per admin settings) is only required to get a certificate.
+     * Students can sign up, enroll and pay without verifying first (enrollment is kept),
+     * but opening the course content and getting a certificate need a verified account
+     * (email or WhatsApp, per admin settings).
      *
      * Note: certificate.verify is the public certificate lookup page and is NOT gated.
      */
     protected array $verificationRequiredRoutes = [
+        'courses.learn',
         'certificate.request',
         'certificate.store',
         'certificate.download',
@@ -44,7 +45,9 @@ class EnsureEmailIsVerifiedForAuthUsers
         }
 
         session()->put('url.intended', $request->fullUrl());
-        $message = custom_trans('Please verify your account to get your certificate.', 'front');
+        $message = $request->routeIs('courses.learn')
+            ? custom_trans('Please verify your account to open the course.', 'front')
+            : custom_trans('Please verify your account to get your certificate.', 'front');
 
         if ($verification->isWhatsappEnabled() && $user->phone) {
             return redirect()->route('whatsapp.verify')->with('info', $message);

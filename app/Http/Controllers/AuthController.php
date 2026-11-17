@@ -174,28 +174,45 @@ class AuthController extends Controller
         $request->session()->regenerate();
         ga_event('sign_up', ['method' => 'email']);
 
-        // Verification email is queued and never blocks the student
+        // Send the verification email. Enrollment still happens now, but the course
+        // content stays locked until the account is verified (see EnsureEmailIsVerifiedForAuthUsers).
+        $welcome = custom_trans('Welcome! Your account is ready.', 'front');
         try {
             if (app(VerificationSettingsService::class)->isEmailEnabled()) {
                 event(new Registered($user));
+                $welcome = custom_trans('We sent a verification link to your email. Verify your account to open the course.', 'front')
+                    . ' (' . $user->email . ')';
             }
         } catch (\Throwable $e) {
-            Log::error('Failed to queue verification email', ['user_id' => $user->id, 'error' => $e->getMessage()]);
+            Log::error('Failed to send verification email', ['user_id' => $user->id, 'error' => $e->getMessage()]);
         }
+        // Flashed for both the normal form and the quick sign-up modal (JSON → page redirect)
+        session()->flash('success', $welcome);
 
         $flow = app(EnrollmentFlowService::class);
         if (!empty($data['enroll'])) {
             $flow->rememberIntent((int) $data['enroll']);
         }
 
-        $redirect = $flow->completeIntent($user)
-            ?? redirect()->intended(route('home'))->getTargetUrl();
+        $redirect = $flow->completeIntent($user);
+
+        // Free-course sign-ups land on the "you're enrolled" page (which explains the
+        // verification step). Everyone else goes to the verify-email page, then back to
+        // where they were once they click the link.
+        if (!$redirect || !str_contains($redirect, '/enrolled')) {
+            if (app(VerificationSettingsService::class)->isEmailEnabled()) {
+                redirect()->setIntendedUrl($redirect ?? session('url.intended', route('home')));
+                $redirect = route('verification.notice');
+            } else {
+                $redirect = $redirect ?? redirect()->intended(route('home'))->getTargetUrl();
+            }
+        }
 
         if ($request->expectsJson()) {
             return response()->json(['success' => true, 'redirect' => $redirect]);
         }
 
-        return redirect($redirect)->with('success', custom_trans('Welcome! Your account is ready.', 'front'));
+        return redirect($redirect);
     }
 
     /**

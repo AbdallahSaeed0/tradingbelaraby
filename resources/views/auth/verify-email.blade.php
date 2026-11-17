@@ -13,6 +13,16 @@
                 </div>
             @endif
 
+            @if (session('info'))
+                <div class="alert alert-warning" role="alert">
+                    {{ session('info') }}
+                </div>
+            @endif
+
+            @auth
+                <p class="text-center text-muted small mb-3" dir="ltr">{{ auth()->user()->email }}</p>
+            @endauth
+
             <div class="mb-4">
                 <p class="text-center">
                     {{ custom_trans('verify_email_message', 'front') }}

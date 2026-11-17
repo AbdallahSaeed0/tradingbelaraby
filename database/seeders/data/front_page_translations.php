@@ -3155,4 +3155,28 @@ return [
         'en' => 'Done! We will send session reminders to your WhatsApp.',
         'ar' => 'تم! سنرسل لك تذكيرات الجلسات على واتساب.',
     ],
+    'Please verify your account to open the course.' => [
+        'en' => 'Please verify your account to open the course.',
+        'ar' => 'فعّل حسابك عشان تقدر تدخل الدورة.',
+    ],
+    'We sent a verification link to your email. Verify your account to open the course.' => [
+        'en' => 'We sent a verification link to your email. Verify your account to open the course.',
+        'ar' => 'تم إرسال رسالة التفعيل إلى بريدك الإلكتروني. فعّل حسابك عشان تقدر تدخل الدورة.',
+    ],
+    'Verify your email to open the course' => [
+        'en' => 'Verify your email to open the course',
+        'ar' => 'فعّل بريدك الإلكتروني عشان تدخل الدورة',
+    ],
+    'We sent a verification link to' => [
+        'en' => 'We sent a verification link to',
+        'ar' => 'أرسلنا رابط التفعيل إلى',
+    ],
+    'Check your inbox (and spam folder) and click the link.' => [
+        'en' => 'Check your inbox (and spam folder) and click the link.',
+        'ar' => 'افتح بريدك (وملف الرسائل غير المرغوب فيها) واضغط على الرابط.',
+    ],
+    'Your email has been verified successfully!' => [
+        'en' => 'Your email has been verified successfully!',
+        'ar' => 'تم تفعيل بريدك الإلكتروني بنجاح!',
+    ],
 ];

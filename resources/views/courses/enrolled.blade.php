@@ -79,10 +79,31 @@
                     </form>
                 @endif
 
+                @unless ($isVerified)
+                    <div class="text-start rounded-4 p-3 mb-3" style="background: rgba(255, 193, 7, .12); border: 1px solid rgba(255, 193, 7, .45);">
+                        <div class="fw-bold mb-1">
+                            <i class="fas fa-envelope me-1"></i>{{ custom_trans('Verify your email to open the course', 'front') }}
+                        </div>
+                        <div class="small mb-3">
+                            {{ custom_trans('We sent a verification link to', 'front') }}
+                            <strong dir="ltr">{{ auth()->user()->email }}</strong>.
+                            {{ custom_trans('Check your inbox (and spam folder) and click the link.', 'front') }}
+                        </div>
+                        <form method="POST" action="{{ route('verification.send') }}">
+                            @csrf
+                            <button type="submit" class="btn btn-warning btn-sm fw-bold">
+                                {{ custom_trans('resend_verification_email', 'front') }}
+                            </button>
+                        </form>
+                    </div>
+                @endunless
+
                 <div class="d-grid gap-2">
-                    <a href="{{ route('courses.learn', $course) }}" class="btn btn-orange fw-bold">
-                        <i class="fas fa-play me-2"></i>{{ custom_trans('Go to the course', 'front') }}
-                    </a>
+                    @if ($isVerified)
+                        <a href="{{ route('courses.learn', $course) }}" class="btn btn-orange fw-bold">
+                            <i class="fas fa-play me-2"></i>{{ custom_trans('Go to the course', 'front') }}
+                        </a>
+                    @endif
                     @if ($whatsappPhone)
                         <a href="https://wa.me/{{ $whatsappPhone }}?text={{ rawurlencode($whatsappText) }}" target="_blank"
                             rel="noopener" class="btn btn-outline-success">
