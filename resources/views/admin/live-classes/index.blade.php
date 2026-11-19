@@ -347,6 +347,10 @@
                                                         class="btn btn-outline-info btn-sm" title="Registrations">
                                                         <i class="fa fa-users"></i>
                                                     </a>
+                                                    <button type="button" onclick="copyShareLink(this)" data-link="{{ route('live.share', $liveClass) }}"
+                                                        class="btn btn-outline-success btn-sm" title="Copy share link">
+                                                        <i class="fa fa-link"></i>
+                                                    </button>
                                                     <button onclick="duplicateClass({{ $liveClass->id }})"
                                                         class="btn btn-outline-secondary btn-sm" title="Duplicate">
                                                         <i class="fa fa-copy"></i>
@@ -683,6 +687,21 @@
             }
 
             // Duplicate class
+            // Copy the public /live/{id} link students can open to join directly
+            function copyShareLink(btn) {
+                const link = btn.dataset.link;
+                const done = () => {
+                    const icon = btn.innerHTML;
+                    btn.innerHTML = '<i class="fa fa-check"></i>';
+                    setTimeout(() => { btn.innerHTML = icon; }, 1500);
+                };
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(link).then(done, () => window.prompt('Copy link:', link));
+                } else {
+                    window.prompt('Copy link:', link);
+                }
+            }
+
             function duplicateClass(classId) {
                 if (confirm('Are you sure you want to duplicate this live class?')) {
                     fetch(`/admin/live-classes/${classId}/duplicate`, {

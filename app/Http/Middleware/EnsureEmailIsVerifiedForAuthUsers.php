@@ -20,6 +20,7 @@ class EnsureEmailIsVerifiedForAuthUsers
      */
     protected array $verificationRequiredRoutes = [
         'courses.learn',
+        'live.share',
         'certificate.request',
         'certificate.store',
         'certificate.download',
@@ -45,7 +46,7 @@ class EnsureEmailIsVerifiedForAuthUsers
         }
 
         session()->put('url.intended', $request->fullUrl());
-        $message = $request->routeIs('courses.learn')
+        $message = $request->routeIs('courses.learn', 'live.share')
             ? custom_trans('Please verify your account to open the course.', 'front')
             : custom_trans('Please verify your account to get your certificate.', 'front');
 

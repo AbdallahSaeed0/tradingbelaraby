@@ -164,6 +164,7 @@ main:has(> section.hero) > section:not(.hero), body:has(main > section.hero) foo
         $contactSettings = \App\Models\ContactSettings::getActive();
         $showGuestNav = Route::currentRouteName() === 'verification.notice';
     @endphp
+    @include('partials.app-download-banner')
 
     <!-- Header Section -->
     <header class="site-header">

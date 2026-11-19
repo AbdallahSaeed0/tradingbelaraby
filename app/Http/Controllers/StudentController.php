@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Course;
 use App\Models\User;
 use App\Models\LectureCompletion;
 
@@ -110,8 +111,10 @@ class StudentController extends Controller
     /**
      * Show course learning page
      */
-    public function learnCourse($courseId)
+    public function learnCourse(Course $course)
     {
+        // Route model binding accepts both the id and the slug (/courses/us-market-diwaniya/learn)
+        $courseId = $course->id;
         $user = Auth::user();
 
         $enrollment = $user->enrollments()

@@ -171,6 +171,63 @@ class LiveClassController extends Controller
      * Join live class (get meeting link)
      */
     /**
+     * Shareable link for one live session: /live/{id}.
+     *
+     * - Guest: session details + quick sign-up; after sign-up (free course) they are
+     *   enrolled and come back to this same link.
+     * - Signed in, not enrolled: free course → enrolled on the spot; paid → course page.
+     * - Enrolled: registered for the session, then sent straight to the meeting link from
+     *   one hour before the start until it ends. Before that, a waiting page with the time.
+     * Unverified accounts are sent to verify first (EnsureEmailIsVerifiedForAuthUsers).
+     */
+    public function share(LiveClass $liveClass)
+    {
+        $course = $liveClass->course;
+        abort_unless($course, 404);
+
+        $user = Auth::user();
+        $flow = app(\App\Services\EnrollmentFlowService::class);
+        $startsAt = $liveClass->startsAt();
+        $endsAt = $liveClass->endsAt();
+
+        if (!$user) {
+            $flow->rememberIntent($course->id, route('live.share', $liveClass));
+
+            return view('live-classes.share', compact('liveClass', 'course', 'startsAt') + ['state' => 'guest']);
+        }
+
+        if (!$user->hasCourseAccess($course->id)) {
+            if ($course->requiresPayment()) {
+                return redirect()->route('courses.show', $course)
+                    ->with('info', custom_trans('This live session is for students of this course. Enroll to join.', 'front'));
+            }
+            $flow->enrollFree($user, $course);
+        }
+
+        if (!$liveClass->isRegisteredByUser($user)) {
+            $liveClass->registerUser($user);
+        }
+
+        $state = match (true) {
+            $liveClass->status === 'cancelled' => 'cancelled',
+            $liveClass->status === 'completed' || ($endsAt && now()->gt($endsAt)) => 'ended',
+            !$startsAt => 'waiting',
+            now()->gte($startsAt->copy()->subHour()) => 'open',
+            default => 'waiting',
+        };
+
+        if ($state === 'open' && $liveClass->link) {
+            return redirect()->away($liveClass->link);
+        }
+
+        if ($state === 'ended' && $liveClass->recording_url) {
+            return redirect()->away($liveClass->recording_url);
+        }
+
+        return view('live-classes.share', compact('liveClass', 'course', 'startsAt', 'state'));
+    }
+
+    /**
      * Download an .ics calendar file for a live class (Apple Calendar / Outlook).
      */
     public function calendar(LiveClass $liveClass)

@@ -48,6 +48,17 @@
             <div class="col-lg-12 admin-form-main">
                 <div class="card">
                     <div class="card-body">
+                        {{-- Public link students can open to sign up / join this session directly --}}
+                        <div class="alert alert-success d-flex flex-wrap align-items-center gap-2 mb-4">
+                            <i class="fa fa-link"></i>
+                            <strong>Share link:</strong>
+                            <input type="text" class="form-control form-control-sm flex-grow-1" style="max-width: 420px;"
+                                value="{{ route('live.share', $liveClass) }}" readonly onclick="this.select()" dir="ltr">
+                            <button type="button" class="btn btn-sm btn-success"
+                                onclick="navigator.clipboard ? navigator.clipboard.writeText(this.previousElementSibling.value).then(() => { this.textContent = 'Copied'; }) : this.previousElementSibling.select()">
+                                Copy
+                            </button>
+                        </div>
                         <form id="liveClassForm" action="{{ route('admin.live-classes.update', $liveClass) }}" method="POST"
                             enctype="multipart/form-data">
                             @csrf

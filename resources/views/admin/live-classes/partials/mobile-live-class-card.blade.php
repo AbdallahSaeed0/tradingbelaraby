@@ -25,6 +25,7 @@
 
     $actionsHtml = '<a href="' . route('admin.live-classes.edit', $liveClass) . '" class="btn btn-sm btn-outline-primary" title="Edit"><i class="fa fa-edit"></i></a>'
         . '<a href="' . route('admin.live-classes.registrations', $liveClass) . '" class="btn btn-sm btn-outline-info" title="Registrations"><i class="fa fa-users"></i></a>'
+        . '<button type="button" onclick="copyShareLink(this)" data-link="' . e(route('live.share', $liveClass)) . '" class="btn btn-sm btn-outline-success" title="Copy share link"><i class="fa fa-link"></i></button>'
         . '<button type="button" onclick="duplicateClass(' . $liveClass->id . ')" class="btn btn-sm btn-outline-secondary" title="Duplicate"><i class="fa fa-copy"></i></button>'
         . '<button type="button" onclick="deleteClass(' . $liveClass->id . ')" class="btn btn-sm btn-outline-danger" title="Delete"><i class="fa fa-trash"></i></button>';
 @endphp

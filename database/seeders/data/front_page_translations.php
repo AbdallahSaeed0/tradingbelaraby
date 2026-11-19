@@ -3179,4 +3179,48 @@ return [
         'en' => 'Your email has been verified successfully!',
         'ar' => 'تم تفعيل بريدك الإلكتروني بنجاح!',
     ],
+    'This live session is for students of this course. Enroll to join.' => [
+        'en' => 'This live session is for students of this course. Enroll to join.',
+        'ar' => 'هذه الجلسة لطلاب الدورة. اشترك في الدورة عشان تقدر تدخل.',
+    ],
+    'Sign up to join this live session.' => [
+        'en' => 'Sign up to join this live session.',
+        'ar' => 'سجّل عشان تدخل الجلسة المباشرة.',
+    ],
+    'Join the session' => [
+        'en' => 'Join the session',
+        'ar' => 'ادخل الجلسة',
+    ],
+    'You are registered for this session.' => [
+        'en' => 'You are registered for this session.',
+        'ar' => 'أنت مسجّل في هذه الجلسة.',
+    ],
+    'Open this same link at session time and it will take you straight in.' => [
+        'en' => 'Open this same link at session time and it will take you straight in.',
+        'ar' => 'افتح نفس الرابط ده وقت الجلسة وهيدخلك على طول.',
+    ],
+    'The join link is not ready yet. Please refresh this page in a few minutes.' => [
+        'en' => 'The join link is not ready yet. Please refresh this page in a few minutes.',
+        'ar' => 'رابط الدخول لسه مش جاهز. حدّث الصفحة بعد دقائق.',
+    ],
+    'This session has ended.' => [
+        'en' => 'This session has ended.',
+        'ar' => 'انتهت هذه الجلسة.',
+    ],
+    'This session was cancelled.' => [
+        'en' => 'This session was cancelled.',
+        'ar' => 'تم إلغاء هذه الجلسة.',
+    ],
+    'Trading Bel Araby app' => [
+        'en' => 'Trading Bel Araby app',
+        'ar' => 'تطبيق تداول بالعربي',
+    ],
+    'A better experience: lessons, live sessions and alerts on your phone.' => [
+        'en' => 'A better experience: lessons, live sessions and alerts on your phone.',
+        'ar' => 'تجربة أفضل: الدروس والجلسات المباشرة والتنبيهات على موبايلك.',
+    ],
+    'Download' => [
+        'en' => 'Download',
+        'ar' => 'تحميل',
+    ],
 ];

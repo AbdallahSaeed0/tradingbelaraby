@@ -247,6 +247,8 @@ Route::get('/blog/{blog:slug}', [BlogController::class, 'show'])->name('blog.sho
 // Trader registration routes
 Route::post('/traders', [App\Http\Controllers\TraderController::class, 'store'])->name('traders.store');
 Route::post('/courses/{course}/enroll', [EnrollmentController::class, 'enroll'])->name('courses.enroll');
+// Shareable direct link to one live session (handles guests, enrollment and joining)
+Route::get('/live/{liveClass}', [App\Http\Controllers\LiveClassController::class, 'share'])->name('live.share');
 Route::get('/category/{category:slug}', [CourseController::class, 'category'])->name('category.show');
 Route::get('/categories/{category:slug}', [CourseController::class, 'category'])->name('categories.show'); // Alias for layout compatibility
 

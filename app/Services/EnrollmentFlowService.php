@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Session;
 class EnrollmentFlowService
 {
     public const SESSION_KEY = 'enroll_intent_course_id';
+    public const RETURN_KEY = 'enroll_intent_return_to';
 
     public function enrollFree(User $user, Course $course): CourseEnrollment
     {
@@ -71,11 +72,21 @@ class EnrollmentFlowService
         }
     }
 
-    public function rememberIntent(int $courseId): void
+    /**
+     * @param string|null $returnTo Where to land after the enrollment instead of the
+     *                              "you're enrolled" page (e.g. a shared live session link).
+     */
+    public function rememberIntent(int $courseId, ?string $returnTo = null): void
     {
         $course = Course::find($courseId);
         if (!$course) {
             return;
+        }
+
+        if ($returnTo) {
+            session([self::RETURN_KEY => $returnTo]);
+        } elseif ((int) session(self::SESSION_KEY) !== $course->id) {
+            session()->forget(self::RETURN_KEY);
         }
 
         session([self::SESSION_KEY => $course->id]);
@@ -90,6 +101,7 @@ class EnrollmentFlowService
     public function completeIntent(User $user): ?string
     {
         $courseId = session()->pull(self::SESSION_KEY);
+        $returnTo = session()->pull(self::RETURN_KEY);
         if (!$courseId) {
             return null;
         }
@@ -102,7 +114,7 @@ class EnrollmentFlowService
         session()->forget('url.intended');
 
         if ($user->blocksCoursePurchase($course->id)) {
-            return route('courses.enrolled', $course);
+            return $returnTo ?: route('courses.enrolled', $course);
         }
 
         // Paid course: back to the course page, where the enroll button adds it to the cart
@@ -121,6 +133,6 @@ class EnrollmentFlowService
             return route('courses.show', $course);
         }
 
-        return route('courses.enrolled', $course);
+        return $returnTo ?: route('courses.enrolled', $course);
     }
 }
