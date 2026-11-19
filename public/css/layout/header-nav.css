@@ -907,7 +907,9 @@ body:has(.offcanvas-backdrop.show) .whatsapp-float {
         white-space: nowrap;
         min-height: 52px;
         gap: 0.5rem;
-        padding: 0;
+        /* nav-flex is also the .container: keep a side gutter so the logo and the
+           search button do not touch the screen edges */
+        padding: 0 0.75rem;
         margin: 0;
     }
 

@@ -2,7 +2,7 @@
 
 {{-- Shareable live session page (/live/{id}). $state: guest | waiting | open | ended | cancelled --}}
 
-@section('title', $liveClass->localized_name . ' - ' . $course->name)
+@section('title', $liveClass->localized_name . ' - ' . $course->localized_name)
 
 @php
     $langCode = \App\Helpers\TranslationHelper::getFrontendLanguage()->code ?? 'en';
@@ -20,7 +20,7 @@
         <div class="card shadow-sm border-0 rounded-4">
             <div class="card-body p-4 p-md-5 text-center">
                 <div class="mb-3" style="font-size: 2.6rem; line-height: 1;" aria-hidden="true">🎥</div>
-                <div class="text-muted small mb-1">{{ $course->name }}</div>
+                <div class="text-muted small mb-1">{{ $course->localized_name }}</div>
                 <h1 class="h4 fw-bold mb-4">{{ $liveClass->localized_name }}</h1>
 
                 @if ($startsAt)

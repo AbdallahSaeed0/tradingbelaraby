@@ -86,11 +86,15 @@
                                     class="fw-bold">{{ custom_trans('duration', 'front') }}:</span>
                                 <span class="ms-auto">{{ $course->duration ?? 'Not Found' }}</span>
                             </li>
-                            <li class="list-group-item d-flex align-items-center"><i
-                                    class="fa fa-user me-2 text-orange"></i> <span
-                                    class="fw-bold">{{ custom_trans('enrolled', 'front') }}:</span>
-                                <span class="ms-auto">{{ $course->enrolled_students ?? 0 }}</span>
-                            </li>
+                            {{-- Real student count (the enrolled_students column is not kept up to date); hidden while 0 --}}
+                            @php $studentsCount = $course->enrollments()->accessible()->count(); @endphp
+                            @if ($studentsCount > 0)
+                                <li class="list-group-item d-flex align-items-center"><i
+                                        class="fa fa-user me-2 text-orange"></i> <span
+                                        class="fw-bold">{{ custom_trans('Students', 'front') }}:</span>
+                                    <span class="ms-auto">{{ $studentsCount }}</span>
+                                </li>
+                            @endif
                             <li class="list-group-item d-flex align-items-center"><i
                                     class="fa fa-globe me-2 text-orange"></i> <span
                                     class="fw-bold">{{ custom_trans('language', 'front') }}:</span>
@@ -467,9 +471,12 @@
                             <li class="list-group-item d-flex align-items-center"><i class="fa fa-clock me-2 text-orange"></i> <span class="fw-bold">{{ custom_trans('duration', 'front') }}:</span>
                                 <span class="ms-auto">{{ $course->duration ?? 'Not Found' }}</span>
                             </li>
-                            <li class="list-group-item d-flex align-items-center"><i class="fa fa-user me-2 text-orange"></i> <span class="fw-bold">{{ custom_trans('enrolled', 'front') }}:</span>
-                                <span class="ms-auto">{{ $course->enrolled_students ?? 0 }}</span>
-                            </li>
+                            @php $studentsCount ??= $course->enrollments()->accessible()->count(); @endphp
+                            @if ($studentsCount > 0)
+                                <li class="list-group-item d-flex align-items-center"><i class="fa fa-user me-2 text-orange"></i> <span class="fw-bold">{{ custom_trans('Students', 'front') }}:</span>
+                                    <span class="ms-auto">{{ $studentsCount }}</span>
+                                </li>
+                            @endif
                             <li class="list-group-item d-flex align-items-center"><i class="fa fa-globe me-2 text-orange"></i> <span class="fw-bold">{{ custom_trans('language', 'front') }}:</span>
                                 <span class="ms-auto">
                                     @if ($course->default_language)

@@ -15,10 +15,10 @@
 <div class="modal fade" id="quickSignupModal" tabindex="-1" aria-labelledby="quickSignupModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header border-0 pb-0">
-                <div>
+            <div class="modal-header border-0 pb-0 align-items-start">
+                <div class="flex-grow-1 min-w-0">
                     <h5 class="modal-title fw-bold" id="quickSignupModalLabel">{{ $quickSignupTitle }}</h5>
-                    <div class="text-muted small mt-1">{{ $course->name }}</div>
+                    <div class="text-muted small mt-1">{{ $course->localized_name }}</div>
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ custom_trans('Close', 'front') }}"></button>
             </div>
@@ -91,7 +91,10 @@
             bootstrap.Modal.getOrCreateInstance(modalEl).show();
         });
         modalEl.addEventListener('shown.bs.modal', function () {
-            document.getElementById('qs_name').focus();
+            // Desktop only: on phones the keyboard would pop up and hide the Google button
+            if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+                document.getElementById('qs_name').focus();
+            }
         });
 
         function clearErrors() {

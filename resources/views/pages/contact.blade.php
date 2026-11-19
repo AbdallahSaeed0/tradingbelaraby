@@ -108,20 +108,21 @@
                                 'placeholder' => custom_trans('Phone', 'front'),
                                 'required' => false,
                             ])
-                        </div>
-                        <div class="mb-3">
-                            <div class="input-group">
-                                <input type="text" name="subject" class="form-control rounded-3" placeholder="{{ custom_trans('Subject', 'front') }}"
-                                    required>
-                                <span class="input-group-text bg-white"><i class="fa fa-tag"></i></span>
+                            {{-- Subject and message in the same grid row as the fields above, so all edges line up --}}
+                            <div class="col-12">
+                                <div class="input-group">
+                                    <input type="text" name="subject" class="form-control rounded-3" placeholder="{{ custom_trans('Subject', 'front') }}"
+                                        required>
+                                    <span class="input-group-text bg-white"><i class="fa fa-tag"></i></span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="mb-4">
-                            <textarea name="message" class="form-control rounded-3" rows="5" placeholder="{{ custom_trans('Your Message', 'front') }}" required></textarea>
+                            <div class="col-12 mb-2">
+                                <textarea name="message" class="form-control rounded-3" rows="5" placeholder="{{ custom_trans('Your Message', 'front') }}" required></textarea>
+                            </div>
                         </div>
                         <div class="text-center">
                             <button type="submit" class="btn btn-orange px-5 py-2 rounded-3 fw-bold" id="submitBtn">
-                                <span class="btn-text">{{ custom_trans('Make An Request', 'front') }} <i class="fa fa-arrow-right ms-2"></i></span>
+                                <span class="btn-text">{{ custom_trans('Make An Request', 'front') }} <i class="fa {{ (\App\Helpers\TranslationHelper::getCurrentLanguage()->direction ?? 'ltr') === 'rtl' ? 'fa-arrow-left' : 'fa-arrow-right' }} ms-2"></i></span>
                                 <span class="btn-loading d-none-initially">
                                     <i class="fas fa-spinner fa-spin me-2"></i>{{ custom_trans('Sending...', 'front') }}
                                 </span>

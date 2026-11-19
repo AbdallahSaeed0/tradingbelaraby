@@ -266,6 +266,8 @@
     align-items: center;
     gap: 0.5rem;
     margin-bottom: 0.75rem;
+    /* Price + buttons sit on the card bottom, so every card lines them up at the same height */
+    margin-top: auto;
 }
 
 .home-courses-slider__price-current {
@@ -298,8 +300,13 @@
 .home-courses-slider__btn {
     flex: 1;
     min-width: 0;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.875rem;
+    /* Same height on every card: one line of text (long labels like "Go to course" no longer wrap) */
+    min-height: 42px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0.5rem 0.6rem;
+    font-size: 0.8125rem;
     font-weight: 600;
     border-radius: 8px;
     text-align: center;

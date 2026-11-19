@@ -60,7 +60,7 @@
                 <a href="{{ route('password.forgot.form') }}">{{ custom_trans("I don't remember my password", 'front') }}</a>
             </div>
 
-            <button type="submit" class="btn btn-primary w-100">{{ custom_trans('Sign in', 'front') }}</button>
+            <button type="submit" class="btn btn-orange w-100 fw-bold">{{ custom_trans('Sign in', 'front') }}</button>
 
             @if($googleLoginEnabled ?? false)
                 <div class="mt-3">

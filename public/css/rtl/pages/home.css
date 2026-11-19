@@ -3175,3 +3175,15 @@ body:has(main > section.hero) footer.footer-main > .container {
 }
 .faq-accordion .accordion-button:not(.collapsed) .faq-chevron i { transform: rotate(180deg); }
 .faq-accordion .accordion-button::after { display: none; }
+
+/* Phones: "features split" items (privacy, support, help, contact) take the full width.
+   At 45% each, the text was squeezed into a ~87px column. */
+@media (max-width: 576px) {
+    .features-list {
+        gap: 20px;
+    }
+    .feature-item {
+        width: 100%;
+        margin-bottom: 0;
+    }
+}

@@ -477,11 +477,6 @@ main:has(> section.hero) > section:not(.hero), body:has(main > section.hero) foo
                                 @endif
                             </a>
 
-                            <!-- Like Button -->
-                            <button class="btn btn-outline-dark like-btn" id="likeBtn">
-                                <i class="fas fa-thumbs-up"></i>
-                            </button>
-
                             <!-- User Dropdown -->
                             <div class="dropdown user-dropdown">
                                 <button class="btn user-dropdown-btn d-flex align-items-center" type="button"
@@ -732,7 +727,8 @@ main:has(> section.hero) > section:not(.hero), body:has(main > section.hero) foo
 
     @if ($newsletterSettings)
         <section class="newsletter-section py-5">
-            <div class="container-fluid px-0">
+            {{-- px-3 on phones: the email box and button must not touch the screen edges --}}
+            <div class="container-fluid px-3 px-lg-0">
                 <div class="row justify-content-center align-items-center g-0">
                     <div
                         class="col-lg-6 d-flex flex-column flex-md-row align-items-center justify-content-center text-center text-md-start mb-4 mb-lg-0 ps-lg-5">
@@ -830,14 +826,14 @@ main:has(> section.hero) > section:not(.hero), body:has(main > section.hero) foo
                     <div class="mt-3">
                         <p class="text-white-50 small mb-2">{{ custom_trans('Download our app', 'front') }}</p>
                         <div class="d-flex flex-wrap flex-xl-nowrap align-items-center gap-2">
-                            {{-- Google's PNG has ~9.5px transparent padding at 150px wide; negative margin trims it so both badges line up --}}
-                            <a href="https://play.google.com/store/apps/details?id=com.tradingbelaraby.courses" target="_blank" rel="noopener" class="d-inline-block flex-shrink-0">
-                                <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" loading="lazy" decoding="async"
-                                     alt="Get it on Google Play" width="150" height="58" style="width: 150px; height: auto; margin: -9.5px; display: block;">
+                            {{-- Store badges drawn locally with Font Awesome icons (no images from Apple/Google servers) --}}
+                            <a href="https://play.google.com/store/apps/details?id=com.tradingbelaraby.courses" target="_blank" rel="noopener" class="store-badge" aria-label="Get it on Google Play">
+                                <i class="fab fa-google-play" aria-hidden="true"></i>
+                                <span class="store-badge__text"><small>GET IT ON</small><strong>Google Play</strong></span>
                             </a>
-                            <a href="https://apps.apple.com/eg/app/trading-bel-araby/id6761126211" target="_blank" rel="noopener" class="d-inline-block flex-shrink-0">
-                                <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" loading="lazy" decoding="async"
-                                     alt="Download on the App Store" width="120" height="40" style="height: 40px; width: auto; display: block;">
+                            <a href="https://apps.apple.com/eg/app/trading-bel-araby/id6761126211" target="_blank" rel="noopener" class="store-badge" aria-label="Download on the App Store">
+                                <i class="fab fa-apple" aria-hidden="true"></i>
+                                <span class="store-badge__text"><small>Download on the</small><strong>App Store</strong></span>
                             </a>
                         </div>
                     </div>
@@ -1048,7 +1044,7 @@ main:has(> section.hero) > section:not(.hero), body:has(main > section.hero) foo
         <div class="modal-dialog modal-dialog-centered" dir="{{ $currentLanguage->direction }}">
             <div class="modal-content">
                 <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title" id="mobileSearchModalLabel">
+                    <h5 class="modal-title flex-grow-1" id="mobileSearchModalLabel">
                         {{ custom_trans('search_courses', 'front') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                         aria-label="{{ __('Close') }}"></button>
@@ -1391,27 +1387,6 @@ main:has(> section.hero) > section:not(.hero), body:has(main > section.hero) foo
                 });
             }
             // ── End notification functionality ─────────────────────────────────────
-
-            // Like Button functionality
-            const likeBtn = document.getElementById('likeBtn');
-            if (likeBtn) {
-                likeBtn.addEventListener('click', function() {
-                    const icon = this.querySelector('i');
-
-                    // Toggle like state
-                    if (this.classList.contains('liked')) {
-                        this.classList.remove('liked');
-                        icon.classList.remove('fas');
-                        icon.classList.add('far');
-                        toastr.info('You unliked this page!');
-                    } else {
-                        this.classList.add('liked');
-                        icon.classList.remove('far');
-                        icon.classList.add('fas');
-                        toastr.success('You liked this page!');
-                    }
-                });
-            }
 
             // User Dropdown hover functionality
             const userDropdown = document.querySelector('.user-dropdown');

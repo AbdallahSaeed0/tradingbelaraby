@@ -241,8 +241,12 @@
     padding: 0 0.5rem;
   }
   #backToTopBtn {
-    left: 12px;
-    bottom: 12px;
+    /* Opposite side from the WhatsApp button (left in RTL) */
+    right: 12px;
+    left: auto;
+    /* Above the fixed mobile bottom nav (.mobile-bottom-bar), level with the WhatsApp button */
+    bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+    z-index: 1040;
     width: 40px;
     height: 40px;
     font-size: 0.9rem;
@@ -266,4 +270,56 @@
     font-size: 0.7rem;
     line-height: 1.4;
   }
+}
+
+/* Desktop/tablet: same size and height as the WhatsApp button (60px, 80px up), mirrored on the opposite side */
+@media (min-width: 769px) {
+  #backToTopBtn {
+    width: 60px;
+    height: 60px;
+    bottom: 80px;
+    right: 25px;
+    left: auto;
+    font-size: 1.3rem;
+  }
+}
+
+/* App store badges (footer): drawn with Font Awesome icons, no remote images */
+.store-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 14px;
+  background: #000;
+  color: #fff !important;
+  border: 1px solid #a6a6a6;
+  border-radius: 8px;
+  text-decoration: none;
+  flex-shrink: 0;
+  direction: ltr;
+  transition: background 0.2s;
+}
+.store-badge:hover,
+.store-badge:focus {
+  background: #1f1f1f;
+  color: #fff;
+}
+.store-badge i {
+  font-size: 22px;
+  line-height: 1;
+}
+.store-badge__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+  text-align: left;
+}
+.store-badge__text small {
+  font-size: 9px;
+  letter-spacing: 0.02em;
+}
+.store-badge__text strong {
+  font-size: 16px;
+  font-weight: 600;
 }

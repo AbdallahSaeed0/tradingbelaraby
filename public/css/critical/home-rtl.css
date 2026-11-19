@@ -402,7 +402,7 @@ a.mobile-offcanvas-link:focus, a.mobile-offcanvas-link:focus-visible { outline: 
 }
 @media (max-width: 576px) {
 .site-header .main-nav .container { max-width: 100%; padding-left: 0.75rem; padding-right: 0.75rem; overflow-x: hidden; }
-.site-header .main-nav .nav-flex { display: flex; flex-flow: row; align-items: center; justify-content: space-between; white-space: nowrap; min-height: 52px; gap: 0.5rem; padding: 0px; margin: 0px; }
+.site-header .main-nav .nav-flex { display: flex; flex-flow: row; align-items: center; justify-content: space-between; white-space: nowrap; min-height: 52px; gap: 0.5rem; padding: 0px 0.75rem; margin: 0px; }
 .site-header .nav-flex .logo { flex: 0 1 auto; min-width: 0px; max-width: calc(100% - 148px); text-align: start; margin: 0px; }
 .site-header .nav-flex .logo .logo-link { max-width: 100%; }
 .site-header .nav-flex .logo .logo-img { max-width: 100%; height: auto; max-height: 48px; display: block; margin: 0px; }

@@ -370,7 +370,8 @@
         border-radius: 16px;
         box-shadow: 0 8px 24px rgba(15, 23, 42, .28);
     }
-    body:has(.course-detail-mobile-enroll-bar) .whatsapp-float {
+    body:has(.course-detail-mobile-enroll-bar) .whatsapp-float,
+    body:has(.course-detail-mobile-enroll-bar) #backToTopBtn {
         bottom: calc(144px + max(4px, env(safe-area-inset-bottom, 0px)));
     }
     body:has(.course-detail-mobile-enroll-bar) {

@@ -48,7 +48,7 @@
                     @enderror
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100">
+                <button type="submit" class="btn btn-orange w-100 fw-bold">
                     {{ custom_trans('Verify Number', 'front') }}
                 </button>
             </form>

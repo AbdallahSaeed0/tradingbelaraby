@@ -63,7 +63,7 @@
                 @enderror
             </div>
 
-            <button type="submit" class="btn btn-primary w-100" id="submitBtn">{{ custom_trans('Register', 'front') }}</button>
+            <button type="submit" class="btn btn-orange w-100 fw-bold" id="submitBtn">{{ custom_trans('Register', 'front') }}</button>
 
             @if ($googleLoginEnabled ?? false)
                 <div class="text-center text-muted small my-3">{{ custom_trans('or', 'front') }}</div>

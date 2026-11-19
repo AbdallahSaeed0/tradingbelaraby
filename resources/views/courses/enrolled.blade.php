@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('title', custom_trans('You are enrolled', 'front') . ' - ' . $course->name)
+@section('title', custom_trans('You are enrolled', 'front') . ' - ' . $course->localized_name)
 
 @php
     $langCode = \App\Helpers\TranslationHelper::getFrontendLanguage()->code ?? 'en';
     $tzLabel = \App\Models\LiveClass::wallTimezone() === 'Asia/Riyadh'
         ? custom_trans('Riyadh time', 'front')
         : \App\Models\LiveClass::wallTimezone();
-    $whatsappText = custom_trans('Hi, I just joined', 'front') . ' "' . $course->name . '"';
+    $whatsappText = custom_trans('Hi, I just joined', 'front') . ' "' . $course->localized_name . '"';
 @endphp
 
 @section('content')
@@ -23,7 +23,7 @@
             <div class="card-body p-4 p-md-5 text-center">
                 <div class="mb-3" style="font-size: 3rem; line-height: 1;" aria-hidden="true">✅</div>
                 <h1 class="h3 fw-bold mb-2">{{ custom_trans('You are enrolled!', 'front') }}</h1>
-                <p class="text-muted mb-4">{{ $course->name }}</p>
+                <p class="text-muted mb-4">{{ $course->localized_name }}</p>
 
                 @if ($nextClass && $startsAt)
                     <div class="rounded-4 p-4 mb-4 text-start" style="background: rgba(255, 140, 0, .08); border: 1px solid rgba(255, 140, 0, .25);">

@@ -73,13 +73,9 @@
 .footer-payments-list .fa-cc-stripe { color: #635bff; }
 
 /* Back to top button */
+/* Position and size live in components/footer.css (phone, tablet and desktop rules) */
 #backToTopBtn {
     color: #ff7043;
-    position: fixed;
-    bottom: 32px;
-    right: 32px;
-    z-index: 999;
-    display: none;
     border: 2px solid #ff7043;
 }
 

@@ -38,7 +38,7 @@
                     placeholder="{{ custom_trans('Confirm Password', 'front') }}">
             </div>
 
-            <button type="submit" class="btn btn-primary w-100">{{ custom_trans('Reset Password', 'front') }}</button>
+            <button type="submit" class="btn btn-orange w-100 fw-bold">{{ custom_trans('Reset Password', 'front') }}</button>
         </form>
 
         <p class="text-center mt-2">

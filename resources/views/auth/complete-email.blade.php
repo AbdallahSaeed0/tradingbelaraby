@@ -29,7 +29,7 @@
                 @enderror
             </div>
 
-            <button type="submit" class="btn btn-primary w-100">{{ custom_trans('Save and continue', 'front') }}</button>
+            <button type="submit" class="btn btn-orange w-100 fw-bold">{{ custom_trans('Save and continue', 'front') }}</button>
         </form>
     </div>
 @endsection
