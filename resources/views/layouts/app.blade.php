@@ -825,7 +825,7 @@ main:has(> section.hero) > section:not(.hero), body:has(main > section.hero) foo
                     <!-- Download Our App -->
                     <div class="mt-3">
                         <p class="text-white-50 small mb-2">{{ custom_trans('Download our app', 'front') }}</p>
-                        <div class="d-flex flex-wrap flex-xl-nowrap align-items-center gap-2">
+                        <div class="d-flex flex-wrap align-items-center gap-2">
                             {{-- Store badges drawn locally with Font Awesome icons (no images from Apple/Google servers) --}}
                             <a href="https://play.google.com/store/apps/details?id=com.tradingbelaraby.courses" target="_blank" rel="noopener" class="store-badge" aria-label="Get it on Google Play">
                                 <i class="fab fa-google-play" aria-hidden="true"></i>

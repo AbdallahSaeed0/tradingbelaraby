@@ -3223,4 +3223,52 @@ return [
         'en' => 'Download',
         'ar' => 'تحميل',
     ],
+    'Enroll in this course to rate it.' => [
+        'en' => 'Enroll in this course to rate it.',
+        'ar' => 'اشترك في الدورة عشان تقدر تقيّمها.',
+    ],
+    'All Courses' => [
+        'en' => 'All Courses',
+        'ar' => 'كل الدورات',
+    ],
+    'Filters' => [
+        'en' => 'Filters',
+        'ar' => 'الفلاتر',
+    ],
+    'Price' => [
+        'en' => 'Price',
+        'ar' => 'السعر',
+    ],
+    'Minimum Rating' => [
+        'en' => 'Minimum Rating',
+        'ar' => 'أقل تقييم',
+    ],
+    'Any Rating' => [
+        'en' => 'Any Rating',
+        'ar' => 'أي تقييم',
+    ],
+    'Apply Filters' => [
+        'en' => 'Apply Filters',
+        'ar' => 'تطبيق الفلاتر',
+    ],
+    'Clear Filters' => [
+        'en' => 'Clear Filters',
+        'ar' => 'مسح الفلاتر',
+    ],
+    'courses available' => [
+        'en' => 'courses available',
+        'ar' => 'دورة متاحة',
+    ],
+    'No courses found' => [
+        'en' => 'No courses found',
+        'ar' => 'لا توجد دورات',
+    ],
+    'Try adjusting your filters or search criteria.' => [
+        'en' => 'Try adjusting your filters or search criteria.',
+        'ar' => 'جرّب تغيير الفلاتر أو كلمات البحث.',
+    ],
+    'Number of courses' => [
+        'en' => 'Number of courses',
+        'ar' => 'عدد الدورات',
+    ],
 ];

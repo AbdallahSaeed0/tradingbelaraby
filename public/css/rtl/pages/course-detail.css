@@ -393,3 +393,15 @@
 .course-detail-mobile-enroll-cta .btn:hover,
 .course-detail-mobile-enroll-cta .btn:focus { background: #f15a29; color: #fff; }
 .course-detail-mobile-enroll-cta .btn i { margin: 0 !important; }
+
+/* Course info list (instructor, lectures, duration, students, language): the site loads LTR Bootstrap,
+   where .ms-auto is margin-left: auto. In RTL that leaves the value glued to its label
+   ("المدرب:Maha Saeed"); push the value to the far (left) end of the row instead. */
+.course-features-box .list-group-item > .ms-auto,
+.course-sidebar .list-group-item > .ms-auto,
+.list-group-flush > .list-group-item > .ms-auto {
+    margin-left: 0 !important;
+    margin-right: auto !important;
+    text-align: left;
+    padding-right: 0.75rem;
+}

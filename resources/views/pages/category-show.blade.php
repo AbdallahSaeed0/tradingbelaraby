@@ -149,12 +149,12 @@
                     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
                         <div>
                             <h4 class="fw-bold mb-1">
+                                {{-- Category name only ("الدورات المكثفة الدورات" read twice) --}}
                                 {{ \App\Helpers\TranslationHelper::getLocalizedContent($category->name, $category->name_ar) }}
-                                {{ custom_trans('courses', 'front') }}
                             </h4>
                             <p class="text-muted mb-0" style="font-size:.9rem">
+                                {{ custom_trans('Number of courses', 'front') }}:
                                 <span id="visibleCoursesCount">{{ $courses->total() }}</span>
-                                {{ custom_trans('courses_found', 'front') }}
                             </p>
                         </div>
                         <div class="d-none d-md-flex align-items-center gap-2">
@@ -182,7 +182,7 @@
                             @php
                                 $avgRating    = $course->average_rating ?? 0;
                                 $lessonsCount = $course->total_lessons_count ?? 0;
-                                $isFree       = $course->price <= 0;
+                                $isFree       = !$course->requiresPayment();
                                 $isEnrolled   = auth()->check() && auth()->user()->hasCourseAccess($course->id);
                                 $inWishlist   = auth()->check() && auth()->user()->hasInWishlist($course);
                                 $enrolledCnt  = $course->enrolled_students ?? 0;

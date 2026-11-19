@@ -32,7 +32,7 @@
                     @csrf
                     <input type="hidden" name="enroll" value="{{ $course->id }}">
                     <input type="hidden" name="form_start_time" value="{{ time() }}">
-                    <div style="position: absolute; left: -9999px; opacity: 0; pointer-events: none;" aria-hidden="true">
+                    <div style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;" aria-hidden="true">{{-- clipped, not pushed off-screen: left -9999px made RTL pages scroll sideways --}}
                         <label for="qs_website">Website (leave blank)</label>
                         <input type="text" name="website" id="qs_website" tabindex="-1" autocomplete="off">
                     </div>

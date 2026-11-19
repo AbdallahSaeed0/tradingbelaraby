@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'All Courses')
+@section('title', custom_trans('All Courses', 'front'))
 
 @push('styles')
     <link rel="stylesheet" href="{{ versioned_asset('css/pages/courses-listing.css') }}">
@@ -16,9 +16,14 @@
         <div class="row">
             <!-- Sidebar with filters -->
             <div class="col-lg-3 mb-4 courses-page__sidebar">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Filters</h5>
+                {{-- Phones: filters stay folded behind this button so the courses come first --}}
+                <button class="btn btn-outline-secondary w-100 d-lg-none mb-3 d-flex align-items-center justify-content-center gap-2" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#coursesFilters" aria-expanded="false" aria-controls="coursesFilters">
+                    <i class="fas fa-filter"></i>{{ custom_trans('Filters', 'front') }}
+                </button>
+                <div class="card shadow-sm collapse d-lg-block {{ request()->hasAny(['categories', 'price', 'rating']) ? 'show' : '' }}" id="coursesFilters">
+                    <div class="card-header text-white" style="background:#156481">
+                        <h5 class="mb-0"><i class="fas fa-filter me-2"></i>{{ custom_trans('Filters', 'front') }}</h5>
                     </div>
                     <div class="card-body">
                         <form method="GET" action="{{ route('courses.index') }}" id="filterForm">
@@ -28,7 +33,7 @@
                             @endif
                             <!-- Category Filter -->
                             <div class="mb-3">
-                                <label class="form-label fw-bold">Categories</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Categories', 'front') }}</label>
                                 @foreach ($categories as $category)
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="categories[]"
@@ -44,7 +49,7 @@
 
                             <!-- Price Filter -->
                             <div class="mb-3">
-                                <label class="form-label fw-bold">Price</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Price', 'front') }}</label>
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="price" value="free"
                                         id="price_free" {{ request('price') == 'free' ? 'checked' : '' }}>
@@ -70,25 +75,22 @@
 
                             <!-- Rating Filter -->
                             <div class="mb-3">
-                                <label class="form-label fw-bold">Minimum Rating</label>
+                                <label class="form-label fw-bold">{{ custom_trans('Minimum Rating', 'front') }}</label>
                                 <select name="rating" class="form-select">
-                                    <option value="">Any Rating</option>
-                                    <option value="4" {{ request('rating') == '4' ? 'selected' : '' }}>4+ Stars
-                                    </option>
-                                    <option value="3" {{ request('rating') == '3' ? 'selected' : '' }}>3+ Stars
-                                    </option>
-                                    <option value="2" {{ request('rating') == '2' ? 'selected' : '' }}>2+ Stars
-                                    </option>
+                                    <option value="">{{ custom_trans('Any Rating', 'front') }}</option>
+                                    <option value="4" {{ request('rating') == '4' ? 'selected' : '' }}>4+ ★</option>
+                                    <option value="3" {{ request('rating') == '3' ? 'selected' : '' }}>3+ ★</option>
+                                    <option value="2" {{ request('rating') == '2' ? 'selected' : '' }}>2+ ★</option>
                                 </select>
                             </div>
 
-                            <button type="submit" class="btn btn-primary w-100">
-                                <i class="fas fa-search me-2"></i>Apply Filters
+                            <button type="submit" class="btn btn-orange w-100 fw-bold">
+                                <i class="fas fa-search me-2"></i>{{ custom_trans('Apply Filters', 'front') }}
                             </button>
 
                             @if (request()->hasAny(['categories', 'price', 'rating']))
                                 <a href="{{ route('courses.index') }}" class="btn btn-outline-secondary w-100 mt-2">
-                                    <i class="fas fa-times me-2"></i>Clear Filters
+                                    <i class="fas fa-times me-2"></i>{{ custom_trans('Clear Filters', 'front') }}
                                 </a>
                             @endif
                         </form>
@@ -99,10 +101,10 @@
             <!-- Main content -->
             <div class="col-lg-9">
                 <!-- Header -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
                     <div>
-                        <h1 class="h3 mb-1">All Courses</h1>
-                        <p class="text-muted mb-0">{{ $courses->total() }} courses available</p>
+                        <h1 class="h3 mb-1">{{ custom_trans('All Courses', 'front') }}</h1>
+                        <p class="text-muted mb-0">{{ custom_trans('Number of courses', 'front') }}: {{ $courses->total() }}</p>
                     </div>
                     <div class="d-flex gap-2 align-items-center flex-wrap">
                         <select class="form-select sort-dropdown w-auto" id="coursesSortDropdown" aria-label="{{ custom_trans('Sort By', 'front') }}">
@@ -143,16 +145,16 @@
                                                 <span class="badge bg-warning position-absolute top-0 start-0 m-2"><i class="fas fa-star me-1"></i>{{ custom_trans('Featured', 'front') }}</span>
                                             @endif
                                             <div class="course-card--list__price-badge position-absolute top-0 end-0 m-2">
-                                                @if ($course->is_free)
+                                                @if (!$course->requiresPayment())
                                                     <span class="badge bg-success">{{ custom_trans('free', 'front') }}</span>
                                                 @else
-                                                    <span class="badge bg-primary">${{ number_format($course->price, 2) }}</span>
+                                                    <span class="badge" style="background:#ff7043"><bdi>{{ $course->formatted_price }}</bdi></span>
                                                 @endif
                                             </div>
                                         </div>
                                         <div class="course-card--list__body flex-grow-1 d-flex flex-column p-3 p-md-4">
                                             <div class="course-category mb-2">
-                                                <span class="badge bg-light text-dark"><i class="fas fa-folder me-1"></i>{{ \App\Helpers\TranslationHelper::getLocalizedContent($course->category->name ?? '', $course->category->name_ar ?? '') ?: 'Uncategorized' }}</span>
+                                                <span class="badge bg-light text-dark"><i class="fas fa-folder me-1"></i>{{ \App\Helpers\TranslationHelper::getLocalizedContent($course->category->name ?? '', $course->category->name_ar ?? '') ?: custom_trans('Uncategorized', 'front') }}</span>
                                             </div>
                                             <h5 class="course-card--list__title mb-2">
                                                 <a href="{{ route('courses.show', $course) }}" class="text-decoration-none text-dark">{{ Str::limit($course->localized_name, 60) }}</a>
@@ -163,17 +165,17 @@
                                                 <span>@if ($course->average_rating > 0)<i class="fas fa-star text-warning"></i> {{ number_format($course->average_rating, 1) }} ({{ $course->ratings_count }})@else—@endif</span>
                                             </div>
                                             <div class="course-card--list__footer d-flex flex-wrap gap-2 align-items-center justify-content-between mt-auto pt-2 border-top">
-                                                <span class="text-muted small"><i class="fas fa-users me-1"></i>{{ $course->enrollments_count }} enrolled</span>
+                                                <span class="text-muted small"><i class="fas fa-users me-1"></i>{{ $course->enrollments_count }} {{ custom_trans('Students', 'front') }}</span>
                                                 <div class="course-card--list__actions d-flex gap-2">
                                                     <a href="{{ route('courses.show', $course) }}" class="btn btn-outline-primary btn-sm">{{ custom_trans('Show details', 'front') }}</a>
                                                     @auth
                                                         @if (auth()->user()->hasCourseAccess($course->id))
                                                             <a href="{{ route('courses.learn', $course->id) }}" class="btn btn-success btn-sm">{{ custom_trans('go_to_course', 'front') }}</a>
                                                         @else
-                                                            <button type="button" class="btn btn-primary btn-sm enroll-btn" data-course-id="{{ $course->id }}" data-enroll-type="{{ $course->price > 0 ? 'paid' : 'free' }}"><i class="fa fa-graduation-cap me-1"></i>{{ custom_trans('enroll_now', 'front') }}</button>
+                                                            <button type="button" class="btn btn-orange btn-sm enroll-btn" data-course-id="{{ $course->id }}" data-enroll-type="{{ $course->requiresPayment() ? 'paid' : 'free' }}"><i class="fa fa-graduation-cap me-1"></i>{{ custom_trans('enroll_now', 'front') }}</button>
                                                         @endif
                                                     @else
-                                                        <a href="{{ route('register') }}" class="btn btn-primary btn-sm">{{ $course->price > 0 ? custom_trans('Add to cart', 'front') : custom_trans('enroll_now', 'front') }}</a>
+                                                        <a href="{{ route('register', ['enroll' => $course->id]) }}" class="btn btn-orange btn-sm">{{ $course->requiresPayment() ? custom_trans('Add to cart', 'front') : custom_trans('enroll_now', 'front') }}</a>
                                                     @endauth
                                                 </div>
                                             </div>
@@ -187,101 +189,11 @@
                     <div class="row g-4">
                         @foreach ($courses as $course)
                             <div class="col-lg-4 col-md-6">
-                                <div class="course-card h-100 shadow-sm">
-                                    <div class="course-img-wrap">
-                                        <div class="course-image position-relative">
-                                            <a href="{{ route('courses.show', $course) }}" class="d-block text-decoration-none">
-                                                @if ($course->image)
-                                                    <img src="{{ $course->image_url }}" alt="{{ $course->localized_name }}"
-                                                        class="img-fluid">
-                                                @else
-                                                    <div class="course-placeholder">
-                                                        <i class="fas fa-graduation-cap"></i>
-                                                    </div>
-                                                @endif
-                                            </a>
-
-                                            @if ($course->is_featured)
-                                                <span class="badge bg-warning position-absolute top-0 start-0 m-2">
-                                                    <i class="fas fa-star me-1"></i>Featured
-                                                </span>
-                                            @endif
-
-                                            <div class="course-overlay">
-                                                <a href="{{ route('courses.show', $course) }}"
-                                                    class="btn btn-primary btn-sm">
-                                                    <i class="fas fa-eye me-1"></i>View Course
-                                                </a>
-                                            </div>
-                                        </div>
-
-                                        <!-- Instructor Cover Image -->
-                                        <div class="instructor-cover mt-2">
-                                            <img src="{{ $course->instructor->cover_url ?? 'https://via.placeholder.com/300x100/007bff/ffffff?text=Instructor' }}"
-                                                alt="{{ $course->instructor->name ?? 'Instructor' }} Cover"
-                                                class="course-img img-fluid rounded">
-                                        </div>
-                                    </div>
-
-                                    <div class="course-content p-3">
-                                        <div class="course-category mb-2">
-                                            <span class="badge bg-light text-dark">
-                                                <i
-                                                    class="fas fa-folder me-1"></i>{{ \App\Helpers\TranslationHelper::getLocalizedContent($course->category->name ?? '', $course->category->name_ar ?? '') ?: 'Uncategorized' }}
-                                            </span>
-                                        </div>
-
-                                        <h5 class="course-title mb-2">
-                                            <a href="{{ route('courses.show', $course) }}"
-                                                class="text-decoration-none text-dark">
-                                                {{ Str::limit($course->localized_name, 50) }}
-                                            </a>
-                                        </h5>
-
-                                        <p class="course-description text-muted small mb-3">
-                                            {{ Str::limit($course->localized_description, 80) }}
-                                        </p>
-
-                                        <div class="course-meta d-flex justify-content-between align-items-center">
-                                            <div class="course-instructor">
-                                                <small class="text-muted">
-                                                    <i class="fas fa-user me-1"></i>
-                                                    {{ $course->instructorNamesLabel(2) ?: 'Unknown Instructor' }}
-                                                </small>
-                                            </div>
-                                            <div class="course-rating">
-                                                @if ($course->average_rating > 0)
-                                                    <small class="text-warning">
-                                                        <i class="fas fa-star"></i>
-                                                        {{ number_format($course->average_rating, 1) }}
-                                                        <span class="text-muted">({{ $course->ratings_count }})</span>
-                                                    </small>
-                                                @else
-                                                    <small class="text-muted">No ratings</small>
-                                                @endif
-                                            </div>
-                                        </div>
-
-                                        <div class="course-footer mt-3 pt-3 border-top">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div class="course-price">
-                                                    @if ($course->is_free)
-                                                        <span class="text-success fw-bold">{{ custom_trans('free', 'front') }}</span>
-                                                    @else
-                                                        <span
-                                                            class="text-primary fw-bold">${{ number_format($course->price, 2) }}</span>
-                                                    @endif
-                                                </div>
-                                                <div class="course-enrollments">
-                                                    <small class="text-muted">
-                                                        <i class="fas fa-users me-1"></i>
-                                                        {{ $course->enrollments_count }} enrolled
-                                                    </small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                {{-- Shared card (also used on category and search pages) --}}
+                                @include('partials.courses.category-course-card', [
+                                    'course' => $course,
+                                    'enrolledCnt' => $course->enrollments_count ?? 0,
+                                ])
                             </div>
                         @endforeach
                     </div>
@@ -296,10 +208,10 @@
                         <div class="mb-4">
                             <i class="fas fa-search fa-3x text-muted"></i>
                         </div>
-                        <h4 class="text-muted">No courses found</h4>
-                        <p class="text-muted">Try adjusting your filters or search criteria.</p>
-                        <a href="{{ route('courses.index') }}" class="btn btn-primary">
-                            <i class="fas fa-refresh me-2"></i>Clear All Filters
+                        <h4 class="text-muted">{{ custom_trans('No courses found', 'front') }}</h4>
+                        <p class="text-muted">{{ custom_trans('Try adjusting your filters or search criteria.', 'front') }}</p>
+                        <a href="{{ route('courses.index') }}" class="btn btn-orange">
+                            <i class="fas fa-rotate-left me-2"></i>{{ custom_trans('Clear Filters', 'front') }}
                         </a>
                     </div>
                 @endif
@@ -309,6 +221,7 @@
 @endsection
 
 @push('scripts')
+@include('partials.courses.course-card-actions-script')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     var sortDropdown = document.getElementById('coursesSortDropdown');

@@ -845,17 +845,18 @@
   white-space: nowrap;
 }
 
+/* Site orange, same as the course page and home sliders */
 .cc-btn-primary {
-  background: var(--cat-primary);
+  background: #ff7043;
   color: #fff;
-  box-shadow: 0 3px 10px rgba(23, 80, 107, .25);
+  box-shadow: 0 3px 10px rgba(255, 112, 67, .3);
 }
 
 .cc-btn-primary:hover {
-  background: #0f3c53;
+  background: #f15a29;
   color: #fff;
   transform: translateY(-1px);
-  box-shadow: 0 5px 16px rgba(23, 80, 107, .35);
+  box-shadow: 0 5px 16px rgba(241, 90, 41, .38);
 }
 
 .cc-btn-outline {

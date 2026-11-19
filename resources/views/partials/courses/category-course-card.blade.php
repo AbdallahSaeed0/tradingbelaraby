@@ -4,7 +4,8 @@
 @php
     $avgRating    = $avgRating ?? ($course->average_rating ?? 0);
     $lessonsCount = $lessonsCount ?? ($course->total_lessons_count ?? 0);
-    $isFree       = $isFree ?? ($course->price <= 0);
+    // Same rule as the course page: the "free" setting wins; otherwise free only when nothing is charged
+    $isFree       = $isFree ?? !$course->requiresPayment();
     $isEnrolled   = $isEnrolled ?? (auth()->check() && auth()->user()->hasCourseAccess($course->id));
     $inWishlist   = $inWishlist ?? (auth()->check() && auth()->user()->hasInWishlist($course));
     $enrolledCnt  = $enrolledCnt ?? ($course->enrolled_students ?? 0);
@@ -86,10 +87,11 @@
                     </span>
                 @else
                     <span class="cc-price cc-price-paid">
-                        @if ($course->original_price > $course->price)
+                        @if ($course->offersLifetime() && $course->original_price > $course->price)
                             <del class="cc-price-original">{{ number_format($course->original_price, 0) }}</del>
                         @endif
-                        <span class="cc-price-amount">{{ number_format($course->price, 0) }}</span>
+                        {{-- Subscription-only courses show their cheapest plan --}}
+                        <span class="cc-price-amount">{{ number_format($course->offersLifetime() ? $course->price : $course->starting_price, 0) }}</span>
                         <span class="cc-price-currency">SAR</span>
                     </span>
                 @endif
@@ -124,19 +126,28 @@
                         class="cc-btn cc-btn-outline">
                         {{ custom_trans('view_details', 'front') }}
                     </a>
-                    <button class="cc-btn cc-btn-primary category-enroll-btn"
-                        data-course-id="{{ $course->id }}"
-                        data-enroll-type="{{ $isFree ? 'free' : 'paid' }}">
-                        <i class="fas fa-{{ $isFree ? 'graduation-cap' : 'shopping-cart' }} me-1"></i>
-                        <span>{{ custom_trans($isFree ? 'enroll_now' : 'add_to_cart', 'front') }}</span>
-                    </button>
+                    @if (!$isFree && !$course->offersLifetime())
+                        {{-- Subscription-only: the plan is picked on the course page --}}
+                        <a href="{{ route('courses.show', $course->id) }}" class="cc-btn cc-btn-primary">
+                            <i class="fas fa-shopping-cart me-1"></i>
+                            <span>{{ custom_trans('Subscribe', 'front') }}</span>
+                        </a>
+                    @else
+                        <button class="cc-btn cc-btn-primary category-enroll-btn"
+                            data-course-id="{{ $course->id }}"
+                            data-enroll-type="{{ $isFree ? 'free' : 'paid' }}">
+                            <i class="fas fa-{{ $isFree ? 'graduation-cap' : 'shopping-cart' }} me-1"></i>
+                            <span>{{ custom_trans($isFree ? 'enroll_now' : 'add_to_cart', 'front') }}</span>
+                        </button>
+                    @endif
                 @endif
             @else
                 <a href="{{ route('courses.show', $course->id) }}"
                     class="cc-btn cc-btn-outline">
                     {{ custom_trans('view_details', 'front') }}
                 </a>
-                <a href="{{ route('register') }}" class="cc-btn cc-btn-primary">
+                {{-- Remembers the course so sign-up finishes the enrollment --}}
+                <a href="{{ route('register', ['enroll' => $course->id]) }}" class="cc-btn cc-btn-primary">
                     <i class="fas fa-graduation-cap me-1"></i>
                     <span>{{ custom_trans('enroll_now', 'front') }}</span>
                 </a>

@@ -56,14 +56,15 @@
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item d-flex align-items-center justify-content-between">
                                 <span class="fs-5 text-orange fw-bold">
-                                    @if (!$course->offersLifetime())
-                                        {{ $course->formatted_price }}
+                                    @if ($course->is_free)
+                                        {{ custom_trans('free', 'front') }}
+                                    @elseif (!$course->offersLifetime())
+                                        <bdi class="text-nowrap">{{ $course->formatted_price }}</bdi>
                                     @elseif ($course->price > 0)
-                                        {{ number_format($course->price, 2) }} SAR
+                                        <bdi class="text-nowrap">{{ number_format($course->price, 2) }} SAR</bdi>
                                         @if ($course->original_price > $course->price)
                                             <span
-                                                class="fs-6 text-decoration-line-through text-muted ms-2">{{ number_format($course->original_price, 2) }}
-                                                SAR</span>
+                                                class="fs-6 text-decoration-line-through text-muted ms-2"><bdi>{{ number_format($course->original_price, 2) }} SAR</bdi></span>
                                         @endif
                                     @else
                                         {{ custom_trans('free', 'front') }}
@@ -264,8 +265,9 @@
                             @if ($course->instructors && $course->instructors->count() > 0)
                                 @foreach ($course->instructors as $instructor)
                                     <div
-                                        class="row align-items-center g-4 {{ !$loop->last ? 'mb-4 pb-4 border-bottom' : '' }}">
-                                        <div class="col-auto">
+                                        class="row align-items-start g-3 g-sm-4 {{ !$loop->last ? 'mb-4 pb-4 border-bottom' : '' }}">
+                                        {{-- Phones: photo above the bio instead of floating beside a long text column --}}
+                                        <div class="col-12 col-sm-auto">
                                             @if ($instructor->avatar)
                                                 <img src="{{ asset('storage/' . $instructor->avatar) }}"
                                                     alt="{{ $instructor->name }}" class="rounded-circle instructor-img" width="64" height="64">
@@ -276,7 +278,7 @@
                                                 </div>
                                             @endif
                                         </div>
-                                        <div class="col">
+                                        <div class="col-12 col-sm">
                                             <div class="fw-bold fs-5 mb-1 text-primary">
                                                 {{ $instructor->name ?? custom_trans('Not Found', 'front') }}</div>
                                             <div class="text-muted mb-2 instructor-subtitle">
@@ -293,8 +295,8 @@
                                 @endforeach
                             @elseif($course->instructor)
                                 <!-- Fallback to legacy single instructor -->
-                                <div class="row align-items-center g-4">
-                                    <div class="col-auto">
+                                <div class="row align-items-start g-3 g-sm-4">
+                                    <div class="col-12 col-sm-auto">
                                         @if ($course->instructor->avatar)
                                             <img src="{{ asset('storage/' . $course->instructor->avatar) }}"
                                                 alt="{{ $course->instructor->name }}"
@@ -306,7 +308,7 @@
                                             </div>
                                         @endif
                                     </div>
-                                    <div class="col">
+                                    <div class="col-12 col-sm">
                                         <div class="fw-bold fs-5 mb-1 text-primary">
                                             {{ $course->instructor->name ?? custom_trans('Not Found', 'front') }}</div>
                                         <div class="text-muted mb-2 instructor-subtitle">
@@ -408,6 +410,8 @@
                                 </div>
                             @endif
 
+                            {{-- Only enrolled students can review (the server rejects everyone else); others get a hint instead of a form that fails --}}
+                            @if (auth()->check() && auth()->user()->hasCourseAccess($course->id))
                             <div class="review-stars-list mb-3">
                                 @php $categories = ['learn', 'price', 'value']; @endphp
                                 @foreach ($categories as $cat)
@@ -435,6 +439,12 @@
                             <button class="btn btn-orange px-5 py-2 fw-bold review-submit-btn" type="button">
                                 {{ custom_trans('submit', 'front') }}
                             </button>
+                            @else
+                                <p class="text-muted small mb-0">
+                                    <i class="fa fa-star text-warning me-1"></i>
+                                    {{ custom_trans('Enroll in this course to rate it.', 'front') }}
+                                </p>
+                            @endif
                         </section>
 
                         <!-- Q&A Section -->
@@ -450,12 +460,14 @@
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item d-flex align-items-center justify-content-between">
                                 <span class="fs-5 text-orange fw-bold">
-                                    @if (!$course->offersLifetime())
-                                        {{ $course->formatted_price }}
+                                    @if ($course->is_free)
+                                        {{ custom_trans('free', 'front') }}
+                                    @elseif (!$course->offersLifetime())
+                                        <bdi class="text-nowrap">{{ $course->formatted_price }}</bdi>
                                     @elseif ($course->price > 0)
-                                        {{ number_format($course->price, 2) }} SAR
+                                        <bdi class="text-nowrap">{{ number_format($course->price, 2) }} SAR</bdi>
                                         @if ($course->original_price > $course->price)
-                                            <span class="fs-6 text-decoration-line-through text-muted ms-2">{{ number_format($course->original_price, 2) }} SAR</span>
+                                            <span class="fs-6 text-decoration-line-through text-muted ms-2"><bdi>{{ number_format($course->original_price, 2) }} SAR</bdi></span>
                                         @endif
                                     @else
                                         {{ custom_trans('free', 'front') }}
@@ -608,12 +620,14 @@
         <div class="course-detail-mobile-enroll-bar-inner container">
             <div class="d-flex align-items-center justify-content-between gap-3 w-100">
                 <div class="course-detail-mobile-enroll-price text-white fw-bold">
-                    @if (!$course->offersLifetime())
-                        {{ $course->formatted_price }}
+                    @if ($course->is_free)
+                        {{ custom_trans('free', 'front') }}
+                    @elseif (!$course->offersLifetime())
+                        <bdi class="text-nowrap">{{ $course->formatted_price }}</bdi>
                     @elseif ($course->price > 0)
-                        {{ number_format($course->price, 2) }} SAR
+                        <bdi class="text-nowrap">{{ number_format($course->price, 2) }} SAR</bdi>
                         @if ($course->original_price > $course->price)
-                            <span class="text-white-50 text-decoration-line-through ms-1 small">{{ number_format($course->original_price, 2) }} SAR</span>
+                            <span class="text-white-50 text-decoration-line-through ms-1 small"><bdi>{{ number_format($course->original_price, 2) }} SAR</bdi></span>
                         @endif
                     @else
                         {{ custom_trans('free', 'front') }}

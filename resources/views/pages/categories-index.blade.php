@@ -64,7 +64,7 @@
                                     {{ \App\Helpers\TranslationHelper::getLocalizedContent($category->description, $category->description_ar) ?: custom_trans('no_description_available', 'front') }}
                                 </p>
                                 <div class="d-flex justify-content-end">
-                                    <a href="{{ route('categories.show', $category->slug) }}" class="btn btn-primary">
+                                    <a href="{{ route('categories.show', $category->slug) }}" class="btn btn-orange fw-bold">
                                         {{ custom_trans('view_courses', 'front') }}
                                     </a>
                                 </div>

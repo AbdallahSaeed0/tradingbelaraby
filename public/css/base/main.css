@@ -50,7 +50,9 @@ body {
   transform: skew(30deg);
 }
 
-.row {
+/* Top bar only. As a global .row rule, width: 100% broke Bootstrap's negative gutter margins
+   and shifted page content 12px to one side (off-centre cards and images on phones). */
+.top-bar-colored .row {
   display: flex;
   width: 100%;
   align-items: stretch;
@@ -169,7 +171,7 @@ body {
 }
 
 @media (max-width: 768px) {
-  .row {
+  .top-bar-colored .row {
     align-items: flex-start;
   }
   .col-md-4.top-bar-left-colored,

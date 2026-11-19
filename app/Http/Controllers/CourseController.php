@@ -19,7 +19,9 @@ class CourseController extends Controller
 
         $query = Course::published()
             ->with(['category', 'instructor', 'instructors', 'ratings'])
-            ->withCount(['enrollments', 'ratings']);
+            ->withCount(['enrollments', 'ratings', 'lectures as total_lessons_count' => function ($q) {
+                $q->where('is_published', true); // lesson count shown on the course card
+            }]);
 
         // Category filter
         if ($request->filled('categories')) {

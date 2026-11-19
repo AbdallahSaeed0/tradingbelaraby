@@ -284,13 +284,16 @@
   }
 }
 
-/* App store badges (footer): drawn with Font Awesome icons, no remote images */
+/* App store badges (footer): drawn with Font Awesome icons, no remote images.
+   Sized so both fit side by side in the ~260px footer column on desktop (they wrap if not). */
 .store-badge {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  height: 44px;
-  padding: 0 14px;
+  gap: 6px;
+  /* Same width for both badges (stacked on phones they line up exactly) */
+  width: 126px;
+  height: 40px;
+  padding: 0 8px;
   background: #000;
   color: #fff !important;
   border: 1px solid #a6a6a6;
@@ -306,7 +309,7 @@
   color: #fff;
 }
 .store-badge i {
-  font-size: 22px;
+  font-size: 19px;
   line-height: 1;
 }
 .store-badge__text {
@@ -316,10 +319,10 @@
   text-align: left;
 }
 .store-badge__text small {
-  font-size: 9px;
+  font-size: 8px;
   letter-spacing: 0.02em;
 }
 .store-badge__text strong {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
 }
