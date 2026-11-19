@@ -97,18 +97,24 @@
                                     <small class="text-muted">{{ custom_trans('enter_billing_details', 'front') }}</small>
                                 </div>
                             </div>
+                            @php
+                                // "Ahmed Ali Hassan" -> first: Ahmed, last: Ali Hassan (one-word names fill both)
+                                $nameParts = preg_split('/\s+/u', trim((string) $user->name), 2);
+                                $billingFirstName = $nameParts[0] ?? '';
+                                $billingLastName = $nameParts[1] ?? $billingFirstName;
+                            @endphp
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="first_name" class="form-label">{{ custom_trans('first_name', 'front') }}
                                         *</label>
                                     <input type="text" class="form-control" id="first_name" name="first_name"
-                                        value="{{ $user->name }}" required>
+                                        value="{{ old('first_name', $billingFirstName) }}" required>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="last_name" class="form-label">{{ custom_trans('last_name', 'front') }}
                                         *</label>
                                     <input type="text" class="form-control" id="last_name" name="last_name"
-                                        value="{{ $user->name }}" required>
+                                        value="{{ old('last_name', $billingLastName) }}" required>
                                 </div>
                             </div>
                             <div class="row">
