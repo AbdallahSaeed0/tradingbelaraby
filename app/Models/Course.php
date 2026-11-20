@@ -349,7 +349,7 @@ class Course extends Model
      */
     public function upcomingLiveClasses(): HasMany
     {
-        return $this->hasMany(LiveClass::class)->where('scheduled_at', '>', now())->where('status', 'scheduled');
+        return $this->hasMany(LiveClass::class)->where('scheduled_at', '>', LiveClass::wallNow())->where('status', 'scheduled');
     }
 
     /**

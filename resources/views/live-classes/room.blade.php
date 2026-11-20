@@ -39,7 +39,7 @@
                 <div class="text-muted small">{{ $course->localized_name }}</div>
                 <h1 class="h5 fw-bold mb-0">{{ $liveClass->localized_name }}</h1>
             </div>
-            <a href="{{ route('courses.learn', $course) }}" class="btn btn-outline-secondary btn-sm">
+            <a href="{{ route('courses.learn', ['course' => $course, 'live' => $liveClass->id]) }}" class="btn btn-outline-secondary btn-sm">
                 <i class="fas fa-arrow-right me-1"></i>{{ custom_trans('Back to the course', 'front') }}
             </a>
         </div>

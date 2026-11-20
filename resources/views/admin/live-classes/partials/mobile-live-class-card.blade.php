@@ -44,6 +44,6 @@
     'chips' => $chips,
     'stats' => $stats,
     'footerPrimary' => $liveClass->scheduled_at->format('M d, Y'),
-    'footerSecondary' => $liveClass->scheduled_at->diffForHumans(),
+    'footerSecondary' => $liveClass->startsAt()->diffForHumans(),
     'actionsHtml' => $actionsHtml,
 ])

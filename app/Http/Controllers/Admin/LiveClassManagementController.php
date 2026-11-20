@@ -131,7 +131,7 @@ class LiveClassManagementController extends Controller
                 }
             }
 
-            $liveClass = LiveClass::create([
+            $liveClass = LiveClass::create($this->withPasscode($request, [
                 'course_id' => $request->course_id,
                 'instructor_id' => $request->instructor_id,
                 'name' => $request->name,
@@ -139,7 +139,6 @@ class LiveClassManagementController extends Controller
                 'description' => $request->description,
                 'description_ar' => $request->description_ar,
                 'link' => $request->link,
-                'meeting_passcode' => $request->meeting_passcode,
                 'scheduled_at' => $request->scheduled_at,
                 'duration_minutes' => $request->duration_minutes,
                 'max_participants' => $request->max_participants,
@@ -149,14 +148,27 @@ class LiveClassManagementController extends Controller
                 'instructions_ar' => $request->instructions_ar,
                 'materials' => $materials,
                 'status' => 'scheduled',
-            ]);
+            ]));
 
             return redirect()->route('admin.live-classes.index')
                 ->with('success', 'Live class created successfully');
         } catch (\Exception $e) {
             Log::error('Error creating live class: ' . $e->getMessage());
-            return back()->withInput()->with('error', 'Error creating live class. Please try again.');
+            return back()->withInput()->with('error', 'Error creating live class: ' . \Illuminate\Support\Str::limit($e->getMessage(), 200));
         }
+    }
+
+    /**
+     * Adds the Zoom passcode only when the column exists, so saving keeps working
+     * on a server where the meeting_passcode migration has not run yet.
+     */
+    private function withPasscode(Request $request, array $data): array
+    {
+        if (\Illuminate\Support\Facades\Schema::hasColumn('live_classes', 'meeting_passcode')) {
+            $data['meeting_passcode'] = $request->meeting_passcode;
+        }
+
+        return $data;
     }
 
     /**
@@ -240,7 +252,7 @@ class LiveClassManagementController extends Controller
                 }
             }
 
-            $liveClass->update([
+            $liveClass->update($this->withPasscode($request, [
                 'course_id' => $request->course_id,
                 'instructor_id' => $request->instructor_id,
                 'name' => $request->name,
@@ -248,7 +260,6 @@ class LiveClassManagementController extends Controller
                 'description' => $request->description,
                 'description_ar' => $request->description_ar,
                 'link' => $request->link,
-                'meeting_passcode' => $request->meeting_passcode,
                 'scheduled_at' => $request->scheduled_at,
                 'duration_minutes' => $request->duration_minutes,
                 'max_participants' => $request->max_participants,
@@ -256,13 +267,13 @@ class LiveClassManagementController extends Controller
                 'instructions_ar' => $request->instructions_ar,
                 'materials' => $materials,
                 'recording_url' => $request->recording_url,
-            ]);
+            ]));
 
             return redirect()->route('admin.live-classes.index')
                 ->with('success', 'Live class updated successfully');
         } catch (\Exception $e) {
             Log::error('Error updating live class: ' . $e->getMessage());
-            return back()->withInput()->with('error', 'Error updating live class. Please try again.');
+            return back()->withInput()->with('error', 'Error updating live class: ' . \Illuminate\Support\Str::limit($e->getMessage(), 200));
         }
     }
 

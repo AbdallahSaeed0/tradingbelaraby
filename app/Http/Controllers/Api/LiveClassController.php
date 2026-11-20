@@ -32,7 +32,7 @@ class LiveClassController extends Controller
 
         // Filter upcoming only (default)
         if (!$request->filled('status') && !$request->boolean('all', false)) {
-            $query->where('scheduled_at', '>', now())
+            $query->where('scheduled_at', '>', LiveClass::wallNow())
                 ->where('status', 'scheduled');
         }
 

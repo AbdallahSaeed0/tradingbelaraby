@@ -151,7 +151,7 @@ class LiveClassController extends Controller
         }
 
         // Check if cancellation is allowed (e.g., not too close to start time)
-        $hoursUntilClass = $liveClass->scheduled_at->diffInHours(now());
+        $hoursUntilClass = now()->diffInHours($liveClass->startsAt(), false);
         if ($hoursUntilClass < 2) { // 2 hours minimum notice
             return response()->json(['error' => 'Cannot cancel less than 2 hours before class'], 400);
         }
@@ -407,11 +407,11 @@ class LiveClassController extends Controller
 
         // Separate upcoming and past classes
         $upcomingClasses = $registrations->getCollection()->filter(function($reg) {
-            return $reg->liveClass->scheduled_at->gt(now()) && $reg->status === 'registered';
+            return $reg->liveClass->startsAt()->gt(now()) && $reg->status === 'registered';
         });
 
         $pastClasses = $registrations->getCollection()->filter(function($reg) {
-            return $reg->liveClass->scheduled_at->lt(now()) || $reg->status !== 'registered';
+            return $reg->liveClass->startsAt()->lt(now()) || $reg->status !== 'registered';
         });
 
         return view('live-classes.my-classes', compact('registrations', 'upcomingClasses', 'pastClasses'));
@@ -430,8 +430,8 @@ class LiveClassController extends Controller
         $upcomingClasses = LiveClassRegistration::where('user_id', $user->id)
             ->where('status', 'registered')
             ->whereHas('liveClass', function($query) {
-                $query->where('scheduled_at', '>', now())
-                      ->where('scheduled_at', '<', now()->addDays(7));
+                $query->where('scheduled_at', '>', LiveClass::wallNow())
+                      ->where('scheduled_at', '<', LiveClass::wallNow()->addDays(7));
             })
             ->with(['liveClass.course'])
             ->orderBy('created_at')

@@ -115,7 +115,15 @@
 
                             @php
                                 // Hide past/cancelled classes, unless a past class has a recording to watch
-                                $visibleLiveClasses = ($course->liveClasses ?? collect())->filter(function ($lc) {
+                                // ?live=ID (from a shared live class link): always show that class
+                                $sharedLiveId = (int) request('live');
+                                $liveTzLabel = \App\Models\LiveClass::wallTimezone() === 'Asia/Riyadh'
+                                    ? custom_trans('Riyadh time', 'front')
+                                    : \App\Models\LiveClass::wallTimezone();
+                                $visibleLiveClasses = ($course->liveClasses ?? collect())->filter(function ($lc) use ($sharedLiveId) {
+                                    if ($lc->id === $sharedLiveId) {
+                                        return true;
+                                    }
                                     if ($lc->status === 'cancelled') {
                                         return false;
                                     }
@@ -132,7 +140,7 @@
                                             $hasEnded = $liveClass->status === 'completed' || $liveClass->is_ended;
                                         @endphp
                                         <div class="col-lg-6">
-                                            <div class="live-class-card bg-white p-4 rounded-4 shadow-sm h-100">
+                                            <div class="live-class-card bg-white p-4 rounded-4 shadow-sm h-100" id="live-class-{{ $liveClass->id }}">
                                                 <div class="d-flex justify-content-between align-items-start mb-3">
                                                     <h5 class="fw-bold mb-0" @if (\App\Helpers\TranslationHelper::getFrontendLanguage()->code === 'ar') dir="rtl" @endif>{{ $liveClass->localized_name }}</h5>
                                                     @if ($hasEnded)
@@ -183,7 +191,12 @@
                                                         <div class="col-6">
                                                             <small class="text-muted">{{ custom_trans('Time', 'front') }}:</small>
                                                             <div class="fw-bold">
-                                                                {{ $liveClass->scheduled_at ? $liveClass->scheduled_at->format('g:i A') : custom_trans('TBD', 'front') }}
+                                                                @if ($liveClass->scheduled_at)
+                                                                    <bdi>{{ $liveClass->scheduled_at->format('g:i A') }}</bdi>
+                                                                    <small class="text-muted fw-normal">({{ $liveTzLabel }})</small>
+                                                                @else
+                                                                    {{ custom_trans('TBD', 'front') }}
+                                                                @endif
                                                             </div>
                                                         </div>
                                                         <div class="col-6">
@@ -753,6 +766,21 @@
                 }
             }
             // Opened from a shared lecture link (/lecture/{id} → ?lecture=ID): go straight to it and play it
+            // Opened from a shared live class link (?live=ID): open the Live Classes tab on that class
+            const sharedLiveId = new URLSearchParams(window.location.search).get('live');
+            if (sharedLiveId) {
+                setTimeout(function() {
+                    const liveTab = document.getElementById('live-tab');
+                    if (liveTab) bootstrap.Tab.getOrCreateInstance(liveTab).show();
+                    setTimeout(function() {
+                        const card = document.getElementById('live-class-' + sharedLiveId);
+                        if (!card) return;
+                        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        card.style.boxShadow = '0 0 0 3px #f15a29';
+                    }, 300);
+                }, 300);
+            }
+
             const sharedLectureId = new URLSearchParams(window.location.search).get('lecture');
             if (sharedLectureId) {
                 setTimeout(function() {

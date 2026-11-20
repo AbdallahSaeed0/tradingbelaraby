@@ -146,7 +146,7 @@ class LiveClass extends Model
      */
     public function scopeUpcoming($query)
     {
-        return $query->where('scheduled_at', '>', now())
+        return $query->where('scheduled_at', '>', self::wallNow())
             ->where('status', 'scheduled');
     }
 
@@ -155,7 +155,7 @@ class LiveClass extends Model
      */
     public function scopeToday($query)
     {
-        return $query->whereDate('scheduled_at', today());
+        return $query->whereDate('scheduled_at', self::wallNow()->toDateString());
     }
 
     /**
@@ -164,8 +164,8 @@ class LiveClass extends Model
     public function scopeThisWeek($query)
     {
         return $query->whereBetween('scheduled_at', [
-            now()->startOfWeek(),
-            now()->endOfWeek()
+            self::wallNow()->startOfWeek(),
+            self::wallNow()->endOfWeek()
         ]);
     }
 
@@ -196,7 +196,7 @@ class LiveClass extends Model
      */
     public function getIsUpcomingAttribute(): bool
     {
-        return $this->scheduled_at && $this->scheduled_at->isFuture();
+        return $this->scheduled_at && $this->startsAt()->isFuture();
     }
 
     /**
@@ -208,8 +208,8 @@ class LiveClass extends Model
             return false;
         }
 
-        $startTime = $this->scheduled_at;
-        $endTime = $this->scheduled_at->copy()->addMinutes($this->duration_minutes ?? 60);
+        $startTime = $this->startsAt();
+        $endTime = $this->endsAt();
         $now = now();
 
         return $now->between($startTime, $endTime) && $this->status === 'live';
@@ -224,8 +224,7 @@ class LiveClass extends Model
             return false;
         }
 
-        $endTime = $this->scheduled_at->copy()->addMinutes($this->duration_minutes ?? 60);
-        return now()->isAfter($endTime);
+        return now()->isAfter($this->endsAt());
     }
 
     /**
@@ -233,11 +232,11 @@ class LiveClass extends Model
      */
     public function getTimeUntilStartAttribute(): ?string
     {
-        if (!$this->scheduled_at || $this->scheduled_at->isPast()) {
+        if (!$this->scheduled_at || $this->startsAt()->isPast()) {
             return null;
         }
 
-        $diff = now()->diff($this->scheduled_at);
+        $diff = now()->diff($this->startsAt());
 
         if ($diff->days > 0) {
             return $diff->days . ' days, ' . $diff->h . ' hours';
@@ -253,11 +252,11 @@ class LiveClass extends Model
      */
     public function getTimeSinceStartAttribute(): ?string
     {
-        if (!$this->scheduled_at || $this->scheduled_at->isFuture()) {
+        if (!$this->scheduled_at || $this->startsAt()->isFuture()) {
             return null;
         }
 
-        $diff = $this->scheduled_at->diff(now());
+        $diff = $this->startsAt()->diff(now());
 
         if ($diff->days > 0) {
             return $diff->days . ' days, ' . $diff->h . ' hours ago';

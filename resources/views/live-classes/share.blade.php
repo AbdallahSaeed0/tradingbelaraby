@@ -72,7 +72,7 @@
                 @endif
 
                 @if ($state !== 'guest')
-                    <a href="{{ route('courses.learn', $course) }}" class="btn btn-outline-primary w-100">
+                    <a href="{{ route('courses.learn', ['course' => $course, 'live' => $liveClass->id]) }}" class="btn btn-outline-primary w-100">
                         <i class="fas fa-play me-2"></i>{{ custom_trans('Go to the course', 'front') }}
                     </a>
                 @endif
