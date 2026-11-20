@@ -1,9 +1,11 @@
 @extends('layouts.app')
 
 {{--
-    In-site Zoom room (Zoom Meeting SDK, component view).
-    The page never contains the Zoom link: it asks live.zoom-join for a short-lived signature,
-    meeting number and passcode (enrolled students only, only around session time) and joins here.
+    In-site Zoom room. $mode:
+    - 'sdk':    Zoom Meeting SDK (component view). Asks live.zoom-join for a short-lived signature,
+                meeting number and passcode (enrolled students only, only around session time).
+    - 'iframe': no SDK keys. Zoom's own browser client in an iframe; its address comes from the
+                live.zoom-frame redirect, so the Zoom link is not written in this page.
 --}}
 
 @section('title', $liveClass->localized_name . ' - ' . $course->localized_name)
@@ -23,6 +25,7 @@
         .live-room__status { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: #fff; text-align: center; padding: 24px; z-index: 2; }
         .live-room__status[hidden] { display: none; }
         #zoomMeetingRoot { width: 100%; min-height: 460px; }
+        .live-room__frame { display: block; width: 100%; height: 75vh; min-height: 520px; border: 0; background: #fff; }
         @media (max-width: 576px) {
             .live-room__stage, #zoomMeetingRoot { min-height: 340px; }
         }
@@ -42,9 +45,14 @@
         </div>
 
         <div class="live-room__stage">
+            @if ($mode === 'iframe')
+                <iframe class="live-room__frame" src="{{ route('live.zoom-frame', $liveClass) }}"
+                    allow="camera; microphone; fullscreen; display-capture; autoplay; clipboard-write"
+                    allowfullscreen title="{{ $liveClass->localized_name }}"></iframe>
+            @else
             <div id="zoomMeetingRoot"></div>
 
-            <div class="live-room__status" id="roomStatus">
+            <div class="live-room__status" id="roomStatus" @if ($mode === 'iframe') hidden @endif>
                 <div class="spinner-border" role="status" aria-hidden="true"></div>
                 <div id="roomStatusText">{{ $roomTexts['loading'] }}</div>
             </div>
@@ -62,7 +70,16 @@
                     </a>
                 </div>
             </div>
+            @endif
         </div>
+
+        @if ($mode === 'iframe')
+            <div class="text-center mt-2">
+                <a href="{{ route('live.open-in-zoom', $liveClass) }}" class="small">
+                    <i class="fas fa-video me-1"></i>{{ custom_trans('Open in the Zoom app', 'front') }}
+                </a>
+            </div>
+        @endif
 
         <p class="text-muted small mt-3 mb-0">
             <i class="fas fa-circle-info me-1"></i>
@@ -71,6 +88,7 @@
     </div>
 @endsection
 
+@if ($mode === 'sdk')
 @push('scripts')
     <script src="{{ $zoomBase }}/lib/vendor/react.min.js"></script>
     <script src="{{ $zoomBase }}/lib/vendor/react-dom.min.js"></script>
@@ -150,3 +168,4 @@
         })();
     </script>
 @endpush
+@endif

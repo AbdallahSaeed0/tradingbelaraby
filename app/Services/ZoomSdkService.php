@@ -65,6 +65,30 @@ class ZoomSdkService
     }
 
     /**
+     * Zoom's own browser client for this meeting (zoom.us/wc/join/...). It can be shown inside
+     * an iframe without any SDK keys. Keeps the account's host (e.g. us06web.zoom.us) and the
+     * link's pwd= value so students are not asked for the passcode.
+     */
+    public function webClientUrl(LiveClass $liveClass): ?string
+    {
+        $meetingNumber = $this->meetingNumber($liveClass);
+        if (!$meetingNumber) {
+            return null;
+        }
+
+        $host = parse_url((string) $liveClass->link, PHP_URL_HOST) ?: 'zoom.us';
+        $query = parse_url((string) $liveClass->link, PHP_URL_QUERY) ?: '';
+        parse_str($query, $params);
+
+        $url = 'https://' . $host . '/wc/join/' . $meetingNumber;
+        if (!empty($params['pwd'])) {
+            $url .= '?pwd=' . rawurlencode($params['pwd']);
+        }
+
+        return $url;
+    }
+
+    /**
      * Meeting SDK signature (JWT, HS256), valid for 2 hours. Role 0 = attendee.
      */
     public function signature(string $meetingNumber, int $role = 0): string

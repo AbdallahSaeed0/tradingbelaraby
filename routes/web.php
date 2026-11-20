@@ -371,6 +371,7 @@ Route::middleware('auth')->group(function () {
     // In-site Zoom room: join data for the SDK, and a server-side hand-off to the Zoom app as backup
     Route::post('/live/{liveClass}/zoom-join', [LiveClassController::class, 'zoomJoin'])->middleware('throttle:20,1')->name('live.zoom-join');
     Route::get('/live/{liveClass}/open-in-zoom', [LiveClassController::class, 'openInZoom'])->name('live.open-in-zoom');
+    Route::get('/live/{liveClass}/zoom-frame', [LiveClassController::class, 'zoomFrame'])->name('live.zoom-frame');
 
     // Course-specific Live Class routes
 Route::post('/courses/{course}/schedule-live-class', [LiveClassController::class, 'schedule'])->name('courses.schedule-live-class');

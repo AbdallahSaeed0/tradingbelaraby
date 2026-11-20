@@ -23,6 +23,7 @@ class EnsureEmailIsVerifiedForAuthUsers
         'live.share',
         'live.zoom-join',
         'live.open-in-zoom',
+        'live.zoom-frame',
         'certificate.request',
         'certificate.store',
         'certificate.download',

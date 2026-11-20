@@ -218,17 +218,20 @@ class LiveClassController extends Controller
         if ($state === 'open' && $liveClass->link) {
             $zoom = app(\App\Services\ZoomSdkService::class);
 
-            // Zoom meeting inside the website: the student never sees the Zoom link
-            if ($zoom->canEmbed($liveClass)) {
+            // Zoom meeting inside the website (the page never contains the Zoom link):
+            // - with Meeting SDK keys: SDK player
+            // - without keys: Zoom's own browser client in an iframe
+            if ($zoom->meetingNumber($liveClass)) {
                 return view('live-classes.room', [
                     'liveClass' => $liveClass,
                     'course' => $course,
                     'startsAt' => $startsAt,
+                    'mode' => $zoom->canEmbed($liveClass) ? 'sdk' : 'iframe',
                     'zoomVersion' => $zoom->version(),
                 ]);
             }
 
-            // Zoom SDK not set up (or not a Zoom link): open the meeting as before
+            // Not a zoom.us/j/ meeting link (e.g. a personal room or another platform): open it as before
             return redirect()->away($liveClass->link);
         }
 
@@ -288,6 +291,24 @@ class LiveClassController extends Controller
         }
 
         return redirect()->away($liveClass->link);
+    }
+
+    /**
+     * iframe source for the no-keys mode: redirects to Zoom's browser client, so the meeting
+     * address is not written in the room page itself. Same access rules as joining.
+     */
+    public function zoomFrame(LiveClass $liveClass)
+    {
+        abort_unless($this->canJoinNow(Auth::user(), $liveClass), 403);
+
+        $url = app(\App\Services\ZoomSdkService::class)->webClientUrl($liveClass);
+        abort_unless($url, 404);
+
+        if (!$liveClass->isRegisteredByUser(Auth::user())) {
+            $liveClass->registerUser(Auth::user());
+        }
+
+        return redirect()->away($url);
     }
 
     private function canJoinNow($user, LiveClass $liveClass): bool
