@@ -626,6 +626,105 @@
             "hideMethod": "fadeOut"
         };
 
+        // In-page dialogs instead of the browser's alert/confirm boxes ("site says ...").
+        // alert(msg)  -> toast.
+        // confirm(msg) called from a click/submit/change handler -> returns false, shows a
+        // confirm modal, and on OK repeats the same click/submit/change; that second time
+        // confirm() returns true, so every existing `return confirm(...)` / `if (confirm(...))`
+        // keeps working unchanged. Outside an event the browser box is still used.
+        (function () {
+            const nativeConfirm = window.confirm.bind(window);
+            let allowNextConfirm = false;
+
+            function toastType(message) {
+                const m = String(message).toLowerCase();
+                if (/error|fail|invalid|could not|cannot|can't|خطأ|فشل/.test(m)) return 'error';
+                if (/success|copied|saved|done|updated|deleted|تم/.test(m)) return 'success';
+                if (/please|select|required|must|warning|يرجى|اختر/.test(m)) return 'warning';
+                return 'info';
+            }
+
+            window.alert = function (message) {
+                if (window.toastr) {
+                    toastr[toastType(message)](String(message ?? ''));
+                } else {
+                    console.log(message);
+                }
+            };
+
+            function getModal() {
+                let el = document.getElementById('adminConfirmModal');
+                if (!el) {
+                    document.body.insertAdjacentHTML('beforeend', `
+                        <div class="modal fade" id="adminConfirmModal" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header border-0 pb-0">
+                                        <h5 class="modal-title" id="adminConfirmTitle">Please confirm</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body" id="adminConfirmBody" style="white-space: pre-line;"></div>
+                                    <div class="modal-footer border-0 pt-0">
+                                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                                        <button type="button" class="btn btn-primary" id="adminConfirmOk">Confirm</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`);
+                    el = document.getElementById('adminConfirmModal');
+                }
+                return el;
+            }
+
+            function repeat(event) {
+                const target = event.target;
+                allowNextConfirm = true;
+                // Drop the flag if the repeated action never asks again
+                setTimeout(() => { allowNextConfirm = false; }, 0);
+
+                if (event.type === 'submit' && target instanceof HTMLFormElement) {
+                    if (target.requestSubmit) {
+                        event.submitter ? target.requestSubmit(event.submitter) : target.requestSubmit();
+                    } else {
+                        target.submit();
+                    }
+                } else if (event.type === 'click' && target && target.click) {
+                    target.click();
+                } else if (target && target.dispatchEvent) {
+                    target.dispatchEvent(new Event(event.type, { bubbles: true }));
+                }
+            }
+
+            window.confirm = function (message) {
+                if (allowNextConfirm) {
+                    allowNextConfirm = false;
+                    return true;
+                }
+
+                const event = window.event;
+                if (!event || !['click', 'submit', 'change'].includes(event.type) || !window.bootstrap) {
+                    return nativeConfirm(message);
+                }
+
+                const el = getModal();
+                const text = String(message ?? '');
+                const isDanger = /delete|remove|cannot be undone|حذف/i.test(text);
+                document.getElementById('adminConfirmTitle').textContent = isDanger ? 'Are you sure?' : 'Please confirm';
+                document.getElementById('adminConfirmBody').textContent = text;
+                const okBtn = document.getElementById('adminConfirmOk');
+                okBtn.textContent = isDanger ? 'Delete' : 'Confirm';
+                okBtn.className = 'btn ' + (isDanger ? 'btn-danger' : 'btn-primary');
+
+                const modal = bootstrap.Modal.getOrCreateInstance(el);
+                let confirmed = false;
+                okBtn.onclick = () => { confirmed = true; modal.hide(); };
+                el.addEventListener('hidden.bs.modal', () => { if (confirmed) repeat(event); }, { once: true });
+                modal.show();
+
+                return false;
+            };
+        })();
+
         // Sidebar: icon-only collapse on desktop, offcanvas drawer on mobile
         (function () {
             var SIDEBAR_KEY = 'adminSidebarCollapsed';
