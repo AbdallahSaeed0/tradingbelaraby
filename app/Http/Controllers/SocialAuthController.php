@@ -190,7 +190,7 @@ class SocialAuthController extends Controller
         }
         if ($needsPhone) {
             $rules['phone'] = [
-                'nullable',
+                'required',
                 'string',
                 'max:20',
                 'regex:/^\+[1-9][0-9]{7,14}$/',
@@ -222,9 +222,9 @@ class SocialAuthController extends Controller
 
     private function needsCompleteProfile(User $user): bool
     {
-        // Only X sign-ins without an email must stop here. The phone number is optional
-        // and can be added later from the profile (it is only used for WhatsApp reminders).
-        return $this->isPlaceholderEmail($user->email);
+        // X sign-ins without an email, and Google/X sign-ins without a phone number
+        return $this->isPlaceholderEmail($user->email)
+            || \App\Http\Middleware\EnsureSocialUserHasPhone::needsPhone($user);
     }
 
     private function isPlaceholderEmail(string $email): bool

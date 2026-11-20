@@ -39,6 +39,7 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\EnsureEmailIsVerifiedForAuthUsers::class,
+            \App\Http\Middleware\EnsureSocialUserHasPhone::class,
             \App\Http\Middleware\TrackLastVisit::class,
         ],
 

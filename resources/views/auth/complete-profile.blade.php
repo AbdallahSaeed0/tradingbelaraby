@@ -43,7 +43,7 @@
                     'label' => custom_trans('Mobile number', 'front'),
                     'defaultCountry' => $defaultCountry ?? 'EG',
                     'autofocus' => !$needsEmail,
-                    'required' => false,
+                    'required' => true,
                 ])
             @endif
 
