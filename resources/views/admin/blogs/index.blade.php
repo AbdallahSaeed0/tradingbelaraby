@@ -62,7 +62,7 @@
                         </div>
                         <div>
                             <h6 class="text-muted mb-0">Published</h6>
-                            <h4 class="fw-bold mb-0">{{ $blogs->where('status', 'published')->count() }}</h4>
+                            <h4 class="fw-bold mb-0">{{ $blogStats['published'] ?? 0 }}</h4>
                         </div>
                     </div>
                 </div>
@@ -75,7 +75,7 @@
                         </div>
                         <div>
                             <h6 class="text-muted mb-0">Drafts</h6>
-                            <h4 class="fw-bold mb-0">{{ $blogs->where('status', 'draft')->count() }}</h4>
+                            <h4 class="fw-bold mb-0">{{ $blogStats['draft'] ?? 0 }}</h4>
                         </div>
                     </div>
                 </div>
@@ -88,7 +88,7 @@
                         </div>
                         <div>
                             <h6 class="text-muted mb-0">Featured</h6>
-                            <h4 class="fw-bold mb-0">{{ $blogs->where('is_featured', true)->count() }}</h4>
+                            <h4 class="fw-bold mb-0">{{ $blogStats['featured'] ?? 0 }}</h4>
                         </div>
                     </div>
                 </div>
@@ -136,7 +136,7 @@
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <div class="d-flex gap-2">
+                            <div class="d-flex flex-wrap gap-2">
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fa fa-search me-1"></i>Filter
                                 </button>
@@ -288,7 +288,7 @@
                                     <div class="d-flex align-items-center me-3">
                                         @include('admin.partials.per-page', ['paginator' => $blogs])
                                     </div>
-                                    <div class="d-flex gap-2">
+                                    <div class="d-flex flex-wrap gap-2">
                                         <button type="button" class="btn btn-outline-danger btn-sm" onclick="bulkDelete()">
                                             <i class="fa fa-trash me-1"></i>Delete Selected
                                         </button>

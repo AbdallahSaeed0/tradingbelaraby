@@ -591,3 +591,10 @@
         display: none !important;
     }
 }
+/* Long badges (course names on enrollment / coupon cards) wrap instead of running past the card edge */
+.admin-mobile-card .badge {
+    white-space: normal;
+    max-width: 100%;
+    text-align: start;
+    line-height: 1.35;
+}

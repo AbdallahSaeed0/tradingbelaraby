@@ -195,7 +195,8 @@
         @include('admin.partials.sidebar')
 
         <!-- Page Content -->
-        <main class="flex-grow-1 py-4">
+        {{-- min-width: 0 lets wide tables scroll inside their .table-responsive box instead of widening the whole page --}}
+        <main class="flex-grow-1 py-4" style="min-width: 0;">
             @yield('content')
         </main>
     </div>

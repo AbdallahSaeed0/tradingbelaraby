@@ -14,6 +14,31 @@ use Illuminate\Support\Facades\Storage;
 
 class BlogsController extends Controller
 {
+    /**
+     * Blog list filters shared by index() and data().
+     * The search terms are grouped so category / status / featured filters still apply
+     * (ungrouped orWhere() let any title match through regardless of the other filters).
+     */
+    private function filteredBlogs(Request $request)
+    {
+        $search = $request->search;
+
+        return Blog::query()
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('title', 'like', "%{$search}%")
+                        ->orWhere('description', 'like', "%{$search}%")
+                        ->orWhereHas('author', function ($a) use ($search) {
+                            $a->where('name', 'like', "%{$search}%");
+                        });
+                });
+            })
+            ->when($request->category, fn ($query, $category) => $query->where('category_id', $category))
+            ->when($request->status, fn ($query, $status) => $query->where('status', $status))
+            ->when($request->featured === 'featured', fn ($query) => $query->where('is_featured', true))
+            ->when($request->featured === 'not_featured', fn ($query) => $query->where('is_featured', false));
+    }
+
     public function index(Request $request)
     {
         $search = $request->search;
@@ -21,19 +46,7 @@ class BlogsController extends Controller
         $status = $request->status;
         $per = admin_per_page('blogs');
 
-        $blogs = Blog::when($search, function($query) use ($search) {
-                $query->where('title', 'like', "%{$search}%")
-                      ->orWhere('description', 'like', "%{$search}%")
-                      ->orWhereHas('author', function($q) use ($search) {
-                          $q->where('name', 'like', "%{$search}%");
-                      });
-            })
-            ->when($category, function($query) use ($category) {
-                $query->where('category_id', $category);
-            })
-            ->when($status, function($query) use ($status) {
-                $query->where('status', $status);
-            })
+        $blogs = $this->filteredBlogs($request)
             ->with(['category', 'author'])
             ->latest()
             ->paginate($per)
@@ -41,7 +54,14 @@ class BlogsController extends Controller
 
         $categories = BlogCategory::active()->ordered()->get();
 
-        return view('admin.blogs.index', compact('blogs', 'search', 'per', 'categories', 'category', 'status'));
+        // Totals for the stat cards (all posts, not just the current page)
+        $blogStats = [
+            'published' => Blog::where('status', 'published')->count(),
+            'draft' => Blog::where('status', 'draft')->count(),
+            'featured' => Blog::where('is_featured', true)->count(),
+        ];
+
+        return view('admin.blogs.index', compact('blogs', 'search', 'per', 'categories', 'category', 'status', 'blogStats'));
     }
 
     public function data(Request $request)
@@ -51,19 +71,7 @@ class BlogsController extends Controller
         $status = $request->status;
         $per = admin_per_page('blogs');
 
-        $blogs = Blog::when($search, function($query) use ($search) {
-                $query->where('title', 'like', "%{$search}%")
-                      ->orWhere('description', 'like', "%{$search}%")
-                      ->orWhereHas('author', function($q) use ($search) {
-                          $q->where('name', 'like', "%{$search}%");
-                      });
-            })
-            ->when($category, function($query) use ($category) {
-                $query->where('category_id', $category);
-            })
-            ->when($status, function($query) use ($status) {
-                $query->where('status', $status);
-            })
+        $blogs = $this->filteredBlogs($request)
             ->with('category')
             ->latest()
             ->paginate($per)
