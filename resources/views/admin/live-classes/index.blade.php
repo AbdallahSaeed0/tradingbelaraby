@@ -708,13 +708,19 @@
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
+                                'Accept': 'application/json',
                                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                             }
                         })
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
-                                location.reload();
+                                // Open the copy so its date, time and Zoom link can be set
+                                if (data.edit_url) {
+                                    window.location.href = data.edit_url;
+                                } else {
+                                    location.reload();
+                                }
                             } else {
                                 alert('Error: ' + data.message);
                             }

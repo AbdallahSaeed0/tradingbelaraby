@@ -295,22 +295,46 @@ class LiveClassManagementController extends Controller
     /**
      * Duplicate live class
      */
-    public function duplicate(LiveClass $liveClass)
+    public function duplicate(Request $request, LiveClass $liveClass)
     {
         try {
-            $newLiveClass = $liveClass->replicate();
+            $newLiveClass = $liveClass->replicate(['current_participants']);
             $newLiveClass->name = $liveClass->name . ' (Copy)';
-            $newLiveClass->scheduled_at = now()->addDays(7);
+            if ($liveClass->name_ar) {
+                $newLiveClass->name_ar = $liveClass->name_ar . ' (نسخة)';
+            }
+
+            // Same weekday and time one week later (or the next such week still ahead),
+            // in the same Riyadh wall-clock terms as scheduled_at
+            $scheduledAt = $liveClass->scheduled_at ? $liveClass->scheduled_at->copy()->addWeek() : LiveClass::wallNow()->addWeek();
+            while ($scheduledAt->lte(LiveClass::wallNow())) {
+                $scheduledAt->addWeek();
+            }
+            $newLiveClass->scheduled_at = $scheduledAt;
             $newLiveClass->status = 'scheduled';
             $newLiveClass->current_participants = 0;
             $newLiveClass->recording_url = null;
             $newLiveClass->save();
 
-            return redirect()->route('admin.live-classes.index')
+            if ($request->expectsJson() || $request->isMethod('post')) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Live class duplicated successfully',
+                    'edit_url' => route('admin.live-classes.edit', $newLiveClass),
+                ]);
+            }
+
+            return redirect()->route('admin.live-classes.edit', $newLiveClass)
                 ->with('success', 'Live class duplicated successfully');
         } catch (\Exception $e) {
             Log::error('Error duplicating live class: ' . $e->getMessage());
-            return back()->with('error', 'Error duplicating live class. Please try again.');
+            $message = 'Error duplicating live class: ' . \Illuminate\Support\Str::limit($e->getMessage(), 200);
+
+            if ($request->expectsJson() || $request->isMethod('post')) {
+                return response()->json(['success' => false, 'message' => $message], 500);
+            }
+
+            return back()->with('error', $message);
         }
     }
 
