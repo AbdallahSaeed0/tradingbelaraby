@@ -104,6 +104,8 @@
                                 <option value="name" {{ request('sort') == 'name' ? 'selected' : '' }}>Name A-Z</option>
                                 <option value="email" {{ request('sort') == 'email' ? 'selected' : '' }}>Email A-Z
                                 </option>
+                                <option value="last_visit" {{ request('sort') == 'last_visit' ? 'selected' : '' }}>Last visit
+                                </option>
                             </select>
                         </div>
                         <div class="col-md-3">
@@ -141,6 +143,7 @@
                                 <th>Verified</th>
                                 <th>Enrollments</th>
                                 <th>Joined</th>
+                                <th>Last visit</th>
                                 <th width="170">Actions</th>
                             </tr>
                         </thead>
@@ -200,6 +203,14 @@
                                     <td>
                                         <span>{{ $user->created_at->format('M d, Y') }}</span>
                                         <small class="text-muted d-block">{{ $user->created_at->diffForHumans() }}</small>
+                                    </td>
+                                    <td>
+                                        @if ($user->last_visit_at)
+                                            <span title="{{ $user->last_visit_at->format('Y-m-d H:i') }} UTC">{{ $user->last_visit_at->format('M d, Y') }}</span>
+                                            <small class="text-muted d-block">{{ $user->last_visit_at->diffForHumans() }}</small>
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
                                     </td>
                                     <td>
                                         <div class="table-icon-actions">
@@ -273,7 +284,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="9" class="text-center py-4">
+                                    <td colspan="10" class="text-center py-4">
                                         <div class="text-muted">
                                             <i class="fa fa-users fa-3x mb-3"></i>
                                             <h5>No users found</h5>
@@ -429,7 +440,7 @@
 
                 // Show loading state
                 if (tableBody) {
-                    tableBody.innerHTML = '<tr><td colspan="9" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
+                    tableBody.innerHTML = '<tr><td colspan="10" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
                 }
                 if (mobileList) {
                     mobileList.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>';
@@ -483,7 +494,7 @@
                     .catch(error => {
                         console.error('Error:', error);
                         if (tableBody) {
-                            tableBody.innerHTML = '<tr><td colspan="9" class="text-center py-4 text-danger">Error loading data. Please try again.</td></tr>';
+                            tableBody.innerHTML = '<tr><td colspan="10" class="text-center py-4 text-danger">Error loading data. Please try again.</td></tr>';
                         }
                         if (mobileList) {
                             mobileList.innerHTML = '<div class="text-center py-4 text-danger">Error loading data. Please try again.</div>';

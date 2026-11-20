@@ -39,6 +39,7 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\EnsureEmailIsVerifiedForAuthUsers::class,
+            \App\Http\Middleware\TrackLastVisit::class,
         ],
 
         'api' => [
@@ -46,6 +47,7 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\DetectPlatform::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\TrackLastVisit::class,
         ],
     ];
 

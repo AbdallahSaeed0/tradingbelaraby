@@ -43,6 +43,9 @@ class UsersController extends Controller
                 case 'email':
                     $query->orderBy('email', 'asc');
                     break;
+                case 'last_visit':
+                    $query->orderByRaw('last_visit_at IS NULL')->orderByDesc('last_visit_at');
+                    break;
                 default:
                     $query->orderByDesc('created_at');
             }

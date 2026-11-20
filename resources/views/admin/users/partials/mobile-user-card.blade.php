@@ -14,6 +14,7 @@
         $stats[] = ['icon' => 'fa-phone', 'text' => e($user->phone)];
     }
     $stats[] = ['icon' => 'fa-envelope', 'text' => e($user->email)];
+    $stats[] = ['icon' => 'fa-clock', 'text' => 'Last visit: ' . ($user->last_visit_at ? $user->last_visit_at->diffForHumans() : '-')];
 
     $avatarUrl = $user->avatar ? asset('storage/' . $user->avatar) : null;
 
