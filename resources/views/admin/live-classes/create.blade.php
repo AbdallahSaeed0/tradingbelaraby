@@ -147,6 +147,17 @@
                                 </div>
 
                                 <div class="form-group mb-3">
+                                    <label for="meeting_passcode" class="form-label">Zoom Passcode</label>
+                                    <input type="text" class="form-control @error('meeting_passcode') is-invalid @enderror"
+                                        id="meeting_passcode" name="meeting_passcode" value="{{ old('meeting_passcode') }}"
+                                        placeholder="123456" autocomplete="off" dir="ltr">
+                                    <div class="form-text">Students join this meeting inside the website (Zoom never shows them the link). Enter the meeting passcode so they can join without typing it.</div>
+                                    @error('meeting_passcode')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="form-group mb-3">
                                     <label for="instructions" class="form-label">Pre-class Instructions (English)</label>
                                     <textarea class="form-control @error('instructions') is-invalid @enderror" id="instructions" name="instructions"
                                         rows="3" placeholder="Enter instructions for students...">{{ old('instructions') }}</textarea>

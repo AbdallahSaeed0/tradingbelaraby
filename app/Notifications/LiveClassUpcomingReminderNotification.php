@@ -63,8 +63,10 @@ class LiveClassUpcomingReminderNotification extends Notification implements Shou
             ->line("الموعد: {$dateAr} {$tz[0]}");
 
         if ($isHour && $class->link) {
-            $mail->action('ادخل الجلسة | Join the session', $class->link)
-                ->line('رابط الدخول | Join link: ' . $class->link);
+            // In-site room (the Zoom link itself is never sent to students)
+            $roomUrl = route('live.share', $class);
+            $mail->action('ادخل الجلسة | Join the session', $roomUrl)
+                ->line('رابط الدخول | Join link: ' . $roomUrl);
         } else {
             $mail->line('سنرسل لك رابط الدخول قبل الموعد بساعة.')
                 ->action('أضف للتقويم | Add to calendar', $class->googleCalendarUrl());

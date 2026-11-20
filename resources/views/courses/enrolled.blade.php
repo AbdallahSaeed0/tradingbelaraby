@@ -39,7 +39,7 @@
                         <div class="fw-semibold mb-3">{{ $nextClass->localized_name }}</div>
 
                         @if ($canJoinNow)
-                            <a href="{{ $nextClass->link }}" target="_blank" rel="noopener"
+                            <a href="{{ route('live.share', $nextClass) }}"
                                 class="btn btn-success w-100 fw-bold mb-2">
                                 <i class="fas fa-video me-2"></i>{{ custom_trans('Join the session now', 'front') }}
                             </a>

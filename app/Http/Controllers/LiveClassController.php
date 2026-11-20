@@ -210,13 +210,25 @@ class LiveClassController extends Controller
 
         $state = match (true) {
             $liveClass->status === 'cancelled' => 'cancelled',
+            $liveClass->isJoinWindowOpen() => 'open',
             $liveClass->status === 'completed' || ($endsAt && now()->gt($endsAt)) => 'ended',
-            !$startsAt => 'waiting',
-            now()->gte($startsAt->copy()->subHour()) => 'open',
             default => 'waiting',
         };
 
         if ($state === 'open' && $liveClass->link) {
+            $zoom = app(\App\Services\ZoomSdkService::class);
+
+            // Zoom meeting inside the website: the student never sees the Zoom link
+            if ($zoom->canEmbed($liveClass)) {
+                return view('live-classes.room', [
+                    'liveClass' => $liveClass,
+                    'course' => $course,
+                    'startsAt' => $startsAt,
+                    'zoomVersion' => $zoom->version(),
+                ]);
+            }
+
+            // Zoom SDK not set up (or not a Zoom link): open the meeting as before
             return redirect()->away($liveClass->link);
         }
 
@@ -225,6 +237,66 @@ class LiveClassController extends Controller
         }
 
         return view('live-classes.share', compact('liveClass', 'course', 'startsAt', 'state'));
+    }
+
+    /**
+     * Zoom Meeting SDK join data for the in-site room (JSON, called by the room page).
+     * Only for enrolled students, only while joining is open; nothing is put in the page HTML.
+     */
+    public function zoomJoin(LiveClass $liveClass)
+    {
+        $user = Auth::user();
+        $zoom = app(\App\Services\ZoomSdkService::class);
+
+        if (!$this->canJoinNow($user, $liveClass)) {
+            return response()->json([
+                'success' => false,
+                'message' => custom_trans('Joining opens one hour before the session.', 'front'),
+            ], 403);
+        }
+
+        $meetingNumber = $zoom->meetingNumber($liveClass);
+        if (!$zoom->isConfigured() || !$meetingNumber) {
+            return response()->json(['success' => false, 'message' => 'Zoom is not configured.'], 409);
+        }
+
+        if (!$liveClass->isRegisteredByUser($user)) {
+            $liveClass->registerUser($user);
+        }
+
+        return response()->json([
+            'success' => true,
+            'sdkKey' => $zoom->sdkKey(),
+            'signature' => $zoom->signature($meetingNumber),
+            'meetingNumber' => $meetingNumber,
+            'password' => $zoom->passcode($liveClass),
+            'userName' => $user->name,
+            'userEmail' => $user->email,
+        ]);
+    }
+
+    /**
+     * Backup for phones / browsers where the in-site player cannot start: send the student
+     * to the Zoom app. The link only exists in this server redirect, never in the page.
+     */
+    public function openInZoom(LiveClass $liveClass)
+    {
+        abort_unless($this->canJoinNow(Auth::user(), $liveClass) && $liveClass->link, 403);
+
+        if (!$liveClass->isRegisteredByUser(Auth::user())) {
+            $liveClass->registerUser(Auth::user());
+        }
+
+        return redirect()->away($liveClass->link);
+    }
+
+    private function canJoinNow($user, LiveClass $liveClass): bool
+    {
+        if (!$user || !$liveClass->course_id || !$liveClass->isJoinWindowOpen()) {
+            return false;
+        }
+
+        return $user->hasCourseAccess($liveClass->course_id) || $liveClass->isRegisteredByUser($user);
     }
 
     /**

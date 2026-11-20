@@ -3271,4 +3271,40 @@ return [
         'en' => 'Number of courses',
         'ar' => 'عدد الدورات',
     ],
+    'Connecting to the session...' => [
+        'en' => 'Connecting to the session...',
+        'ar' => 'جاري الاتصال بالجلسة...',
+    ],
+    'The session could not start in the browser.' => [
+        'en' => 'The session could not start in the browser.',
+        'ar' => 'تعذّر تشغيل الجلسة داخل المتصفح.',
+    ],
+    'Back to the course' => [
+        'en' => 'Back to the course',
+        'ar' => 'الرجوع للدورة',
+    ],
+    'Try again' => [
+        'en' => 'Try again',
+        'ar' => 'حاول مرة أخرى',
+    ],
+    'Open in the Zoom app' => [
+        'en' => 'Open in the Zoom app',
+        'ar' => 'افتح في تطبيق Zoom',
+    ],
+    'Allow microphone and camera access if your browser asks. On some phones the Zoom app works better.' => [
+        'en' => 'Allow microphone and camera access if your browser asks. On some phones the Zoom app works better.',
+        'ar' => 'اسمح باستخدام الميكروفون والكاميرا لو المتصفح طلب ذلك. على بعض الموبايلات تطبيق Zoom بيشتغل أفضل.',
+    ],
+    'Joining opens one hour before the session.' => [
+        'en' => 'Joining opens one hour before the session.',
+        'ar' => 'الدخول يفتح قبل موعد الجلسة بساعة.',
+    ],
+    'Sign up to watch this lecture.' => [
+        'en' => 'Sign up to watch this lecture.',
+        'ar' => 'سجّل عشان تشوف المحاضرة دي.',
+    ],
+    'This lecture is for students of this course. Enroll to watch it.' => [
+        'en' => 'This lecture is for students of this course. Enroll to watch it.',
+        'ar' => 'المحاضرة دي لطلاب الدورة. اشترك في الدورة عشان تشوفها.',
+    ],
 ];

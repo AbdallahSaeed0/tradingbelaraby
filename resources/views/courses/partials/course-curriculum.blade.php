@@ -4,6 +4,10 @@
 @php
     $isArabicUi = \App\Helpers\TranslationHelper::getFrontendLanguage()->code === 'ar';
 @endphp
+<style>
+    /* Lecture opened from a shared link */
+    .class-card.shared-lecture-highlight { outline: 2px solid #ff7043; outline-offset: 2px; border-radius: 12px; }
+</style>
 <div class="course-content-section curriculum">
     <div class="curriculum-toolbar">
         <h3 class="curriculum-heading">{{ custom_trans('Course Content', 'front') }}</h3>

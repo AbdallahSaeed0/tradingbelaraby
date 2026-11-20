@@ -99,8 +99,9 @@ class SendLiveClassUpcomingRemindersJob implements ShouldQueue
 
         $startsAt = $liveClass->startsAt();
         $isHour = $key === LiveClassUpcomingReminderNotification::KEY_HOUR_BEFORE;
+        // In-site room link (never the Zoom link); before the last hour, the course page
         $link = $isHour && $liveClass->link
-            ? $liveClass->link
+            ? route('live.share', $liveClass)
             : ($liveClass->course ? route('courses.learn', $liveClass->course) : url('/'));
 
         app(WhatsAppService::class)->sendTemplate(

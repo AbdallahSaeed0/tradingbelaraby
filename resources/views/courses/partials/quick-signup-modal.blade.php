@@ -90,6 +90,13 @@
             e.preventDefault();
             bootstrap.Modal.getOrCreateInstance(modalEl).show();
         });
+        // Arrived from a shared lecture link: open the sign-up popup right away
+        if (@json((bool) session('open_signup'))) {
+            window.addEventListener('load', function () {
+                if (typeof bootstrap !== 'undefined') bootstrap.Modal.getOrCreateInstance(modalEl).show();
+            });
+        }
+
         modalEl.addEventListener('shown.bs.modal', function () {
             // Desktop only: on phones the keyboard would pop up and hide the Google button
             if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {

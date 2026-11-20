@@ -139,6 +139,41 @@ class EnrollmentController extends Controller
     }
 
     /**
+     * Shareable link to one recorded lecture: /lecture/{id}.
+     *
+     * - Guest: course page with the sign-up popup; after sign-up (free course) they are
+     *   enrolled and come back to this link.
+     * - Signed in, not enrolled: free course → enrolled on the spot; paid → course page.
+     * - Enrolled: the course content opens on this lecture and starts playing it.
+     */
+    public function shareLecture(\App\Models\CourseLecture $lecture)
+    {
+        $course = $lecture->course ?? $lecture->section?->course;
+        abort_unless($course && $lecture->is_published !== false, 404);
+
+        $flow = app(EnrollmentFlowService::class);
+        $user = Auth::user();
+
+        if (!$user) {
+            $flow->rememberIntent($course->id, route('lecture.share', $lecture));
+
+            return redirect()->route('courses.show', $course)
+                ->with('info', custom_trans('Sign up to watch this lecture.', 'front'))
+                ->with('open_signup', true);
+        }
+
+        if (!$user->hasCourseAccess($course->id)) {
+            if ($course->requiresPayment()) {
+                return redirect()->route('courses.show', $course)
+                    ->with('info', custom_trans('This lecture is for students of this course. Enroll to watch it.', 'front'));
+            }
+            $flow->enrollFree($user, $course);
+        }
+
+        return redirect()->route('courses.learn', ['course' => $course, 'lecture' => $lecture->id]);
+    }
+
+    /**
      * Save the WhatsApp number from the "you're enrolled" page (used for reminders).
      */
     public function saveWhatsapp(Request $request, Course $course)

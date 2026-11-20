@@ -208,6 +208,11 @@
                                                 </div>
                                             </div>
                                             <div class="admin-course-lecture__actions btn-group btn-group-sm">
+                                                {{-- Public link: signs the student up / enrolls (free) and opens this lecture --}}
+                                                <button type="button" class="btn btn-outline-success btn-sm" title="Copy lecture link"
+                                                    data-link="{{ route('lecture.share', $lecture) }}" onclick="copyLectureLink(this)">
+                                                    <i class="fa fa-link"></i>
+                                                </button>
                                                 <button class="btn btn-outline-primary btn-sm" title="View">
                                                     <i class="fa fa-eye"></i>
                                                 </button>
@@ -478,6 +483,21 @@
 
 @push('scripts')
     <script>
+        // Copy the public /lecture/{id} link (students open the lecture directly on the site)
+        function copyLectureLink(btn) {
+            const link = btn.dataset.link;
+            const done = () => {
+                const icon = btn.innerHTML;
+                btn.innerHTML = '<i class="fa fa-check"></i>';
+                setTimeout(() => { btn.innerHTML = icon; }, 1500);
+            };
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(link).then(done, () => window.prompt('Copy link:', link));
+            } else {
+                window.prompt('Copy link:', link);
+            }
+        }
+
         // Handle lecture type switching
         document.getElementById('lectureType').addEventListener('change', function() {
             const videoUrlInput = document.getElementById('videoUrlInput');

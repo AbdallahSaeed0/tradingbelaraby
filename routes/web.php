@@ -247,6 +247,8 @@ Route::get('/blog/{blog:slug}', [BlogController::class, 'show'])->name('blog.sho
 // Trader registration routes
 Route::post('/traders', [App\Http\Controllers\TraderController::class, 'store'])->name('traders.store');
 Route::post('/courses/{course}/enroll', [EnrollmentController::class, 'enroll'])->name('courses.enroll');
+// Shareable direct link to one recorded lecture (handles guests and enrollment, then opens it)
+Route::get('/lecture/{lecture}', [EnrollmentController::class, 'shareLecture'])->name('lecture.share');
 // Shareable direct link to one live session (handles guests, enrollment and joining)
 Route::get('/live/{liveClass}', [App\Http\Controllers\LiveClassController::class, 'share'])->name('live.share');
 Route::get('/category/{category:slug}', [CourseController::class, 'category'])->name('category.show');
@@ -366,6 +368,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/live-classes/{liveClass}/unregister', [LiveClassController::class, 'unregister'])->name('live-classes.unregister');
     Route::get('/live-classes/{liveClass}/join', [LiveClassController::class, 'join'])->name('live-classes.join');
     Route::get('/live-classes/{liveClass}/calendar.ics', [LiveClassController::class, 'calendar'])->name('live-classes.calendar');
+    // In-site Zoom room: join data for the SDK, and a server-side hand-off to the Zoom app as backup
+    Route::post('/live/{liveClass}/zoom-join', [LiveClassController::class, 'zoomJoin'])->middleware('throttle:20,1')->name('live.zoom-join');
+    Route::get('/live/{liveClass}/open-in-zoom', [LiveClassController::class, 'openInZoom'])->name('live.open-in-zoom');
 
     // Course-specific Live Class routes
 Route::post('/courses/{course}/schedule-live-class', [LiveClassController::class, 'schedule'])->name('courses.schedule-live-class');

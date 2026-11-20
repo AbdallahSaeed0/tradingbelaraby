@@ -111,6 +111,15 @@ return [
         'chat_id' => env('TELEGRAM_CHAT_ID'),
     ],
 
+    // Zoom Meeting SDK: students join live classes inside the website instead of getting the Zoom link.
+    // Create a "Meeting SDK" app in the Zoom Marketplace under the SAME Zoom account that hosts the
+    // meetings, then copy its Client ID / Client Secret here. Empty = old behaviour (open Zoom).
+    'zoom_sdk' => [
+        'key'     => env('ZOOM_SDK_KEY'),
+        'secret'  => env('ZOOM_SDK_SECRET'),
+        'version' => env('ZOOM_SDK_VERSION', '3.13.2'),
+    ],
+
     'meta_whatsapp' => [
         'token'           => env('META_WHATSAPP_TOKEN'),
         'phone_number_id' => env('META_WHATSAPP_PHONE_NUMBER_ID'),

@@ -35,6 +35,15 @@
     <!-- Course Detail Section -->
     <section class="course-detail-section py-5 bg-white">
         <div class="container">
+            {{-- Messages from shared lecture / live session links ("sign up to watch", "enroll to join") --}}
+            @foreach (['info' => 'info', 'success' => 'success', 'error' => 'danger'] as $flashKey => $flashType)
+                @if (session($flashKey))
+                    <div class="alert alert-{{ $flashType }} alert-dismissible fade show" role="alert">
+                        {{ session($flashKey) }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ custom_trans('Close', 'front') }}"></button>
+                    </div>
+                @endif
+            @endforeach
             <div class="row justify-content-center">
                 <!-- Left Side -->
                 <div class="col-lg-8 mb-4 mb-lg-0">

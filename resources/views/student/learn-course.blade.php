@@ -161,7 +161,8 @@
                                                         </div>
                                                         @if ($liveClass->link)
                                                             <div class="mt-2">
-                                                                <a href="{{ $liveClass->link }}" target="_blank"
+                                                                {{-- In-site room: the Zoom link is never shown to students --}}
+                                                                <a href="{{ route('live.share', $liveClass) }}"
                                                                     class="btn btn-success btn-sm">
                                                                     <i
                                                                         class="fa fa-external-link-alt me-1"></i>{{ custom_trans('Join Meeting', 'front') }}
@@ -201,7 +202,7 @@
                                                         </a>
                                                     @elseif (!$isRegistered)
                                                         <button class="btn btn-outline-primary flex-fill"
-                                                            onclick="joinLiveClass({{ $liveClass->id }}, {{ json_encode($liveClass->link ?? '') }})">
+                                                            onclick="joinLiveClass({{ $liveClass->id }}, {{ json_encode(route('live.share', $liveClass)) }})">
                                                             <i class="fa fa-video me-2"></i>{{ custom_trans('Join Live Class', 'front') }}
                                                         </button>
                                                     @else
@@ -751,6 +752,27 @@
                     } catch (e) {}
                 }
             }
+            // Opened from a shared lecture link (/lecture/{id} → ?lecture=ID): go straight to it and play it
+            const sharedLectureId = new URLSearchParams(window.location.search).get('lecture');
+            if (sharedLectureId) {
+                setTimeout(function() {
+                    const checkbox = document.querySelector('.lecture-select-checkbox[data-lecture="' + CSS.escape(sharedLectureId) + '"]');
+                    if (!checkbox) return;
+                    const contentTab = document.getElementById('content-tab');
+                    if (contentTab) bootstrap.Tab.getOrCreateInstance(contentTab).show();
+                    const sectionCollapse = document.getElementById('section' + checkbox.dataset.section);
+                    if (sectionCollapse) bootstrap.Collapse.getOrCreateInstance(sectionCollapse, { toggle: false }).show();
+                    setTimeout(function() {
+                        const card = checkbox.closest('.class-card');
+                        if (!card) return;
+                        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        card.classList.add('shared-lecture-highlight');
+                        const playBtn = card.querySelector('.play-video-btn');
+                        if (playBtn && playBtn.dataset.video) playBtn.click();
+                    }, 400);
+                }, 300);
+            }
+
             const sectionSelectCheckboxes = document.querySelectorAll('.section-select-checkbox');
             const lectureSelectCheckboxes = document.querySelectorAll('.lecture-select-checkbox');
             const markCompleteBtn = document.getElementById('markCompleteBtn');
@@ -1412,10 +1434,12 @@
             .then(data => {
                 if (data.success) {
                     showToast('{{ custom_trans('You have joined the live class!', 'front') }}', 'success');
+                    // meetingLink is the in-site room page (/live/{id}), not the Zoom link
                     if (meetingLink && meetingLink.trim() !== '') {
-                        window.open(meetingLink, '_blank');
+                        window.location.href = meetingLink;
+                    } else {
+                        location.reload();
                     }
-                    location.reload();
                 } else {
                     showToast(data.message || '{{ custom_trans('Failed to join live class.', 'front') }}', 'danger');
                     console.error(data.message);

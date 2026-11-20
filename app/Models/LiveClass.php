@@ -19,6 +19,7 @@ class LiveClass extends Model
         'description',
         'description_ar',
         'link',
+        'meeting_passcode',
         'scheduled_at',
         'duration_minutes',
         'status',
@@ -67,6 +68,9 @@ class LiveClass extends Model
         }
         return $this->instructions;
     }
+
+    // The passcode is only sent to enrolled students through the Zoom SDK join endpoint
+    protected $hidden = ['meeting_passcode'];
 
     protected $casts = [
         'scheduled_at' => 'datetime',
@@ -427,6 +431,20 @@ class LiveClass extends Model
         }
 
         return \Carbon\Carbon::parse($this->scheduled_at->format('Y-m-d H:i:s'), self::wallTimezone());
+    }
+
+    /**
+     * Joining is open from one hour before the start until 30 minutes after the end.
+     */
+    public function isJoinWindowOpen(): bool
+    {
+        $start = $this->startsAt();
+        if (!$start || in_array($this->status, ['cancelled', 'completed'], true)) {
+            return $this->status === 'live';
+        }
+
+        return now()->between($start->copy()->subHour(), $this->endsAt()->copy()->addMinutes(30))
+            || $this->status === 'live';
     }
 
     public function endsAt(): ?\Carbon\Carbon

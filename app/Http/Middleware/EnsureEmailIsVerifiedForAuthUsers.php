@@ -21,6 +21,8 @@ class EnsureEmailIsVerifiedForAuthUsers
     protected array $verificationRequiredRoutes = [
         'courses.learn',
         'live.share',
+        'live.zoom-join',
+        'live.open-in-zoom',
         'certificate.request',
         'certificate.store',
         'certificate.download',
