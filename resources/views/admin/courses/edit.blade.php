@@ -851,7 +851,13 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="ms-2">
+                                                            <div class="ms-2 d-flex gap-1">
+                                                                {{-- Public link: signs the student up / enrolls (free) and opens this lecture --}}
+                                                                <button type="button" class="btn btn-sm btn-outline-success"
+                                                                    title="Copy lecture link" data-link="{{ route('lecture.share', $lecture) }}"
+                                                                    onclick="(function(b){var l=b.dataset.link;var d=function(){var i=b.innerHTML;b.innerHTML='<i class=&quot;fa fa-check&quot;></i>';setTimeout(function(){b.innerHTML=i;},1500);};if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(l).then(d,function(){window.prompt('Copy link:',l);});}else{window.prompt('Copy link:',l);}})(this)">
+                                                                    <i class="fa fa-link"></i>
+                                                                </button>
                                                                 <button type="button"
                                                                     class="btn btn-sm btn-outline-danger remove-lecture">
                                                                     <i class="fa fa-trash"></i>
