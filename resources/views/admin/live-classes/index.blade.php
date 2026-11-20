@@ -661,32 +661,90 @@
                 });
             }
 
-            // Toggle status
-            function toggleStatus(classId) {
-                if (confirm('Are you sure you want to toggle the status of this live class?')) {
-                    fetch(`/admin/live-classes/${classId}/toggle-status`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                            }
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                location.reload();
-                            } else {
-                                alert('Error: ' + data.message);
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('Error updating status');
-                        });
+            // In-page confirm dialog (no browser confirm/alert boxes)
+            function lcConfirm(message, options = {}) {
+                return new Promise(resolve => {
+                    let modalEl = document.getElementById('lcConfirmModal');
+                    if (!modalEl) {
+                        document.body.insertAdjacentHTML('beforeend', `
+                            <div class="modal fade" id="lcConfirmModal" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header border-0 pb-0">
+                                            <h5 class="modal-title" id="lcConfirmTitle"></h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body" id="lcConfirmBody"></div>
+                                        <div class="modal-footer border-0 pt-0">
+                                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            <button type="button" class="btn" id="lcConfirmOk"></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`);
+                        modalEl = document.getElementById('lcConfirmModal');
+                    }
+                    document.getElementById('lcConfirmTitle').textContent = options.title || 'Please confirm';
+                    document.getElementById('lcConfirmBody').textContent = message;
+                    const okBtn = document.getElementById('lcConfirmOk');
+                    okBtn.textContent = options.okText || 'Confirm';
+                    okBtn.className = 'btn ' + (options.danger ? 'btn-danger' : 'btn-primary');
+
+                    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                    let confirmed = false;
+                    okBtn.onclick = () => { confirmed = true; modal.hide(); };
+                    modalEl.addEventListener('hidden.bs.modal', () => resolve(confirmed), { once: true });
+                    modal.show();
+                });
+            }
+
+            function lcNotify(type, message) {
+                if (window.toastr) {
+                    toastr[type](message);
+                } else {
+                    console[type === 'error' ? 'error' : 'log'](message);
                 }
             }
 
-            // Duplicate class
+            // fetch helper: always asks for JSON and turns any failure into a readable message
+            async function lcRequest(url, method, body) {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: body ? JSON.stringify(body) : undefined
+                });
+                let data = null;
+                try {
+                    data = await response.json();
+                } catch (e) {
+                    data = null;
+                }
+                if (!response.ok || !data || !data.success) {
+                    throw new Error((data && data.message) || ('Request failed (' + response.status + ')'));
+                }
+                return data;
+            }
+
+            function lcSelectedIds() {
+                return Array.from(document.querySelectorAll('.class-checkbox:checked')).map(cb => cb.value);
+            }
+
+            // Toggle status
+            async function toggleStatus(classId) {
+                if (!(await lcConfirm('Toggle the status of this live class?'))) return;
+                try {
+                    await lcRequest(`/admin/live-classes/${classId}/toggle-status`, 'POST');
+                    location.reload();
+                } catch (e) {
+                    lcNotify('error', e.message);
+                }
+            }
+
             // Copy the public /live/{id} link students can open to join directly
             function copyShareLink(btn) {
                 const link = btn.dataset.link;
@@ -694,151 +752,83 @@
                     const icon = btn.innerHTML;
                     btn.innerHTML = '<i class="fa fa-check"></i>';
                     setTimeout(() => { btn.innerHTML = icon; }, 1500);
+                    lcNotify('success', 'Link copied');
+                };
+                const fallback = () => {
+                    const input = document.createElement('textarea');
+                    input.value = link;
+                    input.style.position = 'fixed';
+                    input.style.opacity = '0';
+                    document.body.appendChild(input);
+                    input.select();
+                    let ok = false;
+                    try { ok = document.execCommand('copy'); } catch (e) {}
+                    input.remove();
+                    ok ? done() : lcNotify('info', link);
                 };
                 if (navigator.clipboard && window.isSecureContext) {
-                    navigator.clipboard.writeText(link).then(done, () => window.prompt('Copy link:', link));
+                    navigator.clipboard.writeText(link).then(done, fallback);
                 } else {
-                    window.prompt('Copy link:', link);
+                    fallback();
                 }
             }
 
-            function duplicateClass(classId) {
-                if (confirm('Are you sure you want to duplicate this live class?')) {
-                    fetch(`/admin/live-classes/${classId}/duplicate`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                            }
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                // Open the copy so its date, time and Zoom link can be set
-                                if (data.edit_url) {
-                                    window.location.href = data.edit_url;
-                                } else {
-                                    location.reload();
-                                }
-                            } else {
-                                alert('Error: ' + data.message);
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('Error duplicating class');
-                        });
+            // Duplicate class
+            async function duplicateClass(classId) {
+                if (!(await lcConfirm('Duplicate this live class? The copy is scheduled one week later at the same time.', { okText: 'Duplicate' }))) return;
+                try {
+                    const data = await lcRequest(`/admin/live-classes/${classId}/duplicate`, 'POST');
+                    // Open the copy so its date, time and Zoom link can be checked
+                    if (data.edit_url) {
+                        window.location.href = data.edit_url;
+                    } else {
+                        location.reload();
+                    }
+                } catch (e) {
+                    lcNotify('error', e.message);
                 }
             }
 
             // Delete class
-            function deleteClass(classId) {
-                if (confirm('Are you sure you want to delete this live class? This action cannot be undone.')) {
-                    fetch(`/admin/live-classes/${classId}`, {
-                            method: 'DELETE',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                            }
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                location.reload();
-                            } else {
-                                alert('Error: ' + data.message);
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('Error deleting class');
-                        });
+            async function deleteClass(classId) {
+                if (!(await lcConfirm('Delete this live class? Its registrations are deleted too. This cannot be undone.', { title: 'Delete live class', okText: 'Delete', danger: true }))) return;
+                try {
+                    await lcRequest(`/admin/live-classes/${classId}`, 'DELETE');
+                    location.reload();
+                } catch (e) {
+                    lcNotify('error', e.message);
                 }
             }
 
             // Bulk delete
-            function bulkDelete() {
-                const selectedClasses = Array.from(document.querySelectorAll('.class-checkbox:checked')).map(cb => cb.value);
-
+            async function bulkDelete() {
+                const selectedClasses = lcSelectedIds();
                 if (selectedClasses.length === 0) {
-                    alert('Please select at least one live class to delete.');
+                    lcNotify('warning', 'Select at least one live class to delete.');
                     return;
                 }
-
-                if (confirm(
-                        `Are you sure you want to delete ${selectedClasses.length} live class(es)? This action cannot be undone.`
-                    )) {
-                    fetch('/admin/live-classes/bulk-delete', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                            },
-                            body: JSON.stringify({
-                                selected_classes: selectedClasses
-                            })
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                // Uncheck all checkboxes and hide bulk actions
-                                document.querySelectorAll('.class-checkbox').forEach(cb => cb.checked = false);
-                                const selectAll = document.getElementById('selectAll');
-                                if (selectAll) selectAll.checked = false;
-                                toggleBulkActions();
-                                location.reload();
-                            } else {
-                                alert('Error: ' + data.message);
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('Error deleting classes');
-                        });
+                if (!(await lcConfirm(`Delete ${selectedClasses.length} live class(es)? This cannot be undone.`, { title: 'Delete live classes', okText: 'Delete', danger: true }))) return;
+                try {
+                    await lcRequest('/admin/live-classes/bulk-delete', 'POST', { selected_classes: selectedClasses });
+                    location.reload();
+                } catch (e) {
+                    lcNotify('error', e.message);
                 }
             }
 
             // Bulk update status
-            function bulkUpdateStatus(status) {
-                const selectedClasses = Array.from(document.querySelectorAll('.class-checkbox:checked')).map(cb => cb.value);
-
+            async function bulkUpdateStatus(status) {
+                const selectedClasses = lcSelectedIds();
                 if (selectedClasses.length === 0) {
-                    alert('Please select at least one live class to update.');
+                    lcNotify('warning', 'Select at least one live class to update.');
                     return;
                 }
-
-                if (confirm(
-                        `Are you sure you want to update the status of ${selectedClasses.length} live class(es) to "${status}"?`
-                    )) {
-                    fetch('/admin/live-classes/bulk-update-status', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                            },
-                            body: JSON.stringify({
-                                selected_classes: selectedClasses,
-                                status: status
-                            })
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                // Uncheck all checkboxes and hide bulk actions
-                                document.querySelectorAll('.class-checkbox').forEach(cb => cb.checked = false);
-                                const selectAll = document.getElementById('selectAll');
-                                if (selectAll) selectAll.checked = false;
-                                toggleBulkActions();
-                                location.reload();
-                            } else {
-                                alert('Error: ' + data.message);
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('Error updating status');
-                        });
+                if (!(await lcConfirm(`Change the status of ${selectedClasses.length} live class(es) to "${status}"?`))) return;
+                try {
+                    await lcRequest('/admin/live-classes/bulk-update-status', 'POST', { selected_classes: selectedClasses, status: status });
+                    location.reload();
+                } catch (e) {
+                    lcNotify('error', e.message);
                 }
             }
         </script>

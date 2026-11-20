@@ -280,15 +280,26 @@ class LiveClassManagementController extends Controller
     /**
      * Delete live class
      */
-    public function destroy(LiveClass $liveClass)
+    public function destroy(Request $request, LiveClass $liveClass)
     {
         try {
             $liveClass->delete();
+
+            if ($request->expectsJson()) {
+                return response()->json(['success' => true, 'message' => 'Live class deleted successfully']);
+            }
+
             return redirect()->route('admin.live-classes.index')
                 ->with('success', 'Live class deleted successfully');
         } catch (\Exception $e) {
             Log::error('Error deleting live class: ' . $e->getMessage());
-            return back()->with('error', 'Error deleting live class. Please try again.');
+            $message = 'Error deleting live class: ' . \Illuminate\Support\Str::limit($e->getMessage(), 200);
+
+            if ($request->expectsJson()) {
+                return response()->json(['success' => false, 'message' => $message], 500);
+            }
+
+            return back()->with('error', $message);
         }
     }
 

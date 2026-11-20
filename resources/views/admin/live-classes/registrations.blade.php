@@ -386,12 +386,12 @@
                     if (data.success) {
                         location.reload();
                     } else {
-                        alert('Error: ' + (data.message || 'Something went wrong'));
+                        toastr.error(data.message || 'Something went wrong');
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('An error occurred while processing your request.');
+                    toastr.error('An error occurred while processing your request.');
                 })
                 .finally(() => {
                     bootstrap.Modal.getInstance(document.getElementById('confirmationModal')).hide();
