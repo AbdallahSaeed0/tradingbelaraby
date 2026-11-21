@@ -204,6 +204,8 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    {{-- Row actions: up to 4 icon buttons, the rest folded into a ⋮ menu (all tables) --}}
+    <script src="{{ versioned_asset('js/admin/admin-row-actions.js') }}" defer></script>
     <script>
         // Live filtering for admin lists, without reloading the page.
         //   <form method="GET" data-live-filter="resultsId">  filter form (typing, selects, dates, Enter);
