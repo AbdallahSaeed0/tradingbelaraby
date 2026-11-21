@@ -2,6 +2,16 @@
 
 @section('title', 'View Blog Post')
 
+@push('styles')
+    <style>
+        .blog-excerpt-box { padding: 1rem 1.25rem; border-radius: 10px; border: 1px solid rgba(127, 127, 127, 0.25); background: rgba(127, 127, 127, 0.08); color: inherit; }
+        .blog-content { line-height: 1.8; overflow-wrap: anywhere; }
+        .blog-content h2, .blog-content h3 { font-size: 1.25rem; font-weight: 700; margin: 1.5rem 0 0.75rem; }
+        .blog-content img, .blog-content iframe, .blog-content video { max-width: 100%; height: auto; border-radius: 8px; }
+        .blog-content table { width: 100%; margin-bottom: 1rem; }
+    </style>
+@endpush
+
 @section('content')
     <div class="container-fluid py-4 admin-detail-page">
         @include('admin.partials.detail-page-header', [
@@ -55,14 +65,15 @@
                         </div>
 
                         @if ($blog->excerpt)
-                            <div class="alert alert-light">
-                                <h6 class="alert-heading">Excerpt</h6>
+                            {{-- Follows the light/dark admin theme (alert-light stayed white in dark mode) --}}
+                            <div class="blog-excerpt-box mb-4">
+                                <h6 class="fw-bold mb-2">Excerpt</h6>
                                 <p class="mb-0">{{ $blog->excerpt }}</p>
                             </div>
                         @endif
 
                         <div class="blog-content">
-                            {!! nl2br(e($blog->description)) !!}
+                            {!! $blog->description !!}
                         </div>
 
 
