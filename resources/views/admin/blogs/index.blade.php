@@ -2,6 +2,19 @@
 
 @section('title', 'Blogs Management')
 
+@push('styles')
+    <style>
+        .blogs-table > :not(caption) > * > * { padding: 0.9rem 0.75rem; }
+        .blogs-table thead th { font-size: 0.9rem; white-space: nowrap; }
+        .blogs-table .blog-thumb { width: 88px; height: 60px; object-fit: cover; flex-shrink: 0; }
+        .blogs-table .blog-title { font-size: 1rem; font-weight: 600; line-height: 1.45; }
+        .blogs-table .blog-excerpt { font-size: 0.875rem; line-height: 1.45; }
+        .blogs-table .badge { font-size: 0.8rem; padding: 0.45em 0.7em; }
+        .blogs-table .blog-actions { display: flex; gap: 0.4rem; flex-wrap: nowrap; }
+        .blogs-table .blog-actions .btn { font-size: 0.875rem; padding: 0.35rem 0.6rem; margin: 0; }
+    </style>
+@endpush
+
 @section('content')
     <div class="container-fluid py-4">
         <!-- Page Header -->
@@ -154,7 +167,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive d-none d-lg-block admin-table-no-mobile-cards">
-                    <table class="table table-hover table-striped">
+                    <table class="table table-hover table-striped align-middle blogs-table">
                         <thead>
                             <tr>
                                 <th width="50">
@@ -162,7 +175,7 @@
                                         <input class="form-check-input" type="checkbox" id="selectAll">
                                     </div>
                                 </th>
-                                <th>Blog Post</th>
+                                <th style="min-width: 380px;">Blog Post</th>
                                 <th>Category</th>
                                 <th>Author</th>
                                 <th>Status</th>
@@ -187,18 +200,17 @@
                                             <div class="me-3">
                                                 @if ($blog->image)
                                                     <img src="{{ $blog->image_url }}" alt="{{ $blog->title }}"
-                                                        class="rounded w-50 h-40 item-image-sm">
+                                                        class="rounded blog-thumb">
                                                 @else
                                                     <div
-                                                        class="bg-secondary rounded d-flex align-items-center justify-content-center w-50 h-40 item-placeholder-sm">
+                                                        class="bg-secondary rounded d-flex align-items-center justify-content-center blog-thumb">
                                                         <i class="fa fa-image text-white"></i>
                                                     </div>
                                                 @endif
                                             </div>
                                             <div>
-                                                <h6 class="mb-0">{{ $blog->title }}</h6>
-                                                <small
-                                                    class="text-muted">{{ Str::limit($blog->excerpt ?: $blog->description, 60) }}</small>
+                                                <h6 class="mb-1 blog-title">{{ $blog->title }}</h6>
+                                                <div class="text-muted blog-excerpt">{{ Str::limit($blog->excerpt ?: $blog->description, 110) }}</div>
                                                 @if ($blog->is_featured)
                                                     <span class="badge bg-warning text-dark ms-1">Featured</span>
                                                 @endif
@@ -213,7 +225,7 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <small>{{ $blog->author_name ?: 'Admin' }}</small>
+                                        <span class="text-nowrap">{{ $blog->author_name ?: 'Admin' }}</span>
                                     </td>
                                     <td>
                                         <span
@@ -227,7 +239,7 @@
                                         <span class="badge bg-primary">{{ $blog->views_count }}</span>
                                     </td>
                                     <td>
-                                        <small>{{ $blog->created_at->format('M d, Y') }}</small>
+                                        <span class="text-nowrap">{{ $blog->created_at->format('M d, Y') }}</span>
                                     </td>
                                     <td>
                                         <div class="blog-actions">
@@ -318,84 +330,7 @@
                             </div>
                     <div class="col-md-6">
                         <div class="d-flex justify-content-end">
-                            @if ($blogs->hasPages())
-                                <nav aria-label="Blogs pagination">
-                                    <ul class="pagination pagination-sm justify-content-end mb-0">
-                                        {{-- Previous Page Link --}}
-                                        @if ($blogs->onFirstPage())
-                                            <li class="page-item disabled">
-                                                <span class="page-link">
-                                                    <i class="fa fa-chevron-left"></i>
-                                                </span>
-                                            </li>
-                                        @else
-                                            <li class="page-item">
-                                                <a class="page-link" href="{{ $blogs->previousPageUrl() }}"
-                                                    aria-label="Previous">
-                                                    <i class="fa fa-chevron-left"></i>
-                                                </a>
-                                            </li>
-                                        @endif
-
-                                        {{-- First Page --}}
-                                        @if ($blogs->currentPage() > 3)
-                                            <li class="page-item">
-                                                <a class="page-link" href="{{ $blogs->url(1) }}">1</a>
-                                            </li>
-                                            @if ($blogs->currentPage() > 4)
-                                                <li class="page-item disabled">
-                                                    <span class="page-link">...</span>
-                                                </li>
-                                            @endif
-                                        @endif
-
-                                        {{-- Pagination Elements --}}
-                                        @foreach ($blogs->getUrlRange(max(1, $blogs->currentPage() - 2), min($blogs->lastPage(), $blogs->currentPage() + 2)) as $page => $url)
-                                            @if ($page == $blogs->currentPage())
-                                                <li class="page-item active">
-                                                    <span class="page-link">{{ $page }}</span>
-                                                </li>
-                                            @else
-                                                <li class="page-item">
-                                                    <a class="page-link" href="{{ $url }}">{{ $page }}</a>
-                                                </li>
-                                            @endif
-                                        @endforeach
-
-                                        {{-- Last Page --}}
-                                        @if ($blogs->currentPage() < $blogs->lastPage() - 2)
-                                            @if ($blogs->currentPage() < $blogs->lastPage() - 3)
-                                                <li class="page-item disabled">
-                                                    <span class="page-link">...</span>
-                                                </li>
-                                            @endif
-                                            <li class="page-item">
-                                                <a class="page-link"
-                                                    href="{{ $blogs->url($blogs->lastPage()) }}">{{ $blogs->lastPage() }}</a>
-                                            </li>
-                                        @endif
-
-                                        {{-- Next Page Link --}}
-                                        @if ($blogs->hasMorePages())
-                                            <li class="page-item">
-                                                <a class="page-link" href="{{ $blogs->nextPageUrl() }}" aria-label="Next">
-                                                    <i class="fa fa-chevron-right"></i>
-                                                </a>
-                                            </li>
-                                        @else
-                                            <li class="page-item disabled">
-                                                <span class="page-link">
-                                                    <i class="fa fa-chevron-right"></i>
-                                                </span>
-                                            </li>
-                                        @endif
-                                    </ul>
-                                </nav>
-                            @else
-                                <div class="text-end text-muted small">
-                                    Page 1 of 1
-                                </div>
-                            @endif
+                            {{ $blogs->links() }}
                         </div>
                     </div>
                 </div>
