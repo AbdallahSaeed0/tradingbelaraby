@@ -342,6 +342,9 @@
                 }
             }
             
+            if (typeof window.updateLectureOrder === 'function') {
+                window.updateLectureOrder();
+            }
             console.log('Lecture added successfully!');
         };
         
@@ -721,7 +724,7 @@
                                 if (btn) {
                                     btn.addEventListener('click', function(e) {
                                         e.preventDefault();
-                                        e.stopPropagation();
+                                        e.stopImmediatePropagation(); // the page-load script binds this button too
                                         
                                         if (typeof window.addSection === 'function') {
                                             window.addSection();
@@ -988,7 +991,7 @@
                                 if (btn) {
                                     btn.addEventListener('click', function(e) {
                                         e.preventDefault();
-                                        e.stopPropagation();
+                                        e.stopImmediatePropagation(); // the page-load script binds this button too
                                         
                                         if (typeof window.addLearningObjective === 'function') {
                                             window.addLearningObjective();
@@ -1096,7 +1099,7 @@
                                 if (btn) {
                                     btn.addEventListener('click', function(e) {
                                         e.preventDefault();
-                                        e.stopPropagation();
+                                        e.stopImmediatePropagation(); // the page-load script binds this button too
                                         
                                         if (typeof window.addFaqItem === 'function') {
                                             window.addFaqItem();
@@ -1718,42 +1721,6 @@
                 });
             }
 
-            // Add lecture functionality
-            courseSections.addEventListener('click', function(e) {
-                if (e.target.classList.contains('add-lecture')) {
-                    const section = e.target.closest('.section-item');
-                    const lecturesContainer = section.querySelector('.lectures-container');
-                    const lectureTemplate = document.getElementById('lectureTemplate');
-                    const lectureClone = lectureTemplate.content.cloneNode(true);
-                    const lectureId = 'new_' + Date.now();
-                    lectureClone.querySelector('.lecture-item').dataset.lectureId = lectureId;
-
-                    // Update input names for new lecture
-                    const inputs = lectureClone.querySelectorAll('input, select, textarea');
-                    inputs.forEach(input => {
-                        if (input.name) {
-                            input.name = input.name.replace('[new]', `[${lectureId}]`);
-                        }
-                    });
-
-                    // Add hidden input to track which section this lecture belongs to
-                    const sectionId = section.dataset.sectionId;
-                    const hiddenInput = document.createElement('input');
-                    hiddenInput.type = 'hidden';
-                    hiddenInput.name = `lectures[${lectureId}][section_id]`;
-                    hiddenInput.value = sectionId;
-                    lectureClone.querySelector('.lecture-item').appendChild(hiddenInput);
-
-                    lecturesContainer.appendChild(lectureClone);
-
-                    // Update the order for all lectures in this section
-                    updateLectureOrder();
-
-                    // Don't scroll to the new lecture
-                    e.preventDefault();
-                }
-            });
-
             // Remove section/lecture functionality
             courseSections.addEventListener('click', function(e) {
                 if (e.target.classList.contains('remove-section')) {
@@ -1960,6 +1927,7 @@
             }
 
             // Update lecture order based on DOM position
+            window.updateLectureOrder = updateLectureOrder;
             function updateLectureOrder() {
                 const lectureContainers = document.querySelectorAll('.lectures-container');
                 lectureContainers.forEach(container => {

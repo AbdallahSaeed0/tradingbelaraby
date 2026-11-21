@@ -513,7 +513,7 @@
                                         if (btn) {
                                             btn.addEventListener('click', function(e) {
                                                 e.preventDefault();
-                                                e.stopPropagation();
+                                                e.stopImmediatePropagation(); // the page-load script binds this button too
                                                 
                                                 if (typeof window.addSection === 'function') {
                                                     window.addSection();
@@ -589,7 +589,7 @@
                                 if (btn) {
                                     btn.addEventListener('click', function(e) {
                                         e.preventDefault();
-                                        e.stopPropagation();
+                                        e.stopImmediatePropagation(); // the page-load script binds this button too
                                         
                                         if (typeof window.addLearningObjective === 'function') {
                                             window.addLearningObjective();
@@ -667,7 +667,7 @@
                                 if (btn) {
                                     btn.addEventListener('click', function(e) {
                                         e.preventDefault();
-                                        e.stopPropagation();
+                                        e.stopImmediatePropagation(); // the page-load script binds this button too
                                         
                                         if (typeof window.addFaqItem === 'function') {
                                             window.addFaqItem();
