@@ -404,102 +404,10 @@
                     </div>
                     <div class="col-md-6">
                         <div class="d-flex justify-content-end">
-                        @if ($enrollments->hasPages())
-                            <nav aria-label="Enrollments pagination">
-                                <ul class="pagination pagination-sm justify-content-end mb-0">
-                                    {{-- Previous Page Link --}}
-                                    @if ($enrollments->onFirstPage())
-                                        <li class="page-item disabled">
-                                            <span class="page-link">
-                                                <i class="fa fa-chevron-left"></i>
-                                            </span>
-                                        </li>
-                                    @else
-                                        <li class="page-item">
-                                            <a class="page-link" href="{{ $enrollments->previousPageUrl() }}"
-                                                aria-label="Previous">
-                                                <i class="fa fa-chevron-left"></i>
-                                            </a>
-                                        </li>
-                                    @endif
-
-                                    {{-- First Page --}}
-                                    @if ($enrollments->currentPage() > 3)
-                                        <li class="page-item">
-                                            <a class="page-link" href="{{ $enrollments->url(1) }}">1</a>
-                                        </li>
-                                        @if ($enrollments->currentPage() > 4)
-                                            <li class="page-item disabled">
-                                                <span class="page-link">...</span>
-                                            </li>
-                                        @endif
-                                    @endif
-
-                                    {{-- Pagination Elements --}}
-                                    @foreach ($enrollments->getUrlRange(max(1, $enrollments->currentPage() - 2), min($enrollments->lastPage(), $enrollments->currentPage() + 2)) as $page => $url)
-                                        @if ($page == $enrollments->currentPage())
-                                            <li class="page-item active">
-                                                <span class="page-link">{{ $page }}</span>
-                                            </li>
-                                        @else
-                                            <li class="page-item">
-                                                <a class="page-link" href="{{ $url }}">{{ $page }}</a>
-                                            </li>
-                                        @endif
-                                    @endforeach
-
-                                    {{-- Last Page --}}
-                                    @if ($enrollments->currentPage() < $enrollments->lastPage() - 2)
-                                        @if ($enrollments->currentPage() < $enrollments->lastPage() - 3)
-                                            <li class="page-item disabled">
-                                                <span class="page-link">...</span>
-                                            </li>
-                                        @endif
-                                        <li class="page-item">
-                                            <a class="page-link"
-                                                href="{{ $enrollments->url($enrollments->lastPage()) }}">{{ $enrollments->lastPage() }}</a>
-                                        </li>
-                                    @endif
-
-                                    {{-- Next Page Link --}}
-                                    @if ($enrollments->hasMorePages())
-                                        <li class="page-item">
-                                            <a class="page-link" href="{{ $enrollments->nextPageUrl() }}" aria-label="Next">
-                                                <i class="fa fa-chevron-right"></i>
-                                            </a>
-                                        </li>
-                                    @else
-                                        <li class="page-item disabled">
-                                            <span class="page-link">
-                                                <i class="fa fa-chevron-right"></i>
-                                            </span>
-                                        </li>
-                                    @endif
-                                </ul>
-                            </nav>
-                        @else
-                            <div class="text-end text-muted small">
-                                Page 1 of 1
-                            </div>
-                        @endif
+                        {{ $enrollments->links() }}
                         </div>
                     </div>
                 </div>
-                {{-- Page Info --}}
-                @if ($enrollments->hasPages())
-                    <div class="row mt-2">
-                        <div class="col-12">
-                            <div class="text-center">
-                                <small class="text-muted">
-                                    Page {{ $enrollments->currentPage() }} of {{ $enrollments->lastPage() }}
-                                    @if ($enrollments->total() > 0)
-                                        ({{ number_format($enrollments->total()) }} total enrollments)
-                                    @endif
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                @endif
             </div>
         </div>
     </div>

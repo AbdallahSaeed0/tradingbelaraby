@@ -57,7 +57,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="d-flex justify-content-end">
-                            {{ $campaigns->links('pagination::bootstrap-5') }}
+                            {{ $campaigns->links() }}
                         </div>
                     </div>
                 </div>

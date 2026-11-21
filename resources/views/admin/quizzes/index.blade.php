@@ -322,7 +322,7 @@
                         <div class="col-md-6">
                             <div class="d-flex justify-content-end">
                                 @if ($quizzes->hasPages())
-                                    {{ $quizzes->links('pagination::bootstrap-5') }}
+                                    {{ $quizzes->links() }}
                                 @endif
                             </div>
                         </div>
@@ -424,21 +424,7 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="text-muted">
-                            @if ($quizzes->count() > 0)
-                                Showing {{ $quizzes->firstItem() }} to {{ $quizzes->lastItem() }} of
-                                {{ $quizzes->total() }} entries
-                            @else
-                                No entries found
-                            @endif
-                        </div>
-                        @if ($quizzes->hasPages())
-                            <nav>
-                                {{ $quizzes->links('pagination::bootstrap-4') }}
-                            </nav>
-                        @endif
-                    </div>
+                    {{ $quizzes->links() }}
                 </div>
             </div>
         </div>

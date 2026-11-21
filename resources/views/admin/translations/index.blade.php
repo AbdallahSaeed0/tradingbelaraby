@@ -192,7 +192,7 @@
                     <div class="col-md-6">
                         @if ($translations->hasPages())
                             <div class="d-flex justify-content-end">
-                                {{ $translations->links('pagination::bootstrap-5') }}
+                                {{ $translations->links() }}
                             </div>
                         @endif
                     </div>

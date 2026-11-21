@@ -187,7 +187,7 @@
                             </table>
                         </div>
                         @if ($paginator->hasPages())
-                            <div class="mt-3">{{ $paginator->links('pagination::bootstrap-5') }}</div>
+                            <div class="mt-3">{{ $paginator->links() }}</div>
                         @endif
                     @else
                         <div class="db-widget-empty">

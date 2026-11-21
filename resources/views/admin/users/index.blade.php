@@ -328,84 +328,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="d-flex justify-content-end align-items-center">
-                            @if ($users->hasPages())
-                                <nav aria-label="Users pagination">
-                                    <ul class="pagination pagination-sm justify-content-end mb-0">
-                                        {{-- Previous Page Link --}}
-                                        @if ($users->onFirstPage())
-                                            <li class="page-item disabled">
-                                                <span class="page-link">
-                                                    <i class="fa fa-chevron-left"></i>
-                                                </span>
-                                            </li>
-                                        @else
-                                            <li class="page-item">
-                                                <a class="page-link" href="{{ $users->previousPageUrl() }}"
-                                                    aria-label="Previous">
-                                                    <i class="fa fa-chevron-left"></i>
-                                                </a>
-                                            </li>
-                                        @endif
-
-                                        {{-- First Page --}}
-                                        @if ($users->currentPage() > 3)
-                                            <li class="page-item">
-                                                <a class="page-link" href="{{ $users->url(1) }}">1</a>
-                                            </li>
-                                            @if ($users->currentPage() > 4)
-                                                <li class="page-item disabled">
-                                                    <span class="page-link">...</span>
-                                                </li>
-                                            @endif
-                                        @endif
-
-                                        {{-- Pagination Elements --}}
-                                        @foreach ($users->getUrlRange(max(1, $users->currentPage() - 2), min($users->lastPage(), $users->currentPage() + 2)) as $page => $url)
-                                            @if ($page == $users->currentPage())
-                                                <li class="page-item active">
-                                                    <span class="page-link">{{ $page }}</span>
-                                                </li>
-                                            @else
-                                                <li class="page-item">
-                                                    <a class="page-link" href="{{ $url }}">{{ $page }}</a>
-                                                </li>
-                                            @endif
-                                        @endforeach
-
-                                        {{-- Last Page --}}
-                                        @if ($users->currentPage() < $users->lastPage() - 2)
-                                            @if ($users->currentPage() < $users->lastPage() - 3)
-                                                <li class="page-item disabled">
-                                                    <span class="page-link">...</span>
-                                                </li>
-                                            @endif
-                                            <li class="page-item">
-                                                <a class="page-link"
-                                                    href="{{ $users->url($users->lastPage()) }}">{{ $users->lastPage() }}</a>
-                                            </li>
-                                        @endif
-
-                                        {{-- Next Page Link --}}
-                                        @if ($users->hasMorePages())
-                                            <li class="page-item">
-                                                <a class="page-link" href="{{ $users->nextPageUrl() }}" aria-label="Next">
-                                                    <i class="fa fa-chevron-right"></i>
-                                                </a>
-                                            </li>
-                                        @else
-                                            <li class="page-item disabled">
-                                                <span class="page-link">
-                                                    <i class="fa fa-chevron-right"></i>
-                                                </span>
-                                            </li>
-                                        @endif
-                                    </ul>
-                                </nav>
-                            @else
-                                <div class="text-end text-muted small">
-                                    Page 1 of 1
-                                </div>
-                            @endif
+                            {{ $users->links() }}
                         </div>
                     </div>
                 </div>
@@ -693,7 +616,7 @@
             }
 
             // Add loading state to pagination links
-            document.querySelectorAll('.pagination a').forEach(link => {
+            document.querySelectorAll('.admin-pagination-nav a').forEach(link => {
                 link.addEventListener('click', function() {
                     // Add loading spinner to the clicked link
                     const originalContent = this.innerHTML;
@@ -714,7 +637,7 @@
                     switch (e.key) {
                         case 'ArrowLeft':
                             const prevLink = document.querySelector(
-                                '.pagination .page-item:not(.disabled) a[aria-label="Previous"]');
+                                '.admin-pagination-nav a[rel="prev"]');
                             if (prevLink) {
                                 e.preventDefault();
                                 window.location.href = prevLink.href;
@@ -722,7 +645,7 @@
                             break;
                         case 'ArrowRight':
                             const nextLink = document.querySelector(
-                                '.pagination .page-item:not(.disabled) a[aria-label="Next"]');
+                                '.admin-pagination-nav a[rel="next"]');
                             if (nextLink) {
                                 e.preventDefault();
                                 window.location.href = nextLink.href;

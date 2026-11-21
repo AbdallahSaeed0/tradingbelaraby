@@ -358,7 +358,7 @@
                     <div class="col-md-6">
                         <div class="d-flex flex-wrap justify-content-end align-items-center gap-3">
                             @include('admin.partials.per-page', ['paginator' => $courses])
-                            {{ $courses->links('pagination::bootstrap-5') }}
+                            {{ $courses->links() }}
                         </div>
                     </div>
                 </div>
