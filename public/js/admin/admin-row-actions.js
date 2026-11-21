@@ -46,6 +46,21 @@
         return !!(btn && /\bbtn-(outline-)?danger\b/.test(btn.className));
     }
 
+    // Solid buttons (btn-primary, btn-danger...) become the outline style used across the admin tables
+    function outlineStyle(btn) {
+        if (!btn.classList.contains('btn')) btn.classList.add('btn');
+        btn.classList.add('btn-sm');
+        btn.classList.remove('btn-lg', 'btn-link');
+        ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'].forEach(function (v) {
+            if (btn.classList.contains('btn-' + v)) {
+                btn.classList.remove('btn-' + v);
+                btn.classList.add('btn-outline-' + v);
+            }
+        });
+        var hasVariant = Array.prototype.some.call(btn.classList, function (c) { return /^btn-outline-/.test(c); });
+        if (!hasVariant) btn.classList.add('btn-outline-secondary');
+    }
+
     function toMenuItem(btn, label, danger) {
         btn.className = btn.className
             .split(/\s+/)
@@ -76,7 +91,13 @@
         });
         if (iconOnly) {
             container.classList.add('table-icon-actions');
+            container.classList.remove('btn-group', 'btn-group-sm'); // separate buttons, not a joined group
+            container.removeAttribute('role');
             cell.classList.add('table-icon-actions-cell');
+            items.forEach(function (it) {
+                var b = it.matches('form') ? it.querySelector('.btn, button') : (it.matches('.dropdown, .btn-group') ? it.querySelector('[data-bs-toggle="dropdown"]') : it);
+                if (b) outlineStyle(b);
+            });
         }
 
         if (items.length <= MAX_VISIBLE) return;
