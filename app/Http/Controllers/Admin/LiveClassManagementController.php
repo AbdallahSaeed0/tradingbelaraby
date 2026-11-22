@@ -387,7 +387,8 @@ class LiveClassManagementController extends Controller
 
         try {
             LiveClass::whereIn('id', $request->selected_classes)
-                ->update(['status' => $request->status]);
+                // scheduled_at set to itself so MySQL's ON UPDATE CURRENT_TIMESTAMP can't reset it
+                ->update(['status' => $request->status, 'scheduled_at' => \Illuminate\Support\Facades\DB::raw('scheduled_at')]);
 
             return response()->json([
                 'success' => true,

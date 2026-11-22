@@ -69,6 +69,35 @@ class LiveClass extends Model
         return $this->instructions;
     }
 
+    /*
+     * On databases where scheduled_at is still a TIMESTAMP with
+     * "ON UPDATE CURRENT_TIMESTAMP", MySQL overwrites the class time with "now"
+     * on every UPDATE that leaves the column out. So every update writes
+     * scheduled_at explicitly, even when it did not change.
+     */
+    protected static function booted(): void
+    {
+        static::updating(function (LiveClass $liveClass) {
+            if ($liveClass->getRawOriginal('scheduled_at') !== null && !$liveClass->isDirty('scheduled_at')) {
+                // Mark it dirty so Eloquent includes it in the UPDATE with its current value
+                $liveClass->original['scheduled_at'] = null;
+            }
+        });
+
+        static::updated(function (LiveClass $liveClass) {
+            $liveClass->syncOriginalAttribute('scheduled_at');
+        });
+    }
+
+    protected function incrementOrDecrement($column, $amount, $extra, $method)
+    {
+        if ($this->exists && $column !== 'scheduled_at' && !array_key_exists('scheduled_at', $extra) && $this->getRawOriginal('scheduled_at') !== null) {
+            $extra['scheduled_at'] = $this->getRawOriginal('scheduled_at');
+        }
+
+        return parent::incrementOrDecrement($column, $amount, $extra, $method);
+    }
+
     // The passcode is only sent to enrolled students through the Zoom SDK join endpoint
     protected $hidden = ['meeting_passcode'];
 
