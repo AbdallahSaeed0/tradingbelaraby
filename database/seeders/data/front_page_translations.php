@@ -3307,4 +3307,12 @@ return [
         'en' => 'This lecture is for students of this course. Enroll to watch it.',
         'ar' => 'المحاضرة دي لطلاب الدورة. اشترك في الدورة عشان تشوفها.',
     ],
+    'Joining opens one hour before the session starts.' => [
+        'en' => 'Joining opens one hour before the session starts.',
+        'ar' => 'الدخول بيفتح قبل بداية الجلسة بساعة.',
+    ],
+    'Back to the session page' => [
+        'en' => 'Back to the session page',
+        'ar' => 'الرجوع لصفحة الجلسة',
+    ],
 ];

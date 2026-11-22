@@ -222,6 +222,8 @@ class LiveClassController extends Controller
             // - with Meeting SDK keys: SDK player
             // - without keys: Zoom's own browser client in an iframe
             if ($zoom->meetingNumber($liveClass)) {
+                $this->grantRoom($liveClass);
+
                 return view('live-classes.room', [
                     'liveClass' => $liveClass,
                     'course' => $course,
@@ -251,7 +253,7 @@ class LiveClassController extends Controller
         $user = Auth::user();
         $zoom = app(\App\Services\ZoomSdkService::class);
 
-        if (!$this->canJoinNow($user, $liveClass)) {
+        if (!$this->mayEnterRoom($liveClass)) {
             return response()->json([
                 'success' => false,
                 'message' => custom_trans('Joining opens one hour before the session.', 'front'),
@@ -284,7 +286,9 @@ class LiveClassController extends Controller
      */
     public function openInZoom(LiveClass $liveClass)
     {
-        abort_unless($this->canJoinNow(Auth::user(), $liveClass) && $liveClass->link, 403);
+        if (!$liveClass->link || !$this->mayEnterRoom($liveClass)) {
+            return $this->roomDenied($liveClass, 'open-in-zoom');
+        }
 
         if (!$liveClass->isRegisteredByUser(Auth::user())) {
             $liveClass->registerUser(Auth::user());
@@ -299,7 +303,9 @@ class LiveClassController extends Controller
      */
     public function zoomFrame(LiveClass $liveClass)
     {
-        abort_unless($this->canJoinNow(Auth::user(), $liveClass), 403);
+        if (!$this->mayEnterRoom($liveClass)) {
+            return $this->roomDenied($liveClass, 'zoom-frame');
+        }
 
         $url = app(\App\Services\ZoomSdkService::class)->webClientUrl($liveClass);
         abort_unless($url, 404);
@@ -309,6 +315,60 @@ class LiveClassController extends Controller
         }
 
         return redirect()->away($url);
+    }
+
+    private const ROOM_GRANT_HOURS = 4;
+
+    /** The room page was shown to this user: its Zoom frame and app hand-off may load for a few hours. */
+    private function grantRoom(LiveClass $liveClass): void
+    {
+        session()->put('live_room_grant.' . $liveClass->id, now()->addHours(self::ROOM_GRANT_HOURS)->timestamp);
+    }
+
+    private function mayEnterRoom(LiveClass $liveClass): bool
+    {
+        if ($this->canJoinNow(Auth::user(), $liveClass)) {
+            return true;
+        }
+
+        $until = (int) session('live_room_grant.' . $liveClass->id, 0);
+
+        return Auth::check() && $until > now()->timestamp && $liveClass->status !== 'cancelled';
+    }
+
+    /** Shown inside the room frame (or as a page) instead of a bare 403; the reason is logged. */
+    private function roomDenied(LiveClass $liveClass, string $where)
+    {
+        $user = Auth::user();
+        \Illuminate\Support\Facades\Log::warning('Live room access refused', [
+            'where' => $where,
+            'live_class_id' => $liveClass->id,
+            'user_id' => $user?->id,
+            'status' => $liveClass->status,
+            'join_window_open' => $liveClass->isJoinWindowOpen(),
+            'starts_at' => optional($liveClass->startsAt())->toIso8601String(),
+            'now' => now()->toIso8601String(),
+            'has_course_access' => $user && $liveClass->course_id ? $user->hasCourseAccess($liveClass->course_id) : null,
+            'registered' => $user ? $liveClass->isRegisteredByUser($user) : null,
+            'grant' => session('live_room_grant.' . $liveClass->id),
+        ]);
+
+        $message = !$liveClass->isJoinWindowOpen()
+            ? custom_trans('Joining opens one hour before the session starts.', 'front')
+            : custom_trans('This live session is for students of this course. Enroll to join.', 'front');
+
+        $back = e(route('live.share', $liveClass));
+        $label = e(custom_trans('Back to the session page', 'front'));
+        $text = e($message);
+        $dir = app()->getLocale() === 'ar' ? 'rtl' : 'ltr';
+
+        return response(
+            "<!doctype html><html dir=\"{$dir}\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
+            . "<style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0f1d2a;color:#fff;font-family:system-ui,-apple-system,'Segoe UI',Tahoma,sans-serif;text-align:center;padding:24px;box-sizing:border-box}"
+            . "a{display:inline-block;margin-top:16px;background:#f15a29;color:#fff;text-decoration:none;padding:10px 20px;border-radius:8px;font-weight:700}</style></head>"
+            . "<body><div><div>{$text}</div><a href=\"{$back}\" target=\"_top\">{$label}</a></div></body></html>",
+            403
+        );
     }
 
     private function canJoinNow($user, LiveClass $liveClass): bool
